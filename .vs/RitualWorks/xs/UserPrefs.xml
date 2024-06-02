@@ -1,17 +1,55 @@
-﻿<Properties>
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.Workbench>
+﻿<Properties StartupConfiguration="{205B9001-2688-4920-9CC3-096B7077E2BA}|https">
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.Workbench ActiveDocument="src/Program.cs">
+    <Files>
+      <File FileName="src/appsettings.json" />
+      <File FileName="src/Services/RitualService.cs" />
+      <File FileName="src/Controllers/RitualsController.cs" />
+      <File FileName="src/Db/Intent.cs" />
+      <File FileName="src/Db/RitualType.cs" />
+      <File FileName="src/Db/Ritual.cs" />
+      <File FileName="src/DTOs/CreateRitualDto.cs" />
+      <File FileName="src/Db/ApplicationDbContext.cs" />
+      <File FileName="src/DTOs/RitualDto.cs" />
+      <File FileName="src/DTOs/UserLoginDto.cs" />
+      <File FileName="src/DTOs/UserRegistrationDto.cs" />
+      <File FileName="src/DTOs/RitualTypeDto.cs" />
+      <File FileName="src/Db/User.cs" />
+      <File FileName="src/Controllers/AuthenticationController.cs" />
+      <File FileName="src/Config.cs" />
+      <File FileName="src/Program.cs" Line="31" Column="1" />
+      <File FileName="src/Db/Donation.cs" />
+      <File FileName="src/DTOs/IntentDto.cs" />
+      <File FileName="src/DTOs/DonationDto.cs" />
+      <File FileName="src/Services/IntentService.cs" />
+      <File FileName="src/Contracts/IIntentService.cs" />
+      <File FileName="src/Contracts/IDonationService.cs" />
+      <File FileName="src/Services/DonationService.cs" />
+      <File FileName="src/Controllers/IntentsController.cs" />
+      <File FileName="src/Controllers/DonationsController.cs" />
+      <File FileName="src/Contracts/IRitualService.cs" />
+      <File FileName="src/Contracts/IDonationRepository.cs" />
+      <File FileName="src/Contracts/IIntentRepository.cs" />
+      <File FileName="src/Settings/BlobSettings.cs" />
+      <File FileName="src/DTOs/CreateDonationDto.cs" />
+    </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
-          <Node name="RitualWorks" expanded="True" selected="True" />
+          <Node name="RitualWorks" selected="True">
+            <Node name="RitualWorks" expanded="True" />
+          </Node>
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
+  <DisabledProjects>
+    <String>tests/RitualWorks.Tests/RitualWorks.Tests.csproj</String>
+  </DisabledProjects>
+  <MonoDevelop.Ide.ItemProperties.RitualWorks PreferredExecutionTarget="/Applications/Firefox.app" />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

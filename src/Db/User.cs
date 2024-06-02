@@ -1,0 +1,12 @@
+﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
+namespace RitualWorks.Db
+{
+     public class User : IdentityUser
+    {
+        public ICollection<Ritual>? Rituals { get; set; }
+        public ICollection<Petition>? Petitions { get; set; }
+        public ICollection<Donation>? Donations { get; set; }
+    }
+
+}
