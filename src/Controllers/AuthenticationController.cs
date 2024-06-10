@@ -5,7 +5,6 @@ using System;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using RitualWorks.Db;
-using RitualWorks.DTOs;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using System.Security.Claims;
@@ -86,4 +85,18 @@ namespace RitualWorks.Controllers
             return Unauthorized();
         }
     }
+
+    public class UserRegistrationDto
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+
+    public class UserLoginDto
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+
 }

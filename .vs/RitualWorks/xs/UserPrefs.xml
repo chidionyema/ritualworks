@@ -1,15 +1,21 @@
 ﻿<Properties StartupConfiguration="{205B9001-2688-4920-9CC3-096B7077E2BA}|https">
+  <DisabledProjects>
+    <String>tests/RitualWorks.Tests/RitualWorks.Tests.csproj</String>
+  </DisabledProjects>
+  <MonoDevelop.Ide.ItemProperties.RitualWorks PreferredExecutionTarget="/Applications/Firefox.app" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.Workbench ActiveDocument="src/Program.cs">
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workbench ActiveDocument="src/Controllers/CheckoutController.cs">
     <Files>
       <File FileName="src/appsettings.json" />
       <File FileName="src/Services/RitualService.cs" />
       <File FileName="src/Controllers/RitualsController.cs" />
-      <File FileName="src/Db/Intent.cs" />
       <File FileName="src/Db/RitualType.cs" />
       <File FileName="src/Db/Ritual.cs" />
       <File FileName="src/DTOs/CreateRitualDto.cs" />
-      <File FileName="src/Db/ApplicationDbContext.cs" />
       <File FileName="src/DTOs/RitualDto.cs" />
       <File FileName="src/DTOs/UserLoginDto.cs" />
       <File FileName="src/DTOs/UserRegistrationDto.cs" />
@@ -17,39 +23,48 @@
       <File FileName="src/Db/User.cs" />
       <File FileName="src/Controllers/AuthenticationController.cs" />
       <File FileName="src/Config.cs" />
-      <File FileName="src/Program.cs" Line="31" Column="1" />
+      <File FileName="src/Program.cs" Line="147" Column="22" />
       <File FileName="src/Db/Donation.cs" />
-      <File FileName="src/DTOs/IntentDto.cs" />
       <File FileName="src/DTOs/DonationDto.cs" />
-      <File FileName="src/Services/IntentService.cs" />
-      <File FileName="src/Contracts/IIntentService.cs" />
       <File FileName="src/Contracts/IDonationService.cs" />
       <File FileName="src/Services/DonationService.cs" />
-      <File FileName="src/Controllers/IntentsController.cs" />
       <File FileName="src/Controllers/DonationsController.cs" />
       <File FileName="src/Contracts/IRitualService.cs" />
       <File FileName="src/Contracts/IDonationRepository.cs" />
-      <File FileName="src/Contracts/IIntentRepository.cs" />
       <File FileName="src/Settings/BlobSettings.cs" />
       <File FileName="src/DTOs/CreateDonationDto.cs" />
+      <File FileName="src/Db/Post.cs" />
+      <File FileName="src/Db/Comment.cs" />
+      <File FileName="src/Db/RitualWorksContext.cs" />
+      <File FileName="src/Contracts/ICommentRepository.cs" />
+      <File FileName="src/Contracts/IPostRepository.cs" />
+      <File FileName="src/Repositories/PostRepository.cs" />
+      <File FileName="src/Repositories/CommentRepository.cs" />
+      <File FileName="src/Repositories/DonationRepository.cs" />
+      <File FileName="src/Controllers/PostsController.cs" />
+      <File FileName="src/Controllers/CommentsController.cs" Line="72" Column="1" />
+      <File FileName="src/Repositories/PetitionRepository.cs" />
+      <File FileName="src/Repositories/RitualRepository.cs" />
+      <File FileName="src/Repositories/UserRepository.cs" />
+      <File FileName="src/Db/Product.cs" Line="12" Column="1" />
+      <File FileName="src/Controllers/CheckoutController.cs" Line="7" Column="27" />
+      <File FileName="src/Settings/StripeSettings.cs" Line="8" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
-          <Node name="RitualWorks" selected="True">
-            <Node name="RitualWorks" expanded="True" />
+          <Node name="RitualWorks" expanded="True">
+            <Node name="RitualWorks">
+              <Node name="Controllers" expanded="True">
+                <Node name="CheckoutController.cs" selected="True" />
+              </Node>
+              <Node name="Repositories" expanded="True" />
+              <Node name="Settings" expanded="True" />
+            </Node>
           </Node>
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <DisabledProjects>
-    <String>tests/RitualWorks.Tests/RitualWorks.Tests.csproj</String>
-  </DisabledProjects>
-  <MonoDevelop.Ide.ItemProperties.RitualWorks PreferredExecutionTarget="/Applications/Firefox.app" />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

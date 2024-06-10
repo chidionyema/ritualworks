@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using RitualWorks.DTOs;
+using RitualWorks.Controllers;
 
 namespace RitualWorks.Services
 {

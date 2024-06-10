@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using RitualWorks.Contracts;
-using RitualWorks.DTOs;
+using RitualWorks.Controllers;
 using RitualWorks.Db;
 
 namespace RitualWorks.Services
@@ -22,6 +23,8 @@ namespace RitualWorks.Services
 
         public async Task<PetitionDto> CreatePetitionAsync(CreatePetitionDto createPetitionDto)
         {
+            if (createPetitionDto == null) throw new ArgumentNullException(nameof(createPetitionDto));
+
             var petition = new Petition
             {
                 RitualId = createPetitionDto.RitualId,

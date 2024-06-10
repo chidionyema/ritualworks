@@ -1,27 +1,27 @@
-﻿using Azure.Storage.Blobs;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using RitualWorks.Contracts;
-using RitualWorks.Db;
-using RitualWorks.DTOs;
-using RitualWorks.Repositories;
-using RitualWorks.Services;
-using RitualWorks.Settings;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Microsoft.EntityFrameworkCore;
+using Moq;
+using RitualWorks.Contracts;
+using RitualWorks.Db;
+using RitualWorks.Controllers;
+using RitualWorks.Repositories;
+using RitualWorks.Services;
+using Xunit;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace RitualWorks.Tests.Services
 {
-    public class DonationServiceTests
+    public class DonationServiceIntegrationTests
     {
         private readonly RitualWorksContext _dbContext;
         private readonly IDonationRepository _donationRepository;
         private readonly IRitualService _ritualService;
         private readonly DonationService _donationService;
+        private readonly Mock<IMemoryCache> _memoryCacheMock;
 
-        public DonationServiceTests()
+        public DonationServiceIntegrationTests()
         {
             // Set up SQLite in-memory database
             var options = new DbContextOptionsBuilder<RitualWorksContext>()
@@ -32,28 +32,31 @@ namespace RitualWorks.Tests.Services
             _dbContext.Database.OpenConnection();
             _dbContext.Database.EnsureCreated();
 
+            _memoryCacheMock = new Mock<IMemoryCache>();
+            _memoryCacheMock.Setup(cache => cache.CreateEntry(It.IsAny<object>())).Returns(Mock.Of<ICacheEntry>());
+
             // Initialize the repository and services
             _donationRepository = new DonationRepository(_dbContext);
-            _ritualService = new RitualService(new RitualRepository(_dbContext), new BlobServiceClient("UseDevelopmentStorage=true"), Options.Create(new BlobSettings { ContainerName = "test-container" }));
-
-            // Initialize the service with real instances
-            _donationService = new DonationService(_donationRepository, _ritualService);
+            var ritualRepository = new RitualRepository(_dbContext, _memoryCacheMock.Object);
+            _ritualService = new RitualService(ritualRepository);
+            _donationService = new DonationService(_donationRepository, _ritualService, _dbContext);
         }
 
         [Fact]
         public async Task CreateDonationAsync_ShouldReturnDonationDto()
         {
             // Arrange
+            await SeedDatabaseAsync(); // Ensure related data is seeded
             var createDonationDto = new CreateDonationDto
             {
                 Amount = 100,
                 PetitionId = 1,
                 RitualId = 1,
-               // UserId = "user1"
+                UserId = "user1"
             };
 
             // Act
-            var result = await _donationService.CreateDonationAsync(createDonationDto);
+            var (result, sessionId) = await _donationService.CreateDonationAsync(createDonationDto, "http://example.com");
 
             // Assert
             Assert.NotNull(result);
@@ -123,6 +126,36 @@ namespace RitualWorks.Tests.Services
 
         private async Task<Donation> SeedDatabaseAsync()
         {
+            // Seed a ritual
+            var ritual = new Ritual
+            {
+                Id = 1,
+                Title = "Test Ritual",
+                TokenAmount = 50.0m,
+                IsLocked = false
+            };
+            if (!_dbContext.Rituals.Any(r => r.Id == ritual.Id))
+            {
+                _dbContext.Rituals.Add(ritual);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            // Seed a petition
+            var petition = new Petition
+            {
+                Id = 1,
+                RitualId = 1,
+                Description = "Test Petition",
+                UserId = "user1",
+                Created = DateTime.UtcNow
+            };
+            if (!_dbContext.Petitions.Any(p => p.Id == petition.Id))
+            {
+                _dbContext.Petitions.Add(petition);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            // Seed a donation
             var donation = new Donation
             {
                 Amount = 100,

@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using Stripe;
+using RitualWorks.Repositories.RitualWorks.Repositories;
 
 public class Program
 {
@@ -82,6 +83,12 @@ public class Program
             };
         });
 
+        builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+        // Configure Stripe
+        StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretKey"];
+
+
+
         // Add DbContext
         builder.Services.AddDbContext<RitualWorksContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -91,10 +98,22 @@ public class Program
         builder.Services.AddScoped<IPetitionRepository, PetitionRepository>();
         builder.Services.AddScoped<IDonationRepository, DonationRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
-
+        builder.Services.AddScoped<IProductRepository, ProductRepository>();
+        builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+        builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+        builder.Services.AddScoped<ICheckoutService, CheckoutService>();
         builder.Services.AddScoped<IRitualService, RitualService>();
         builder.Services.AddScoped<IPetitionService, PetitionService>();
         builder.Services.AddScoped<IDonationService, DonationService>();
+        builder.Services.AddScoped<IPostRepository, PostRepository>();
+        builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+
+        // Register social media services
+        builder.Services.AddScoped<ISocialMediaService, FacebookService>(provider =>
+            new FacebookService("FACEBOOK_ACCESS_TOKEN"));
+
+        // Register unified social media service
+        builder.Services.AddScoped<ISocialMediaService, SocialMediaService>();
 
         // Register BlobServiceClient
         builder.Services.AddSingleton(x =>
@@ -152,6 +171,14 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
+        app.Use(async (context, next) =>
+        {
+            context.Response.Headers.Add("Content-Security-Policy", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'self'");
+            context.Response.Headers.Add("X-Frame-Options", "DENY");
+            context.Response.Headers.Add("X-Content-Type-Options", "nosniff");
+            context.Response.Headers.Add("X-XSS-Protection", "1; mode=block");
+            await next();
+        });
         // Enable middleware to serve generated Swagger as a JSON endpoint.
         app.UseSwagger();
 

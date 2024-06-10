@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
 using Moq;
 using RitualWorks.Contracts;
-using RitualWorks.DTOs;
+using RitualWorks.Controllers;
 using RitualWorks.Db;
 using RitualWorks.Services;
 using Xunit;

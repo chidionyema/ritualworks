@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.IO;
-using System.Threading.Tasks;
-using RitualWorks.DTOs;
-using RitualWorks.Services;
-using Microsoft.AspNetCore.Http;
 using RitualWorks.Db;
+using RitualWorks.Services;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RitualWorks.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class RitualsController : ControllerBase
     {
         private readonly IRitualService _ritualService;
@@ -20,85 +18,84 @@ namespace RitualWorks.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRitual([FromForm] CreateRitualDto ritualDto, IFormFile mediaFile)
+        public async Task<ActionResult<RitualDto>> CreateRitual([FromBody] CreateRitualDto ritualDto)
         {
-            if (string.IsNullOrEmpty(ritualDto.FullContent) && mediaFile == null && string.IsNullOrEmpty(ritualDto.ExternalLink))
-            {
-                return BadRequest("Either media file, full content, or external link must be provided.");
-            }
+            var createdRitual = await _ritualService.CreateRitualAsync(ritualDto);
 
-            Stream mediaStream = null;
-            if (mediaFile != null)
-            {
-                mediaStream = mediaFile.OpenReadStream();
-            }
-
-            var result = await _ritualService.CreateRitualAsync(ritualDto, mediaStream);
-            return Ok(result);
+            return CreatedAtAction(nameof(GetRitualById), new { id = createdRitual.Id }, createdRitual);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRitual(int id, [FromForm] CreateRitualDto ritualDto, IFormFile? mediaFile)
+        public async Task<ActionResult<RitualDto>> UpdateRitual(int id, [FromBody] CreateRitualDto ritualDto)
         {
-            Stream mediaStream = null;
-            if (mediaFile != null)
-            {
-                mediaStream = mediaFile.OpenReadStream();
-            }
+            var updatedRitual = await _ritualService.UpdateRitualAsync(id, ritualDto);
 
-            var ritual = await _ritualService.UpdateRitualAsync(id, ritualDto, mediaStream);
-            if (ritual == null)
+            if (updatedRitual == null)
             {
                 return NotFound();
             }
-            return Ok(ritual);
+
+            return Ok(updatedRitual);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetRitualById(int id)
+        public async Task<ActionResult<RitualDto>> GetRitualById(int id)
         {
             var ritual = await _ritualService.GetRitualByIdAsync(id);
             if (ritual == null)
             {
                 return NotFound();
             }
+
             return Ok(ritual);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllRituals()
+        public async Task<ActionResult<IEnumerable<RitualDto>>> GetAllRituals()
         {
             var rituals = await _ritualService.GetAllRitualsAsync();
             return Ok(rituals);
         }
 
-        [HttpPost("lock/{id}")]
-        public async Task<IActionResult> LockRitual(int id)
-        {
-            var success = await _ritualService.LockRitualAsync(id);
-            if (!success)
-            {
-                return NotFound();
-            }
-            return NoContent();
-        }
-
-        [HttpPost("rate/{id}")]
-        public async Task<IActionResult> RateRitual(int id, [FromBody] double rating)
-        {
-            var success = await _ritualService.RateRitualAsync(id, rating);
-            if (!success)
-            {
-                return NotFound();
-            }
-            return Ok();
-        }
-
         [HttpGet("search")]
-        public async Task<IActionResult> SearchRituals([FromQuery] string query, [FromQuery] RitualTypeEnum? type)
+        public async Task<ActionResult<IEnumerable<RitualDto>>> SearchRituals(string query, RitualTypeEnum? type)
         {
             var rituals = await _ritualService.SearchRitualsAsync(query, type);
             return Ok(rituals);
         }
+    }
+
+    public class RitualTypeDto
+    {
+        public string Name { get; set; } = string.Empty;
+        public int Value { get; set; }
+    }
+
+    public class CreateRitualDto
+    {
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Preview { get; set; } = string.Empty;
+        public string FullContent { get; set; } = string.Empty; // For custom uploaded content
+        public string ExternalLink { get; set; } = string.Empty; // For external content like YouTube videos
+        public decimal TokenAmount { get; set; }
+        public RitualTypeEnum RitualType { get; set; } // Use the enum here
+        public string MediaUrl { get; set; } = string.Empty;
+    }
+
+    public class RitualDto
+    {
+        public int Id { get; set; }
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public string Preview { get; set; } = string.Empty;
+        public string FullTextContent { get; set; } = string.Empty; // For custom uploaded content
+        public string MediaUrl { get; set; } = string.Empty;// For external content like YouTube videos
+        public decimal TokenAmount { get; set; }
+        public RitualTypeEnum RitualType { get; set; } // Use the enum here
+        public bool IsLocked { get; set; }
+        public bool IsExternalMediaUrl { get; set; }
+        public bool IsProduct { get; set; }
+        public double Rating { get; set; }
     }
 }

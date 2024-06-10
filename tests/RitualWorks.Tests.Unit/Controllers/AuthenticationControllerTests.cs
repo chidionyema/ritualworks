@@ -25,6 +25,10 @@ public class AuthenticationControllerTests
             Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
 
         _configurationMock = new Mock<IConfiguration>();
+        _configurationMock.SetupGet(x => x["Jwt:Key"]).Returns("your-128-bit-secret-key-here12345678");
+        _configurationMock.SetupGet(x => x["Jwt:Issuer"]).Returns("http://localhost:5000");
+        _configurationMock.SetupGet(x => x["Jwt:Audience"]).Returns("your-audience");
+
         _authenticationController = new AuthenticationController(_userManagerMock.Object, _configurationMock.Object);
     }
 
@@ -201,17 +205,19 @@ public class AuthenticationControllerTests
         _userManagerMock.Setup(um => um.CheckPasswordAsync(user, loginDto.Password))
             .ReturnsAsync(true);
 
-        _configurationMock.Setup(c => c["Jwt:Key"]).Returns("supersecretkey!");
-        _configurationMock.Setup(c => c["Jwt:Issuer"]).Returns("testissuer");
-        _configurationMock.Setup(c => c["Jwt:Audience"]).Returns("testaudience");
+        _configurationMock.Setup(c => c["Jwt:Key"]).Returns("your-128-bit-secret-key-here12345678");
+        _configurationMock.Setup(c => c["Jwt:Issuer"]).Returns("http://localhost:5000");
+        _configurationMock.Setup(c => c["Jwt:Audience"]).Returns("your-audience");
 
         // Act
         var result = await _authenticationController.Login(loginDto);
 
         // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
-        var tokenResult = okResult.Value as dynamic;
-        Assert.NotNull(tokenResult.token);
-        Assert.True(DateTime.UtcNow.AddHours(2) < tokenResult.expiration && tokenResult.expiration < DateTime.UtcNow.AddHours(4));
+        var tokenResult = okResult.Value.GetType().GetProperty("token")?.GetValue(okResult.Value, null);
+        var expirationResult = okResult.Value.GetType().GetProperty("expiration")?.GetValue(okResult.Value, null);
+
+        Assert.NotNull(tokenResult);
+        Assert.True(DateTime.UtcNow.AddHours(2) < (DateTime)expirationResult && (DateTime)expirationResult < DateTime.UtcNow.AddHours(4));
     }
 }

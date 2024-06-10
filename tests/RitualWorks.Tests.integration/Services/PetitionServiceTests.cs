@@ -1,14 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RitualWorks.Contracts;
-using RitualWorks.Db;
-using RitualWorks.DTOs;
-using RitualWorks.Repositories;
-using RitualWorks.Services;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Moq;
+using RitualWorks.Contracts;
+using RitualWorks.Db;
+using RitualWorks.Controllers;
+using RitualWorks.Repositories;
+using RitualWorks.Services;
 using Xunit;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace RitualWorks.Tests.Services
 {
@@ -33,7 +34,8 @@ namespace RitualWorks.Tests.Services
 
             // Initialize the repositories
             _petitionRepository = new PetitionRepository(_dbContext);
-            _ritualRepository = new RitualRepository(_dbContext);
+            var memoryCacheMock = new Mock<IMemoryCache>();
+            _ritualRepository = new RitualRepository(_dbContext, memoryCacheMock.Object);
             _userRepository = new UserRepository(_dbContext);
 
             // Initialize the service with real instances
@@ -44,6 +46,7 @@ namespace RitualWorks.Tests.Services
         public async Task CreatePetitionAsync_ShouldReturnPetitionDto()
         {
             // Arrange
+            await SeedDatabaseAsync(); // Seed necessary data
             var createPetitionDto = new CreatePetitionDto
             {
                 RitualId = 1,
@@ -104,6 +107,22 @@ namespace RitualWorks.Tests.Services
 
         private async Task<Petition> SeedDatabaseAsync()
         {
+            // Seed a ritual
+            var ritual = new Ritual
+            {
+                Id = 1,
+                Title = "Test Ritual",
+                TokenAmount = 50.0m,
+                IsLocked = false
+            };
+
+            if (!_dbContext.Rituals.Any(r => r.Id == 1))
+            {
+                _dbContext.Rituals.Add(ritual);
+                await _dbContext.SaveChangesAsync();
+            }
+
+            // Seed a petition
             var petition = new Petition
             {
                 RitualId = 1,

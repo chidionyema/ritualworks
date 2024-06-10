@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System.Threading.Tasks;
-using RitualWorks.DTOs;
 using RitualWorks.Services;
 using RitualWorks.Controllers;
 using Xunit;
-using Microsoft.AspNetCore.Http;
-using System.IO;
 using System.Collections.Generic;
 
 namespace RitualWorks.Tests.Unit
@@ -23,7 +20,7 @@ namespace RitualWorks.Tests.Unit
         }
 
         [Fact]
-        public async Task CreateRitual_WithValidDtoAndMediaFile_ReturnsOk()
+        public async Task CreateRitual_WithValidDto_ReturnsCreatedAtAction()
         {
             // Arrange
             var createRitualDto = new CreateRitualDto
@@ -31,10 +28,6 @@ namespace RitualWorks.Tests.Unit
                 Title = "Sample Ritual",
                 Description = "Sample Description"
             };
-
-            var mediaFileMock = new Mock<IFormFile>();
-            var stream = new MemoryStream();
-            mediaFileMock.Setup(_ => _.OpenReadStream()).Returns(stream);
 
             var createdRitual = new RitualDto
             {
@@ -43,33 +36,17 @@ namespace RitualWorks.Tests.Unit
                 Description = "Sample Description"
             };
 
-            _ritualServiceMock.Setup(service => service.CreateRitualAsync(createRitualDto, stream))
+            _ritualServiceMock.Setup(service => service.CreateRitualAsync(createRitualDto))
                 .ReturnsAsync(createdRitual);
 
             // Act
-            var result = await _controller.CreateRitual(createRitualDto, mediaFileMock.Object);
+            var result = await _controller.CreateRitual(createRitualDto);
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
-            Assert.Equal(createdRitual, okResult.Value);
-        }
-
-        [Fact]
-        public async Task CreateRitual_WithNullMediaFile_ReturnsBadRequest()
-        {
-            // Arrange
-            var createRitualDto = new CreateRitualDto
-            {
-                Title = "Sample Ritual",
-                Description = "Sample Description"
-            };
-
-            // Act
-            var result = await _controller.CreateRitual(createRitualDto, null);
-
-            // Assert
-            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-            Assert.Equal("Media file cannot be null", badRequestResult.Value);
+            var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result.Result);
+            Assert.Equal(nameof(_controller.GetRitualById), createdAtActionResult.ActionName);
+            Assert.Equal(createdRitual.Id, createdAtActionResult.RouteValues["id"]);
+            Assert.Equal(createdRitual, createdAtActionResult.Value);
         }
 
         [Fact]
@@ -82,10 +59,6 @@ namespace RitualWorks.Tests.Unit
                 Description = "Updated Description"
             };
 
-            var mediaFileMock = new Mock<IFormFile>();
-            var stream = new MemoryStream();
-            mediaFileMock.Setup(_ => _.OpenReadStream()).Returns(stream);
-
             var updatedRitual = new RitualDto
             {
                 Id = 1,
@@ -93,14 +66,14 @@ namespace RitualWorks.Tests.Unit
                 Description = "Updated Description"
             };
 
-            _ritualServiceMock.Setup(service => service.UpdateRitualAsync(1, updateRitualDto, stream))
+            _ritualServiceMock.Setup(service => service.UpdateRitualAsync(1, updateRitualDto))
                 .ReturnsAsync(updatedRitual);
 
             // Act
-            var result = await _controller.UpdateRitual(1, updateRitualDto, mediaFileMock.Object);
+            var result = await _controller.UpdateRitual(1, updateRitualDto);
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
             Assert.Equal(updatedRitual, okResult.Value);
         }
 
@@ -114,14 +87,14 @@ namespace RitualWorks.Tests.Unit
                 Description = "Updated Description"
             };
 
-            _ritualServiceMock.Setup(service => service.UpdateRitualAsync(1, updateRitualDto, null))
+            _ritualServiceMock.Setup(service => service.UpdateRitualAsync(1, updateRitualDto))
                 .ReturnsAsync((RitualDto)null);
 
             // Act
-            var result = await _controller.UpdateRitual(1, updateRitualDto, null);
+            var result = await _controller.UpdateRitual(1, updateRitualDto);
 
             // Assert
-            Assert.IsType<NotFoundResult>(result);
+            Assert.IsType<NotFoundResult>(result.Result);
         }
 
         [Fact]
@@ -143,7 +116,7 @@ namespace RitualWorks.Tests.Unit
             var result = await _controller.GetRitualById(ritualId);
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
             Assert.Equal(ritual, okResult.Value);
         }
 
@@ -160,7 +133,7 @@ namespace RitualWorks.Tests.Unit
             var result = await _controller.GetRitualById(ritualId);
 
             // Assert
-            Assert.IsType<NotFoundResult>(result);
+            Assert.IsType<NotFoundResult>(result.Result);
         }
 
         [Fact]
@@ -180,10 +153,8 @@ namespace RitualWorks.Tests.Unit
             var result = await _controller.GetAllRituals();
 
             // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result);
+            var okResult = Assert.IsType<OkObjectResult>(result.Result);
             Assert.Equal(rituals, okResult.Value);
         }
-
-       
     }
 }

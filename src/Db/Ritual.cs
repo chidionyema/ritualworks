@@ -11,8 +11,8 @@ namespace RitualWorks.Db
         public string MediaUrl { get; set; } = string.Empty;
         public string CreatorId { get; set; } = string.Empty;
         public string Preview { get; set; } = string.Empty;
-        public string FullContent { get; set; } = string.Empty; // For custom uploaded content
-        public string ExternalLink { get; set; } = string.Empty; // For external content like YouTube videos
+        public string FullTextContent { get; set; } = string.Empty; // For custom uploaded content
+        public bool IsExternalMediaUrl { get; set; }
         public decimal TokenAmount { get; set; }
         public User? Creator { get; set; }
         public ICollection<Petition>? Petitions { get; set; }
@@ -21,6 +21,16 @@ namespace RitualWorks.Db
         public DateTime Created { get; set; } = DateTime.UtcNow; // Default to current UTC time
         public DateTime? Updated { get; set; }
         public bool IsLocked { get; set; } // To indicate if the ritual is locked
+        public bool IsProduct { get; set; } // To indicate if the ritual is locked
         public double Rating { get; set; } // Average rating of the ritual
     }
-}
+
+        public class RitualFTS
+        {
+            public int Id { get; set; }
+            public string Title { get; set; } = string.Empty;
+            public RitualTypeEnum RitualType { get; set; }
+            public string Description { get; set; } = string.Empty;
+            public string FullContent { get; set; } = string.Empty;
+        }
+    }

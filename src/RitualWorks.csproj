@@ -29,7 +29,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="DTOs\" />
     <None Remove="Services\" />
     <None Remove="Contracts\" />
     <None Remove="Repositories\" />
@@ -37,7 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
     <Folder Include="Services\" />
     <Folder Include="Contracts\" />
     <Folder Include="Repositories\" />

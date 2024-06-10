@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RitualWorks.Contracts;
-using RitualWorks.DTOs;
 using RitualWorks.Services;
 
 namespace RitualWorks.Controllers
@@ -42,5 +42,23 @@ namespace RitualWorks.Controllers
             var petitions = await _petitionService.GetPetitionsByRitualIdAsync(ritualId);
             return Ok(petitions);
         }
+    }
+
+    public class PetitionDto
+    {
+        public int Id { get; set; }
+        public int RitualId { get; set; }
+        public string UserId { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public DateTime Created { get; set; }
+    }
+
+    public class CreatePetitionDto
+    {
+        public int RitualId { get; set; }
+        public string UserId { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
     }
 }

@@ -7,6 +7,7 @@ namespace RitualWorks.Db
         public ICollection<Ritual>? Rituals { get; set; }
         public ICollection<Petition>? Petitions { get; set; }
         public ICollection<Donation>? Donations { get; set; }
+        public ICollection<Post>? Posts { get; set; }
+        public ICollection<Comment>? Comments { get; set; }
     }
-
 }

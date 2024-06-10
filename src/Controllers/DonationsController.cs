@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RitualWorks.Contracts;
-using RitualWorks.DTOs;
 
 namespace RitualWorks.Controllers
 {
@@ -19,7 +18,7 @@ namespace RitualWorks.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateDonation([FromBody] CreateDonationDto createDonationDto)
         {
-            var donation = await _donationService.CreateDonationAsync(createDonationDto);
+            var (donation, sessionId) = await _donationService.CreateDonationAsync(createDonationDto, Request.Scheme + "://" + Request.Host);
             return CreatedAtAction(nameof(GetDonationById), new { id = donation.Id }, donation);
         }
 
@@ -33,12 +32,24 @@ namespace RitualWorks.Controllers
             }
             return Ok(donation);
         }
-
-        [HttpGet("by-ritual/{ritualId}")]
-        public async Task<IActionResult> GetDonationsByRitualId(int ritualId)
-        {
-            var donations = await _donationService.GetDonationsByRitualIdAsync(ritualId);
-            return Ok(donations);
-        }
     }
+
+    public class CreateDonationDto
+    {
+        public decimal Amount { get; set; }
+        public int? PetitionId { get; set; } // Nullable for direct donations to a ritual
+        public int? RitualId { get; set; } // Nullable for donations linked to a petition
+        public string UserId { get; internal set; }
+    }
+
+    public class DonationDto
+    {
+        public int Id { get; set; }
+        public int? PetitionId { get; set; }
+        public int? RitualId { get; set; }
+        public string UserId { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
+        public string DonorName { get; set; } = string.Empty;
+    }
+
 }
