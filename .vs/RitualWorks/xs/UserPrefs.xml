@@ -1,38 +1,31 @@
 ﻿<Properties StartupConfiguration="{205B9001-2688-4920-9CC3-096B7077E2BA}|https">
+  <MultiItemStartupConfigurations />
   <DisabledProjects>
     <String>tests/RitualWorks.Tests/RitualWorks.Tests.csproj</String>
   </DisabledProjects>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.ItemProperties.RitualWorks PreferredExecutionTarget="/Applications/Firefox.app" />
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MultiItemStartupConfigurations />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="src/Controllers/CheckoutController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="src/Repositories/ProductRepository.cs">
     <Files>
+      <File FileName="src/Contracts/ISocialMediaService.cs" Line="2" Column="1" IsPinned="True" />
       <File FileName="src/appsettings.json" />
       <File FileName="src/Services/RitualService.cs" />
-      <File FileName="src/Controllers/RitualsController.cs" />
       <File FileName="src/Db/RitualType.cs" />
       <File FileName="src/Db/Ritual.cs" />
-      <File FileName="src/DTOs/CreateRitualDto.cs" />
-      <File FileName="src/DTOs/RitualDto.cs" />
-      <File FileName="src/DTOs/UserLoginDto.cs" />
-      <File FileName="src/DTOs/UserRegistrationDto.cs" />
-      <File FileName="src/DTOs/RitualTypeDto.cs" />
       <File FileName="src/Db/User.cs" />
       <File FileName="src/Controllers/AuthenticationController.cs" />
       <File FileName="src/Config.cs" />
-      <File FileName="src/Program.cs" Line="147" Column="22" />
+      <File FileName="src/Program.cs" />
       <File FileName="src/Db/Donation.cs" />
-      <File FileName="src/DTOs/DonationDto.cs" />
       <File FileName="src/Contracts/IDonationService.cs" />
       <File FileName="src/Services/DonationService.cs" />
       <File FileName="src/Controllers/DonationsController.cs" />
       <File FileName="src/Contracts/IRitualService.cs" />
       <File FileName="src/Contracts/IDonationRepository.cs" />
       <File FileName="src/Settings/BlobSettings.cs" />
-      <File FileName="src/DTOs/CreateDonationDto.cs" />
       <File FileName="src/Db/Post.cs" />
       <File FileName="src/Db/Comment.cs" />
       <File FileName="src/Db/RitualWorksContext.cs" />
@@ -42,29 +35,55 @@
       <File FileName="src/Repositories/CommentRepository.cs" />
       <File FileName="src/Repositories/DonationRepository.cs" />
       <File FileName="src/Controllers/PostsController.cs" />
-      <File FileName="src/Controllers/CommentsController.cs" Line="72" Column="1" />
+      <File FileName="src/Controllers/CommentsController.cs" />
       <File FileName="src/Repositories/PetitionRepository.cs" />
       <File FileName="src/Repositories/RitualRepository.cs" />
       <File FileName="src/Repositories/UserRepository.cs" />
-      <File FileName="src/Db/Product.cs" Line="12" Column="1" />
-      <File FileName="src/Controllers/CheckoutController.cs" Line="7" Column="27" />
-      <File FileName="src/Settings/StripeSettings.cs" Line="8" Column="1" />
+      <File FileName="src/Db/Product.cs" />
+      <File FileName="src/Controllers/CheckoutController.cs" />
+      <File FileName="src/Settings/StripeSettings.cs" />
+      <File FileName="tests/RitualWorks.Tests.integration/Services/DonationServiceTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.integration/CustomWebApplicationFactory.cs" />
+      <File FileName="tests/RitualWorks.Tests.integration/Services/PetitionServiceTests.cs" />
+      <File FileName="src/Contracts/IProductRepository.cs" />
+      <File FileName="src/Repositories/ProductRepository.cs" Line="27" Column="10" />
+      <File FileName="src/Contracts/IImageService.cs" />
+      <File FileName="src/Controllers/BlobController.cs" />
+      <File FileName="src/Controllers/ProductsController.cs" />
+      <File FileName="src/Contracts/ICategoryRepository.cs" />
+      <File FileName="src/Repositories/CategoryRepository.cs" />
+      <File FileName="src/Db/Order.cs" />
+      <File FileName="src/Contracts/IOrderRepository.cs" />
+      <File FileName="src/Repositories/OrderRepository.cs" />
+      <File FileName="src/Contracts/ICheckoutService.cs" />
+      <File FileName="src/Services/CheckoutService.cs" />
+      <File FileName="src/Db/Petition.cs" />
+      <File FileName="src/Services/RitualTypeService.cs" />
+      <File FileName="src/Services/PetitionService.cs" />
+      <File FileName="src/Contracts/IRitualInvocationService.cs" />
+      <File FileName="src/Contracts/IRitualRepository.cs" />
+      <File FileName="src/RitualWorks.http" />
+      <File FileName="src/GenericMapper.cs" />
+      <File FileName="src/Controllers/PetitionsController.cs" />
+      <File FileName="src/Contracts/IPetitionService.cs" />
+      <File FileName="src/Contracts/IRitualTypeService.cs" />
+      <File FileName="tests/RitualWorks.Tests.integration/Services/RitualServiceTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.integration/Services/RitualTypeServiceTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.Unit/Services/RitualServiceTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.Unit/Services/PetitionServiceTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.Unit/Controllers/AuthenticationControllerTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.Unit/Controllers/DonationsControllerTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.Unit/Controllers/PetitionsControllerTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.Unit/Controllers/RitualsControllerTests.cs" />
+      <File FileName="src/Services/SearchService.cs" />
+      <File FileName="src/Services/DataIndexer.cs" />
+      <File FileName="src/Controllers/SearchController.cs" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State name="__root__">
-          <Node name="RitualWorks" expanded="True">
-            <Node name="RitualWorks">
-              <Node name="Controllers" expanded="True">
-                <Node name="CheckoutController.cs" selected="True" />
-              </Node>
-              <Node name="Repositories" expanded="True" />
-              <Node name="Settings" expanded="True" />
-            </Node>
-          </Node>
-        </State>
+        <State name="__root__" />
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>

@@ -8,6 +8,7 @@ using RitualWorks.Db;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using Microsoft.Extensions.Logging;
 
 namespace RitualWorks.Controllers
 {
@@ -17,11 +18,12 @@ namespace RitualWorks.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
-
-        public AuthenticationController(UserManager<User> userManager, IConfiguration configuration)
+        private readonly ILogger<AuthenticationController> _logger;
+        public AuthenticationController(UserManager<User> userManager, IConfiguration configuration, ILogger<AuthenticationController> logger)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpPost("register")]
@@ -53,6 +55,7 @@ namespace RitualWorks.Controllers
         {
             if (loginDto == null)
             {
+                _logger.LogWarning("Invalid login details");
                 return BadRequest("Invalid login details");
             }
 
@@ -75,6 +78,7 @@ namespace RitualWorks.Controllers
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
 
+                _logger.LogInformation("User logged in successfully: {Username}", user.UserName);
                 return Ok(new
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
@@ -82,9 +86,12 @@ namespace RitualWorks.Controllers
                 });
             }
 
+            _logger.LogWarning("Unauthorized login attempt: {Username}", loginDto.Username);
             return Unauthorized();
         }
+
     }
+
 
     public class UserRegistrationDto
     {
@@ -98,5 +105,4 @@ namespace RitualWorks.Controllers
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
-
 }

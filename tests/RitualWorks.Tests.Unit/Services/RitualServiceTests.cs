@@ -251,28 +251,4 @@ public class RitualServiceTests
         _ritualRepositoryMock.Verify(repo => repo.RateRitualAsync(ritualId, rating), Times.Once);
     }
 
-    [Fact]
-    public async Task SearchRitualsAsync_ShouldReturnRituals()
-    {
-        // Arrange
-        var query = "Test";
-        var type = RitualTypeEnum.Ceremonial;
-        var rituals = new List<Ritual>
-        {
-            new Ritual { Id = 1, Title = "Test Ritual1", Description = "Description1", Preview = "Preview1", FullTextContent = "FullContent1", TokenAmount = 10.0m, RitualType = type, MediaUrl = "http://link1.com/media", IsLocked = false, Rating = 0.0 },
-            new Ritual { Id = 2, Title = "Test Ritual2", Description = "Description2", Preview = "Preview2", FullTextContent = "FullContent2", TokenAmount = 20.0m, RitualType = type, MediaUrl = "http://link2.com/media", IsLocked = false, Rating = 0.0 }
-        };
-
-        _ritualRepositoryMock.Setup(repo => repo.SearchRitualsAsync(query, type)).ReturnsAsync(rituals);
-
-        // Act
-        var result = await _ritualService.SearchRitualsAsync(query, type);
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(2, result.Count());
-        Assert.Equal(rituals[0].Id, result.ElementAt(0).Id);
-        Assert.Equal(rituals[1].Id, result.ElementAt(1).Id);
-        _ritualRepositoryMock.Verify(repo => repo.SearchRitualsAsync(query, type), Times.Once);
-    }
 }

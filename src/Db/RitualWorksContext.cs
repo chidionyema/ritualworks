@@ -10,7 +10,6 @@ namespace RitualWorks.Db
     public class RitualWorksContext : IdentityDbContext<User>
     {
         public DbSet<Ritual> Rituals { get; set; }
-        public DbSet<RitualFTS> RitualFTS { get; set; }
         public DbSet<Petition> Petitions { get; set; }
         public DbSet<Donation> Donations { get; set; }
         public DbSet<Post> Posts { get; set; }
@@ -87,10 +86,6 @@ namespace RitualWorks.Db
              .WithOne(c => c.Post)
              .HasForeignKey(c => c.PostId);
 
-            modelBuilder.Entity<RitualFTS>()
-               .ToTable("RitualsFTS")
-               .HasKey(r => r.Id);
-
         }
 
         public override int SaveChanges()
@@ -100,13 +95,6 @@ namespace RitualWorks.Db
                 .Select(e => e.Entity as Ritual);
 
             var result = base.SaveChanges();
-
-            foreach (var entity in entities)
-            {
-                Database.ExecuteSqlRaw(
-                    "INSERT OR REPLACE INTO RitualsFTS (Id, Title, Description, FullContent) VALUES ({0}, {1}, {2}, {3})",
-                    entity.Id, entity.Title, entity.Description, entity.FullTextContent);
-            }
 
             return result;
         }

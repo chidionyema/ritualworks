@@ -1,0 +1,16 @@
+# Use an official Ubuntu image as a base
+FROM ubuntu:latest
+
+# Install necessary packages
+RUN apt-get update && \
+    apt-get install -y openssl certbot && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy the certificate generation script
+COPY generate_certs.sh /generate_certs.sh
+
+# Make the script executable
+RUN chmod +x /generate_certs.sh
+
+# Command to run the script
+CMD ["/bin/bash", "/generate_certs.sh"]

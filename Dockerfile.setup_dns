@@ -1,0 +1,7 @@
+FROM ubuntu:latest
+
+COPY setup_local_dns.sh /setup_local_dns.sh
+
+RUN chmod +x /setup_local_dns.sh
+
+CMD ["bash", "/setup_local_dns.sh"]

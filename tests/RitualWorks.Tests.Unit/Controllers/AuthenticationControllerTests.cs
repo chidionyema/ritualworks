@@ -12,11 +12,16 @@ using RitualWorks.Controllers;
 using RitualWorks.Db;
 using RitualWorks.DTOs;
 using Xunit;
+using UserRegistrationDto = RitualWorks.Controllers.UserRegistrationDto;
+using UserLoginDto = RitualWorks.Controllers.UserLoginDto;
+using Microsoft.Extensions.Logging;
 
 public class AuthenticationControllerTests
 {
     private readonly Mock<UserManager<User>> _userManagerMock;
     private readonly Mock<IConfiguration> _configurationMock;
+
+    private readonly Mock<ILogger<AuthenticationController>> _loggerMock;
     private readonly AuthenticationController _authenticationController;
 
     public AuthenticationControllerTests()
@@ -25,11 +30,12 @@ public class AuthenticationControllerTests
             Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
 
         _configurationMock = new Mock<IConfiguration>();
+        _loggerMock = new Mock<ILogger<AuthenticationController>>();
         _configurationMock.SetupGet(x => x["Jwt:Key"]).Returns("your-128-bit-secret-key-here12345678");
         _configurationMock.SetupGet(x => x["Jwt:Issuer"]).Returns("http://localhost:5000");
         _configurationMock.SetupGet(x => x["Jwt:Audience"]).Returns("your-audience");
 
-        _authenticationController = new AuthenticationController(_userManagerMock.Object, _configurationMock.Object);
+        _authenticationController = new AuthenticationController(_userManagerMock.Object, _configurationMock.Object, _loggerMock.Object);
     }
 
     [Fact]
@@ -66,7 +72,7 @@ public class AuthenticationControllerTests
     public async Task Register_ShouldReturnOk_WhenRegistrationIsSuccessful()
     {
         // Arrange
-        var registrationDto = new UserRegistrationDto
+        var registrationDto = new RitualWorks.Controllers.UserRegistrationDto
         {
             Username = "testuser",
             Email = "testuser@example.com",

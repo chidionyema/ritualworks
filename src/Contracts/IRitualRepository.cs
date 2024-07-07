@@ -12,6 +12,5 @@ namespace RitualWorks.Contracts
         Task<Ritual?> UpdateRitualAsync(Ritual ritual);
         Task<bool> LockRitualAsync(int id);
         Task<bool> RateRitualAsync(int id, double rating);
-        Task<IEnumerable<Ritual>> SearchRitualsAsync(string query, RitualTypeEnum? type);
     }
 }

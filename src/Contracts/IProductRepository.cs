@@ -7,8 +7,9 @@ namespace RitualWorks.Contracts
 {
     public interface IProductRepository
     {
-        Task<IEnumerable<Product>> GetProductsAsync();
+        Task<IEnumerable<Product>> GetProductsAsync(int page, int pageSize);
         Task<Product> GetProductByIdAsync(Guid id);
+        Task<IEnumerable<Product>> GetProductsByCategoryAsync(Guid categoryId, int page, int pageSize);
         Task AddProductAsync(Product product);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(Guid id);

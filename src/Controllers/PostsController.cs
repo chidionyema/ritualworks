@@ -5,7 +5,7 @@ using RitualWorks.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Authorization;
 namespace RitualWorks.Controllers
 {
     [Route("api/[controller]")]
@@ -20,6 +20,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Post>>> GetPosts()
         {
             var posts = await _postRepository.GetPostsAsync();
@@ -27,6 +28,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Post>> GetPost(Guid id)
         {
             var post = await _postRepository.GetPostByIdAsync(id);
@@ -38,6 +40,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Post>> CreatePost([FromBody] Post post)
         {
             await _postRepository.AddPostAsync(post);
@@ -45,6 +48,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdatePost(Guid id, [FromBody] Post post)
         {
             if (id != post.Id)
@@ -56,6 +60,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeletePost(Guid id)
         {
             await _postRepository.DeletePostAsync(id);

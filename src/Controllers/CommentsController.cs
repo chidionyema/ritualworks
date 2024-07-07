@@ -5,6 +5,7 @@ using RitualWorks.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RitualWorks.Controllers
 {
@@ -20,6 +21,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComments()
         {
             var comments = await _commentRepository.GetCommentsAsync();
@@ -27,6 +29,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Comment>> GetComment(Guid id)
         {
             var comment = await _commentRepository.GetCommentByIdAsync(id);
@@ -38,6 +41,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Comment>> CreateComment([FromBody] Comment comment)
         {
             await _commentRepository.AddCommentAsync(comment);
@@ -45,6 +49,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdateComment(Guid id, [FromBody] Comment comment)
         {
             if (id != comment.Id)
@@ -56,6 +61,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteComment(Guid id)
         {
             await _commentRepository.DeleteCommentAsync(id);

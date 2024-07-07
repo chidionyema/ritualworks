@@ -1,13 +1,24 @@
+# Ignore directories
 bin/
 obj/
+.vscode/
+.idea/
+backups/
+
+# Ignore user-specific files
 *.user
 *.suo
 *.userosscache
-*.sln.docstates
-.vscode/
-.idea/
-*.sln
 *.csproj.user
 *.csproj.suo
+
+# Ignore solution-specific files
+*.sln.docstates
+*.sln
+
+# Ignore configuration files
 appsettings.json
 
+# Ignore environment files
+.env.development
+.env.production

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RitualWorks.Contracts;
 using RitualWorks.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RitualWorks.Controllers
 {

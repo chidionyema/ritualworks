@@ -12,20 +12,16 @@ namespace RitualWorks.Repositories
     public class RitualRepository : IRitualRepository
     {
         private readonly RitualWorksContext _context;
-        private readonly IMemoryCache _memoryCache;
-        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(5); // Cache duration
 
-        public RitualRepository(RitualWorksContext context, IMemoryCache memoryCache)
+        public RitualRepository(RitualWorksContext context)
         {
             _context = context;
-            _memoryCache = memoryCache;
         }
 
         public async Task<Ritual> CreateRitualAsync(Ritual ritual)
         {
             await _context.Rituals.AddAsync(ritual);
             await _context.SaveChangesAsync();
-            InvalidateCache();
             return ritual;
         }
 
@@ -33,7 +29,6 @@ namespace RitualWorks.Repositories
         {
             _context.Rituals.Update(ritual);
             await _context.SaveChangesAsync();
-            InvalidateCache();
             return ritual;
         }
 
@@ -44,19 +39,7 @@ namespace RitualWorks.Repositories
 
         public async Task<IEnumerable<Ritual>> GetAllRitualsAsync()
         {
-            if (!_memoryCache.TryGetValue("AllRituals", out IEnumerable<Ritual> cachedRituals))
-            {
-                cachedRituals = await _context.Rituals.ToListAsync();
-                var cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = _cacheExpiration,
-                    SlidingExpiration = TimeSpan.FromMinutes(2)
-                };
-
-                _memoryCache.Set("AllRituals", cachedRituals, cacheEntryOptions);
-            }
-
-            return cachedRituals;
+            return await _context.Rituals.ToListAsync(); ;
         }
 
         public async Task<bool> LockRitualAsync(int id)
@@ -66,7 +49,6 @@ namespace RitualWorks.Repositories
 
             ritual.IsLocked = true;
             await _context.SaveChangesAsync();
-            InvalidateCache();
             return true;
         }
 
@@ -77,41 +59,8 @@ namespace RitualWorks.Repositories
 
             ritual.Rating = (float)rating;
             await _context.SaveChangesAsync();
-            InvalidateCache();
             return true;
         }
 
-        public async Task<IEnumerable<Ritual>> SearchRitualsAsync(string query, RitualTypeEnum? type)
-        {
-            var cacheKey = $"Search-{query}-{type}";
-            if (!_memoryCache.TryGetValue(cacheKey, out IEnumerable<Ritual> cachedRituals))
-            {
-                var ritualsQuery = _context.RitualFTS.FromSqlRaw("SELECT * FROM RitualsFTS WHERE RitualsFTS MATCH {0}", query).AsQueryable();
-
-                if (type.HasValue)
-                {
-                    ritualsQuery = ritualsQuery.Where(r => r.RitualType == type);
-                }
-
-                cachedRituals = await ritualsQuery
-                    .Join(_context.Rituals, fts => fts.Id, r => r.Id, (fts, r) => r)
-                    .ToListAsync();
-
-                var cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = _cacheExpiration,
-                    SlidingExpiration = TimeSpan.FromMinutes(2)
-                };
-
-                _memoryCache.Set(cacheKey, cachedRituals, cacheEntryOptions);
-            }
-
-            return cachedRituals;
-        }
-
-        private void InvalidateCache()
-        {
-            _memoryCache.Remove("AllRituals");
-        }
     }
 }

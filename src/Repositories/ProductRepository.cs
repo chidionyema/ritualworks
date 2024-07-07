@@ -4,6 +4,7 @@ using RitualWorks.Db;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace RitualWorks.Repositories
 {
@@ -16,10 +17,25 @@ namespace RitualWorks.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Product>> GetProductsAsync()
+        public async Task<IEnumerable<Product>> GetProductsAsync(int page, int pageSize)
         {
-            return await _context.Products.Include(p => p.ProductImages).ToListAsync();
+            return await _context.Products
+                                 .OrderBy(p => p.Name) // Ensure consistent order
+                                 .Skip((page - 1) * pageSize)
+                                 .Take(pageSize)
+                                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(Guid categoryId, int page, int pageSize)
+        {
+            return await _context.Products
+                                 .Where(p => p.CategoryId == categoryId)
+                                 .OrderBy(p => p.Name) // Ensure consistent order
+                                 .Skip((page - 1) * pageSize)
+                                 .Take(pageSize)
+                                 .ToListAsync();
+        }
+
 
         public async Task<Product> GetProductByIdAsync(Guid id)
         {

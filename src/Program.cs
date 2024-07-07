@@ -19,6 +19,9 @@ using Microsoft.Extensions.Options;
 using System;
 using Stripe;
 using RitualWorks.Repositories.RitualWorks.Repositories;
+using RitualWorks;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
+
 
 public class Program
 {
@@ -91,8 +94,7 @@ public class Program
 
         // Add DbContext
         builder.Services.AddDbContext<RitualWorksContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
         // Add repository and service dependencies
         builder.Services.AddScoped<IRitualRepository, RitualRepository>();
         builder.Services.AddScoped<IPetitionRepository, PetitionRepository>();
@@ -101,25 +103,29 @@ public class Program
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
         builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
         builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-        builder.Services.AddScoped<ICheckoutService, CheckoutService>();
+        builder.Services.AddScoped<IPaymentService, StripePaymentService>();
+        builder.Services.AddScoped<CheckoutService>();
+
+
         builder.Services.AddScoped<IRitualService, RitualService>();
         builder.Services.AddScoped<IPetitionService, PetitionService>();
         builder.Services.AddScoped<IDonationService, DonationService>();
         builder.Services.AddScoped<IPostRepository, PostRepository>();
         builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+        builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 
-        // Register social media services
-        builder.Services.AddScoped<ISocialMediaService, FacebookService>(provider =>
-            new FacebookService("FACEBOOK_ACCESS_TOKEN"));
-
-        // Register unified social media service
-        builder.Services.AddScoped<ISocialMediaService, SocialMediaService>();
 
         // Register BlobServiceClient
         builder.Services.AddSingleton(x =>
         {
             var blobSettings = x.GetRequiredService<IOptions<BlobSettings>>().Value;
             return new BlobServiceClient(blobSettings.ConnectionString);
+        });
+
+        // Add AutoMapper
+        builder.Services.AddAutoMapper(cfg =>
+        {
+            cfg.AddMaps(AppDomain.CurrentDomain.GetAssemblies());
         });
 
         // Add Swagger services

@@ -59,12 +59,6 @@ namespace RitualWorks.Services
             return await _ritualRepository.RateRitualAsync(id, rating);
         }
 
-        public async Task<IEnumerable<RitualDto>> SearchRitualsAsync(string query, RitualTypeEnum? type)
-        {
-            var rituals = await _ritualRepository.SearchRitualsAsync(query, type);
-            return rituals.Select(MapToRitualDto);
-        }
-
         private static Ritual MapToRitual(CreateRitualDto ritualDto)
         {
             return new Ritual

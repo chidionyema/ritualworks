@@ -13,6 +13,5 @@ namespace RitualWorks.Services
         Task<IEnumerable<RitualDto>> GetAllRitualsAsync();
         Task<bool> LockRitualAsync(int id);
         Task<bool> RateRitualAsync(int id, double rating);
-        Task<IEnumerable<RitualDto>> SearchRitualsAsync(string query, RitualTypeEnum? type);
     }
 }

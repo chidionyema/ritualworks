@@ -15,20 +15,5 @@ namespace RitualWorks.Db
         public Category? Category { get; set; }
     }
 
-    public class ProductImage
-    {
-        public Guid Id { get; set; }
-        public string ImageUrl { get; set; } = string.Empty;
-        public Guid ProductId { get; set; }
-        public Product? Product { get; set; }
-    }
-
-    public class Category
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public ICollection<Product>? Products { get; set; }
-    }
-
 }
 

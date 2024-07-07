@@ -3,7 +3,7 @@ using RitualWorks.Db;
 using RitualWorks.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using Microsoft.AspNetCore.Authorization;
 namespace RitualWorks.Controllers
 {
     [Route("api/[controller]")]
@@ -18,6 +18,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<RitualDto>> CreateRitual([FromBody] CreateRitualDto ritualDto)
         {
             var createdRitual = await _ritualService.CreateRitualAsync(ritualDto);
@@ -26,6 +27,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<ActionResult<RitualDto>> UpdateRitual(int id, [FromBody] CreateRitualDto ritualDto)
         {
             var updatedRitual = await _ritualService.UpdateRitualAsync(id, ritualDto);
@@ -39,6 +41,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<RitualDto>> GetRitualById(int id)
         {
             var ritual = await _ritualService.GetRitualByIdAsync(id);
@@ -51,18 +54,13 @@ namespace RitualWorks.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<RitualDto>>> GetAllRituals()
         {
             var rituals = await _ritualService.GetAllRitualsAsync();
             return Ok(rituals);
         }
 
-        [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<RitualDto>>> SearchRituals(string query, RitualTypeEnum? type)
-        {
-            var rituals = await _ritualService.SearchRitualsAsync(query, type);
-            return Ok(rituals);
-        }
     }
 
     public class RitualTypeDto

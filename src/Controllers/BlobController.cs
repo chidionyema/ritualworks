@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 using Azure.Storage.Blobs;
 using Azure.Storage.Sas;
 using System;
-
+using Microsoft.AspNetCore.Authorization;
 namespace RitualWorks.Controllers
 {
     [Route("api/[controller]")]
@@ -18,6 +18,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpGet("generate-sas-token")]
+        [Authorize]
         public IActionResult GenerateSasToken(string blobName)
         {
             var blobServiceClient = new BlobServiceClient(_blobSettings.ConnectionString);

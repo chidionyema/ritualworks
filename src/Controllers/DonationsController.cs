@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using RitualWorks.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RitualWorks.Controllers
 {
@@ -16,6 +17,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateDonation([FromBody] CreateDonationDto createDonationDto)
         {
             var (donation, sessionId) = await _donationService.CreateDonationAsync(createDonationDto, Request.Scheme + "://" + Request.Host);
