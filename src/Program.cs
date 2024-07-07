@@ -21,9 +21,10 @@ using Stripe;
 using RitualWorks.Repositories.RitualWorks.Repositories;
 using RitualWorks;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
+using IdentityServer4.Models;
+using MassTransit;
 
-
-public class Program
+public partial class Program
 {
     public static void Main(string[] args)
     {
@@ -45,6 +46,35 @@ public class Program
         // Configure BlobSettings
         builder.Services.Configure<BlobSettings>(builder.Configuration.GetSection("AzureBlobStorage"));
 
+        builder.Services.AddMassTransit(x =>
+        {
+            x.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host("rabbitmq://localhost");
+
+                // Configure prefetch count to optimize message consumption
+                cfg.PrefetchCount = 16;
+
+                // Configure the message retry policy
+                cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
+
+                // Configure in-memory outbox for temporary message storage
+                cfg.UseInMemoryOutbox();
+
+                cfg.ReceiveEndpoint("queue1", ep =>
+                {
+                    ep.ConfigureConsumer<MyConsumer>(context);
+                    ep.Bind("exchange1", x =>
+                    {
+                        x.RoutingKey = "key1";
+                    });
+                });
+            });
+
+            x.AddConsumer<MyConsumer>();
+        });
+
+        builder.Services.AddMassTransitHostedService();
         // Add services to the container.
         builder.Services.AddControllers();
 
@@ -195,7 +225,7 @@ public class Program
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "RitualWorks API V1");
             c.RoutePrefix = "swagger"; // Swagger UI will be served at /swagger
         });
-
         app.MapControllers();
     }
+
 }

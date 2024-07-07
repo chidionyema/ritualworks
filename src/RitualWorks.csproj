@@ -15,6 +15,8 @@
     <PackageReference Include="Azure.Storage.Blobs" Version="12.20.0" />
     <PackageReference Include="IdentityServer4" Version="4.1.2" />
     <PackageReference Include="IdentityServer4.AspNetIdentity" Version="4.1.2" />
+    <PackageReference Include="MassTransit" Version="8.2.3" />
+    <PackageReference Include="MassTransit.RabbitMQ" Version="8.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
@@ -37,6 +39,7 @@
     <None Remove="Contracts\" />
     <None Remove="Repositories\" />
     <None Remove="Settings\" />
+    <None Remove="Messging\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,6 +47,7 @@
     <Folder Include="Contracts\" />
     <Folder Include="Repositories\" />
     <Folder Include="Settings\" />
+    <Folder Include="Messging\" />
   </ItemGroup>
 
 </Project>

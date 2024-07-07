@@ -7,8 +7,6 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    ports:
-      - "5436:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - postgres-backup:/backups
@@ -18,7 +16,7 @@ services:
       timeout: 10s
       retries: 5
     networks:
-      - external
+      - internal
     deploy:
       resources:
         limits:
@@ -32,19 +30,19 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
     environment:
       - discovery.type=single-node
-      - ELASTIC_PASSWORD=changeme
-    ports:
-      - "9200:9200"
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - xpack.security.enabled=true
+      - xpack.security.authc.api_key.enabled=true
     volumes:
       - es-data:/usr/share/elasticsearch/data
       - es-backup:/usr/share/elasticsearch/backup
     healthcheck:
-      test: ["CMD-SHELL", "curl -u elastic:changeme -f http://localhost:9200/_cluster/health || exit 1"]
+      test: ["CMD-SHELL", "curl -u elastic:${ELASTIC_PASSWORD} -f http://localhost:9200/_cluster/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 10
     networks:
-      - external
+      - internal
     deploy:
       resources:
         limits:
@@ -56,15 +54,15 @@ services:
 
   redis:
     image: redis:7
-    ports:
-      - "6379:6379"
+    volumes:
+      - redis-data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
       timeout: 10s
       retries: 5
     networks:
-      - external
+      - internal
     deploy:
       resources:
         limits:
@@ -78,15 +76,14 @@ services:
     image: prom/prometheus:latest
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - "9090:9090"
+      - prometheus-data:/prometheus
     healthcheck:
       test: ["CMD-SHELL", "wget --spider -qO- http://localhost:9090/-/healthy || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
     networks:
-      - external
+      - internal
     deploy:
       resources:
         limits:
@@ -99,17 +96,17 @@ services:
 
   grafana:
     image: grafana/grafana:latest
-    ports:
-      - "3000:3000"
     depends_on:
       - prometheus
+    volumes:
+      - grafana-data:/var/lib/grafana
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
     networks:
-      - external
+      - internal
     deploy:
       resources:
         limits:
@@ -120,12 +117,58 @@ services:
           memory: '512M'
     restart: always
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmqctl status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - internal
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '1G'
+        reservations:
+          cpus: '0.25'
+          memory: '512M'
+
+  rabbitmq_init:
+    image: curlimages/curl:latest
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    networks:
+      - internal
+    entrypoint:
+      - sh
+      - -c
+      - |
+        while ! curl -u ${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS} -s http://rabbitmq:15672/cli/rabbitmqadmin; do
+          echo 'Waiting for RabbitMQ...'
+          sleep 5
+        done
+        echo 'RabbitMQ is up'
+
 networks:
-  external:
-    external: true
+  internal:
+    driver: bridge
 
 volumes:
   postgres-data:
   es-data:
   postgres-backup:
   es-backup:
+  redis-data:
+  prometheus-data:
+  grafana-data:
+  rabbitmq-data:
