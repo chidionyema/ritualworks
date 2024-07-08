@@ -2,6 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
+
 # Copy project file and restore dependencies
 COPY ["src/RitualWorks.csproj", "./"]
 RUN dotnet --version && dotnet restore "./RitualWorks.csproj"

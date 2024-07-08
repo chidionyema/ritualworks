@@ -50,7 +50,7 @@ public partial class Program
         {
             x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host("rabbitmq://localhost");
+                cfg.Host("rabbitmq://ritualworks-rabbitmq-1");
 
                 // Configure prefetch count to optimize message consumption
                 cfg.PrefetchCount = 16;

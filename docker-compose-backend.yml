@@ -16,7 +16,7 @@ services:
       timeout: 10s
       retries: 5
     networks:
-      - internal
+      - internal_network
     deploy:
       resources:
         limits:
@@ -42,7 +42,7 @@ services:
       timeout: 10s
       retries: 10
     networks:
-      - internal
+      - internal_network
     deploy:
       resources:
         limits:
@@ -62,7 +62,7 @@ services:
       timeout: 10s
       retries: 5
     networks:
-      - internal
+      - internal_network
     deploy:
       resources:
         limits:
@@ -83,7 +83,7 @@ services:
       timeout: 10s
       retries: 5
     networks:
-      - internal
+      - internal_network
     deploy:
       resources:
         limits:
@@ -106,7 +106,7 @@ services:
       timeout: 10s
       retries: 5
     networks:
-      - internal
+      - internal_network
     deploy:
       resources:
         limits:
@@ -130,7 +130,7 @@ services:
       timeout: 10s
       retries: 5
     networks:
-      - internal
+      - internal_network
     deploy:
       resources:
         limits:
@@ -148,7 +148,7 @@ services:
       - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
     networks:
-      - internal
+      - internal_network
     entrypoint:
       - sh
       - -c
@@ -160,8 +160,12 @@ services:
         echo 'RabbitMQ is up'
 
 networks:
-  internal:
-    driver: bridge
+  internal_network:
+    external: true
+    name: internal_network
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
 
 volumes:
   postgres-data:

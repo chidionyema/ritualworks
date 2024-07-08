@@ -9,6 +9,9 @@ RUN apt-get update && \
 # Copy the certificate generation script
 COPY generate_certs.sh /generate_certs.sh
 
+# Create log directory and set permissions
+RUN mkdir -p /var/log && touch /var/log/cert_generation.log && chmod -R 777 /var/log
+
 # Make the script executable
 RUN chmod +x /generate_certs.sh
 

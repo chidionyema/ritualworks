@@ -18,15 +18,7 @@ services:
     environment:
       - ENVIRONMENT=${ENVIRONMENT}
     networks:
-      - internal
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: '512M'
-        reservations:
-          cpus: '0.1'
-          memory: '256M'
+      - internal_network
 
   app1:
     build:
@@ -44,7 +36,8 @@ services:
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
     networks:
-      - internal
+      - internal_network
+      - external_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080"]
       interval: 30s
@@ -71,7 +64,8 @@ services:
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
     networks:
-      - internal
+      - internal_network
+      - external_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080"]
       interval: 30s
@@ -98,7 +92,8 @@ services:
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
     networks:
-      - internal
+      - internal_network
+      - external_network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080"]
       interval: 30s
@@ -117,7 +112,7 @@ services:
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
     command: ["database", "update"]
     networks:
-      - internal
+      - internal_network
 
   nginx:
     image: nginx:latest
@@ -133,16 +128,8 @@ services:
       - app3
       - generate_certs
     networks:
-      - external
-      - internal
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: '512M'
-        reservations:
-          cpus: '0.1'
-          memory: '256M'
+      - external_network
+      - internal_network
 
   verify_dns_and_access:
     image: busybox
@@ -154,7 +141,15 @@ services:
     network_mode: host
 
 networks:
-  external:
-    driver: bridge
-  internal:
-    driver: bridge
+  internal_network:
+    external: true
+    name: internal_network
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
+  external_network:
+    external: true
+    name: external_network
+    ipam:
+      config:
+        - subnet: 172.19.0.0/16

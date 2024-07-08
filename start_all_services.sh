@@ -1,7 +1,15 @@
 #!/bin/bash
 
+# Ensure networks are created
+./create_networks.sh
+
+
+
+# Set the Docker Compose project name
+PROJECT_NAME="ritualworks"
+
 # Start backend services
-docker-compose -f docker-compose-backend.yml up -d
+docker-compose -p $PROJECT_NAME -f docker-compose-backend.yml up -d
 
 # Function to check if a service is healthy
 check_service_health() {
@@ -15,14 +23,11 @@ check_service_health() {
   fi
 }
 
-# Get the project name used by Docker Compose (defaults to directory name)
-PROJECT_NAME=$(basename "$(pwd)")
-
 # List of backend services to check
 services=(
   "postgres"
   "elasticsearch"
- #  "redis"
+  # "redis"
   "prometheus"
   "grafana"
 )
@@ -30,7 +35,7 @@ services=(
 # Construct full container names
 backend_services=()
 for service in "${services[@]}"; do
-  backend_services+=("ritualworks-${service}-1")
+  backend_services+=("${PROJECT_NAME}-${service}-1")
 done
 
 # Wait for backend services to be fully up
@@ -53,4 +58,5 @@ done
 echo "All backend services are healthy. Starting frontend services..."
 
 # Start frontend services
-docker-compose -f docker-compose-frontend-api.yml up --build -d
+docker-compose -p $PROJECT_NAME -f docker-compose-frontend-api.yml up --build -d
+
