@@ -1,0 +1,51 @@
+stages:
+  - prepare
+  - build
+  - test
+  - deploy
+
+variables:
+  PROJECT_NAME: "ritualworks"
+  DEPLOY_HOST: "your_deploy_host_ip"  # Replace with your deployment host IP or hostname
+
+before_script:
+  # Install SSH and configure known_hosts
+  - apk add --no-cache openssh-client
+  - mkdir -p ~/.ssh
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+  - chmod 600 ~/.ssh/id_rsa
+  - ssh-keyscan -H $DEPLOY_HOST >> ~/.ssh/known_hosts
+  # Ensure networks are created on deployment host
+  - ssh $DEPLOY_HOST "cd /home/user/ritualworks && ./create_networks.sh"
+
+prepare:
+  stage: prepare
+  script:
+    - echo "Prepare environment if needed"
+
+build:
+  stage: build
+  script:
+    - ssh $DEPLOY_HOST "cd /home/user/ritualworks/src && dotnet build --configuration Release"
+  artifacts:
+    paths:
+      - /home/user/ritualworks/src/bin/Release/net8.0  # Path to .NET build artifacts
+
+test:
+  stage: test
+  script:
+    - ssh $DEPLOY_HOST "cd /home/user/ritualworks/src && dotnet test --configuration Release"
+  artifacts:
+    when: always
+    paths:
+      - /home/user/ritualworks/src/Tests/TestResults  # Path to test results directory
+
+deploy:
+  stage: deploy
+  script:
+    - ssh $DEPLOY_HOST "cd /home/user/ritualworks && docker-compose -p $PROJECT_NAME -f docker-compose-backend.yml up -d --build"
+  environment:
+    name: production
+    url: https://yourapp.example.com  # Replace with your actual production URL
+  only:
+    - main  # Deploy only on commits to the main branch
