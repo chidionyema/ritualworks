@@ -1,6 +1,23 @@
 version: '3.8'
 
 services:
+  init-certs:
+    build:
+      context: .
+      dockerfile: Dockerfile.generate_certs_backend
+    volumes:
+      - ./ssl:/ssl
+    environment:
+      - CERT_DIR=/ssl/certs
+      - LOG_FILE=/ssl/cert_generation.log
+      - ENVIRONMENT=${ENVIRONMENT}
+      - EMAIL=${EMAIL}
+    networks:
+      - internal_network
+    deploy:
+      restart_policy:
+        condition: none
+
   postgres:
     image: postgres:15
     environment:
@@ -10,13 +27,16 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - postgres-backup:/backups
+      - ./ssl/certs:/etc/ssl/certs
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} -h localhost -p 5432"]
       interval: 30s
       timeout: 10s
       retries: 5
     networks:
       - internal_network
+    depends_on:
+      - init-certs
     deploy:
       resources:
         limits:
@@ -25,44 +45,24 @@ services:
         reservations:
           cpus: '1.0'
           memory: '4G'
+    command: ["postgres", "-c", "ssl=on", "-c", "ssl_cert_file=/etc/ssl/certs/postgres.crt", "-c", "ssl_key_file=/etc/ssl/certs/postgres.key"]
 
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
-    environment:
-      - discovery.type=single-node
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - xpack.security.enabled=true
-      - xpack.security.authc.api_key.enabled=true
-    volumes:
-      - es-data:/usr/share/elasticsearch/data
-      - es-backup:/usr/share/elasticsearch/backup
-    healthcheck:
-      test: ["CMD-SHELL", "curl -u elastic:${ELASTIC_PASSWORD} -f http://localhost:9200/_cluster/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 10
-    networks:
-      - internal_network
-    deploy:
-      resources:
-        limits:
-          cpus: '2.0'
-          memory: '8G'
-        reservations:
-          cpus: '1.0'
-          memory: '4G'
 
   redis:
     image: redis:7
+    command: ["redis-server", "--tls-cert-file /etc/ssl/certs/redis.crt", "--tls-key-file /etc/ssl/certs/redis.key", "--tls-ca-cert-file /etc/ssl/certs/ca.crt", "--port 0", "--tls-port 6379"]
     volumes:
       - redis-data:/data
+      - ./ssl/certs:/etc/ssl/certs
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-h", "localhost", "-p", "6379", "--tls", "--cacert", "/etc/ssl/certs/ca.crt", "ping"]
       interval: 30s
       timeout: 10s
       retries: 5
     networks:
       - internal_network
+    depends_on:
+      - init-certs
     deploy:
       resources:
         limits:
@@ -72,18 +72,55 @@ services:
           cpus: '0.25'
           memory: '512M'
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - xpack.security.enabled=false  # Disabling X-Pack security
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+      - es-backup:/usr/share/elasticsearch/backup
+      # SSL volume removed
+    healthcheck:
+      test: ["CMD-SHELL", "curl -u elastic:${ELASTIC_PASSWORD} -f http://localhost:9200/_cluster/health || exit 1"]  # Removed SSL from health check
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    networks:
+      - internal_network
+    depends_on:
+      - init-certs
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: '8G'
+        reservations:
+          cpus: '1.0'
+          memory: '4G'
+
   prometheus:
     image: prom/prometheus:latest
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
+      # SSL volume removed
+    command: 
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      # SSL configuration removed
     healthcheck:
-      test: ["CMD-SHELL", "wget --spider -qO- http://localhost:9090/-/healthy || exit 1"]
+      test: ["CMD-SHELL", "wget --spider http://localhost:9090/-/healthy || exit 1"]  # Removed SSL from health check
       interval: 30s
       timeout: 10s
       retries: 5
     networks:
       - internal_network
+    depends_on:
+      - init-certs
     deploy:
       resources:
         limits:
@@ -96,17 +133,19 @@ services:
 
   grafana:
     image: grafana/grafana:latest
-    depends_on:
-      - prometheus
     volumes:
       - grafana-data:/var/lib/grafana
+      # SSL volume removed
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]  # Removed SSL from health check
       interval: 30s
       timeout: 10s
       retries: 5
     networks:
       - internal_network
+    depends_on:
+      - init-certs
+      - prometheus
     deploy:
       resources:
         limits:
@@ -124,6 +163,7 @@ services:
       - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
+      - ./ssl/certs:/etc/ssl/certs
     healthcheck:
       test: ["CMD-SHELL", "rabbitmqctl status"]
       interval: 30s
@@ -131,6 +171,8 @@ services:
       retries: 5
     networks:
       - internal_network
+    depends_on:
+      - init-certs
     deploy:
       resources:
         limits:
@@ -140,32 +182,10 @@ services:
           cpus: '0.25'
           memory: '512M'
 
-  rabbitmq_init:
-    image: curlimages/curl:latest
-    depends_on:
-      - rabbitmq
-    environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
-    networks:
-      - internal_network
-    entrypoint:
-      - sh
-      - -c
-      - |
-        while ! curl -u ${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS} -s http://rabbitmq:15672/cli/rabbitmqadmin; do
-          echo 'Waiting for RabbitMQ...'
-          sleep 5
-        done
-        echo 'RabbitMQ is up'
-
 networks:
   internal_network:
     external: true
     name: internal_network
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16
 
 volumes:
   postgres-data:
