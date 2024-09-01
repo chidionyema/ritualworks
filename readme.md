@@ -80,9 +80,18 @@ Set the URL to http://prometheus:9090 and save the data source.
 You can import predefined dashboards for Postgres, Redis, Elasticsearch, RabbitMQ, etc.
 Go to the Dashboard section in Grafana and import a new dashboard by entering the dashboard ID from the Grafana website (e.g., 11074 for PostgreSQL, 763 for Redis, etc.).
 
-VAULT
+### VAULT
 
 to deploy
-run ./deploy_vault.sh
-access UI
+run ./scripts/deploy_vault.sh to deploy vault
+save contents of scripts/unseal_keys.json externally and delete the file
+
+run ./scripts/create_vault_token.sh to generate new root token to use for vault_tls_cert_generation.sh
+run ./scripts/vault_tls_cert_generation.sh with new root token when prompted
+
+Confirm that the Vault PKI and roles have been configured correctly by checking the roles directly in Vault using the following command
+docker exec -e VAULT_ADDR=http://127.0.0.1:8200 -e VAULT_TOKEN=<your-token> compose-vault-1 vault list pki/roles
+
+
+### access UI
 http://127.0.0.1:8200/ui
