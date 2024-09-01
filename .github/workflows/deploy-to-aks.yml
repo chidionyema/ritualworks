@@ -1,0 +1,89 @@
+name: Build, Test, and Deploy to AKS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    env:
+      AZURE_CONTAINER_REGISTRY: ${{ secrets.AZURE_CONTAINER_REGISTRY }}
+      IMAGE_TAG: ${{ github.sha }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build the application
+        run: dotnet build --no-restore
+
+      - name: Run tests
+        run: dotnet test --no-build --verbosity normal
+
+      - name: Publish the application
+        run: dotnet publish -c Release -o out
+
+      - name: Login to Azure Container Registry
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY }}
+          username: ${{ secrets.AZURE_CLIENT_ID }}
+          password: ${{ secrets.AZURE_CLIENT_SECRET }}
+
+      - name: Build and tag Docker image
+        run: |
+          docker build -t $AZURE_CONTAINER_REGISTRY/myapp:${IMAGE_TAG} .
+          docker tag $AZURE_CONTAINER_REGISTRY/myapp:${IMAGE_TAG} $AZURE_CONTAINER_REGISTRY/myapp:latest
+
+      - name: Push Docker image to ACR
+        run: |
+          docker push $AZURE_CONTAINER_REGISTRY/myapp:${IMAGE_TAG}
+          docker push $AZURE_CONTAINER_REGISTRY/myapp:latest
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+
+    env:
+      AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+      AKS_CLUSTER_NAME: ${{ secrets.AKS_CLUSTER_NAME }}
+      AZURE_CONTAINER_REGISTRY: ${{ secrets.AZURE_CONTAINER_REGISTRY }}
+      IMAGE_TAG: ${{ github.sha }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Azure CLI
+        uses: azure/cli@v1
+        with:
+          azcliversion: 2.0.72
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Get AKS credentials
+        run: |
+          az aks get-credentials --resource-group $AZURE_RESOURCE_GROUP --name $AKS_CLUSTER_NAME
+
+      - name: Set image in Kubernetes manifest
+        run: |
+          sed -i "s|<IMAGE>|$AZURE_CONTAINER_REGISTRY/myapp:${IMAGE_TAG}|g" deployment.yaml
+
+      - name: Deploy to AKS
+        run: |
+          kubectl apply -f deployment.yaml
+          kubectl apply -f service.yaml

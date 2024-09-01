@@ -1,0 +1,46 @@
+replicaCount: 1
+
+image:
+  repository: postgres
+  tag: "15"
+  pullPolicy: IfNotPresent
+
+postgresql:
+  username: myuser
+  password: mypassword
+  database: mydb
+
+persistence:
+  enabled: true
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+backup:
+  schedule: "0 2 * * *"
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+nginx:
+  domain: your.domain.com
+  cert:
+    tlsCrt: |-
+      -----BEGIN CERTIFICATE-----
+      YOUR_CERTIFICATE_CONTENT
+      -----END CERTIFICATE-----
+    tlsKey: |-
+      -----BEGIN PRIVATE KEY-----
+      YOUR_PRIVATE_KEY_CONTENT
+      -----END PRIVATE KEY-----

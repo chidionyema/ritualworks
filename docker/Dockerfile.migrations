@@ -1,0 +1,17 @@
+# Use the SDK image for building and running migrations
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy project file and restore dependencies
+COPY ["../src/RitualWorks.csproj", "./"]
+RUN dotnet --version && dotnet restore "./RitualWorks.csproj"
+
+# Copy the rest of the source code
+COPY ../src/. .
+
+# Install EF Core tools
+RUN dotnet tool install --global dotnet-ef --version 8.0.0
+ENV PATH="$PATH:/root/.dotnet/tools"
+
+# Set the entrypoint to the EF tool
+ENTRYPOINT ["dotnet-ef"]

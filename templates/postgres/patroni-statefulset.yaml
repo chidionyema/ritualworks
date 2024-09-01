@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: patroni
+spec:
+  serviceName: "patroni"
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: patroni
+  template:
+    metadata:
+      labels:
+        app: patroni
+    spec:
+      containers:
+      - name: patroni
+        image: "{{ .Values.patroni.image }}"
+        ports:
+        - containerPort: 8008
+        - containerPort: 5432
+        env:
+        - name: PATRONI_SCOPE
+          value: "postgres"
+        - name: PATRONI_NAMESPACE
+          value: "/service/"
+        - name: PATRONI_NAME
+          value: "{{ .Release.Name }}"
+        - name: PATRONI_RESTAPI_LISTEN
+          value: "0.0.0.0:8008"
+        - name: PATRONI_ETCD_HOST
+          value: "{{ .Values.patroni.etcd.endpoints | join(',') }}"
+        - name: PATRONI_POSTGRESQL_DATA_DIR
+          value: "/var/lib/postgresql/data"
+        - name: PATRONI_SUPERUSER_USERNAME
+          value: "{{ .Values.postgresql.username }}"
+        - name: PATRONI_SUPERUSER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        volumeMounts:
+        - name: patroni-storage
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: patroni-storage
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.persistence.size }}

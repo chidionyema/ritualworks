@@ -1,0 +1,25 @@
+global:
+  scrape_interval: 15s  # How often to scrape targets by default
+
+scrape_configs:
+  - job_name: 'postgresql'
+    static_configs:
+      - targets: ['postgres_primary:5432', 'postgres_standby:5432']
+
+  - job_name: 'redis'
+    static_configs:
+      - targets: ['redis-master:6379', 'redis-replica:6379']
+
+  - job_name: 'elasticsearch'
+    static_configs:
+      - targets: ['elasticsearch-node1:9200', 'elasticsearch-node2:9200']
+
+  - job_name: 'rabbitmq'
+    static_configs:
+      - targets: ['rabbitmq-node1:15672', 'rabbitmq-node2:15672']
+
+  - job_name: 'minio'
+    static_configs:
+      - targets: ['minio1:9000', 'minio2:9000', 'minio3:9000', 'minio4:9000']
+
+      - targets: ['redis:6379']

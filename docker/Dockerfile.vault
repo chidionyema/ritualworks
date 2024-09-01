@@ -1,0 +1,22 @@
+FROM alpine:3.14
+
+# Install jq and curl
+RUN apk add --no-cache jq curl
+
+# Copy the Vault binary from the official image
+COPY --from=vault:1.10.0 /bin/vault /bin/vault
+
+# Set the working directory
+WORKDIR /vault
+
+# Copy the Vault configuration files
+COPY ../../vault/config /vault/config
+
+# Copy the initialization script
+COPY ../../scripts/init_vault.sh /vault/scripts/init_vault.sh
+
+# Make sure the script is executable
+RUN chmod +x /vault/scripts/init_vault.sh
+
+# Set the entrypoint for the container
+ENTRYPOINT ["sh", "-c", "echo 'Listing contents of /vault/scripts before execution:' && ls -l /vault/scripts && echo 'Executing init_vault.sh...' && /bin/sh /vault/scripts/init_vault.sh && echo 'init_vault.sh execution completed.'"]

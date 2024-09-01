@@ -1,0 +1,33 @@
+# Ignore directories
+bin/
+obj/
+.vscode/
+.idea/
+backups/
+.terraform/  # Terraform configuration directory
+.terraform.lock.hcl  # Terraform lock file
+terraform.tfstate  # Terraform state files
+terraform.tfstate.backup  # Terraform state backup files
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userosscache
+*.csproj.user
+*.csproj.suo
+
+# Ignore solution-specific files
+*.sln.docstates
+*.sln
+
+# Ignore configuration files
+appsettings.json
+
+# Ignore environment files
+.env.development
+.env.production
+scripts/unseal_keys.json
+scripts/unseal_keys.json
+scripts/new_vault_token.txt
+scripts/unseal_keys.json
+scripts/new_vault_token.txt

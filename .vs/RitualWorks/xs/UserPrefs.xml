@@ -1,0 +1,91 @@
+﻿<Properties StartupConfiguration="{205B9001-2688-4920-9CC3-096B7077E2BA}|https">
+  <DisabledProjects>
+    <String>tests/RitualWorks.Tests/RitualWorks.Tests.csproj</String>
+  </DisabledProjects>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workbench ActiveDocument="src/Program.cs">
+    <Files>
+      <File FileName="src/appsettings.json" />
+      <File FileName="src/Services/RitualService.cs" />
+      <File FileName="src/Db/RitualType.cs" />
+      <File FileName="src/Db/Ritual.cs" />
+      <File FileName="src/Db/User.cs" />
+      <File FileName="src/Controllers/AuthenticationController.cs" />
+      <File FileName="src/Program.cs" Line="229" Column="81" />
+      <File FileName="src/Contracts/IRitualService.cs" />
+      <File FileName="src/Settings/BlobSettings.cs" />
+      <File FileName="src/Db/Post.cs" />
+      <File FileName="src/Db/Comment.cs" />
+      <File FileName="src/Db/RitualWorksContext.cs" />
+      <File FileName="src/Contracts/ICommentRepository.cs" />
+      <File FileName="src/Contracts/IPostRepository.cs" />
+      <File FileName="src/Repositories/PostRepository.cs" />
+      <File FileName="src/Repositories/CommentRepository.cs" />
+      <File FileName="src/Controllers/PostsController.cs" />
+      <File FileName="src/Controllers/CommentsController.cs" />
+      <File FileName="src/Repositories/RitualRepository.cs" />
+      <File FileName="src/Repositories/UserRepository.cs" />
+      <File FileName="src/Db/Product.cs" />
+      <File FileName="src/Controllers/CheckoutController.cs" />
+      <File FileName="src/Settings/StripeSettings.cs" />
+      <File FileName="src/Contracts/IProductRepository.cs" />
+      <File FileName="src/Repositories/ProductRepository.cs" />
+      <File FileName="src/Controllers/ProductsController.cs" />
+      <File FileName="src/Contracts/ICategoryRepository.cs" />
+      <File FileName="src/Repositories/CategoryRepository.cs" />
+      <File FileName="src/Db/Order.cs" />
+      <File FileName="src/Contracts/IOrderRepository.cs" />
+      <File FileName="src/Repositories/OrderRepository.cs" />
+      <File FileName="src/Services/RitualTypeService.cs" />
+      <File FileName="src/Contracts/IRitualRepository.cs" />
+      <File FileName="src/RitualWorks.http" />
+      <File FileName="src/Contracts/IRitualTypeService.cs" />
+      <File FileName="tests/RitualWorks.Tests.Unit/Services/RitualServiceTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.Unit/Controllers/AuthenticationControllerTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.Unit/Controllers/RitualsControllerTests.cs" />
+      <File FileName="src/Services/SearchService.cs" />
+      <File FileName="src/Services/DataIndexer.cs" />
+      <File FileName="src/Controllers/SearchController.cs" />
+      <File FileName="src/MyConsumer.cs" />
+      <File FileName="src/MyMessage.cs" />
+      <File FileName="src/Repositories/BaseRepository.cs" />
+      <File FileName="src/Controllers/UploadController.cs" />
+      <File FileName="src/Controllers/WebhookController.cs" />
+      <File FileName="src/Db/ProductImage.cs" />
+      <File FileName="src/Db/Category.cs" />
+      <File FileName="src/Db/RitualWorksContextFactory.cs" />
+      <File FileName="src/Db/OrderItem.cs" />
+      <File FileName="src/Db/OrderStatus.cs" />
+      <File FileName="src/Controllers/OrdersController.cs" />
+      <File FileName="src/Controllers/RitualsController.cs" />
+      <File FileName="src/Services/OrderService.cs" />
+      <File FileName="tests/RitualWorks.Tests.integration/CheckoutControllerTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.integration/IntegrationTestFixture.cs" Line="148" Column="91" />
+      <File FileName="tests/RitualWorks.Tests.integration/DockerHelper.cs" />
+      <File FileName="tests/RitualWorks.Tests.integration/ProductsControllerTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.integration/UploadControllerTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.integration/appsettings.json" />
+      <File FileName="tests/RitualWorks.Tests.integration/AuthenticationControllerTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.integration/TestAuthenticationMiddleware.cs" />
+      <File FileName="src/Services/SignedUrlService.cs" />
+      <File FileName="src/Services/LocalFileStorageService.cs" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="RitualWorks" expanded="True">
+            <Node name="RitualWorks">
+              <Node name="Program.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.RitualWorks PreferredExecutionTarget="/Applications/Firefox.app" />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

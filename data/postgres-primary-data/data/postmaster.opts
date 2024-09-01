@@ -1,0 +1,1 @@
+/opt/bitnami/postgresql/bin/postgres "-D" "/bitnami/postgresql/data"

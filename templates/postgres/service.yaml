@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+  selector:
+    app: postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: patroni
+spec:
+  ports:
+  - port: 8008
+    targetPort: 8008
+  selector:
+    app: patroni
