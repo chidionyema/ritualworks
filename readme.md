@@ -92,6 +92,11 @@ run ./scripts/vault_tls_cert_generation.sh with new root token when prompted
 Confirm that the Vault PKI and roles have been configured correctly by checking the roles directly in Vault using the following command
 docker exec -e VAULT_ADDR=http://127.0.0.1:8200 -e VAULT_TOKEN=<your-token> compose-vault-1 vault list pki/roles
 
+to unseal
+
+vault operator unseal <unseal_key_1>
+vault operator unseal <unseal_key_2>
+vault operator unseal <unseal_key_3>
 
 ### access UI
 http://127.0.0.1:8200/ui

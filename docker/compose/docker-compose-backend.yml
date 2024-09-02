@@ -148,6 +148,8 @@ services:
   redis-master:
     image: redis:latest
     command: ["redis-server", "/etc/redis/redis.conf", "--appendonly", "yes"]
+    ports:
+    - "6379:6379"  # Expose Redis on the default port
     volumes:
       - redis-master-data:/data
       - ../../config/redis.conf:/etc/redis/redis.conf
@@ -169,6 +171,8 @@ services:
   redis-replica:
     image: redis:latest
     command: ["redis-server", "/etc/redis/redis.conf", "--replicaof", "redis-master", "6379"]
+    ports:
+    - "6380:6379"  # Expose the replica on a different port if needed
     volumes:
       - redis-replica-data:/data
       - ../../config/redis.conf:/etc/redis/redis.conf
@@ -394,67 +398,11 @@ services:
         max_attempts: 3
         window: 120s
 
-  minio3:
-    image: minio/minio:latest
-    environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-      - MINIO_SERVER_CERT=/etc/ssl/certs/minio.crt
-      - MINIO_SERVER_KEY=/etc/ssl/certs/minio.key
-    volumes:
-      - minio-data3:/data
-      - ../../vault/agent/sink:/etc/ssl/certs
-    networks:
-      - internal_network
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f https://localhost:9000/minio/health/ready || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    command: server https://minio{1...4}/data --certs-dir /etc/ssl/certs
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
-  minio4:
-    image: minio/minio:latest
-    environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-      - MINIO_SERVER_CERT=/etc/ssl/certs/minio.crt
-      - MINIO_SERVER_KEY=/etc/ssl/certs/minio.key
-    volumes:
-      - minio-data4:/data
-      - ../../vault/agent/sink:/etc/ssl/certs
-    networks:
-      - internal_network
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f https://localhost:9000/minio/health/ready || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    command: server https://minio{1...4}/data --certs-dir /etc/ssl/certs
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
 networks:
   internal_network:
     driver: bridge
 
 volumes:
-  consul-data:
-    driver: local
-  vault-data:
-    driver: local
-  vault-agent-sink:
-    driver: local
   redis-master-data:
     driver: local
   redis-replica-data:
@@ -473,7 +421,4 @@ volumes:
     driver: local
   minio-data2:
     driver: local
-  minio-data3:
-    driver: local
-  minio-data4:
-    driver: local
+

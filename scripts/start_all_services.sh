@@ -30,23 +30,7 @@ log "Creating networks..."
 # Set the Docker Compose project name
 PROJECT_NAME="${PROJECT_NAME:-ritualworks}"
 
-# Generate certificates
-log "Generating certificates..."
-./generate_certs.sh || error_exit "Certificate generation failed. Please check the script and try again."
 
-# Verify if certificates are generated
-log "Verifying certificates..."
-CERTS_PATH="../../ssl/certs"
-required_certs=("ca.crt" "es-node-1.crt" "es-node-1.key" "es-node-2.crt" "es-node-2.key" "postgres.crt" "redis.crt" "rabbitmq.crt")
-for cert in "${required_certs[@]}"; do
-  if [ ! -f "$CERTS_PATH/$cert" ]; then
-    error_exit "Required certificate $cert not found. Certificate generation did not complete successfully."
-  fi
-done
-
-# Wait for a short period to ensure everything is settled
-log "Waiting for 5 seconds to ensure certificates are properly settled..."
-sleep 5
 
 # Function to build and start Docker services with an option to skip cache for specific services
 start_services() {
