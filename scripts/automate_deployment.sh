@@ -61,34 +61,51 @@ run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault operator unseal \"$VAUL
 
 log "Vault initialized and unsealed successfully."
 
-# Step 3: Export the root token for subsequent operations
-export VAULT_TOKEN="$VAULT_ROOT_TOKEN"
+# Step 3: Authenticate with Vault using the root token
+log "Authenticating with Vault..."
+run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault login \"$VAULT_ROOT_TOKEN\""
 
-log "Starting TLS certificate generation for all services..."
+# Step 4: Configure PKI engine
+log "Configuring PKI secrets engine..."
+run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault secrets enable -path=pki pki" || log "PKI engine already enabled."
+run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault secrets tune -max-lease-ttl=8760h pki"
+run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault write pki/root/generate/internal common_name=\"example.com\" ttl=8760h"
+run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault write pki/config/urls issuing_certificates=\"$VAULT_ADDR/v1/pki/ca\" crl_distribution_points=\"$VAULT_ADDR/v1/pki/crl\""
+
+# Step 5: Create roles for each service
+create_role() {
+  local service_name=$1
+  run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault write pki/roles/$service_name allowed_domains=\"$service_name.local.example.com\" allow_subdomains=true max_ttl=\"72h\""
+}
 
 # List of all services requiring TLS certificates
 services=(
-  "postgres_primary" 
-  "postgres_standby" 
-  "redis-master" 
-  "redis-replica" 
-  "elasticsearch-node-1" 
-  "elasticsearch-node-2" 
-  "rabbitmq-node1" 
-  "rabbitmq-node2" 
-  "minio1" 
-  "minio2" 
+  "postgres_primary"
+  "postgres_standby"
+  "redis-master"
+  "redis-replica"
+  "elasticsearch-node-1"
+  "elasticsearch-node-2"
+  "rabbitmq-node1"
+  "rabbitmq-node2"
+  "minio1"
+  "minio2"
   "haproxy"
-  "app1" 
-  "app2" 
-  "app3" 
+  "app1"
+  "app2"
+  "app3"
   "nginx"
 )
 
-# Ensure the certificates directory exists
+# Create roles for all services
+for service in "${services[@]}"; do
+  create_role "$service"
+done
+
+# Step 6: Generate certificates for all services
+log "Starting TLS certificate generation for all services..."
 run_command "mkdir -p \"$CERT_DIR\""
 
-# Function to generate and store certificates for each service
 generate_certificates() {
   local service_name=$1
   local common_name="${service_name}.local.example.com"
