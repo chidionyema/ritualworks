@@ -83,6 +83,12 @@ Go to the Dashboard section in Grafana and import a new dashboard by entering th
 ### VAULT
 
 to deploy
+run ./scripts/automate_deployment.sh to deploy vault
+save contents of scripts/unseal_keys.json externally and delete the file
+
+
+alternatively
+ 
 run ./scripts/deploy_vault.sh to deploy vault
 save contents of scripts/unseal_keys.json externally and delete the file
 
