@@ -40,7 +40,7 @@ namespace RitualWorks.Services
             return filePath; // Return the S3 key as the URL
         }
 
-        public async Task<Stream> DownloadFileAsync(string filePath)
+        public async Task<Stream> DownloadFile(string filePath)
         {
             var getRequest = new GetObjectRequest
             {

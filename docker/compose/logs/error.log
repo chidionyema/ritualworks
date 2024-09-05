@@ -1,0 +1,1 @@
+2024/09/05 22:06:57 [emerg] 1#1: host not found in upstream "app1:8080" in /etc/nginx/nginx.conf:10

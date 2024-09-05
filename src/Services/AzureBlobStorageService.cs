@@ -48,7 +48,7 @@ namespace RitualWorks.Services
             await blobClient.CommitBlockListAsync(blockIds);
         }
 
-        public async Task<Stream> DownloadFileAsync(string filePath)
+        public async Task<Stream> DownloadFile(string filePath)
         {
             var containerClient = _blobServiceClient.GetBlobContainerClient(_containerName);
             var blobClient = containerClient.GetBlobClient(filePath);

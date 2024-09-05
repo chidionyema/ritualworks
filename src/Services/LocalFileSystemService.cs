@@ -35,7 +35,7 @@ namespace RitualWorks.Services
             return filePath;
         }
 
-        public async Task<Stream> DownloadFileAsync(string filePath)
+        public async Task<Stream> DownloadFile(string filePath)
         {
             var fullPath = Path.Combine(_fileDirectory, filePath.Replace("\\", "/"));
             return new FileStream(fullPath, FileMode.Open, FileAccess.Read);
