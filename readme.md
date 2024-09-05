@@ -85,24 +85,21 @@ Go to the Dashboard section in Grafana and import a new dashboard by entering th
 to deploy
 run ./scripts/automate_deployment.sh to deploy vault
 save contents of scripts/unseal_keys.json externally and delete the file
+or
 
-
-alternatively
- 
-run ./scripts/deploy_vault.sh to deploy vault
+### VAULT DEPLOY AND DOCKER SERVICES 
+./install_vault_server.sh or  ./scripts/deploy_vault.sh to deploy vault
+sudo ./generate_certs.sh
+./start_all_services.sh
 save contents of scripts/unseal_keys.json externally and delete the file
 
-run ./scripts/create_vault_token.sh to generate new root token to use for vault_tls_cert_generation.sh
-run ./scripts/vault_tls_cert_generation.sh with new root token when prompted
+###  sTroubleshooting 
+Code: 400. Errors:
 
-Confirm that the Vault PKI and roles have been configured correctly by checking the roles directly in Vault using the following command
-docker exec -e VAULT_ADDR=http://127.0.0.1:8200 -e VAULT_TOKEN=<your-token> compose-vault-1 vault list pki/roles
+* Vault is already initialized
+delete vault/data folder  stop and delete vault and consul containers
 
-to unseal
 
-vault operator unseal <unseal_key_1>
-vault operator unseal <unseal_key_2>
-vault operator unseal <unseal_key_3>
 
-### access UI
+### access  vault UI
 http://127.0.0.1:8200/ui

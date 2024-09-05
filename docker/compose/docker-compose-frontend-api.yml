@@ -3,26 +3,15 @@ version: '3.8'
 services:
   setup_dns:
     build:
-      context: .
+      context: ../  # Correct context pointing to the correct docker folder
       dockerfile: Dockerfile.setup_dns
     network_mode: host
     command: bash /setup_local_dns.sh
     restart: "no"
 
-  generate_certs:
-    build:
-      context: .
-      dockerfile: Dockerfile.generate_certs
-    volumes:
-      - ./nginx/ssl:/etc/nginx/ssl
-    environment:
-      - ENVIRONMENT=${ENVIRONMENT}
-    networks:
-      - internal_network
-
   app1:
     build:
-      context: .
+      context: ../  # Correct context pointing to the correct docker folder
       dockerfile: Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
@@ -36,7 +25,7 @@ services:
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
     volumes:
-      - uploads:/app/uploads  # Mounts a volume for file uploads
+      - uploads:/app/uploads
     networks:
       - internal_network
       - external_network
@@ -47,12 +36,11 @@ services:
       retries: 5
     depends_on:
       - setup_dns
-      - generate_certs
       - db_migrations
 
   app2:
     build:
-      context: .
+      context: ../  # Correct context pointing to the correct docker folder
       dockerfile: Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
@@ -66,7 +54,7 @@ services:
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
     volumes:
-      - uploads:/app/uploads  # Mounts a volume for file uploads  
+      - uploads:/app/uploads
     networks:
       - internal_network
       - external_network
@@ -77,12 +65,11 @@ services:
       retries: 5
     depends_on:
       - setup_dns
-      - generate_certs
       - db_migrations
 
   app3:
     build:
-      context: .
+      context: ../  # Correct context pointing to the correct docker folder
       dockerfile: Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
@@ -96,7 +83,7 @@ services:
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
     volumes:
-      - uploads:/app/uploads  # Mounts a volume for file uploads  
+      - uploads:/app/uploads
     networks:
       - internal_network
       - external_network
@@ -107,12 +94,11 @@ services:
       retries: 5
     depends_on:
       - setup_dns
-      - generate_certs
       - db_migrations
 
   db_migrations:
     build:
-      context: .
+      context: ../  # Correct context pointing to the correct docker folder
       dockerfile: Dockerfile.migrations
     environment:
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
@@ -133,7 +119,6 @@ services:
       - app1
       - app2
       - app3
-      - generate_certs
     networks:
       - external_network
       - internal_network
@@ -160,7 +145,6 @@ networks:
     ipam:
       config:
         - subnet: 172.19.0.0/16
-
 
 volumes:
   uploads:

@@ -5,16 +5,16 @@ services:
     image: bitnami/postgresql-repmgr:latest
     user: "1001"
     environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=your_postgres_password
+      - POSTGRES_USER=your_postgres_user
+      - POSTGRES_DB=your_postgres_db
       - REPMGR_PRIMARY_ROLE=true
       - REPMGR_NODE_ID=1
       - REPMGR_NODE_NAME=postgres-primary-1
       - REPMGR_NODE_NETWORK_NAME=postgres_primary
       - REPMGR_PARTNER_NODES=postgres-primary-1,postgres-standby-2
       - REPMGR_PRIMARY_HOST=postgres_primary
-      - REPMGR_PASSWORD=${POSTGRES_PASSWORD}
+      - REPMGR_PASSWORD=your_postgres_password
       - VAULT_ADDR=http://vault:8200
     ports:
       - "5434:5432"
@@ -25,7 +25,7 @@ services:
     networks:
       - internal_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d postgres"]
+      test: ["CMD-SHELL", "pg_isready -U your_postgres_user -d postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -41,16 +41,16 @@ services:
     image: bitnami/postgresql-repmgr:latest
     user: "1001"
     environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=your_postgres_password
+      - POSTGRES_USER=your_postgres_user
+      - POSTGRES_DB=your_postgres_db
       - REPMGR_PRIMARY_ROLE=false
       - REPMGR_NODE_ID=2
       - REPMGR_NODE_NAME=postgres-standby-2
       - REPMGR_NODE_NETWORK_NAME=postgres_standby
       - REPMGR_PARTNER_NODES=postgres-primary-1,postgres-standby-2
       - REPMGR_PRIMARY_HOST=postgres_primary
-      - REPMGR_PASSWORD=${POSTGRES_PASSWORD}
+      - REPMGR_PASSWORD=your_postgres_password
     ports:
       - "5435:5432"
     volumes:
@@ -60,7 +60,7 @@ services:
     networks:
       - internal_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d postgres"]
+      test: ["CMD-SHELL", "pg_isready -U your_postgres_user -d postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -147,7 +147,7 @@ services:
       - node.name=es-node-1
       - discovery.seed_hosts=es-node-1,es-node-2
       - cluster.initial_master_nodes=es-node-1,es-node-2
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - ELASTIC_PASSWORD=your_elastic_password
       - NODE_NAME=es-node-1
       - ES_JAVA_OPTS=-Djava.security.policy=/usr/share/elasticsearch/config/my-security.policy
     volumes:
@@ -183,7 +183,7 @@ services:
       - node.name=es-node-2
       - discovery.seed_hosts=es-node-1,es-node-2
       - cluster.initial_master_nodes=es-node-1,es-node-2
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
+      - ELASTIC_PASSWORD=your_elastic_password
       - NODE_NAME=es-node-2
       - ES_JAVA_OPTS=-Djava.security.policy=/usr/share/elasticsearch/config/my-security.policy
     volumes:
@@ -215,8 +215,8 @@ services:
   rabbitmq-node1:
     image: rabbitmq:3-management
     environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_DEFAULT_USER=your_rabbitmq_user
+      - RABBITMQ_DEFAULT_PASS=your_rabbitmq_password
       - RABBITMQ_NODENAME=rabbit@rabbitmq-node1
     hostname: rabbitmq-node1
     networks:
@@ -252,8 +252,8 @@ services:
   rabbitmq-node2:
     image: rabbitmq:3-management
     environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_DEFAULT_USER=your_rabbitmq_user
+      - RABBITMQ_DEFAULT_PASS=your_rabbitmq_password
       - RABBITMQ_NODENAME=rabbit@rabbitmq-node2
     hostname: rabbitmq-node2
     networks:
@@ -300,10 +300,10 @@ services:
   minio1:
     image: minio/minio:latest
     environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-      - MINIO_SERVER_CERT=/etc/ssl/certs/minio.crt
-      - MINIO_SERVER_KEY=/etc/ssl/certs/minio.key
+      - MINIO_ROOT_USER=your_minio_user
+      - MINIO_ROOT_PASSWORD=your_minio_password
+      - MINIO_SERVER_CERT=/etc/ssl/certs/public.crt
+      - MINIO_SERVER_KEY=/etc/ssl/certs/private.key
     volumes:
       - minio-data1:/data
       - ../../ssl/certs:/etc/ssl/certs
@@ -325,10 +325,10 @@ services:
   minio2:
     image: minio/minio:latest
     environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-      - MINIO_SERVER_CERT=/etc/ssl/certs/minio.crt
-      - MINIO_SERVER_KEY=/etc/ssl/certs/minio.key
+      - MINIO_ROOT_USER=your_minio_user
+      - MINIO_ROOT_PASSWORD=your_minio_password
+      - MINIO_SERVER_CERT=/etc/ssl/certs/public.crt
+      - MINIO_SERVER_KEY=/etc/ssl/certs/private.key
     volumes:
       - minio-data2:/data
       - ../../ssl/certs:/etc/ssl/certs

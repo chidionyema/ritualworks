@@ -14,7 +14,7 @@ error_exit() {
 }
 
 # Define paths and variables
-COMPOSE_FILE="../docker/compose/docker-compose-backend.yml"
+COMPOSE_FILE="../docker/compose/docker-compose-vault.yml"
 VAULT_CONTAINER_NAME="compose-vault-1"
 VAULT_ADDR=${VAULT_ADDR:-"http://127.0.0.1:8200"}
 CERT_DIR="../../vault/agent/sink"

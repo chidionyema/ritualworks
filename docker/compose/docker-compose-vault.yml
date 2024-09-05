@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   consul:
     image: consul:1.11.4
@@ -31,13 +33,12 @@ services:
     depends_on:
       - consul
 
-  
-  networks:
-    internal_network:
-      driver: bridge
+networks:
+  internal_network:
+    driver: bridge
 
-  volumes:
-    consul-data:
-      driver: local
-    vault-data:
-      driver: local
+volumes:
+  consul-data:
+    driver: local
+  vault-data:
+    driver: local

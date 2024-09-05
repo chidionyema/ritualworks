@@ -11,7 +11,7 @@ error_exit() {
   exit 1
 }
 
-COMPOSE_FILE="../docker/compose/docker-compose-backend.yml"
+COMPOSE_FILE="../docker/compose/docker-compose-vault.yml"
 VAULT_CONTAINER_NAME="compose-vault-1"
 VAULT_DATA_PATH="../../vault/data"
 VAULT_VOLUME="vault-data"

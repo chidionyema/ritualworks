@@ -53,10 +53,13 @@ start_services() {
 no_cache_services=()
 
 # Set the correct Docker Compose file path
-COMPOSE_FINAL_FILE="../docker/compose/docker-compose-backend.yml"  # Adjusted to the correct file path
+COMPOSE_FINAL_FILE="../docker/compose/docker-compose-backend.yml" 
+COMPOSE_FE_FILE="../docker/compose/docker-compose-frontend-api.yml" 
 
 # Start backend services
 start_services "$COMPOSE_FINAL_FILE" "backend" "${no_cache_services[@]}"
+# Start backend services
+start_services "$COMPOSE_FE_FILE" "frontend" "${no_cache_services[@]}"
 
 # Function to check if a service is healthy
 check_service_health() {
