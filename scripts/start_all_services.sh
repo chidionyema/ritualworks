@@ -30,8 +30,6 @@ log "Creating networks..."
 # Set the Docker Compose project name
 PROJECT_NAME="${PROJECT_NAME:-ritualworks}"
 
-
-
 # Function to build and start Docker services with an option to skip cache for specific services
 start_services() {
   local compose_file=$1
@@ -54,8 +52,10 @@ start_services() {
 # Services to be rebuilt without cache
 no_cache_services=()
 
+# Set the correct Docker Compose file path
+COMPOSE_FINAL_FILE="../docker/compose/docker-compose-backend.yml"  # Adjusted to the correct file path
+
 # Start backend services
-COMPOSE_FINAL_FILE="docker-compose.yml"  # Ensure this is pointing to the correct compose file
 start_services "$COMPOSE_FINAL_FILE" "backend" "${no_cache_services[@]}"
 
 # Function to check if a service is healthy

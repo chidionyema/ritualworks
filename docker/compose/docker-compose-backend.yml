@@ -1,51 +1,6 @@
 version: '3.8'
 
 services:
-  consul:
-    image: consul:1.11.4
-    environment:
-      - CONSUL_BIND_INTERFACE=eth0
-    ports:
-      - "8500:8500"
-    volumes:
-      - ../../consul/config:/etc/consul.d
-    networks:
-      - internal_network
-    command: consul agent -server -bootstrap-expect=1 -client=0.0.0.0 -ui -config-file=/etc/consul.d/consul-http.hcl
-
-  vault:
-    image: vault:1.10.0
-    environment:
-      - VAULT_ADDR=http://vault:8200
-      - VAULT_API_ADDR=http://vault:8200
-      - VAULT_CLUSTER_ADDR=https://vault:8201
-    ports:
-      - "8200:8200"
-    volumes:
-      - ../../vault/data:/vault/data
-      - ../../vault/config:/vault/config
-      - ../../scripts:/vault/scripts
-    networks:
-      - internal_network
-    cap_add:
-      - IPC_LOCK
-    command: vault server -config=/vault/config/vault-config.hcl
-    depends_on:
-      - consul
-
-  vault_agent:
-    image: vault:1.10.0
-    environment:
-      - VAULT_ADDR=http://vault:8200
-    volumes:
-      - ../../vault/agent/config:/vault/config
-      - ../../vault/agent/sink:/etc/ssl/certs
-    command: vault agent -config=/vault/config/vault-agent-config.hcl
-    networks:
-      - internal_network
-    depends_on:
-      - vault
-
   postgres_primary:
     image: bitnami/postgresql-repmgr:latest
     user: "1001"
@@ -66,12 +21,9 @@ services:
     volumes:
       - ../../data/postgres-primary-data:/bitnami/postgresql
       - ../../scripts:/scripts
-      - ../../vault/agent/sink:/etc/ssl/certs
+      - ../../ssl/certs:/etc/ssl/certs
     networks:
       - internal_network
-    depends_on:
-      - vault
-      - vault_agent
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d postgres"]
       interval: 10s
@@ -104,12 +56,9 @@ services:
     volumes:
       - ../../data/postgres-standby-data:/bitnami/postgresql
       - ../../scripts:/scripts
-      - ../../vault/agent/sink:/etc/ssl/certs
+      - ../../ssl/certs:/etc/ssl/certs
     networks:
       - internal_network
-    depends_on:
-      - vault
-      - vault_agent
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d postgres"]
       interval: 10s
@@ -129,7 +78,7 @@ services:
       dockerfile: docker/Dockerfile.haproxy
     volumes:
       - ../../haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
-      - ../../vault/agent/sink:/etc/ssl/certs
+      - ../../ssl/certs:/etc/ssl/certs
     ports:
       - "5433:5432"
       - "8404:8404"
@@ -149,11 +98,11 @@ services:
     image: redis:latest
     command: ["redis-server", "/etc/redis/redis.conf", "--appendonly", "yes"]
     ports:
-    - "6379:6379"  # Expose Redis on the default port
+      - "6379:6379"  # Expose Redis on the default port
     volumes:
       - redis-master-data:/data
       - ../../config/redis.conf:/etc/redis/redis.conf
-      - ../../vault/agent/sink:/etc/ssl/certs
+      - ../../ssl/certs:/etc/ssl/certs
     networks:
       - internal_network
     healthcheck:
@@ -172,11 +121,11 @@ services:
     image: redis:latest
     command: ["redis-server", "/etc/redis/redis.conf", "--replicaof", "redis-master", "6379"]
     ports:
-    - "6380:6379"  # Expose the replica on a different port if needed
+      - "6380:6379"  # Expose the replica on a different port if needed
     volumes:
       - redis-replica-data:/data
       - ../../config/redis.conf:/etc/redis/redis.conf
-      - ../../vault/agent/sink:/etc/ssl/certs
+      - ../../ssl/certs:/etc/ssl/certs
     networks:
       - internal_network
     healthcheck:
@@ -184,213 +133,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
-  es-node-1:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
-    environment:
-      - cluster.name=my-cluster
-      - node.name=es-node-1
-      - discovery.seed_hosts=es-node-1,es-node-2
-      - cluster.initial_master_nodes=es-node-1,es-node-2
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - NODE_NAME=es-node-1
-      - ES_JAVA_OPTS=-Djava.security.policy=/usr/share/elasticsearch/config/my-security.policy
-    volumes:
-      - es-data-node1:/usr/share/elasticsearch/data
-      - es-backup:/usr/share/elasticsearch/backup
-      - ../../config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - ../../vault/agent/sink/ca.crt:/usr/share/elasticsearch/config/ca.crt
-      - ../../vault/agent/sink/es-node-1.crt:/usr/share/elasticsearch/config/es-node-1.crt
-      - ../../vault/agent/sink/es-node-1.key:/usr/share/elasticsearch/config/es-node-1.key
-      - ../../config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
-      - ../../config/jvm.options:/usr/share/elasticsearch/config/jvm.options
-      - ../../elasticsearch/logs:/usr/share/elasticsearch/logs
-      - ../../elasticsearch/heapdumps:/var/lib/elasticsearch/heapdumps
-      - ../../config/my-security.policy:/usr/share/elasticsearch/config/my-security.policy
-    networks:
-      - internal_network
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f https://localhost:9200/_cluster/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
-  es-node-2:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
-    environment:
-      - cluster.name=my-cluster
-      - node.name=es-node-2
-      - discovery.seed_hosts=es-node-1,es-node-2
-      - cluster.initial_master_nodes=es-node-1,es-node-2
-      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
-      - NODE_NAME=es-node-2
-      - ES_JAVA_OPTS=-Djava.security.policy=/usr/share/elasticsearch/config/my-security.policy
-    volumes:
-      - es-data-node2:/usr/share/elasticsearch/data
-      - es-backup:/usr/share/elasticsearch/backup
-      - ../../config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - ../../vault/agent/sink/ca.crt:/usr/share/elasticsearch/config/ca.crt
-      - ../../vault/agent/sink/es-node-2.crt:/usr/share/elasticsearch/config/es-node-2.crt
-      - ../../vault/agent/sink/es-node-2.key:/usr/share/elasticsearch/config/es-node-2.key
-      - ../../config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
-      - ../../config/jvm.options:/usr/share/elasticsearch/config/jvm.options
-      - ../../elasticsearch/logs:/usr/share/elasticsearch/logs
-      - ../../elasticsearch/heapdumps:/var/lib/elasticsearch/heapdumps
-      - ../../config/my-security.policy:/usr/share/elasticsearch/config/my-security.policy
-    networks:
-      - internal_network
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f https://localhost:9200/_cluster/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
-  rabbitmq-node1:
-    image: rabbitmq:3-management
-    environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
-      - RABBITMQ_NODENAME=rabbit@rabbitmq-node1
-    hostname: rabbitmq-node1
-    networks:
-      internal_network:
-        aliases:
-          - rabbitmq-node1
-    volumes:
-      - rabbitmq-data-node1:/var/lib/rabbitmq
-      - ../../vault/agent/sink:/etc/ssl/certs
-      - ../../scripts:/etc/rabbitmq-init
-    healthcheck:
-      test: ["CMD-SHELL", "rabbitmqctl --erlang-cookie $(cat /var/lib/rabbitmq/.erlang.cookie) status"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    command: >
-      /bin/bash -c "
-      rabbitmq-server;
-      while ! rabbitmqctl wait /var/lib/rabbitmq/mnesia/rabbit@rabbitmq-node1.pid --timeout 60; do
-        echo 'Waiting for RabbitMQ server to start...'
-        sleep 1
-      done;
-      echo 'RabbitMQ server started.';
-      rabbitmqctl set_policy ha-all '.*' '{\"ha-mode\":\"all\"}' --apply-to queues;
-      "
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
-  rabbitmq-node2:
-    image: rabbitmq:3-management
-    environment:
-      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
-      - RABBITMQ_NODENAME=rabbit@rabbitmq-node2
-    hostname: rabbitmq-node2
-    networks:
-      internal_network:
-        aliases:
-          - rabbitmq-node2
-    volumes:
-      - rabbitmq-data-node2:/var/lib/rabbitmq
-      - ../../vault/agent/sink:/etc/ssl/certs
-      - ../../scripts:/etc/rabbitmq-init
-    depends_on:
-      - rabbitmq-node1
-    healthcheck:
-      test: ["CMD-SHELL", "rabbitmqctl --erlang-cookie $(cat /var/lib/rabbitmq/.erlang.cookie) status"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    command: >
-      /bin/bash -c "
-      rabbitmq-server;
-      while ! rabbitmqctl wait /var/lib/rabbitmq/mnesia/rabbit@rabbitmq-node2.pid --timeout 60; do
-        echo 'Waiting for RabbitMQ server to start...'
-        sleep 1
-      done;
-      echo 'RabbitMQ server started.';
-      while ! rabbitmqctl -n rabbit@rabbitmq-node1 --erlang-cookie $(cat /var/lib/rabbitmq/.erlang.cookie) ping; do
-        echo 'Waiting for rabbitmq-node1...'
-        sleep 5
-      done;
-      echo 'rabbitmq-node1 is ready. Joining the cluster...';
-      rabbitmqctl stop_app;
-      rabbitmqctl reset;
-      rabbitmqctl join_cluster rabbit@rabbitmq-node1;
-      rabbitmqctl start_app;
-      rabbitmqctl await_online_nodes 2 --timeout 60;
-      "
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
-  minio1:
-    image: minio/minio:latest
-    environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-      - MINIO_SERVER_CERT=/etc/ssl/certs/minio.crt
-      - MINIO_SERVER_KEY=/etc/ssl/certs/minio.key
-    volumes:
-      - minio-data1:/data
-      - ../../vault/agent/sink:/etc/ssl/certs
-    networks:
-      - internal_network
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f https://localhost:9000/minio/health/ready || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    command: server https://minio{1...4}/data --certs-dir /etc/ssl/certs
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
-  minio2:
-    image: minio/minio:latest
-    environment:
-      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
-      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-      - MINIO_SERVER_CERT=/etc/ssl/certs/minio.crt
-      - MINIO_SERVER_KEY=/etc/ssl/certs/minio.key
-    volumes:
-      - minio-data2:/data
-      - ../../vault/agent/sink:/etc/ssl/certs
-    networks:
-      - internal_network
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f https://localhost:9000/minio/health/ready || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    command: server https://minio{1...4}/data --certs-dir /etc/ssl/certs
     deploy:
       restart_policy:
         condition: on-failure
@@ -421,4 +163,3 @@ volumes:
     driver: local
   minio-data2:
     driver: local
-

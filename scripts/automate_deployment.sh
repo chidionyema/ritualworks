@@ -13,24 +13,16 @@ error_exit() {
   exit 1
 }
 
-# Function to run a command and check its success
-run_command() {
-  local cmd="$1"
-  log "Running: $cmd"
-  eval "$cmd" || error_exit "Failed to execute: $cmd"
-}
-
 # Define paths and variables
 COMPOSE_FILE="../docker/compose/docker-compose-backend.yml"
 VAULT_CONTAINER_NAME="compose-vault-1"
-CONSUL_CONTAINER_NAME="compose-consul-1"
 VAULT_ADDR=${VAULT_ADDR:-"http://127.0.0.1:8200"}
 CERT_DIR="../../vault/agent/sink"
 BACKUP_FILE="unseal_keys.json"  # Save unseal keys and root token in the current directory
 
 # Step 1: Start Vault and Consul
 log "Starting Vault and Consul..."
-run_command "docker-compose -f \"$COMPOSE_FILE\" up -d consul vault"
+docker-compose -f "$COMPOSE_FILE" up -d consul vault || error_exit "Failed to start Vault and Consul"
 
 log "Waiting for Vault to start..."
 sleep 10
@@ -51,31 +43,43 @@ export VAULT_ROOT_TOKEN=$(echo "$INIT_OUTPUT" | jq -r '.root_token')
 export VAULT_UNSEAL_KEY_1="${UNSEAL_KEYS[0]}"
 export VAULT_UNSEAL_KEY_2="${UNSEAL_KEYS[1]}"
 export VAULT_UNSEAL_KEY_3="${UNSEAL_KEYS[2]}"
-export VAULT_UNSEAL_KEY_4="${UNSEAL_KEYS[3]}"
-export VAULT_UNSEAL_KEY_5="${UNSEAL_KEYS[4]}"
 
 log "Unsealing Vault..."
-run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault operator unseal \"$VAULT_UNSEAL_KEY_1\""
-run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault operator unseal \"$VAULT_UNSEAL_KEY_2\""
-run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault operator unseal \"$VAULT_UNSEAL_KEY_3\""
+docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_1" || error_exit "Failed to unseal Vault"
+docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_2" || error_exit "Failed to unseal Vault"
+docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_3" || error_exit "Failed to unseal Vault"
 
 log "Vault initialized and unsealed successfully."
 
 # Step 3: Authenticate with Vault using the root token
 log "Authenticating with Vault..."
-run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault login \"$VAULT_ROOT_TOKEN\""
+docker exec "$VAULT_CONTAINER_NAME" vault login "$VAULT_ROOT_TOKEN" || error_exit "Failed to authenticate with Vault"
 
 # Step 4: Configure PKI engine
 log "Configuring PKI secrets engine..."
-run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault secrets enable -path=pki pki" || log "PKI engine already enabled."
-run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault secrets tune -max-lease-ttl=8760h pki"
-run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault write pki/root/generate/internal common_name=\"example.com\" ttl=8760h"
-run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault write pki/config/urls issuing_certificates=\"$VAULT_ADDR/v1/pki/ca\" crl_distribution_points=\"$VAULT_ADDR/v1/pki/crl\""
+docker exec "$VAULT_CONTAINER_NAME" vault secrets enable -path=pki pki || log "PKI engine already enabled."
+docker exec "$VAULT_CONTAINER_NAME" vault secrets tune -max-lease-ttl=8760h pki || error_exit "Failed to tune PKI engine"
+docker exec "$VAULT_CONTAINER_NAME" vault write pki/root/generate/internal common_name="example.com" ttl=8760h || error_exit "Failed to generate root certificate"
+docker exec "$VAULT_CONTAINER_NAME" vault write pki/config/urls issuing_certificates="$VAULT_ADDR/v1/pki/ca" crl_distribution_points="$VAULT_ADDR/v1/pki/crl" || error_exit "Failed to configure PKI URLs"
 
-# Step 5: Create roles for each service
-create_role() {
+# Step 5: Delete and recreate roles for each service
+delete_and_create_role() {
   local service_name=$1
-  run_command "docker exec \"$VAULT_CONTAINER_NAME\" vault write pki/roles/$service_name allowed_domains=\"$service_name.local.example.com\" allow_subdomains=true max_ttl=\"72h\""
+  local allowed_domain="${service_name}.local.example.com"
+  local additional_domain="example.com, ${allowed_domain}"
+
+  # Delete the existing role to ensure no conflicts
+  log "Deleting existing role for $service_name if it exists..."
+  docker exec "$VAULT_CONTAINER_NAME" vault delete pki/roles/$service_name || log "Role $service_name does not exist or already deleted."
+
+  # Recreate the role with the correct settings
+  log "Creating role for $service_name with allowed domain $additional_domain..."
+  echo "Command to be run: docker exec \"$VAULT_CONTAINER_NAME\" vault write pki/roles/$service_name allowed_domains=\"$additional_domain\" allow_subdomains=true enforce_hostnames=true require_cn=true ttl=\"72h\" max_ttl=\"72h\""
+  docker exec "$VAULT_CONTAINER_NAME" vault write pki/roles/$service_name allowed_domains="$additional_domain" allow_subdomains=true enforce_hostnames=true require_cn=true ttl="72h" max_ttl="72h" || error_exit "Failed to create role for $service_name"
+
+  # Verify the role configuration
+  log "Verifying role configuration for $service_name..."
+  docker exec "$VAULT_CONTAINER_NAME" vault read pki/roles/$service_name || error_exit "Failed to read role configuration for $service_name"
 }
 
 # List of all services requiring TLS certificates
@@ -97,20 +101,23 @@ services=(
   "nginx"
 )
 
-# Create roles for all services
+# Recreate roles for all services
 for service in "${services[@]}"; do
-  create_role "$service"
+  delete_and_create_role "$service"
 done
 
 # Step 6: Generate certificates for all services
 log "Starting TLS certificate generation for all services..."
-run_command "mkdir -p \"$CERT_DIR\""
+mkdir -p "$CERT_DIR" || error_exit "Failed to create certificate directory"
 
 generate_certificates() {
   local service_name=$1
   local common_name="${service_name}.local.example.com"
 
   log "Generating certificate for $service_name..."
+
+  # Log the command to be run for manual execution
+  echo "Command to be run: docker exec -e VAULT_ADDR=\"$VAULT_ADDR\" -e VAULT_TOKEN=\"$VAULT_ROOT_TOKEN\" \"$VAULT_CONTAINER_NAME\" vault write pki/issue/$service_name common_name=\"$common_name\" ttl=\"72h\" -format=json"
   
   # Request certificate from Vault and save to the appropriate location
   CERT_OUTPUT=$(docker exec -e VAULT_ADDR="$VAULT_ADDR" -e VAULT_TOKEN="$VAULT_ROOT_TOKEN" "$VAULT_CONTAINER_NAME" vault write pki/issue/$service_name common_name="$common_name" ttl="72h" -format=json) || error_exit "Failed to generate certificate for $service_name."
