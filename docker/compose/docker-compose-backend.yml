@@ -347,9 +347,63 @@ services:
         max_attempts: 3
         window: 120s
 
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ../../config/prometheus.yml:/etc/prometheus/prometheus.yml  # Ensure you have a Prometheus config file
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:9090/-/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  # Add Grafana service
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin  # Change this for security
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+
+
 networks:
   internal_network:
-    driver: bridge
+    name: internal_network
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
+  external_network:
+    name: external_network
+    ipam:
+      config:
+        - subnet: 172.23.0.0/16
 
 volumes:
   redis-master-data:
@@ -369,4 +423,6 @@ volumes:
   minio-data1:
     driver: local
   minio-data2:
+    driver: local
+  grafana-data:  # Added the missing Grafana volume definition
     driver: local

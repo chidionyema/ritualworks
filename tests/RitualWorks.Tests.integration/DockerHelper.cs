@@ -9,38 +9,43 @@ using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace RitualWorks.Tests
 {
-    public class DockerContainerConfig
-    {
-        public string ImageName { get; set; }
-        public string ContainerName { get; set; }
-        public IDictionary<string, string> EnvironmentVariables { get; set; }
-        public IDictionary<string, IList<PortBinding>> PortBindings { get; set; }
-        public int StartTimeout { get; set; } = 30000; // Default to 30 seconds
-        public Func<int, Task<bool>> HealthCheck { get; set; } // Delegate for health check logic
-    }
-
     public class DockerHelper
     {
-        private readonly DockerContainerConfig _config;
-        private readonly ILogger<DockerHelper> _logger;
-        private int _hostPort;
+        private const string ImageName = "postgres:13";
+        private const string ContainerName = "postgres_test_container";
+        private const int PostgresStartTimeout = 60000; // Increased timeout for PostgreSQL to be ready
 
-        public DockerHelper(DockerContainerConfig config, ILogger<DockerHelper> logger)
+        // Credentials and database name
+        private const string PostgresPassword = "my-secret-pw";
+        private const string TestDbName = "test_db";
+        private const string TestUser = "test_user";
+        private const string TestPassword = "test_password";
+        private const string DefaultUsername = "postgres";
+
+        private readonly ILogger<DockerHelper> _logger;
+
+        public DockerHelper(ILogger<DockerHelper> logger)
         {
-            _config = config;
             _logger = logger;
         }
 
-        public async Task StartContainer()
+        public async Task StartContainer(int port = 0)
         {
+            if (port == 0)
+            {
+                port = GetAvailablePort();
+            }
+
             string dockerUri = GetDockerUri();
             using var client = new DockerClientConfiguration(new Uri(dockerUri)).CreateClient();
 
-            _logger.LogInformation("Starting container {ContainerName}", _config.ContainerName);
+            _logger.LogInformation("Starting PostgreSQL container...");
 
+            // Parallel tasks to check and remove existing containers and pull image if necessary
             var tasks = new List<Task>
             {
                 Task.Run(() => RemoveExistingContainersAsync(client)),
@@ -51,63 +56,35 @@ namespace RitualWorks.Tests
 
             var config = new Config
             {
-                Env = _config.EnvironmentVariables.Select(kv => $"{kv.Key}={kv.Value}").ToList()
+                Env = new List<string>
+                {
+                    $"POSTGRES_PASSWORD={PostgresPassword}",
+                    $"POSTGRES_DB={TestDbName}"
+                }
             };
 
-            var hostConfig = new HostConfig();
-
-            // Check if PortBindings are provided in DockerContainerConfig
-            if (_config.PortBindings != null && _config.PortBindings.Any())
+            var hostConfig = new HostConfig
             {
-                hostConfig.PortBindings = new Dictionary<string, IList<PortBinding>>();
-
-                foreach (var portBinding in _config.PortBindings)
+                PortBindings = new Dictionary<string, IList<PortBinding>>
                 {
-                    var bindings = portBinding.Value.Select(binding =>
-                    {
-                        if (string.IsNullOrEmpty(binding.HostPort) || binding.HostPort == "0")
-                        {
-                            binding.HostPort = GetAvailablePort().ToString();
-                        }
-                        return binding;
-                    }).ToList();
-
-                    hostConfig.PortBindings[portBinding.Key] = bindings;
+                    { "5432/tcp", new List<PortBinding> { new PortBinding { HostPort = port.ToString() } } }
                 }
-
-                _hostPort = int.Parse(hostConfig.PortBindings.First().Value.First().HostPort);
-            }
-            else
-            {
-                // Use GetAvailablePort as fallback when PortBindings are not specified
-                _hostPort = GetAvailablePort();
-                hostConfig.PortBindings = new Dictionary<string, IList<PortBinding>>
-                {
-                    { "5432/tcp", new List<PortBinding> { new PortBinding { HostPort = _hostPort.ToString() } } }
-                };
-            }
-
-            _logger.LogInformation("Creating container {ContainerName}", _config.ContainerName);
+            };
 
             var createContainerResponse = await client.Containers.CreateContainerAsync(new CreateContainerParameters(config)
             {
-                Image = _config.ImageName,
-                Name = _config.ContainerName,
+                Image = ImageName,
+                Name = ContainerName,
                 HostConfig = hostConfig
             });
 
-            _logger.LogInformation("Starting container {ContainerName}", _config.ContainerName);
+            await client.Containers.StartContainerAsync(createContainerResponse.ID, new ContainerStartParameters());
 
-            var started = await client.Containers.StartContainerAsync(createContainerResponse.ID, new ContainerStartParameters());
+            // Wait for PostgreSQL to initialize
+            await WaitForPostgresToBeReadyAsync(port);
 
-            if (!started)
-            {
-                throw new Exception($"Failed to start container {_config.ContainerName}");
-            }
-
-            _logger.LogInformation("Container {ContainerName} started", _config.ContainerName);
-
-            await WaitForContainerToBeReadyAsync();
+            // Setup the user and grant necessary permissions
+            await SetupDatabaseUserAsync(port);
         }
 
         public async Task StopContainer()
@@ -124,7 +101,7 @@ namespace RitualWorks.Tests
                 All = true,
                 Filters = new Dictionary<string, IDictionary<string, bool>>
                 {
-                    { "name", new Dictionary<string, bool> { { _config.ContainerName, true } } }
+                    { "name", new Dictionary<string, bool> { { ContainerName, true } } }
                 }
             });
 
@@ -141,46 +118,56 @@ namespace RitualWorks.Tests
             {
                 Filters = new Dictionary<string, IDictionary<string, bool>>
                 {
-                    { "reference", new Dictionary<string, bool> { { _config.ImageName, true } } }
+                    { "reference", new Dictionary<string, bool> { { ImageName, true } } }
                 }
             });
 
             if (!images.Any())
             {
-                _logger.LogInformation("Pulling image {ImageName}", _config.ImageName);
-                await client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = _config.ImageName }, null, new Progress<JSONMessage>());
+                _logger.LogInformation("Pulling image {ImageName}", ImageName);
+                await client.Images.CreateImageAsync(new ImagesCreateParameters { FromImage = ImageName }, null, new Progress<JSONMessage>());
             }
         }
 
-        private async Task WaitForContainerToBeReadyAsync()
+        private async Task WaitForPostgresToBeReadyAsync(int port)
         {
-            var timeout = Task.Delay(_config.StartTimeout);
-
-            _logger.LogInformation("Waiting for container {ContainerName} to be ready", _config.ContainerName);
+            var timeout = Task.Delay(PostgresStartTimeout);
+            var connectionString = $"Host=localhost;Port={port};Username={DefaultUsername};Password={PostgresPassword};";
 
             while (!timeout.IsCompleted)
             {
                 try
                 {
-                    if (await _config.HealthCheck(_hostPort))
-                    {
-                        _logger.LogInformation("Container {ContainerName} is ready", _config.ContainerName);
-                        return;
-                    }
-                    else
-                    {
-                        _logger.LogWarning("Health check failed, retrying...");
-                    }
+                    using var connection = new NpgsqlConnection(connectionString);
+                    await connection.OpenAsync();
+                    _logger.LogInformation("PostgreSQL container is ready.");
+                    return; // Connected successfully
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning("Health check exception: {Message}", ex.Message);
+                    _logger.LogWarning($"Waiting for PostgreSQL to be ready: {ex.Message}");
+                    await Task.Delay(1000); // Wait 1 second before retrying
                 }
-
-                await Task.Delay(1000);
             }
 
-            throw new Exception($"Container {_config.ContainerName} did not start within the allocated timeout.");
+            throw new Exception("PostgreSQL did not start within the allocated timeout.");
+        }
+
+        private async Task SetupDatabaseUserAsync(int port)
+        {
+            var connectionString = $"Host=localhost;Port={port};Username={DefaultUsername};Password={PostgresPassword};";
+            using var connection = new NpgsqlConnection(connectionString);
+            await connection.OpenAsync();
+
+            var createUserQuery = $@"
+                CREATE USER {TestUser} WITH PASSWORD '{TestPassword}';
+                GRANT ALL PRIVILEGES ON DATABASE {TestDbName} TO {TestUser};
+                ALTER USER {TestUser} CREATEDB;";
+
+            using (var cmd = new NpgsqlCommand(createUserQuery, connection))
+            {
+                await cmd.ExecuteNonQueryAsync();
+            }
         }
 
         private int GetAvailablePort()

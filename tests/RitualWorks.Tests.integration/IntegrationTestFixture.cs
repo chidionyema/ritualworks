@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Castle.Core;
 using Docker.DotNet.Models;
@@ -40,102 +39,42 @@ namespace RitualWorks.Tests
             });
             _logger = loggerFactory.CreateLogger<DockerHelper>();
 
-            _postgresHelper = new DockerHelper(
-                new DockerContainerConfig
-                {
-                    ImageName = "postgres:13",
-                    ContainerName = "postgres_test_container",
-                    EnvironmentVariables = new Dictionary<string, string>
-                    {
-                        { "POSTGRES_PASSWORD", "mypassword" },
-                        { "POSTGRES_DB", "test_db" }
-                    },
-                    PortBindings = new Dictionary<string, IList<PortBinding>>
-                    {
-                        { "5432/tcp", new List<PortBinding> { new PortBinding { HostPort = "5439" } } }
-                    },
-                    HealthCheck = async (port) =>
-                    {
-                        using var connection = new NpgsqlConnection($"Host=localhost;Port={port};Username=myuser;Password=mypassword;");
-                        try
-                        {
-                            await connection.OpenAsync();
-                            return true; // Connection successful
-                        }
-                        catch
-                        {
-                            return false; // Connection failed
-                        }
-                    },
-                    StartTimeout = 30000
-                },
-                _logger
-            );
+            // Initialize DockerHelper for PostgreSQL
+            _postgresHelper = new DockerHelper(_logger);
+            ConfigurePostgresHelper();
 
-            _rabbitMqHelper = new DockerHelper(
-                new DockerContainerConfig
-                {
-                    ImageName = "rabbitmq:latest",
-                    ContainerName = "rabbitmq_test_container",
-                    EnvironmentVariables = new Dictionary<string, string>(),
-                    PortBindings = new Dictionary<string, IList<PortBinding>>
-                    {
-                        { "5672/tcp", new List<PortBinding> { new PortBinding { HostPort = "5672" } } }
-                    },
-                    HealthCheck = async (port) =>
-                    {
-                        try
-                        {
-                            using var client = new HttpClient();
-                            var response = await client.GetAsync($"http://localhost:{port}");
-                            return response.IsSuccessStatusCode;
-                        }
-                        catch
-                        {
-                            return false;
-                        }
-                    },
-                    StartTimeout = 30000
-                },
-                _logger
-            );
+            // Initialize DockerHelper for RabbitMQ
+            _rabbitMqHelper = new DockerHelper(_logger);
+            ConfigureRabbitMqHelper();
 
-            _azuriteHelper = new DockerHelper(
-                new DockerContainerConfig
-                {
-                    ImageName = "mcr.microsoft.com/azure-storage/azurite",
-                    ContainerName = "azurite_test_container",
-                    EnvironmentVariables = new Dictionary<string, string>(),
-                    PortBindings = new Dictionary<string, IList<PortBinding>>
-                    {
-                        { "10000/tcp", new List<PortBinding> { new PortBinding { HostPort = "10000" } } },
-                        { "10001/tcp", new List<PortBinding> { new PortBinding { HostPort = "10001" } } },
-                        { "10002/tcp", new List<PortBinding> { new PortBinding { HostPort = "10002" } } }
-                    },
-                    HealthCheck = async (port) =>
-                    {
-                        try
-                        {
-                            using var client = new HttpClient();
-                            var response = await client.GetAsync($"http://localhost:{port}");
-                            return response.IsSuccessStatusCode;
-                        }
-                        catch
-                        {
-                            return false;
-                        }
-                    },
-                    StartTimeout = 30000
-                },
-                _logger
-            );
+            // Initialize DockerHelper for Azurite (Azure Storage Emulator)
+            _azuriteHelper = new DockerHelper(_logger);
+            ConfigureAzuriteHelper();
+        }
+
+        private void ConfigurePostgresHelper()
+        {
+            // Setting the PostgreSQL Docker configuration directly in the StartContainer call
+            _postgresHelper.StartContainer(5439).GetAwaiter().GetResult();
+        }
+
+        private void ConfigureRabbitMqHelper()
+        {
+            // Configure and start RabbitMQ container
+            _rabbitMqHelper.StartContainer(5672).GetAwaiter().GetResult();
+        }
+
+        private void ConfigureAzuriteHelper()
+        {
+            // Configure and start Azurite container
+            _azuriteHelper.StartContainer(10000).GetAwaiter().GetResult();
         }
 
         public async Task InitializeAsync()
         {
             await _postgresHelper.StartContainer();
             await _rabbitMqHelper.StartContainer();
-           // await _azuriteHelper.StartContainer();
+            // await _azuriteHelper.StartContainer();
 
             Factory = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
@@ -228,7 +167,7 @@ namespace RitualWorks.Tests
         {
             await _postgresHelper.StopContainer();
             await _rabbitMqHelper.StopContainer();
-            //await _azuriteHelper.StopContainer();
+            // await _azuriteHelper.StopContainer();
             Factory?.Dispose();
             Client?.Dispose();
         }

@@ -80,18 +80,13 @@ Set the URL to http://prometheus:9090 and save the data source.
 You can import predefined dashboards for Postgres, Redis, Elasticsearch, RabbitMQ, etc.
 Go to the Dashboard section in Grafana and import a new dashboard by entering the dashboard ID from the Grafana website (e.g., 11074 for PostgreSQL, 763 for Redis, etc.).
 
-### VAULT
+### Deploy 
 
 to deploy
 run ./scripts/automate_deployment.sh to deploy vault
 save contents of scripts/unseal_keys.json externally and delete the file
 or
 
-### VAULT DEPLOY AND DOCKER SERVICES 
-./install_vault_server.sh or  ./scripts/deploy_vault.sh to deploy vault
-sudo ./generate_certs.sh
-./start_all_services.sh
-save contents of scripts/unseal_keys.json externally and delete the file
 
 ###  sTroubleshooting 
 Code: 400. Errors:

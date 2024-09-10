@@ -132,19 +132,20 @@ services:
     command: sh /verify_dns_and_access.sh
     network_mode: host
 
+
 networks:
   internal_network:
-    external: true
     name: internal_network
-    ipam:
-      config:
-        - subnet: 172.18.0.0/16
-  external_network:
     external: true
-    name: external_network
     ipam:
       config:
-        - subnet: 172.19.0.0/16
+        - subnet: 172.22.0.0/16
+  external_network:
+    name: external_network
+    external: true
+    ipam:
+      config:
+        - subnet: 172.23.0.0/16
 
 volumes:
   uploads:
