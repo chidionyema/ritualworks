@@ -1,0 +1,25 @@
+[2024-09-08T20:56:37.981+0000][0.149s] CardTable entry size: 512
+[2024-09-08T20:56:37.987+0000][0.155s] Using G1
+[2024-09-08T20:56:38.117+0000][0.285s] Version: 18.0.2.1+1-1 (release)
+[2024-09-08T20:56:38.118+0000][0.286s] CPUs: 12 total, 12 available
+[2024-09-08T20:56:38.120+0000][0.288s] Memory: 7838M
+[2024-09-08T20:56:38.121+0000][0.289s] Large Page Support: Disabled
+[2024-09-08T20:56:38.122+0000][0.289s] NUMA Support: Disabled
+[2024-09-08T20:56:38.125+0000][0.293s] Compressed Oops: Enabled (32-bit)
+[2024-09-08T20:56:38.126+0000][0.294s] Heap Region Size: 1M
+[2024-09-08T20:56:38.126+0000][0.294s] Heap Min Capacity: 2G
+[2024-09-08T20:56:38.127+0000][0.295s] Heap Initial Capacity: 2G
+[2024-09-08T20:56:38.127+0000][0.295s] Heap Max Capacity: 2G
+[2024-09-08T20:56:38.128+0000][0.296s] Pre-touch: Disabled
+[2024-09-08T20:56:38.128+0000][0.296s] Parallel Workers: 10
+[2024-09-08T20:56:38.131+0000][0.299s] Concurrent Workers: 3
+[2024-09-08T20:56:38.131+0000][0.299s] Concurrent Refinement Workers: 10
+[2024-09-08T20:56:38.132+0000][0.300s] Periodic GC: Disabled
+[2024-09-08T20:56:38.133+0000][0.301s] CDS archive(s) mapped at: [0x0000000800000000-0x0000000800bae000-0x0000000800bae000), size 12247040, SharedBaseAddress: 0x0000000800000000, ArchiveRelocationMode: 0.
+[2024-09-08T20:56:38.134+0000][0.302s] Compressed class space mapped at: 0x0000000800c00000-0x0000000840c00000, reserved size: 1073741824
+[2024-09-08T20:56:38.134+0000][0.302s] Narrow klass base: 0x0000000800000000, Narrow klass shift: 0, Narrow klass range: 0x100000000
+[2024-09-08T20:56:38.405+0000][0.573s] Heap
+[2024-09-08T20:56:38.440+0000][0.608s]  garbage-first heap   total 2097152K, used 1966K [0x0000000080000000, 0x0000000100000000)
+[2024-09-08T20:56:38.462+0000][0.630s]   region size 1024K, 2 young (2048K), 0 survivors (0K)
+[2024-09-08T20:56:38.464+0000][0.632s]  Metaspace       used 49K, committed 128K, reserved 1114112K
+[2024-09-08T20:56:38.465+0000][0.632s]   class space    used 0K, committed 64K, reserved 1048576K
