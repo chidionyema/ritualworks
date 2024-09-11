@@ -5,8 +5,8 @@ services:
     image: bitnami/postgresql-repmgr:latest
     user: "1001"
     environment:
-      - POSTGRES_PASSWORD=your_postgres_password
-      - POSTGRES_USER=your_postgres_user
+      - POSTGRES_PASSWORD=mypassword  # Updated to match the default password in init_pg.sh
+      - POSTGRES_USER=myuser          # Updated to match the default user in init_pg.sh
       - POSTGRES_DB=your_postgres_db
       - REPMGR_PRIMARY_ROLE=true
       - REPMGR_NODE_ID=1
@@ -14,18 +14,18 @@ services:
       - REPMGR_NODE_NETWORK_NAME=postgres_primary
       - REPMGR_PARTNER_NODES=postgres-primary-1,postgres-standby-2
       - REPMGR_PRIMARY_HOST=postgres_primary
-      - REPMGR_PASSWORD=your_postgres_password
+      - REPMGR_PASSWORD=mypassword   # Ensure consistency if this password is used for replication
       - VAULT_ADDR=http://vault:8200
     ports:
       - "5434:5432"
     volumes:
       - ../../data/postgres-primary-data:/bitnami/postgresql
-      - ../../scripts:/scripts
+      - ../../scripts:/scripts  # Ensure the path mounts the scripts directory correctly
       - ../../ssl/certs:/etc/ssl/certs
     networks:
       - internal_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U your_postgres_user -d postgres"]
+      test: ["CMD-SHELL", "pg_isready -U myuser -d postgres"]  # Match with the user used in init_pg.sh
       interval: 10s
       timeout: 5s
       retries: 5
@@ -37,12 +37,13 @@ services:
         max_attempts: 3
         window: 120s
 
+
   postgres_standby:
     image: bitnami/postgresql-repmgr:latest
     user: "1001"
     environment:
-      - POSTGRES_PASSWORD=your_postgres_password
-      - POSTGRES_USER=your_postgres_user
+      - POSTGRES_PASSWORD=mypassword  # Update to match the default password in init_pg.sh
+      - POSTGRES_USER=myuser          # Update to match the default user in init_pg.sh
       - POSTGRES_DB=your_postgres_db
       - REPMGR_PRIMARY_ROLE=false
       - REPMGR_NODE_ID=2
@@ -50,7 +51,7 @@ services:
       - REPMGR_NODE_NETWORK_NAME=postgres_standby
       - REPMGR_PARTNER_NODES=postgres-primary-1,postgres-standby-2
       - REPMGR_PRIMARY_HOST=postgres_primary
-      - REPMGR_PASSWORD=your_postgres_password
+      - REPMGR_PASSWORD=mypassword   # Ensure consistency if this is related to user permissions
     ports:
       - "5435:5432"
     volumes:
@@ -60,7 +61,7 @@ services:
     networks:
       - internal_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U your_postgres_user -d postgres"]
+      test: ["CMD-SHELL", "pg_isready -U myuser -d postgres"]  # Match with the user used in init_pg.sh
       interval: 10s
       timeout: 5s
       retries: 5
@@ -71,6 +72,7 @@ services:
         delay: 10s
         max_attempts: 3
         window: 120s
+
 
   haproxy:
     build:

@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.8'  # Add the version declaration at the top of the file
 
 services:
   setup_dns:
@@ -98,11 +98,11 @@ services:
 
   db_migrations:
     build:
-      context: ../../  # Correct context pointing to the correct docker folder
-      dockerfile: docker/Dockerfile.migrations
+      context: ../../  # Ensure this points to the correct project directory relative to the compose file
+      dockerfile: docker/Dockerfile.migrations  # Ensure this Dockerfile exists and is correct
     environment:
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
-    command: ["database", "update"]
+      - ConnectionStrings__DefaultConnection=Host=postgres_primary;Port=5432;Database=${POSTGRES_DB:-your_postgres_db};Username=${POSTGRES_USER:-myuser};Password=${POSTGRES_PASSWORD:-mypassword};SSL Mode=Disable
+    command: ["database", "update"]  # Remove 'dotnet' since the entrypoint is already set to 'dotnet-ef'
     networks:
       - internal_network
 
@@ -132,7 +132,6 @@ services:
     command: sh /verify_dns_and_access.sh
     network_mode: host
 
-
 networks:
   internal_network:
     name: internal_network
@@ -144,7 +143,7 @@ networks:
     name: external_network
     external: true
     ipam:
-      config:
+        config:
         - subnet: 172.23.0.0/16
 
 volumes:
