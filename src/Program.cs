@@ -57,6 +57,7 @@ public partial class Program
             {
                 cfg.Host("rabbitmq://rabbitmq-node1"); 
 
+
                 // Configure prefetch count to optimize message consumption
                 cfg.PrefetchCount = 16;
 

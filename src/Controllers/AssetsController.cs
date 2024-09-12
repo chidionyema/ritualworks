@@ -5,6 +5,7 @@ using RitualWorks.Db;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,8 +19,8 @@ namespace RitualWorks.Controllers
         private readonly IFileStorageService _fileStorageService;
         private readonly IProductRepository _productRepository;
         private static readonly ConcurrentDictionary<string, SemaphoreSlim> _fileLocks = new();
-        private static readonly List<string> _allowedImageTypes = new() { ".jpg", ".jpeg", ".png", ".gif" };
-        private static readonly List<string> _allowedAssetTypes = new() { ".pdf", ".doc", ".docx", ".zip", ".rar" };
+        private static readonly List<string> _allowedImageTypes = new List<string> { ".jpg", ".jpeg", ".png", ".gif" };
+        private static readonly List<string> _allowedAssetTypes = new List<string> { ".pdf", ".doc", ".docx", ".zip", ".rar" };
         private const long _maxFileSize = 100 * 1024 * 1024; // 100 MB
 
         public AssetsController(IFileStorageService fileStorageService, IProductRepository productRepository)
@@ -29,50 +30,70 @@ namespace RitualWorks.Controllers
         }
 
         [HttpPost("upload-chunk")]
-        public async Task<IActionResult> UploadFileChunk([FromForm] IFormFile file, [FromForm] int chunkIndex, [FromForm] int totalChunks, [FromForm] string fileName, [FromForm] Guid productId, [FromForm] string username)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UploadFileChunk([FromForm] FileChunkUploadDto uploadDto)
         {
-            if (!ValidateFile(file, out string validationError, out string fileType))
+            if (!ValidateFile(uploadDto.File, out string validationError, out string fileType))
             {
                 return BadRequest(validationError);
             }
 
-            var tempFilePath = Path.Combine(Path.GetTempPath(), fileName);
-            var fileLock = _fileLocks.GetOrAdd(fileName, _ => new SemaphoreSlim(1, 1));
+            string tempFolder = Path.Combine(Path.GetTempPath(), uploadDto.ProductId.ToString());
+            string tempFilePath = Path.Combine(tempFolder, uploadDto.FileName);
+
+            Directory.CreateDirectory(tempFolder);
+
+            var fileLock = _fileLocks.GetOrAdd(uploadDto.FileName, _ => new SemaphoreSlim(1, 1));
 
             try
             {
                 await fileLock.WaitAsync();
-                using var stream = new FileStream(tempFilePath, chunkIndex == 0 ? FileMode.Create : FileMode.Append, FileAccess.Write);
-                await file.CopyToAsync(stream);
 
-                if (chunkIndex == totalChunks - 1)
+                using (var stream = new FileStream(tempFilePath, uploadDto.ChunkIndex == 0 ? FileMode.Create : FileMode.Append, FileAccess.Write, FileShare.None))
                 {
-                    var result = await FinalizeUpload(tempFilePath, fileName, fileType, productId, username);
+                    await uploadDto.File.CopyToAsync(stream);
+                }
+
+                if (uploadDto.ChunkIndex == uploadDto.TotalChunks - 1)
+                {
+                    var result = await FinalizeUpload(tempFilePath, uploadDto.FileName, fileType, uploadDto.ProductId, uploadDto.Username);
+                    Directory.Delete(tempFolder, true);
+
                     return Ok(new { FileName = result });
                 }
 
-                return Ok();
+                return Ok(new { Message = "Chunk uploaded successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Error = "An error occurred while uploading the file chunk.", Details = ex.Message });
             }
             finally
             {
                 fileLock.Release();
-                if (chunkIndex == totalChunks - 1)
+
+                if (uploadDto.ChunkIndex == uploadDto.TotalChunks - 1)
                 {
-                    _fileLocks.TryRemove(fileName, out _);
+                    _fileLocks.TryRemove(uploadDto.FileName, out _);
                 }
             }
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult> UploadFile([FromForm] IFormFile file, [FromForm] Guid productId, [FromForm] string username)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UploadFile([FromForm] FileUploadDto uploadDto)
         {
-            if (!ValidateFile(file, out string validationError, out string fileType))
+            if (!ValidateFile(uploadDto.File, out string validationError, out string fileType))
             {
                 return BadRequest(validationError);
             }
 
-            var tempFilePath = Path.Combine(Path.GetTempPath(), file.FileName);
-            var fileLock = _fileLocks.GetOrAdd(file.FileName, _ => new SemaphoreSlim(1, 1));
+            var tempFilePath = Path.Combine(Path.GetTempPath(), uploadDto.File.FileName);
+            var fileLock = _fileLocks.GetOrAdd(uploadDto.File.FileName, _ => new SemaphoreSlim(1, 1));
 
             try
             {
@@ -80,16 +101,20 @@ namespace RitualWorks.Controllers
 
                 using (var stream = new FileStream(tempFilePath, FileMode.Create, FileAccess.Write))
                 {
-                    await file.CopyToAsync(stream);
+                    await uploadDto.File.CopyToAsync(stream);
                 }
 
-                var result = await FinalizeUpload(tempFilePath, file.FileName, fileType, productId, username);
+                var result = await FinalizeUpload(tempFilePath, uploadDto.File.FileName, fileType, uploadDto.ProductId, uploadDto.Username);
                 return Ok(new { FileName = result });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Error = "An error occurred while uploading the file.", Details = ex.Message });
             }
             finally
             {
                 fileLock.Release();
-                _fileLocks.TryRemove(file.FileName, out _);
+                _fileLocks.TryRemove(uploadDto.File.FileName, out _);
             }
         }
 
@@ -100,7 +125,7 @@ namespace RitualWorks.Controllers
 
             if (file == null || file.Length == 0)
             {
-                validationError = "No file uploaded";
+                validationError = "No file uploaded.";
                 return false;
             }
 
@@ -153,8 +178,70 @@ namespace RitualWorks.Controllers
                 await _productRepository.AddProductAssetAsync(productAsset);
             }
 
-            System.IO.File.Delete(tempFilePath); // Delete the temp file after uploading
+            System.IO.File.Delete(tempFilePath);
             return result;
         }
+    }
+
+    // DTO for File Upload
+    public class FileUploadDto
+    {
+        /// <summary>
+        /// The file to be uploaded.
+        /// </summary>
+        [Required]
+        public IFormFile? File { get; set; }
+
+        /// <summary>
+        /// The ID of the product associated with the file upload.
+        /// </summary>
+        [Required]
+        public Guid ProductId { get; set; }
+
+        /// <summary>
+        /// The username of the user uploading the file.
+        /// </summary>
+        [Required]
+        public string? Username { get; set; }
+    }
+
+    // DTO for Chunked File Upload
+    public class FileChunkUploadDto
+    {
+        /// <summary>
+        /// The file chunk being uploaded.
+        /// </summary>
+        [Required]
+        public IFormFile? File { get; set; }
+
+        /// <summary>
+        /// The index of the current chunk.
+        /// </summary>
+        [Required]
+        public int ChunkIndex { get; set; }
+
+        /// <summary>
+        /// The total number of chunks expected.
+        /// </summary>
+        [Required]
+        public int TotalChunks { get; set; }
+
+        /// <summary>
+        /// The name of the file being uploaded.
+        /// </summary>
+        [Required]
+        public string? FileName { get; set; }
+
+        /// <summary>
+        /// The ID of the product associated with the file upload.
+        /// </summary>
+        [Required]
+        public Guid ProductId { get; set; }
+
+        /// <summary>
+        /// The username of the user uploading the file.
+        /// </summary>
+        [Required]
+        public string? Username { get; set; }
     }
 }

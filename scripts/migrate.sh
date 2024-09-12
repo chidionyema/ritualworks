@@ -5,7 +5,7 @@ exec > /app/migrate.log 2>&1
 
 echo "Starting database migration..."
 
-# Set default values to match the connection string
+# Set default values if environment variables are not set
 DB_HOST=${DB_HOST:-postgres_primary}
 DB_PORT=${DB_PORT:-5432}
 DB_USER=${DB_USER:-myuser}
@@ -18,6 +18,8 @@ echo "DB_PORT: $DB_PORT"
 echo "DB_USER: $DB_USER"
 echo "DB_PASSWORD: $DB_PASSWORD"
 echo "DB_NAME: $DB_NAME"
+
+
 
 # Apply migrations
 echo "Running dotnet ef database update..."
