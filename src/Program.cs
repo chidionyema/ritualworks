@@ -21,6 +21,7 @@ using Stripe;
 using RitualWorks.Repositories.RitualWorks.Repositories;
 using MassTransit;
 using Amazon.S3;
+using System.Security.Authentication;
 
 public partial class Program
 {
@@ -46,34 +47,41 @@ public partial class Program
         // Configure BlobSettings
         builder.Services.Configure<BlobSettings>(builder.Configuration.GetSection("AzureBlobStorage"));
 
-        // Add MassTransit
+        // Add MassTransit configuration with RabbitMQ settings read from the configuration
         builder.Services.AddMassTransit(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
-
             x.AddConsumer<MyConsumer>();
 
             x.UsingRabbitMq((context, cfg) =>
             {
-                // Read RabbitMQ configuration from the built-in .NET configuration
+                // Read RabbitMQ settings from the configuration
                 var rabbitMqHost = builder.Configuration["MassTransit:RabbitMq:Host"];
                 var rabbitMqUsername = builder.Configuration["MassTransit:RabbitMq:Username"];
                 var rabbitMqPassword = builder.Configuration["MassTransit:RabbitMq:Password"];
 
-                // Configure RabbitMQ host
-                cfg.Host(rabbitMqHost, h =>
+                cfg.Host(new Uri(rabbitMqHost), h =>
                 {
                     h.Username(rabbitMqUsername);
                     h.Password(rabbitMqPassword);
+
+                    // Configure SSL settings if enabled
+                    bool sslEnabled = bool.TryParse(builder.Configuration["MassTransit:RabbitMq:Ssl:Enabled"], out var enabled) && enabled;
+                    if (sslEnabled)
+                    {
+                        h.UseSsl(s =>
+                        {
+                            s.Protocol = SslProtocols.Tls12; // Use appropriate SSL protocol
+                            s.ServerName = builder.Configuration["MassTransit:RabbitMq:Ssl:ServerName"];
+                            s.CertificatePath = builder.Configuration["MassTransit:RabbitMq:Ssl:CertificatePath"];
+                            s.CertificatePassphrase = builder.Configuration["MassTransit:RabbitMq:Ssl:CertificatePassphrase"];
+                        });
+                    }
                 });
 
-                // Configure prefetch count to optimize message consumption
+                // Additional configuration
                 cfg.PrefetchCount = 16;
-
-                // Configure the message retry policy
                 cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
-
-                // Use in-memory outbox for temporary message storage
                 cfg.UseInMemoryOutbox();
 
                 cfg.ConfigureEndpoints(context);
