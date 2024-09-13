@@ -25,56 +25,110 @@ namespace RitualWorks.Tests
     {
         private readonly DockerHelper _postgresHelper;
         private readonly DockerHelper _rabbitMqHelper;
-        private readonly DockerHelper _azuriteHelper;
+        private readonly DockerHelper _minioHelper;
 
         public HttpClient Client { get; private set; }
         public WebApplicationFactory<Program> Factory { get; private set; }
         private readonly ILogger<DockerHelper> _logger;
 
+        // Connection string built from environment variables
+        private readonly string _connectionString;
+
         public IntegrationTestFixture()
         {
+            // Read environment variables for connection string components
+            var dbHost = "localhost";
+            var dbPort = "5432";
+            var dbName = "test_db";
+            var dbUser = "myuser";
+            var dbPassword = "mypassword";
+
+            // Construct the connection string using the environment variables
+            _connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPassword};";
+
             var loggerFactory = LoggerFactory.Create(builder =>
             {
                 builder.AddConsole();
             });
             _logger = loggerFactory.CreateLogger<DockerHelper>();
 
-            // Initialize DockerHelper for PostgreSQL
-            _postgresHelper = new DockerHelper(_logger);
+            _postgresHelper = new DockerHelper(
+                _logger,
+                imageName: "postgres:13",
+                containerName: "postgres_test_container",
+                serviceStartTimeout: 60000,
+                postStartCallback: async (port) =>
+                {
+                    await WaitForPostgresToBeReadyAsync(port);
+                    await EnsureDatabaseExistsAsync(port);
+                    await SetupDatabaseAsync(port);
+                }
+            );
             ConfigurePostgresHelper();
 
-            // Initialize DockerHelper for RabbitMQ
-            _rabbitMqHelper = new DockerHelper(_logger);
+            _rabbitMqHelper = new DockerHelper(
+                _logger,
+                imageName: "rabbitmq:3-management",
+                containerName: "rabbitmq_test_container",
+                serviceStartTimeout: 60000
+            );
             ConfigureRabbitMqHelper();
 
-            // Initialize DockerHelper for Azurite (Azure Storage Emulator)
-            _azuriteHelper = new DockerHelper(_logger);
-            ConfigureAzuriteHelper();
+            _minioHelper = new DockerHelper(
+                _logger,
+                imageName: "minio/minio",
+                containerName: "minio_test_container",
+                serviceStartTimeout: 60000
+            );
+            ConfigureMinioHelper();
         }
 
         private void ConfigurePostgresHelper()
         {
-            // Setting the PostgreSQL Docker configuration directly in the StartContainer call
-            _postgresHelper.StartContainer(5439).GetAwaiter().GetResult();
+            _postgresHelper.StartContainer(
+                hostPort: 5432,
+                containerPort: 5432,
+                environmentVariables: new List<string>
+                {
+                    "POSTGRES_USER=myuser",
+                    "POSTGRES_PASSWORD=mypassword",
+                    "POSTGRES_DB=test_db"
+                }
+            ).GetAwaiter().GetResult();
         }
 
         private void ConfigureRabbitMqHelper()
         {
-            // Configure and start RabbitMQ container
-            _rabbitMqHelper.StartContainer(5672).GetAwaiter().GetResult();
+            _rabbitMqHelper.StartContainer(
+                hostPort: 5672,
+                containerPort: 5672,
+                environmentVariables: new List<string>
+                {
+                    "RABBITMQ_DEFAULT_USER=user",
+                    "RABBITMQ_DEFAULT_PASS=password"
+                }
+            ).GetAwaiter().GetResult();
         }
 
-        private void ConfigureAzuriteHelper()
+        private void ConfigureMinioHelper()
         {
-            // Configure and start Azurite container
-            _azuriteHelper.StartContainer(10000).GetAwaiter().GetResult();
+            _minioHelper.StartContainer(
+                hostPort: 9000,
+                containerPort: 9000,
+                environmentVariables: new List<string>
+                {
+                    "MINIO_ROOT_USER=minioadmin",
+                    "MINIO_ROOT_PASSWORD=minioadmin"
+                },
+                command: new List<string> { "server", "/data" }
+            ).GetAwaiter().GetResult();
         }
 
         public async Task InitializeAsync()
         {
-            await _postgresHelper.StartContainer();
-            await _rabbitMqHelper.StartContainer();
-            // await _azuriteHelper.StartContainer();
+            await _postgresHelper.StartContainer(5432, 5432, new List<string> { "POSTGRES_USER=myuser", "POSTGRES_PASSWORD=mypassword", "POSTGRES_DB=test_db" });
+            await _rabbitMqHelper.StartContainer(5672, 5672, new List<string> { "RABBITMQ_DEFAULT_USER=user", "RABBITMQ_DEFAULT_PASS=password" });
+            await _minioHelper.StartContainer(9000, 9000, new List<string> { "MINIO_ROOT_USER=minioadmin", "MINIO_ROOT_PASSWORD=minioadmin" }, new List<string> { "server", "/data" });
 
             Factory = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
@@ -98,7 +152,7 @@ namespace RitualWorks.Tests
                     {
                         services.AddEntityFrameworkNpgsql()
                             .AddDbContext<RitualWorksContext>(options =>
-                                options.UseNpgsql($"Host=localhost;Port={5439};Database=test_db;Username=myuser;Password=mypassword"));
+                                options.UseNpgsql(_connectionString));
 
                         services.AddAuthentication("Test")
                             .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
@@ -117,6 +171,89 @@ namespace RitualWorks.Tests
 
             Client = Factory.CreateClient();
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Test");
+        }
+
+        private async Task WaitForPostgresToBeReadyAsync(int port)
+        {
+            _logger.LogInformation("Waiting for PostgreSQL to initialize...");
+            var timeout = Task.Delay(60000);
+
+            while (!timeout.IsCompleted)
+            {
+                try
+                {
+                    await using var connection = new NpgsqlConnection(_connectionString);
+                    await connection.OpenAsync();
+                    _logger.LogInformation("PostgreSQL container is ready.");
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning($"Waiting for PostgreSQL to be ready: {ex.Message}");
+                    await Task.Delay(1000);
+                }
+            }
+
+            throw new Exception("PostgreSQL did not start within the allocated timeout.");
+        }
+
+            private async Task EnsureDatabaseExistsAsync(int port)
+        {
+            // Connect to the default 'postgres' database to manage other databases
+            var adminConnectionString = $"Host=localhost;Port={port};Username=myuser;Password=mypassword;Database=postgres;";
+
+            try
+            {
+                await using var connection = new NpgsqlConnection(adminConnectionString);
+                await connection.OpenAsync();
+                var checkDbCmd = new NpgsqlCommand("SELECT 1 FROM pg_database WHERE datname = 'test_db';", connection);
+                var exists = await checkDbCmd.ExecuteScalarAsync() != null;
+
+                if (!exists)
+                {
+                    _logger.LogInformation("Database 'test_db' does not exist. Creating database...");
+                    var createDbCmd = new NpgsqlCommand("CREATE DATABASE test_db;", connection);
+                    await createDbCmd.ExecuteNonQueryAsync();
+                    _logger.LogInformation("Database 'test_db' created successfully.");
+                }
+                else
+                {
+                    _logger.LogInformation("Database 'test_db' already exists.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error ensuring database exists: {ex.Message}");
+                throw;
+            }
+        }
+
+        private async Task SetupDatabaseAsync(int port)
+        {
+            _logger.LogInformation($"Attempting to connect to PostgreSQL with user 'myuser'.");
+
+            try
+            {
+                await using var connection = new NpgsqlConnection(_connectionString);
+                await connection.OpenAsync();
+                _logger.LogInformation("Successfully connected to PostgreSQL.");
+
+                // Optional setup queries if needed, e.g., setting up schemas or permissions
+                var setupQuery = @"
+                    GRANT ALL PRIVILEGES ON DATABASE test_db TO myuser;
+                    ALTER USER myuser CREATEDB;";
+
+                await using (var cmd = new NpgsqlCommand(setupQuery, connection))
+                {
+                    await cmd.ExecuteNonQueryAsync();
+                    _logger.LogInformation("Database setup completed successfully.");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"An error occurred while setting up the database: {ex.Message}");
+                throw;
+            }
         }
 
         private async Task SeedData(IServiceProvider serviceProvider)
@@ -167,7 +304,7 @@ namespace RitualWorks.Tests
         {
             await _postgresHelper.StopContainer();
             await _rabbitMqHelper.StopContainer();
-            // await _azuriteHelper.StopContainer();
+            await _minioHelper.StopContainer();
             Factory?.Dispose();
             Client?.Dispose();
         }

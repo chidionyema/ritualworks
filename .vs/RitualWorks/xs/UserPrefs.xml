@@ -1,20 +1,17 @@
 ﻿<Properties StartupConfiguration="{205B9001-2688-4920-9CC3-096B7077E2BA}|https">
-  <DisabledProjects>
-    <String>tests/RitualWorks.Tests/RitualWorks.Tests.csproj</String>
-  </DisabledProjects>
+  <MonoDevelop.Ide.ItemProperties.RitualWorks PreferredExecutionTarget="/Applications/Firefox.app" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.Workbench ActiveDocument="src/Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="tests/RitualWorks.Tests.integration/appsettings.json">
     <Files>
-      <File FileName="src/appsettings.json" />
+      <File FileName="src/appsettings.json" Line="3" Column="84" />
       <File FileName="src/Services/RitualService.cs" />
       <File FileName="src/Db/RitualType.cs" />
       <File FileName="src/Db/Ritual.cs" />
       <File FileName="src/Db/User.cs" />
       <File FileName="src/Controllers/AuthenticationController.cs" />
-      <File FileName="src/Program.cs" Line="229" Column="81" />
+      <File FileName="src/Program.cs" Line="213" Column="23" />
       <File FileName="src/Contracts/IRitualService.cs" />
       <File FileName="src/Settings/BlobSettings.cs" />
       <File FileName="src/Db/Post.cs" />
@@ -52,7 +49,6 @@
       <File FileName="src/MyConsumer.cs" />
       <File FileName="src/MyMessage.cs" />
       <File FileName="src/Repositories/BaseRepository.cs" />
-      <File FileName="src/Controllers/UploadController.cs" />
       <File FileName="src/Controllers/WebhookController.cs" />
       <File FileName="src/Db/ProductImage.cs" />
       <File FileName="src/Db/Category.cs" />
@@ -62,30 +58,34 @@
       <File FileName="src/Controllers/OrdersController.cs" />
       <File FileName="src/Controllers/RitualsController.cs" />
       <File FileName="src/Services/OrderService.cs" />
-      <File FileName="tests/RitualWorks.Tests.integration/CheckoutControllerTests.cs" />
-      <File FileName="tests/RitualWorks.Tests.integration/IntegrationTestFixture.cs" Line="148" Column="91" />
-      <File FileName="tests/RitualWorks.Tests.integration/DockerHelper.cs" />
+      <File FileName="tests/RitualWorks.Tests.integration/CheckoutControllerTests.cs" Line="1" Column="1" />
+      <File FileName="tests/RitualWorks.Tests.integration/IntegrationTestFixture.cs" Line="44" Column="30" />
+      <File FileName="tests/RitualWorks.Tests.integration/DockerHelper.cs" Line="82" Column="1" />
       <File FileName="tests/RitualWorks.Tests.integration/ProductsControllerTests.cs" />
-      <File FileName="tests/RitualWorks.Tests.integration/UploadControllerTests.cs" />
-      <File FileName="tests/RitualWorks.Tests.integration/appsettings.json" />
+      <File FileName="tests/RitualWorks.Tests.integration/appsettings.json" Line="3" Column="65" />
       <File FileName="tests/RitualWorks.Tests.integration/AuthenticationControllerTests.cs" />
       <File FileName="tests/RitualWorks.Tests.integration/TestAuthenticationMiddleware.cs" />
       <File FileName="src/Services/SignedUrlService.cs" />
-      <File FileName="src/Services/LocalFileStorageService.cs" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="RitualWorks" expanded="True">
-            <Node name="RitualWorks">
-              <Node name="Program.cs" selected="True" />
+            <Node name="tests" expanded="True">
+              <Node name="RitualWorks.Tests">
+                <Node name="appsettings.json" selected="True" />
+              </Node>
             </Node>
+            <Node name="RitualWorks" expanded="True" />
           </Node>
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.ItemProperties.RitualWorks PreferredExecutionTarget="/Applications/Firefox.app" />
-  <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <DisabledProjects>
+    <String>tests/RitualWorks.Tests/RitualWorks.Tests.csproj</String>
+  </DisabledProjects>
 </Properties>

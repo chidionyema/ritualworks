@@ -5,7 +5,6 @@ using System.Net.Http.Json;
 using System.Linq;
 using System.Threading.Tasks;
 using RitualWorks.Controllers;
-using Xunit;
 
 namespace RitualWorks.Tests
 {
