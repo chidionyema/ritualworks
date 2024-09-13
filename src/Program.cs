@@ -55,8 +55,17 @@ public partial class Program
 
             x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host("rabbitmq://rabbitmq-node1"); 
+                // Read RabbitMQ configuration from the built-in .NET configuration
+                var rabbitMqHost = builder.Configuration["MassTransit:RabbitMq:Host"];
+                var rabbitMqUsername = builder.Configuration["MassTransit:RabbitMq:Username"];
+                var rabbitMqPassword = builder.Configuration["MassTransit:RabbitMq:Password"];
 
+                // Configure RabbitMQ host
+                cfg.Host(rabbitMqHost, h =>
+                {
+                    h.Username(rabbitMqUsername);
+                    h.Password(rabbitMqPassword);
+                });
 
                 // Configure prefetch count to optimize message consumption
                 cfg.PrefetchCount = 16;
@@ -178,16 +187,6 @@ public partial class Program
                 }
             });
         });
-
-        // CORS Policy
-        /*
-        builder.Services.AddCors(options =>
-        {
-            options.AddPolicy("Allow3001",
-                builder => builder.WithOrigins("http://localhost:3001")
-                                .AllowAnyHeader()
-                                .AllowAnyMethod());
-        });*/
 
         return builder;
     }

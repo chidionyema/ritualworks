@@ -104,8 +104,8 @@ namespace RitualWorks.Tests
                 containerPort: 5672,
                 environmentVariables: new List<string>
                 {
-                    "RABBITMQ_DEFAULT_USER=user",
-                    "RABBITMQ_DEFAULT_PASS=password"
+                    "RABBITMQ_DEFAULT_USER=guest",
+                    "RABBITMQ_DEFAULT_PASS=guest"
                 }
             ).GetAwaiter().GetResult();
         }
@@ -127,7 +127,7 @@ namespace RitualWorks.Tests
         public async Task InitializeAsync()
         {
             await _postgresHelper.StartContainer(5432, 5432, new List<string> { "POSTGRES_USER=myuser", "POSTGRES_PASSWORD=mypassword", "POSTGRES_DB=test_db" });
-            await _rabbitMqHelper.StartContainer(5672, 5672, new List<string> { "RABBITMQ_DEFAULT_USER=user", "RABBITMQ_DEFAULT_PASS=password" });
+            await _rabbitMqHelper.StartContainer(5672, 5672, new List<string> { "RABBITMQ_DEFAULT_USER=guest", "RABBITMQ_DEFAULT_PASS=guest" });
             await _minioHelper.StartContainer(9000, 9000, new List<string> { "MINIO_ROOT_USER=minioadmin", "MINIO_ROOT_PASSWORD=minioadmin" }, new List<string> { "server", "/data" });
 
             Factory = new WebApplicationFactory<Program>()
