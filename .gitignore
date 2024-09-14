@@ -19,6 +19,8 @@ terraform.tfstate.backup  # Terraform state backup files
 # Ignore solution-specific files
 *.sln.docstates
 *.sln
+# Ignore Elasticsearch logs
+elasticsearch/logs/
 
 # Ignore configuration files
 appsettings.json
