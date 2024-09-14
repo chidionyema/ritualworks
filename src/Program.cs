@@ -47,7 +47,7 @@ public partial class Program
         // Configure BlobSettings
         builder.Services.Configure<BlobSettings>(builder.Configuration.GetSection("AzureBlobStorage"));
 
-        // Add MassTransit configuration with RabbitMQ settings read from the configuration
+        // Add MassTransit configuration with RabbitMQ settings
         builder.Services.AddMassTransit(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
@@ -55,31 +55,21 @@ public partial class Program
 
             x.UsingRabbitMq((context, cfg) =>
             {
-                // Read RabbitMQ settings from the configuration
-                var rabbitMqHost = builder.Configuration["MassTransit:RabbitMq:Host"];
-                var rabbitMqUsername = builder.Configuration["MassTransit:RabbitMq:Username"];
-                var rabbitMqPassword = builder.Configuration["MassTransit:RabbitMq:Password"];
+                // Simplified RabbitMQ settings without SSL
+                var rabbitMqHost = "amqp://rabbitmq-node1:5672"; // Correct protocol is `amqp`
+                // Use `amqp` protocol for plain connection
+                var rabbitMqUsername = "rabbit_user";
+                var rabbitMqPassword = "rabbit_password";
 
                 cfg.Host(new Uri(rabbitMqHost), h =>
                 {
                     h.Username(rabbitMqUsername);
                     h.Password(rabbitMqPassword);
-
-                    // Configure SSL settings if enabled
-                    bool sslEnabled = bool.TryParse(builder.Configuration["MassTransit:RabbitMq:Ssl:Enabled"], out var enabled) && enabled;
-                    if (sslEnabled)
-                    {
-                        h.UseSsl(s =>
-                        {
-                            s.Protocol = SslProtocols.Tls12; // Use appropriate SSL protocol
-                            s.ServerName = builder.Configuration["MassTransit:RabbitMq:Ssl:ServerName"];
-                            s.CertificatePath = builder.Configuration["MassTransit:RabbitMq:Ssl:CertificatePath"];
-                            s.CertificatePassphrase = builder.Configuration["MassTransit:RabbitMq:Ssl:CertificatePassphrase"];
-                        });
-                    }
+                    h.Heartbeat(10); // Add heartbeat interval
+                    h.RequestedConnectionTimeout(TimeSpan.FromSeconds(30)); // Increase connection timeout
                 });
 
-                // Additional configuration
+                // Additional MassTransit configurations
                 cfg.PrefetchCount = 16;
                 cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
                 cfg.UseInMemoryOutbox();

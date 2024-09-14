@@ -56,13 +56,13 @@ namespace RitualWorks.Controllers
             var token = GenerateToken(user.UserName, user.Id, DateTime.Now.AddHours(3));
             SetJwtCookie(token);
 
-            await _publishEndpoint.Publish(new UserRegisteredEvent
+            /*await _publishEndpoint.Publish(new UserRegisteredEvent
             {
                 UserId = user.Id,
                 Username = user.UserName,
                 Email = user.Email
             });
-
+*/
             return Ok(new { message = "User registered successfully" });
         }
 

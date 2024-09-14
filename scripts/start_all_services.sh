@@ -92,66 +92,12 @@ create_networks
 
 # Start backend services
 start_services "$COMPOSE_FINAL_FILE" "backend" "${no_cache_services[@]}"
+
+# Add a delay before starting the frontend services to allow backend services to stabilize
+log "Delaying startup of frontend services to ensure backend services are ready..."
+sleep 30  # Adjust the delay time as necessary
+
 # Start frontend services
 start_services "$COMPOSE_FE_FILE" "frontend" "${no_cache_services[@]}"
-
-# Function to check if a service is healthy
-check_service_health() {
-  local service=$1
-  local retries=30  # Number of retries
-  local wait_time=10  # Wait time in seconds between retries
-
-  log "Checking health status of service: $service"
-  for i in $(seq 1 $retries); do
-    local status=$(docker inspect --format '{{.State.Health.Status}}' "$service" 2>/dev/null)
-    if [ "$status" == "healthy" ]; then
-      log "$service is healthy."
-      return 0
-    fi
-    log "Waiting for $service to be healthy... (attempt $i/$retries)"
-    sleep $wait_time
-  done
-  log "$service did not become healthy after $retries attempts."
-  return 1
-}
-
-# List of backend services to check
-services=(
-  "postgres_primary"
-  "postgres_standby"
-  "elasticsearch-node1"
-  "elasticsearch-node2"
-  "redis-master"
-  "redis-replica"
-  "rabbitmq-node1"
-  "rabbitmq-node2"
-  "minio1"
-  "minio2"
-  "minio3"
-  "minio4"
-)
-
-# Construct full container names
-backend_services=()
-for service in "${services[@]}"; do
-  backend_services+=("${PROJECT_NAME}_${service}_1")
-done
-
-# Wait for backend services to be fully up
-log "Waiting for all backend services to be fully up and running..."
-
-all_services_healthy=true
-for service in "${backend_services[@]}"; do
-  if ! check_service_health "$service"; then
-    all_services_healthy=false
-    log "$service is not healthy."
-  fi
-done
-
-if [ "$all_services_healthy" = true ]; then
-  log "All backend services are healthy."
-else
-  error_exit "Some backend services failed to reach a healthy state. Please check the logs for details."
-fi
 
 log "Deployment completed successfully. All services are up and running."

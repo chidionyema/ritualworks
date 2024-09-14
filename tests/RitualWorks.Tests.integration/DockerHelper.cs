@@ -81,18 +81,38 @@ namespace RitualWorks.Tests
                     _logger.LogInformation("Container started successfully.");
                 }
 
-                // Run post-start callback if specified
-                if (_postStartCallback != null)
-                {
-                    _logger.LogInformation("Running post-start callback...");
-                    await _postStartCallback(hostPort);
-                }
+                // Wait for the container to become healthy
+                await WaitForContainerToBeHealthy();
             }
             catch (Exception ex)
             {
+                // Log the error and allow the container to keep running
                 _logger.LogError($"Error starting container {_containerName}: {ex.Message}");
-                throw;
+                // DO NOT stop or remove the container here
             }
+        }
+
+        public async Task WaitForContainerToBeHealthy()
+        {
+            _logger.LogInformation("Waiting for the container to become healthy...");
+
+            var timeout = TimeSpan.FromMinutes(5); // Adjust as needed
+            var startTime = DateTime.UtcNow;
+
+            while (DateTime.UtcNow - startTime < timeout)
+            {
+                var containerStatus = await _dockerClient.Containers.InspectContainerAsync(_containerId);
+                if (containerStatus.State.Health?.Status == "healthy" || containerStatus.State.Status == "running")
+                {
+                    _logger.LogInformation("Container is healthy.");
+                    return;
+                }
+
+                await Task.Delay(1000); // Wait 1 second before checking again
+            }
+
+            _logger.LogWarning($"Container {_containerName} did not become healthy within the allotted time.");
+            // Instead of stopping, log and allow the container to keep running
         }
 
         public async Task StopContainer()

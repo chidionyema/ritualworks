@@ -17,7 +17,7 @@ services:
       - REPMGR_PASSWORD=mypassword   # Ensure consistency if this password is used for replication
       - VAULT_ADDR=http://vault:8200
     ports:
-      - "5434:5432"
+      - "5432:5432"
     volumes:
       - ../../data/postgres-primary-data:/bitnami/postgresql
       - ../../scripts:/scripts  # Ensure the path mounts the scripts directory correctly
@@ -53,7 +53,7 @@ services:
       - REPMGR_PRIMARY_HOST=postgres_primary
       - REPMGR_PASSWORD=mypassword   # Ensure consistency if this is related to user permissions
     ports:
-      - "5435:5432"
+      - "5434:5432"
     volumes:
       - ../../data/postgres-standby-data:/bitnami/postgresql
       - ../../scripts:/scripts
@@ -217,8 +217,8 @@ services:
   rabbitmq-node1:
     image: rabbitmq:3-management
     environment:
-      - RABBITMQ_DEFAULT_USER=your_rabbitmq_user
-      - RABBITMQ_DEFAULT_PASS=your_rabbitmq_password
+      - RABBITMQ_DEFAULT_USER=rabbit_user
+      - RABBITMQ_DEFAULT_PASS=rabbit_password
       - RABBITMQ_NODENAME=rabbit@rabbitmq-node1
     hostname: rabbitmq-node1
     networks:
@@ -254,8 +254,8 @@ services:
   rabbitmq-node2:
     image: rabbitmq:3-management
     environment:
-      - RABBITMQ_DEFAULT_USER=your_rabbitmq_user
-      - RABBITMQ_DEFAULT_PASS=your_rabbitmq_password
+      - RABBITMQ_DEFAULT_USER=rabbit_user
+      - RABBITMQ_DEFAULT_PASS=rabbit_password
       - RABBITMQ_NODENAME=rabbit@rabbitmq-node2
     hostname: rabbitmq-node2
     networks:

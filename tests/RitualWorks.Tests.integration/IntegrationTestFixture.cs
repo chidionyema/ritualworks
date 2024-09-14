@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using Castle.Core;
 using Docker.DotNet.Models;
@@ -13,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Npgsql;
 using RitualWorks;
 using RitualWorks.Db;
@@ -133,18 +135,21 @@ namespace RitualWorks.Tests
             Factory = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
-                    var projectDir = GetProjectPath();
-                    var configPath = Path.Combine(projectDir, "tests", "RitualWorks.Tests.integration");
+                    var appPath = GetApplicationPath();
+                    var testPath = GetTestConfigPath();
 
-                    if (!Directory.Exists(configPath))
+                    Console.WriteLine($"Application Path: {appPath}");
+                    Console.WriteLine($"Test Configuration Path: {testPath}");
+
+                    if (!Directory.Exists(testPath))
                     {
-                        throw new DirectoryNotFoundException($"The configuration path '{configPath}' does not exist.");
+                        throw new DirectoryNotFoundException($"The configuration path '{testPath}' does not exist.");
                     }
 
-                    builder.UseSetting("ContentRoot", configPath);
+                    builder.UseSetting("ContentRoot", appPath);
                     builder.ConfigureAppConfiguration((context, config) =>
                     {
-                        config.SetBasePath(configPath);
+                        config.SetBasePath(testPath);
                         config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
                     });
 
@@ -171,6 +176,9 @@ namespace RitualWorks.Tests
 
             Client = Factory.CreateClient();
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Test");
+
+            // Register and login test user
+            await RegisterAndLoginTestUser();
         }
 
         private async Task WaitForPostgresToBeReadyAsync(int port)
@@ -197,9 +205,8 @@ namespace RitualWorks.Tests
             throw new Exception("PostgreSQL did not start within the allocated timeout.");
         }
 
-            private async Task EnsureDatabaseExistsAsync(int port)
+        private async Task EnsureDatabaseExistsAsync(int port)
         {
-            // Connect to the default 'postgres' database to manage other databases
             var adminConnectionString = $"Host=localhost;Port={port};Username=myuser;Password=mypassword;Database=postgres;";
 
             try
@@ -238,7 +245,6 @@ namespace RitualWorks.Tests
                 await connection.OpenAsync();
                 _logger.LogInformation("Successfully connected to PostgreSQL.");
 
-                // Optional setup queries if needed, e.g., setting up schemas or permissions
                 var setupQuery = @"
                     GRANT ALL PRIVILEGES ON DATABASE test_db TO myuser;
                     ALTER USER myuser CREATEDB;";
@@ -282,6 +288,53 @@ namespace RitualWorks.Tests
             await context.SaveChangesAsync();
         }
 
+        private async Task RegisterAndLoginTestUser()
+        {
+            // Register the test user
+            var registerRequest = new
+            {
+                UserName = "testuser",
+                Email = "testuser@example.com",
+                Password = "Password123!"
+            };
+
+            var registerResponse = await Client.PostAsync("/api/auth/register", 
+                new StringContent(JsonConvert.SerializeObject(registerRequest), Encoding.UTF8, "application/json"));
+
+            // Log the response for debugging
+            var registerResponseContent = await registerResponse.Content.ReadAsStringAsync();
+            Console.WriteLine($"Registration Response: {registerResponseContent}");
+
+            if (!registerResponse.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Registration failed with status code {registerResponse.StatusCode}: {registerResponseContent}");
+                throw new Exception("Test user registration failed.");
+            }
+
+            // Login the test user
+            var loginRequest = new
+            {
+                Email = "testuser@example.com",
+                Password = "Password123!"
+            };
+
+            var loginResponse = await Client.PostAsync("/api/auth/login", 
+                new StringContent(JsonConvert.SerializeObject(loginRequest), Encoding.UTF8, "application/json"));
+
+            // Log the response for debugging
+            var loginResponseContent = await loginResponse.Content.ReadAsStringAsync();
+            Console.WriteLine($"Login Response: {loginResponseContent}");
+
+            if (!loginResponse.IsSuccessStatusCode)
+            {
+                Console.WriteLine($"Login failed with status code {loginResponse.StatusCode}: {loginResponseContent}");
+                throw new Exception("Test user login failed.");
+            }
+
+            var loginResult = JsonConvert.DeserializeObject<LoginResult>(loginResponseContent);
+            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginResult.Token);
+        }
+
         private string GetProjectPath()
         {
             var currentDirectory = AppContext.BaseDirectory;
@@ -300,16 +353,41 @@ namespace RitualWorks.Tests
             return directoryInfo.FullName;
         }
 
+        private string GetApplicationPath()
+        {
+            return Path.Combine(GetProjectPath(), "src");
+        }
+
+        private string GetTestConfigPath()
+        {
+            return Path.Combine(GetProjectPath(), "tests", "RitualWorks.Tests.integration");
+        }
+
         public async Task DisposeAsync()
         {
-            await _postgresHelper.StopContainer();
-            await _rabbitMqHelper.StopContainer();
-            await _minioHelper.StopContainer();
-            Factory?.Dispose();
-            Client?.Dispose();
+            try
+            {
+                await _postgresHelper.StopContainer();
+                await _rabbitMqHelper.StopContainer();
+                await _minioHelper.StopContainer();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error during cleanup: {ex.Message}");
+            }
+            finally
+            {
+                Factory?.Dispose();
+                Client?.Dispose();
+            }
         }
     }
 
     [CollectionDefinition("Integration Tests")]
     public class IntegrationTestCollection : ICollectionFixture<IntegrationTestFixture> { }
+
+    public class LoginResult
+    {
+        public string Token { get; set; }
+    }
 }
