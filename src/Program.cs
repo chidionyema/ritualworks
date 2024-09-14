@@ -48,26 +48,27 @@ public partial class Program
         builder.Services.Configure<BlobSettings>(builder.Configuration.GetSection("AzureBlobStorage"));
 
         // Add MassTransit configuration with RabbitMQ settings
-        /*
-        builder.Services.AddMassTransit(x =>
+        
+            builder.Services.AddMassTransit(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
             x.AddConsumer<MyConsumer>();
 
             x.UsingRabbitMq((context, cfg) =>
             {
-                // Simplified RabbitMQ settings without SSL
-                var rabbitMqHost = "amqp://rabbitmq-node1:5672"; // Correct protocol is `amqp`
-                // Use `amqp` protocol for plain connection
-                var rabbitMqUsername = "rabbit_user";
-                var rabbitMqPassword = "rabbit_password";
+                // Read RabbitMQ settings from the configuration
+                var rabbitMqHost = builder.Configuration["MassTransit:RabbitMq:Host"];
+                var rabbitMqUsername = builder.Configuration["MassTransit:RabbitMq:Username"];
+                var rabbitMqPassword = builder.Configuration["MassTransit:RabbitMq:Password"];
+                var heartbeatInterval = builder.Configuration.GetValue<int>("MassTransit:RabbitMq:HeartbeatInterval", 10);
+                var connectionTimeoutSeconds = builder.Configuration.GetValue<int>("MassTransit:RabbitMq:ConnectionTimeoutSeconds", 30);
 
                 cfg.Host(new Uri(rabbitMqHost), h =>
                 {
                     h.Username(rabbitMqUsername);
                     h.Password(rabbitMqPassword);
-                    h.Heartbeat(10); // Add heartbeat interval
-                    h.RequestedConnectionTimeout(TimeSpan.FromSeconds(30)); // Increase connection timeout
+                    h.Heartbeat((ushort)heartbeatInterval);// Use configured heartbeat interval
+                    h.RequestedConnectionTimeout(TimeSpan.FromSeconds(connectionTimeoutSeconds)); // Use configured connection timeout
                 });
 
                 // Additional MassTransit configurations
@@ -77,7 +78,7 @@ public partial class Program
 
                 cfg.ConfigureEndpoints(context);
             });
-        }); */
+        });
 
         // Add services to the container.
         builder.Services.AddControllers();

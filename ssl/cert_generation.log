@@ -12765,3 +12765,551 @@ drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
 -rw-------@ 1 chidionyema  staff   887 14 Sep 07:25 redis.csr
 -rw-------@ 1 chidionyema  staff  1704 14 Sep 07:25 redis.key
 -rw-------@ 1 chidionyema  staff  2819 14 Sep 07:25 redis.pem
+2024-09-14 07:31:16 - Generating CA certificate...
+2024-09-14 07:31:17 - CA private key generated successfully.
+2024-09-14 07:31:17 - Permissions set for ../ssl/certs/ca.key
+2024-09-14 07:31:17 - CA certificate generated successfully.
+2024-09-14 07:31:17 - Permissions set for ../ssl/certs/ca.crt
+2024-09-14 07:31:17 - Generating self-signed certificate for postgres...
+2024-09-14 07:31:18 - Self-signed certificate for postgres generated successfully.
+2024-09-14 07:31:18 - Permissions set for ../ssl/certs/postgres.key
+2024-09-14 07:31:18 - Permissions set for ../ssl/certs/postgres.crt
+2024-09-14 07:31:18 - Permissions set for ../ssl/certs/postgres.pem
+2024-09-14 07:31:18 - Generating self-signed certificate for redis...
+2024-09-14 07:31:19 - Self-signed certificate for redis generated successfully.
+2024-09-14 07:31:19 - Permissions set for ../ssl/certs/redis.key
+2024-09-14 07:31:19 - Permissions set for ../ssl/certs/redis.crt
+2024-09-14 07:31:19 - Permissions set for ../ssl/certs/redis.pem
+2024-09-14 07:31:19 - Generating self-signed certificate for rabbitmq-node1...
+2024-09-14 07:31:19 - Self-signed certificate for rabbitmq-node1 generated successfully.
+2024-09-14 07:31:19 - Permissions set for ../ssl/certs/rabbitmq-node1.key
+2024-09-14 07:31:20 - Permissions set for ../ssl/certs/rabbitmq-node1.crt
+2024-09-14 07:31:20 - Permissions set for ../ssl/certs/rabbitmq-node1.pem
+2024-09-14 07:31:20 - Generating self-signed certificate for rabbitmq-node2...
+2024-09-14 07:31:20 - Self-signed certificate for rabbitmq-node2 generated successfully.
+2024-09-14 07:31:20 - Permissions set for ../ssl/certs/rabbitmq-node2.key
+2024-09-14 07:31:20 - Permissions set for ../ssl/certs/rabbitmq-node2.crt
+2024-09-14 07:31:20 - Permissions set for ../ssl/certs/rabbitmq-node2.pem
+2024-09-14 07:31:20 - Generating self-signed certificate for es-node-1...
+2024-09-14 07:31:21 - Self-signed certificate for es-node-1 generated successfully.
+2024-09-14 07:31:22 - Permissions set for ../ssl/certs/es-node-1.key
+2024-09-14 07:31:22 - Permissions set for ../ssl/certs/es-node-1.crt
+2024-09-14 07:31:22 - Permissions set for ../ssl/certs/es-node-1.pem
+2024-09-14 07:31:22 - Generating self-signed certificate for es-node-2...
+2024-09-14 07:31:22 - Self-signed certificate for es-node-2 generated successfully.
+2024-09-14 07:31:22 - Permissions set for ../ssl/certs/es-node-2.key
+2024-09-14 07:31:23 - Permissions set for ../ssl/certs/es-node-2.crt
+2024-09-14 07:31:23 - Permissions set for ../ssl/certs/es-node-2.pem
+2024-09-14 07:31:23 - Generating self-signed certificate for minio1...
+2024-09-14 07:31:24 - Self-signed certificate for minio1 generated successfully.
+2024-09-14 07:31:24 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:31:25 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:31:25 - Permissions set for ../ssl/certs/minio1.pem
+2024-09-14 07:31:25 - Generating self-signed certificate for minio2...
+2024-09-14 07:31:25 - Self-signed certificate for minio2 generated successfully.
+2024-09-14 07:31:25 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:31:25 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:31:25 - Permissions set for ../ssl/certs/minio2.pem
+2024-09-14 07:31:25 - Generating self-signed certificate for minio3...
+2024-09-14 07:31:26 - Self-signed certificate for minio3 generated successfully.
+2024-09-14 07:31:26 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:31:26 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:31:26 - Permissions set for ../ssl/certs/minio3.pem
+2024-09-14 07:31:26 - Generating self-signed certificate for minio4...
+2024-09-14 07:31:27 - Self-signed certificate for minio4 generated successfully.
+2024-09-14 07:31:27 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:31:27 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:31:27 - Permissions set for ../ssl/certs/minio4.pem
+2024-09-14 07:31:27 - Generating self-signed certificate for haproxy...
+2024-09-14 07:31:27 - Self-signed certificate for haproxy generated successfully.
+2024-09-14 07:31:27 - Permissions set for ../ssl/certs/haproxy.key
+2024-09-14 07:31:27 - Permissions set for ../ssl/certs/haproxy.crt
+2024-09-14 07:31:27 - Permissions set for ../ssl/certs/haproxy.pem
+2024-09-14 07:31:27 - Copying MinIO certificates to /etc/minio/certs...
+2024-09-14 07:31:27 - Permissions set for /etc/minio/certs/public.crt
+2024-09-14 07:31:28 - Permissions set for /etc/minio/certs/private.key
+2024-09-14 07:31:28 - MinIO certificates copied successfully.
+2024-09-14 07:31:28 - Removing redundant MinIO certificates...
+2024-09-14 07:31:28 - Redundant MinIO certificates removed successfully.
+2024-09-14 07:31:28 - Setting permissions for all certificate files in ../ssl/certs...
+2024-09-14 07:31:30 - Permissions set for all certificate files.
+2024-09-14 07:31:30 - Generating self-signed certificate for local.ritualswork.com...
+2024-09-14 07:31:30 - Self-signed certificate for local.ritualswork.com generated successfully.
+2024-09-14 07:31:30 - Permissions set for ../ssl/certs/local.ritualswork.com.key
+2024-09-14 07:31:30 - Permissions set for ../ssl/certs/local.ritualswork.com.crt
+2024-09-14 07:31:31 - Permissions set for ../ssl/certs/local.ritualswork.com.pem
+2024-09-14 07:31:31 - Generating self-signed certificate for qtrader.local.ritualswork.com...
+2024-09-14 07:31:31 - Self-signed certificate for qtrader.local.ritualswork.com generated successfully.
+2024-09-14 07:31:31 - Permissions set for ../ssl/certs/qtrader.local.ritualswork.com.key
+2024-09-14 07:31:31 - Permissions set for ../ssl/certs/qtrader.local.ritualswork.com.crt
+2024-09-14 07:31:31 - Permissions set for ../ssl/certs/qtrader.local.ritualswork.com.pem
+2024-09-14 07:31:31 - Generating self-signed certificate for api.local.ritualswork.com...
+2024-09-14 07:31:32 - Self-signed certificate for api.local.ritualswork.com generated successfully.
+2024-09-14 07:31:32 - Permissions set for ../ssl/certs/api.local.ritualswork.com.key
+2024-09-14 07:31:32 - Permissions set for ../ssl/certs/api.local.ritualswork.com.crt
+2024-09-14 07:31:32 - Permissions set for ../ssl/certs/api.local.ritualswork.com.pem
+2024-09-14 07:31:32 - Certificate generation completed.
+2024-09-14 07:31:32 - Generated certificates:
+total 400
+drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
+-rw-------@ 1 chidionyema  staff  1249 14 Sep 07:31 api.local.ritualswork.com.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:31 api.local.ritualswork.com.key
+-rw-------@ 1 chidionyema  staff  2953 14 Sep 07:31 api.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1127 14 Sep 07:31 ca.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:31 ca.key
+-rw-------@ 1 chidionyema  staff    41 14 Sep 07:31 ca.srl
+-rw-------@ 1 chidionyema  staff  1127 14 Sep 07:31 es-node-1.crt
+-rw-------@ 1 chidionyema  staff   891 14 Sep 07:31 es-node-1.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:31 es-node-1.key
+-rw-------@ 1 chidionyema  staff  2831 14 Sep 07:31 es-node-1.pem
+-rw-------@ 1 chidionyema  staff  1127 14 Sep 07:31 es-node-2.crt
+-rw-------@ 1 chidionyema  staff   891 14 Sep 07:31 es-node-2.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:31 es-node-2.key
+-rw-------@ 1 chidionyema  staff  2831 14 Sep 07:31 es-node-2.pem
+-rw-------@ 1 chidionyema  staff  1123 14 Sep 07:31 haproxy.crt
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:31 haproxy.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:31 haproxy.key
+-rw-------@ 1 chidionyema  staff  2827 14 Sep 07:31 haproxy.pem
+-rw-------@ 1 chidionyema  staff  1237 14 Sep 07:31 local.ritualswork.com.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:31 local.ritualswork.com.key
+-rw-------@ 1 chidionyema  staff  2941 14 Sep 07:31 local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:31 minio1.csr
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:31 minio1.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:31 minio2.csr
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:31 minio2.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:31 minio3.csr
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:31 minio3.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:31 minio4.csr
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:31 minio4.pem
+-rw-------@ 1 chidionyema  staff  1123 14 Sep 07:31 postgres.crt
+-rw-------@ 1 chidionyema  staff   891 14 Sep 07:31 postgres.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:31 postgres.key
+-rw-------@ 1 chidionyema  staff  2827 14 Sep 07:31 postgres.pem
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:31 private.key
+-rw-------@ 1 chidionyema  staff  1119 14 Sep 07:31 public.crt
+-rw-------@ 1 chidionyema  staff  1261 14 Sep 07:31 qtrader.local.ritualswork.com.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:31 qtrader.local.ritualswork.com.key
+-rw-------@ 1 chidionyema  staff  2965 14 Sep 07:31 qtrader.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1139 14 Sep 07:31 rabbitmq-node1.crt
+-rw-------@ 1 chidionyema  staff   899 14 Sep 07:31 rabbitmq-node1.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:31 rabbitmq-node1.key
+-rw-------@ 1 chidionyema  staff  2843 14 Sep 07:31 rabbitmq-node1.pem
+-rw-------@ 1 chidionyema  staff  1139 14 Sep 07:31 rabbitmq-node2.crt
+-rw-------@ 1 chidionyema  staff   899 14 Sep 07:31 rabbitmq-node2.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:31 rabbitmq-node2.key
+-rw-------@ 1 chidionyema  staff  2843 14 Sep 07:31 rabbitmq-node2.pem
+-rw-------@ 1 chidionyema  staff  1115 14 Sep 07:31 redis.crt
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:31 redis.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:31 redis.key
+-rw-------@ 1 chidionyema  staff  2819 14 Sep 07:31 redis.pem
+2024-09-14 07:34:13 - Generating CA certificate...
+2024-09-14 07:34:13 - CA private key generated successfully.
+2024-09-14 07:34:13 - Permissions set for ../ssl/certs/ca.key
+2024-09-14 07:34:13 - CA certificate generated successfully.
+2024-09-14 07:34:13 - Permissions set for ../ssl/certs/ca.crt
+2024-09-14 07:34:13 - Generating self-signed certificate for postgres...
+2024-09-14 07:34:13 - Self-signed certificate for postgres generated successfully.
+2024-09-14 07:34:13 - Permissions set for ../ssl/certs/postgres.key
+2024-09-14 07:34:13 - Permissions set for ../ssl/certs/postgres.crt
+2024-09-14 07:34:14 - Permissions set for ../ssl/certs/postgres.pem
+2024-09-14 07:34:14 - Generating self-signed certificate for redis...
+2024-09-14 07:34:14 - Self-signed certificate for redis generated successfully.
+2024-09-14 07:34:14 - Permissions set for ../ssl/certs/redis.key
+2024-09-14 07:34:14 - Permissions set for ../ssl/certs/redis.crt
+2024-09-14 07:34:14 - Permissions set for ../ssl/certs/redis.pem
+2024-09-14 07:34:14 - Generating self-signed certificate for rabbitmq-node1...
+2024-09-14 07:34:14 - Self-signed certificate for rabbitmq-node1 generated successfully.
+2024-09-14 07:34:14 - Permissions set for ../ssl/certs/rabbitmq-node1.key
+2024-09-14 07:34:14 - Permissions set for ../ssl/certs/rabbitmq-node1.crt
+2024-09-14 07:34:14 - Permissions set for ../ssl/certs/rabbitmq-node1.pem
+2024-09-14 07:34:14 - Generating self-signed certificate for rabbitmq-node2...
+2024-09-14 07:34:15 - Self-signed certificate for rabbitmq-node2 generated successfully.
+2024-09-14 07:34:15 - Permissions set for ../ssl/certs/rabbitmq-node2.key
+2024-09-14 07:34:15 - Permissions set for ../ssl/certs/rabbitmq-node2.crt
+2024-09-14 07:34:15 - Permissions set for ../ssl/certs/rabbitmq-node2.pem
+2024-09-14 07:34:15 - Generating self-signed certificate for es-node-1...
+2024-09-14 07:34:15 - Self-signed certificate for es-node-1 generated successfully.
+2024-09-14 07:34:15 - Permissions set for ../ssl/certs/es-node-1.key
+2024-09-14 07:34:15 - Permissions set for ../ssl/certs/es-node-1.crt
+2024-09-14 07:34:15 - Permissions set for ../ssl/certs/es-node-1.pem
+2024-09-14 07:34:15 - Generating self-signed certificate for es-node-2...
+2024-09-14 07:34:15 - Self-signed certificate for es-node-2 generated successfully.
+2024-09-14 07:34:15 - Permissions set for ../ssl/certs/es-node-2.key
+2024-09-14 07:34:15 - Permissions set for ../ssl/certs/es-node-2.crt
+2024-09-14 07:34:16 - Permissions set for ../ssl/certs/es-node-2.pem
+2024-09-14 07:34:16 - Generating self-signed certificate for minio1...
+2024-09-14 07:34:16 - Self-signed certificate for minio1 generated successfully.
+2024-09-14 07:34:16 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:34:16 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:34:16 - Permissions set for ../ssl/certs/minio1.pem
+2024-09-14 07:34:16 - Generating self-signed certificate for minio2...
+2024-09-14 07:34:16 - Self-signed certificate for minio2 generated successfully.
+2024-09-14 07:34:16 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:34:17 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:34:17 - Permissions set for ../ssl/certs/minio2.pem
+2024-09-14 07:34:17 - Generating self-signed certificate for minio3...
+2024-09-14 07:34:17 - Self-signed certificate for minio3 generated successfully.
+2024-09-14 07:34:17 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:34:17 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:34:17 - Permissions set for ../ssl/certs/minio3.pem
+2024-09-14 07:34:17 - Generating self-signed certificate for minio4...
+2024-09-14 07:34:17 - Self-signed certificate for minio4 generated successfully.
+2024-09-14 07:34:17 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:34:17 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:34:17 - Permissions set for ../ssl/certs/minio4.pem
+2024-09-14 07:34:17 - Generating self-signed certificate for haproxy...
+2024-09-14 07:34:17 - Self-signed certificate for haproxy generated successfully.
+2024-09-14 07:34:17 - Permissions set for ../ssl/certs/haproxy.key
+2024-09-14 07:34:17 - Permissions set for ../ssl/certs/haproxy.crt
+2024-09-14 07:34:17 - Permissions set for ../ssl/certs/haproxy.pem
+2024-09-14 07:34:17 - Copying MinIO certificates to /etc/minio/certs...
+2024-09-14 07:34:17 - Permissions set for /etc/minio/certs/public.crt
+2024-09-14 07:34:18 - Permissions set for /etc/minio/certs/private.key
+2024-09-14 07:34:18 - MinIO certificates copied successfully.
+2024-09-14 07:34:18 - Removing redundant MinIO certificates...
+2024-09-14 07:34:18 - Redundant MinIO certificates removed successfully.
+2024-09-14 07:34:18 - Setting permissions for all certificate files in ../ssl/certs...
+2024-09-14 07:34:18 - Permissions set for all certificate files.
+2024-09-14 07:34:18 - Generating self-signed certificate for local.ritualswork.com...
+2024-09-14 07:34:18 - Self-signed certificate for local.ritualswork.com generated successfully.
+2024-09-14 07:34:18 - Permissions set for ../ssl/certs/local.ritualswork.com.key
+2024-09-14 07:34:18 - Permissions set for ../ssl/certs/local.ritualswork.com.crt
+2024-09-14 07:34:18 - Permissions set for ../ssl/certs/local.ritualswork.com.pem
+2024-09-14 07:34:18 - Generating self-signed certificate for qtrader.local.ritualswork.com...
+2024-09-14 07:34:18 - Self-signed certificate for qtrader.local.ritualswork.com generated successfully.
+2024-09-14 07:34:18 - Permissions set for ../ssl/certs/qtrader.local.ritualswork.com.key
+2024-09-14 07:34:18 - Permissions set for ../ssl/certs/qtrader.local.ritualswork.com.crt
+2024-09-14 07:34:18 - Permissions set for ../ssl/certs/qtrader.local.ritualswork.com.pem
+2024-09-14 07:34:18 - Generating self-signed certificate for api.local.ritualswork.com...
+2024-09-14 07:34:18 - Self-signed certificate for api.local.ritualswork.com generated successfully.
+2024-09-14 07:34:18 - Permissions set for ../ssl/certs/api.local.ritualswork.com.key
+2024-09-14 07:34:19 - Permissions set for ../ssl/certs/api.local.ritualswork.com.crt
+2024-09-14 07:34:19 - Permissions set for ../ssl/certs/api.local.ritualswork.com.pem
+2024-09-14 07:34:19 - Certificate generation completed.
+2024-09-14 07:34:19 - Generated certificates:
+total 400
+drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
+-rw-------@ 1 chidionyema  staff  1249 14 Sep 07:34 api.local.ritualswork.com.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:34 api.local.ritualswork.com.key
+-rw-------@ 1 chidionyema  staff  2953 14 Sep 07:34 api.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1127 14 Sep 07:34 ca.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:34 ca.key
+-rw-------@ 1 chidionyema  staff    41 14 Sep 07:34 ca.srl
+-rw-------@ 1 chidionyema  staff  1127 14 Sep 07:34 es-node-1.crt
+-rw-------@ 1 chidionyema  staff   891 14 Sep 07:34 es-node-1.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:34 es-node-1.key
+-rw-------@ 1 chidionyema  staff  2831 14 Sep 07:34 es-node-1.pem
+-rw-------@ 1 chidionyema  staff  1127 14 Sep 07:34 es-node-2.crt
+-rw-------@ 1 chidionyema  staff   891 14 Sep 07:34 es-node-2.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:34 es-node-2.key
+-rw-------@ 1 chidionyema  staff  2831 14 Sep 07:34 es-node-2.pem
+-rw-------@ 1 chidionyema  staff  1123 14 Sep 07:34 haproxy.crt
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:34 haproxy.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:34 haproxy.key
+-rw-------@ 1 chidionyema  staff  2827 14 Sep 07:34 haproxy.pem
+-rw-------@ 1 chidionyema  staff  1237 14 Sep 07:34 local.ritualswork.com.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:34 local.ritualswork.com.key
+-rw-------@ 1 chidionyema  staff  2941 14 Sep 07:34 local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:34 minio1.csr
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:34 minio1.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:34 minio2.csr
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:34 minio2.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:34 minio3.csr
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:34 minio3.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:34 minio4.csr
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:34 minio4.pem
+-rw-------@ 1 chidionyema  staff  1123 14 Sep 07:34 postgres.crt
+-rw-------@ 1 chidionyema  staff   891 14 Sep 07:34 postgres.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:34 postgres.key
+-rw-------@ 1 chidionyema  staff  2827 14 Sep 07:34 postgres.pem
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:34 private.key
+-rw-------@ 1 chidionyema  staff  1119 14 Sep 07:34 public.crt
+-rw-------@ 1 chidionyema  staff  1261 14 Sep 07:34 qtrader.local.ritualswork.com.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:34 qtrader.local.ritualswork.com.key
+-rw-------@ 1 chidionyema  staff  2965 14 Sep 07:34 qtrader.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1139 14 Sep 07:34 rabbitmq-node1.crt
+-rw-------@ 1 chidionyema  staff   899 14 Sep 07:34 rabbitmq-node1.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:34 rabbitmq-node1.key
+-rw-------@ 1 chidionyema  staff  2843 14 Sep 07:34 rabbitmq-node1.pem
+-rw-------@ 1 chidionyema  staff  1139 14 Sep 07:34 rabbitmq-node2.crt
+-rw-------@ 1 chidionyema  staff   899 14 Sep 07:34 rabbitmq-node2.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:34 rabbitmq-node2.key
+-rw-------@ 1 chidionyema  staff  2843 14 Sep 07:34 rabbitmq-node2.pem
+-rw-------@ 1 chidionyema  staff  1115 14 Sep 07:34 redis.crt
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:34 redis.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:34 redis.key
+-rw-------@ 1 chidionyema  staff  2819 14 Sep 07:34 redis.pem
+2024-09-14 07:41:04 - Generating CA certificate...
+2024-09-14 07:41:04 - CA private key generated successfully.
+2024-09-14 07:41:04 - Permissions set for ../ssl/certs/ca.key
+2024-09-14 07:41:04 - CA certificate generated successfully.
+2024-09-14 07:41:04 - Permissions set for ../ssl/certs/ca.crt
+2024-09-14 07:41:04 - Generating self-signed certificate for postgres...
+2024-09-14 07:41:05 - Self-signed certificate for postgres generated successfully.
+2024-09-14 07:41:05 - Permissions set for ../ssl/certs/postgres.key
+2024-09-14 07:41:05 - Permissions set for ../ssl/certs/postgres.crt
+2024-09-14 07:41:05 - Permissions set for ../ssl/certs/postgres.pem
+2024-09-14 07:41:05 - Generating self-signed certificate for redis...
+2024-09-14 07:41:05 - Self-signed certificate for redis generated successfully.
+2024-09-14 07:41:06 - Permissions set for ../ssl/certs/redis.key
+2024-09-14 07:41:06 - Permissions set for ../ssl/certs/redis.crt
+2024-09-14 07:41:06 - Permissions set for ../ssl/certs/redis.pem
+2024-09-14 07:41:06 - Generating self-signed certificate for rabbitmq-node1...
+2024-09-14 07:41:06 - Self-signed certificate for rabbitmq-node1 generated successfully.
+2024-09-14 07:41:06 - Permissions set for ../ssl/certs/rabbitmq-node1.key
+2024-09-14 07:41:06 - Permissions set for ../ssl/certs/rabbitmq-node1.crt
+2024-09-14 07:41:07 - Permissions set for ../ssl/certs/rabbitmq-node1.pem
+2024-09-14 07:41:07 - Generating self-signed certificate for rabbitmq-node2...
+2024-09-14 07:41:07 - Self-signed certificate for rabbitmq-node2 generated successfully.
+2024-09-14 07:41:07 - Permissions set for ../ssl/certs/rabbitmq-node2.key
+2024-09-14 07:41:07 - Permissions set for ../ssl/certs/rabbitmq-node2.crt
+2024-09-14 07:41:07 - Permissions set for ../ssl/certs/rabbitmq-node2.pem
+2024-09-14 07:41:07 - Generating self-signed certificate for es-node-1...
+2024-09-14 07:41:08 - Self-signed certificate for es-node-1 generated successfully.
+2024-09-14 07:41:08 - Permissions set for ../ssl/certs/es-node-1.key
+2024-09-14 07:41:08 - Permissions set for ../ssl/certs/es-node-1.crt
+2024-09-14 07:41:08 - Permissions set for ../ssl/certs/es-node-1.pem
+2024-09-14 07:41:08 - Generating self-signed certificate for es-node-2...
+2024-09-14 07:41:08 - Self-signed certificate for es-node-2 generated successfully.
+2024-09-14 07:41:08 - Permissions set for ../ssl/certs/es-node-2.key
+2024-09-14 07:41:08 - Permissions set for ../ssl/certs/es-node-2.crt
+2024-09-14 07:41:09 - Permissions set for ../ssl/certs/es-node-2.pem
+2024-09-14 07:41:09 - Generating self-signed certificate for minio1...
+2024-09-14 07:41:09 - Self-signed certificate for minio1 generated successfully.
+2024-09-14 07:41:09 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:41:09 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:41:09 - Permissions set for ../ssl/certs/minio1.pem
+2024-09-14 07:41:09 - Generating self-signed certificate for minio2...
+2024-09-14 07:41:09 - Self-signed certificate for minio2 generated successfully.
+2024-09-14 07:41:09 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:41:09 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:41:10 - Permissions set for ../ssl/certs/minio2.pem
+2024-09-14 07:41:10 - Generating self-signed certificate for minio3...
+2024-09-14 07:41:10 - Self-signed certificate for minio3 generated successfully.
+2024-09-14 07:41:10 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:41:10 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:41:10 - Permissions set for ../ssl/certs/minio3.pem
+2024-09-14 07:41:10 - Generating self-signed certificate for minio4...
+2024-09-14 07:41:10 - Self-signed certificate for minio4 generated successfully.
+2024-09-14 07:41:10 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:41:10 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:41:11 - Permissions set for ../ssl/certs/minio4.pem
+2024-09-14 07:41:11 - Generating self-signed certificate for haproxy...
+2024-09-14 07:41:11 - Self-signed certificate for haproxy generated successfully.
+2024-09-14 07:41:11 - Permissions set for ../ssl/certs/haproxy.key
+2024-09-14 07:41:11 - Permissions set for ../ssl/certs/haproxy.crt
+2024-09-14 07:41:11 - Permissions set for ../ssl/certs/haproxy.pem
+2024-09-14 07:41:11 - Copying MinIO certificates to /etc/minio/certs...
+2024-09-14 07:41:12 - Permissions set for /etc/minio/certs/public.crt
+2024-09-14 07:41:12 - Permissions set for /etc/minio/certs/private.key
+2024-09-14 07:41:12 - MinIO certificates copied successfully.
+2024-09-14 07:41:12 - Removing redundant MinIO certificates...
+2024-09-14 07:41:12 - Redundant MinIO certificates removed successfully.
+2024-09-14 07:41:12 - Setting permissions for all certificate files in ../ssl/certs...
+2024-09-14 07:41:13 - Permissions set for all certificate files.
+2024-09-14 07:41:13 - Generating self-signed certificate for local.ritualswork.com...
+2024-09-14 07:41:13 - Self-signed certificate for local.ritualswork.com generated successfully.
+2024-09-14 07:41:13 - Permissions set for ../ssl/certs/local.ritualswork.com.key
+2024-09-14 07:41:13 - Permissions set for ../ssl/certs/local.ritualswork.com.crt
+2024-09-14 07:41:14 - Permissions set for ../ssl/certs/local.ritualswork.com.pem
+2024-09-14 07:41:14 - Generating self-signed certificate for qtrader.local.ritualswork.com...
+2024-09-14 07:41:14 - Self-signed certificate for qtrader.local.ritualswork.com generated successfully.
+2024-09-14 07:41:14 - Permissions set for ../ssl/certs/qtrader.local.ritualswork.com.key
+2024-09-14 07:41:14 - Permissions set for ../ssl/certs/qtrader.local.ritualswork.com.crt
+2024-09-14 07:41:14 - Permissions set for ../ssl/certs/qtrader.local.ritualswork.com.pem
+2024-09-14 07:41:14 - Generating self-signed certificate for api.local.ritualswork.com...
+2024-09-14 07:41:15 - Self-signed certificate for api.local.ritualswork.com generated successfully.
+2024-09-14 07:41:15 - Permissions set for ../ssl/certs/api.local.ritualswork.com.key
+2024-09-14 07:41:15 - Permissions set for ../ssl/certs/api.local.ritualswork.com.crt
+2024-09-14 07:41:15 - Permissions set for ../ssl/certs/api.local.ritualswork.com.pem
+2024-09-14 07:41:15 - Certificate generation completed.
+2024-09-14 07:41:15 - Generated certificates:
+total 400
+drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
+-rw-------@ 1 chidionyema  staff  1249 14 Sep 07:41 api.local.ritualswork.com.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:41 api.local.ritualswork.com.key
+-rw-------@ 1 chidionyema  staff  2953 14 Sep 07:41 api.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1127 14 Sep 07:41 ca.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:41 ca.key
+-rw-------@ 1 chidionyema  staff    41 14 Sep 07:41 ca.srl
+-rw-------@ 1 chidionyema  staff  1127 14 Sep 07:41 es-node-1.crt
+-rw-------@ 1 chidionyema  staff   891 14 Sep 07:41 es-node-1.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:41 es-node-1.key
+-rw-------@ 1 chidionyema  staff  2831 14 Sep 07:41 es-node-1.pem
+-rw-------@ 1 chidionyema  staff  1127 14 Sep 07:41 es-node-2.crt
+-rw-------@ 1 chidionyema  staff   891 14 Sep 07:41 es-node-2.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:41 es-node-2.key
+-rw-------@ 1 chidionyema  staff  2831 14 Sep 07:41 es-node-2.pem
+-rw-------@ 1 chidionyema  staff  1123 14 Sep 07:41 haproxy.crt
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:41 haproxy.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:41 haproxy.key
+-rw-------@ 1 chidionyema  staff  2827 14 Sep 07:41 haproxy.pem
+-rw-------@ 1 chidionyema  staff  1237 14 Sep 07:41 local.ritualswork.com.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:41 local.ritualswork.com.key
+-rw-------@ 1 chidionyema  staff  2941 14 Sep 07:41 local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:41 minio1.csr
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:41 minio1.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:41 minio2.csr
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:41 minio2.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:41 minio3.csr
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:41 minio3.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:41 minio4.csr
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:41 minio4.pem
+-rw-------@ 1 chidionyema  staff  1123 14 Sep 07:41 postgres.crt
+-rw-------@ 1 chidionyema  staff   891 14 Sep 07:41 postgres.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:41 postgres.key
+-rw-------@ 1 chidionyema  staff  2827 14 Sep 07:41 postgres.pem
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:41 private.key
+-rw-------@ 1 chidionyema  staff  1119 14 Sep 07:41 public.crt
+-rw-------@ 1 chidionyema  staff  1261 14 Sep 07:41 qtrader.local.ritualswork.com.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:41 qtrader.local.ritualswork.com.key
+-rw-------@ 1 chidionyema  staff  2965 14 Sep 07:41 qtrader.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1139 14 Sep 07:41 rabbitmq-node1.crt
+-rw-------@ 1 chidionyema  staff   899 14 Sep 07:41 rabbitmq-node1.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:41 rabbitmq-node1.key
+-rw-------@ 1 chidionyema  staff  2843 14 Sep 07:41 rabbitmq-node1.pem
+-rw-------@ 1 chidionyema  staff  1139 14 Sep 07:41 rabbitmq-node2.crt
+-rw-------@ 1 chidionyema  staff   899 14 Sep 07:41 rabbitmq-node2.csr
+-rw-------@ 1 chidionyema  staff  1708 14 Sep 07:41 rabbitmq-node2.key
+-rw-------@ 1 chidionyema  staff  2847 14 Sep 07:41 rabbitmq-node2.pem
+-rw-------@ 1 chidionyema  staff  1115 14 Sep 07:41 redis.crt
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:41 redis.csr
+-rw-------@ 1 chidionyema  staff  1708 14 Sep 07:41 redis.key
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:41 redis.pem
+2024-09-14 07:43:51 - Generating CA certificate...
+2024-09-14 07:43:51 - CA private key generated successfully.
+2024-09-14 07:43:51 - Permissions set for ../ssl/certs/ca.key
+2024-09-14 07:43:51 - CA certificate generated successfully.
+2024-09-14 07:43:51 - Permissions set for ../ssl/certs/ca.crt
+2024-09-14 07:43:51 - Generating self-signed certificate for postgres...
+2024-09-14 07:43:52 - Self-signed certificate for postgres generated successfully.
+2024-09-14 07:43:52 - Permissions set for ../ssl/certs/postgres.key
+2024-09-14 07:43:52 - Permissions set for ../ssl/certs/postgres.crt
+2024-09-14 07:43:52 - Permissions set for ../ssl/certs/postgres.pem
+2024-09-14 07:43:52 - Generating self-signed certificate for redis...
+2024-09-14 07:43:52 - Self-signed certificate for redis generated successfully.
+2024-09-14 07:43:52 - Permissions set for ../ssl/certs/redis.key
+2024-09-14 07:43:52 - Permissions set for ../ssl/certs/redis.crt
+2024-09-14 07:43:52 - Permissions set for ../ssl/certs/redis.pem
+2024-09-14 07:43:52 - Generating self-signed certificate for rabbitmq-node1...
+2024-09-14 07:43:52 - Self-signed certificate for rabbitmq-node1 generated successfully.
+2024-09-14 07:43:52 - Permissions set for ../ssl/certs/rabbitmq-node1.key
+2024-09-14 07:43:52 - Permissions set for ../ssl/certs/rabbitmq-node1.crt
+2024-09-14 07:43:52 - Permissions set for ../ssl/certs/rabbitmq-node1.pem
+2024-09-14 07:43:52 - Generating self-signed certificate for rabbitmq-node2...
+2024-09-14 07:43:53 - Self-signed certificate for rabbitmq-node2 generated successfully.
+2024-09-14 07:43:53 - Permissions set for ../ssl/certs/rabbitmq-node2.key
+2024-09-14 07:43:53 - Permissions set for ../ssl/certs/rabbitmq-node2.crt
+2024-09-14 07:43:53 - Permissions set for ../ssl/certs/rabbitmq-node2.pem
+2024-09-14 07:43:53 - Generating self-signed certificate for es-node-1...
+2024-09-14 07:43:53 - Self-signed certificate for es-node-1 generated successfully.
+2024-09-14 07:43:53 - Permissions set for ../ssl/certs/es-node-1.key
+2024-09-14 07:43:53 - Permissions set for ../ssl/certs/es-node-1.crt
+2024-09-14 07:43:53 - Permissions set for ../ssl/certs/es-node-1.pem
+2024-09-14 07:43:53 - Generating self-signed certificate for es-node-2...
+2024-09-14 07:43:53 - Self-signed certificate for es-node-2 generated successfully.
+2024-09-14 07:43:53 - Permissions set for ../ssl/certs/es-node-2.key
+2024-09-14 07:43:53 - Permissions set for ../ssl/certs/es-node-2.crt
+2024-09-14 07:43:53 - Permissions set for ../ssl/certs/es-node-2.pem
+2024-09-14 07:43:53 - Generating self-signed certificate for minio1...
+2024-09-14 07:43:54 - Self-signed certificate for minio1 generated successfully.
+2024-09-14 07:43:54 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:43:54 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:43:54 - Permissions set for ../ssl/certs/minio1.pem
+2024-09-14 07:43:54 - Generating self-signed certificate for minio2...
+2024-09-14 07:43:54 - Self-signed certificate for minio2 generated successfully.
+2024-09-14 07:43:54 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:43:54 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:43:54 - Permissions set for ../ssl/certs/minio2.pem
+2024-09-14 07:43:54 - Generating self-signed certificate for minio3...
+2024-09-14 07:43:54 - Self-signed certificate for minio3 generated successfully.
+2024-09-14 07:43:54 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:43:54 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:43:54 - Permissions set for ../ssl/certs/minio3.pem
+2024-09-14 07:43:54 - Generating self-signed certificate for minio4...
+2024-09-14 07:43:54 - Self-signed certificate for minio4 generated successfully.
+2024-09-14 07:43:54 - Permissions set for ../ssl/certs/private.key
+2024-09-14 07:43:54 - Permissions set for ../ssl/certs/public.crt
+2024-09-14 07:43:55 - Permissions set for ../ssl/certs/minio4.pem
+2024-09-14 07:43:55 - Generating self-signed certificate for haproxy...
+2024-09-14 07:43:55 - Self-signed certificate for haproxy generated successfully.
+2024-09-14 07:43:55 - Permissions set for ../ssl/certs/haproxy.key
+2024-09-14 07:43:55 - Permissions set for ../ssl/certs/haproxy.crt
+2024-09-14 07:43:55 - Permissions set for ../ssl/certs/haproxy.pem
+2024-09-14 07:43:55 - Copying MinIO certificates to /etc/minio/certs...
+2024-09-14 07:43:55 - Permissions set for /etc/minio/certs/public.crt
+2024-09-14 07:43:55 - Permissions set for /etc/minio/certs/private.key
+2024-09-14 07:43:55 - MinIO certificates copied successfully.
+2024-09-14 07:43:55 - Removing redundant MinIO certificates...
+2024-09-14 07:43:55 - Redundant MinIO certificates removed successfully.
+2024-09-14 07:43:55 - Setting permissions for all certificate files in ../ssl/certs...
+2024-09-14 07:43:55 - Permissions set for all certificate files.
+2024-09-14 07:43:55 - Generating self-signed certificate for local.ritualswork.com...
+2024-09-14 07:43:55 - Self-signed certificate for local.ritualswork.com generated successfully.
+2024-09-14 07:43:55 - Permissions set for ../ssl/certs/local.ritualswork.com.key
+2024-09-14 07:43:55 - Permissions set for ../ssl/certs/local.ritualswork.com.crt
+2024-09-14 07:43:55 - Permissions set for ../ssl/certs/local.ritualswork.com.pem
+2024-09-14 07:43:55 - Generating self-signed certificate for qtrader.local.ritualswork.com...
+2024-09-14 07:43:56 - Self-signed certificate for qtrader.local.ritualswork.com generated successfully.
+2024-09-14 07:43:56 - Permissions set for ../ssl/certs/qtrader.local.ritualswork.com.key
+2024-09-14 07:43:56 - Permissions set for ../ssl/certs/qtrader.local.ritualswork.com.crt
+2024-09-14 07:43:56 - Permissions set for ../ssl/certs/qtrader.local.ritualswork.com.pem
+2024-09-14 07:43:56 - Generating self-signed certificate for api.local.ritualswork.com...
+2024-09-14 07:43:56 - Self-signed certificate for api.local.ritualswork.com generated successfully.
+2024-09-14 07:43:56 - Permissions set for ../ssl/certs/api.local.ritualswork.com.key
+2024-09-14 07:43:56 - Permissions set for ../ssl/certs/api.local.ritualswork.com.crt
+2024-09-14 07:43:56 - Permissions set for ../ssl/certs/api.local.ritualswork.com.pem
+2024-09-14 07:43:56 - Certificate generation completed.
+2024-09-14 07:43:56 - Generated certificates:
+total 400
+drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
+-rw-------@ 1 chidionyema  staff  1249 14 Sep 07:43 api.local.ritualswork.com.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:43 api.local.ritualswork.com.key
+-rw-------@ 1 chidionyema  staff  2953 14 Sep 07:43 api.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1127 14 Sep 07:43 ca.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:43 ca.key
+-rw-------@ 1 chidionyema  staff    41 14 Sep 07:43 ca.srl
+-rw-------@ 1 chidionyema  staff  1127 14 Sep 07:43 es-node-1.crt
+-rw-------@ 1 chidionyema  staff   891 14 Sep 07:43 es-node-1.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:43 es-node-1.key
+-rw-------@ 1 chidionyema  staff  2831 14 Sep 07:43 es-node-1.pem
+-rw-------@ 1 chidionyema  staff  1127 14 Sep 07:43 es-node-2.crt
+-rw-------@ 1 chidionyema  staff   891 14 Sep 07:43 es-node-2.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:43 es-node-2.key
+-rw-------@ 1 chidionyema  staff  2831 14 Sep 07:43 es-node-2.pem
+-rw-------@ 1 chidionyema  staff  1123 14 Sep 07:43 haproxy.crt
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:43 haproxy.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:43 haproxy.key
+-rw-------@ 1 chidionyema  staff  2827 14 Sep 07:43 haproxy.pem
+-rw-------@ 1 chidionyema  staff  1237 14 Sep 07:43 local.ritualswork.com.crt
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:43 local.ritualswork.com.key
+-rw-------@ 1 chidionyema  staff  2941 14 Sep 07:43 local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:43 minio1.csr
+-rw-------@ 1 chidionyema  staff  2827 14 Sep 07:43 minio1.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:43 minio2.csr
+-rw-------@ 1 chidionyema  staff  2827 14 Sep 07:43 minio2.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:43 minio3.csr
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:43 minio3.pem
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:43 minio4.csr
+-rw-------@ 1 chidionyema  staff  2823 14 Sep 07:43 minio4.pem
+-rw-------@ 1 chidionyema  staff  1123 14 Sep 07:43 postgres.crt
+-rw-------@ 1 chidionyema  staff   891 14 Sep 07:43 postgres.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:43 postgres.key
+-rw-------@ 1 chidionyema  staff  2827 14 Sep 07:43 postgres.pem
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:43 private.key
+-rw-------@ 1 chidionyema  staff  1119 14 Sep 07:43 public.crt
+-rw-------@ 1 chidionyema  staff  1261 14 Sep 07:43 qtrader.local.ritualswork.com.crt
+-rw-------@ 1 chidionyema  staff  1708 14 Sep 07:43 qtrader.local.ritualswork.com.key
+-rw-------@ 1 chidionyema  staff  2969 14 Sep 07:43 qtrader.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1139 14 Sep 07:43 rabbitmq-node1.crt
+-rw-------@ 1 chidionyema  staff   899 14 Sep 07:43 rabbitmq-node1.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:43 rabbitmq-node1.key
+-rw-------@ 1 chidionyema  staff  2843 14 Sep 07:43 rabbitmq-node1.pem
+-rw-------@ 1 chidionyema  staff  1139 14 Sep 07:43 rabbitmq-node2.crt
+-rw-------@ 1 chidionyema  staff   899 14 Sep 07:43 rabbitmq-node2.csr
+-rw-------@ 1 chidionyema  staff  1704 14 Sep 07:43 rabbitmq-node2.key
+-rw-------@ 1 chidionyema  staff  2843 14 Sep 07:43 rabbitmq-node2.pem
+-rw-------@ 1 chidionyema  staff  1115 14 Sep 07:43 redis.crt
+-rw-------@ 1 chidionyema  staff   887 14 Sep 07:43 redis.csr
+-rw-------@ 1 chidionyema  staff  1700 14 Sep 07:43 redis.key
+-rw-------@ 1 chidionyema  staff  2815 14 Sep 07:43 redis.pem
