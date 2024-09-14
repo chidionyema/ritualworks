@@ -22,14 +22,13 @@ namespace RitualWorks.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthenticationController> _logger;
-        private readonly IPublishEndpoint _publishEndpoint;
+        //private readonly IPublishEndpoint _publishEndpoint;
 
-        public AuthenticationController(UserManager<User> userManager, IConfiguration configuration, ILogger<AuthenticationController> logger, IPublishEndpoint publishEndpoint)
+        public AuthenticationController(UserManager<User> userManager, IConfiguration configuration, ILogger<AuthenticationController> logger)
         {
             _userManager = userManager;
             _configuration = configuration;
             _logger = logger;
-            _publishEndpoint = publishEndpoint;
         }
 
         [HttpPost("register")]

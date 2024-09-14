@@ -81,23 +81,26 @@ PASSWORD=${POSTGRES_PASSWORD:-$DEFAULT_PASSWORD}
 log "Using POSTGRES_USER: $USER"
 log "Using POSTGRES_PASSWORD: $PASSWORD"
 
-# Create the necessary role if it doesn't exist
+# Create the necessary role if it doesn't exist and grant CREATEDB privilege
 log "Creating role if it doesn't exist: $USER"
 psql -U postgres -d postgres -c "DO \$\$
 BEGIN
    IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = '$USER') THEN
       CREATE ROLE $USER LOGIN PASSWORD '$PASSWORD';
+      ALTER ROLE $USER CREATEDB;  -- Grant CREATEDB privilege
+   ELSE
+      ALTER ROLE $USER CREATEDB;  -- Ensure CREATEDB privilege is granted if the role exists
    END IF;
 END
-\$\$;" || log "Error: Failed to create role $USER."
+\$\$;" || log "Error: Failed to create or update role $USER."
 
 # Verify if the role was created successfully
 log "Verifying role creation..."
 ROLE_EXISTS=$(psql -U postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='$USER'")
 if [ "$ROLE_EXISTS" == "1" ]; then
-    log "Role $USER created successfully."
+    log "Role $USER created or updated successfully."
 else
-    log "Error: Role $USER was not created."
+    log "Error: Role $USER was not created or updated."
 fi
 
 # Tail the PostgreSQL logs to keep the container running and for visibility

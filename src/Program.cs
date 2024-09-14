@@ -48,6 +48,7 @@ public partial class Program
         builder.Services.Configure<BlobSettings>(builder.Configuration.GetSection("AzureBlobStorage"));
 
         // Add MassTransit configuration with RabbitMQ settings
+        /*
         builder.Services.AddMassTransit(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
@@ -76,7 +77,7 @@ public partial class Program
 
                 cfg.ConfigureEndpoints(context);
             });
-        });
+        }); */
 
         // Add services to the container.
         builder.Services.AddControllers();
