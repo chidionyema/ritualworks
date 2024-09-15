@@ -19,7 +19,10 @@ namespace RitualWorks.Controllers
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
 
-        public CheckoutController(ILogger<CheckoutController> logger, IOrderRepository orderRepository, IProductRepository productRepository)
+        public CheckoutController(
+            ILogger<CheckoutController> logger, 
+            IOrderRepository orderRepository, 
+            IProductRepository productRepository)
         {
             _logger = logger;
             _orderRepository = orderRepository;
@@ -27,75 +30,94 @@ namespace RitualWorks.Controllers
         }
 
         [HttpPost("create-session")]
-        // [Authorize]
         public async Task<IActionResult> CreateCheckoutSession([FromBody] List<CheckoutItem> items)
         {
             if (items == null || !items.Any())
             {
+                _logger.LogWarning("CreateCheckoutSession called with no items.");
                 return BadRequest("No items in the checkout.");
             }
 
-            var productIds = items.Select(i => i.ProductId).ToList();
-            var products = await _productRepository.GetProductsByIdsAsync(productIds);
-
-            if (products.Count != items.Count)
+            try
             {
-                return BadRequest("Some products are invalid.");
-            }
+                var productIds = items.Select(i => i.ProductId).ToList();
+                var products = await _productRepository.GetProductsByIdsAsync(productIds);
 
-            foreach (var item in items)
-            {
-                var product = products.FirstOrDefault(p => p.Id == item.ProductId);
-                if (product == null || product.Price != item.Price)
+                if (products.Count != items.Count)
                 {
-                    return BadRequest($"Invalid price for product {item.Name}.");
+                    _logger.LogWarning("Some products in the checkout are invalid.");
+                    return BadRequest("Some products are invalid.");
                 }
-            }
 
-            var domain = "http://localhost:3000"; // Update to your frontend URL
-            var options = new SessionCreateOptions
-            {
-                PaymentMethodTypes = new List<string> { "card" },
-                LineItems = items.Select(item => new SessionLineItemOptions
+                foreach (var item in items)
                 {
-                    PriceData = new SessionLineItemPriceDataOptions
+                    var product = products.FirstOrDefault(p => p.Id == item.ProductId);
+                    if (product == null || product.Price != item.Price)
                     {
-                        UnitAmount = (long)(item.Price * 100),
-                        Currency = "usd",
-                        ProductData = new SessionLineItemPriceDataProductDataOptions
-                        {
-                            Name = item.Name
-                        }
-                    },
-                    Quantity = (int)item.Quantity
-                }).ToList(),
-                Mode = "payment",
-                SuccessUrl = $"{domain}/success?session_id={{CHECKOUT_SESSION_ID}}",
-                CancelUrl = $"{domain}/cancel"
-            };
+                        _logger.LogWarning($"Invalid price for product {item.Name}.");
+                        return BadRequest($"Invalid price for product {item.Name}.");
+                    }
+                }
 
-            var service = new SessionService();
-            var session = await service.CreateAsync(options);
+                // Derive the domain dynamically from the incoming request
+                var domain = $"{Request.Scheme}://{Request.Host}";
 
-            // Create order
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var order = new Order
-            {
-                Id = Guid.NewGuid(),
-                OrderDate = DateTime.UtcNow,
-                UserId = "1",
-                OrderItems = items.Select(i => new OrderItem
+                var options = new SessionCreateOptions
                 {
-                    ProductId = i.ProductId,
-                    Quantity = (int)i.Quantity
-                }).ToList(),
-                TotalAmount = items.Sum(i => i.Price * i.Quantity),
-                Status = OrderStatus.Pending
-            };
+                    PaymentMethodTypes = new List<string> { "card" },
+                    LineItems = items.Select(item => new SessionLineItemOptions
+                    {
+                        PriceData = new SessionLineItemPriceDataOptions
+                        {
+                            UnitAmount = (long)(item.Price * 100),
+                            Currency = "usd",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = item.Name
+                            }
+                        },
+                        Quantity = (int)item.Quantity
+                    }).ToList(),
+                    Mode = "payment",
+                    SuccessUrl = $"{domain}/success?session_id={{CHECKOUT_SESSION_ID}}",
+                    CancelUrl = $"{domain}/cancel"
+                };
 
-            await _orderRepository.CreateOrderAsync(order);
+                var service = new SessionService();
+                var session = await service.CreateAsync(options);
 
-            return Ok(new { id = session.Id });
+                // Create order
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                if (string.IsNullOrEmpty(userId))
+                {
+                    _logger.LogWarning("User ID could not be found in the claims.");
+                    return Unauthorized("User authentication failed.");
+                }
+
+                var order = new Order
+                {
+                    Id = Guid.NewGuid(),
+                    OrderDate = DateTime.UtcNow,
+                    UserId = userId,
+                    OrderItems = items.Select(i => new OrderItem
+                    {
+                        ProductId = i.ProductId,
+                        Quantity = (int)i.Quantity
+                    }).ToList(),
+                    TotalAmount = items.Sum(i => i.Price * i.Quantity),
+                    Status = OrderStatus.Pending
+                };
+
+                await _orderRepository.CreateOrderAsync(order);
+
+                _logger.LogInformation($"Checkout session created successfully for User {userId} with Order ID {order.Id}.");
+                return Ok(new { id = session.Id });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while creating the checkout session.");
+                return StatusCode(500, "An internal server error occurred. Please try again later.");
+            }
         }
     }
 

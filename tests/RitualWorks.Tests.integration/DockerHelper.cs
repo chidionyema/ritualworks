@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Docker.DotNet;
@@ -13,26 +14,32 @@ namespace RitualWorks.Tests
         private readonly ILogger<DockerHelper> _logger;
         private readonly string _imageName;
         private readonly string _containerName;
-        private readonly int _serviceStartTimeout;
         private readonly Func<int, Task> _postStartCallback;
         private DockerClient _dockerClient;
         private string _containerId;
 
-        public DockerHelper(ILogger<DockerHelper> logger, string imageName, string containerName, int serviceStartTimeout, Func<int, Task> postStartCallback = null)
+        public string ContainerName => _containerName; // Expose the container name
+
+        public DockerHelper(ILogger<DockerHelper> logger, string imageName, string containerName, Func<int, Task> postStartCallback = null)
         {
             _logger = logger;
             _imageName = imageName;
             _containerName = containerName;
-            _serviceStartTimeout = serviceStartTimeout;
             _postStartCallback = postStartCallback;
             _dockerClient = new DockerClientConfiguration(new Uri("unix:///var/run/docker.sock")).CreateClient();
+        }
+
+        // Method to return the DockerClient instance
+        public DockerClient GetDockerClient()
+        {
+            return _dockerClient;
         }
 
         public async Task StartContainer(int hostPort, int containerPort, List<string> environmentVariables, List<string> command = null)
         {
             try
             {
-                _logger.LogInformation($"Starting container {_containerName}...");
+                _logger.LogInformation($"Starting container {_containerName} with image {_imageName} on host port {hostPort} and container port {containerPort}...");
 
                 // Check if the container already exists
                 var containers = await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters() { All = true });
@@ -79,6 +86,13 @@ namespace RitualWorks.Tests
 
                     await _dockerClient.Containers.StartContainerAsync(_containerId, null);
                     _logger.LogInformation("Container started successfully.");
+                }
+
+                // Log the post-start callback if applicable
+                if (_postStartCallback != null)
+                {
+                    _logger.LogInformation($"Executing post-start callback on port {hostPort}...");
+                    await _postStartCallback(hostPort);
                 }
 
                 // Wait for the container to become healthy

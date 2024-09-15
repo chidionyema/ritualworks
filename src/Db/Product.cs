@@ -10,11 +10,9 @@ namespace RitualWorks.Db
         public string Description { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public double Rating { get; set; }
-        public bool IsNew { get; set; }
-
+        public bool IsNew { get; set; }        
         public int Stock { get; set; }
-
-         public bool InStock { get; set; }
+        public bool InStock { get; set; }
         public ICollection<ProductImage>? ProductImages { get; set; }
         public ICollection<ProductAsset>? ProductAssets { get; set; }
         public ICollection<ProductReview>?  ProductReviews { get; set; }

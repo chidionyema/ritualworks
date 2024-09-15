@@ -7,19 +7,26 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Castle.Core;
+using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.TestHost;
 using Newtonsoft.Json;
 using Npgsql;
 using RitualWorks;
 using RitualWorks.Db;
 using Xunit;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
+using RabbitMQ.Client;
 
 namespace RitualWorks.Tests
 {
@@ -58,80 +65,51 @@ namespace RitualWorks.Tests
                 _logger,
                 imageName: "postgres:13",
                 containerName: "postgres_test_container",
-                serviceStartTimeout: 60000,
                 postStartCallback: async (port) =>
                 {
-                    await WaitForPostgresToBeReadyAsync(port);
                     await EnsureDatabaseExistsAsync(port);
                     await SetupDatabaseAsync(port);
                 }
             );
-            ConfigurePostgresHelper();
 
             _rabbitMqHelper = new DockerHelper(
                 _logger,
                 imageName: "rabbitmq:3-management",
-                containerName: "rabbitmq_test_container",
-                serviceStartTimeout: 60000
+                containerName: "rabbitmq_test_container"
             );
-            ConfigureRabbitMqHelper();
 
             _minioHelper = new DockerHelper(
                 _logger,
                 imageName: "minio/minio",
-                containerName: "minio_test_container",
-                serviceStartTimeout: 60000
+                containerName: "minio_test_container"
             );
-            ConfigureMinioHelper();
-        }
-
-        private void ConfigurePostgresHelper()
-        {
-            _postgresHelper.StartContainer(
-                hostPort: 5432,
-                containerPort: 5432,
-                environmentVariables: new List<string>
-                {
-                    "POSTGRES_USER=myuser",
-                    "POSTGRES_PASSWORD=mypassword",
-                    "POSTGRES_DB=test_db"
-                }
-            ).GetAwaiter().GetResult();
-        }
-
-        private void ConfigureRabbitMqHelper()
-        {
-            _rabbitMqHelper.StartContainer(
-                hostPort: 5672,
-                containerPort: 5672,
-                environmentVariables: new List<string>
-                {
-                    "RABBITMQ_DEFAULT_USER=guest",
-                    "RABBITMQ_DEFAULT_PASS=guest"
-                }
-            ).GetAwaiter().GetResult();
-        }
-
-        private void ConfigureMinioHelper()
-        {
-            _minioHelper.StartContainer(
-                hostPort: 9000,
-                containerPort: 9000,
-                environmentVariables: new List<string>
-                {
-                    "MINIO_ROOT_USER=minioadmin",
-                    "MINIO_ROOT_PASSWORD=minioadmin"
-                },
-                command: new List<string> { "server", "/data" }
-            ).GetAwaiter().GetResult();
         }
 
         public async Task InitializeAsync()
         {
-            await _postgresHelper.StartContainer(5432, 5432, new List<string> { "POSTGRES_USER=myuser", "POSTGRES_PASSWORD=mypassword", "POSTGRES_DB=test_db" });
-            await _rabbitMqHelper.StartContainer(5672, 5672, new List<string> { "RABBITMQ_DEFAULT_USER=guest", "RABBITMQ_DEFAULT_PASS=guest" });
-            await _minioHelper.StartContainer(9000, 9000, new List<string> { "MINIO_ROOT_USER=minioadmin", "MINIO_ROOT_PASSWORD=minioadmin" }, new List<string> { "server", "/data" });
+            // Start PostgreSQL container and ensure it's ready
+            await _postgresHelper.StartContainer(
+                hostPort: 5432,
+                containerPort: 5432,
+                environmentVariables: new List<string> { "POSTGRES_USER=myuser", "POSTGRES_PASSWORD=mypassword" });
 
+            await WaitForPostgresToBeReadyAsync(5432);
+
+            // Start RabbitMQ container and ensure it's ready
+            await _rabbitMqHelper.StartContainer(
+                hostPort: 5672,
+                containerPort: 5672,
+                environmentVariables: new List<string> { "RABBITMQ_DEFAULT_USER=guest", "RABBITMQ_DEFAULT_PASS=guest" });
+
+            await WaitForRabbitMqToBeReadyAsync(5672);
+
+            // Start MinIO container (adjust ports and env variables as necessary)
+            await _minioHelper.StartContainer(
+                hostPort: 9000,
+                containerPort: 9000,
+                environmentVariables: new List<string> { "MINIO_ACCESS_KEY=minio", "MINIO_SECRET_KEY=minio123" });
+
+            // Proceed with the rest of the application setup
             Factory = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
@@ -141,9 +119,34 @@ namespace RitualWorks.Tests
                     Console.WriteLine($"Application Path: {appPath}");
                     Console.WriteLine($"Test Configuration Path: {testPath}");
 
-                    if (!Directory.Exists(testPath))
+                    // Print the contents of the application path
+                    if (Directory.Exists(appPath))
                     {
-                        throw new DirectoryNotFoundException($"The configuration path '{testPath}' does not exist.");
+                        Console.WriteLine("Application Path Contents:");
+                        foreach (var file in Directory.GetFiles(appPath, "*.*", SearchOption.AllDirectories))
+                        {
+                            Console.WriteLine(file);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Application path '{appPath}' does not exist.");
+                        throw new DirectoryNotFoundException($"Application path '{appPath}' does not exist.");
+                    }
+
+                    // Print the contents of the test configuration path
+                    if (Directory.Exists(testPath))
+                    {
+                        Console.WriteLine("Test Configuration Path Contents:");
+                        foreach (var file in Directory.GetFiles(testPath, "*.*", SearchOption.AllDirectories))
+                        {
+                            Console.WriteLine(file);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Test configuration path '{testPath}' does not exist.");
+                        throw new DirectoryNotFoundException($"Test configuration path '{testPath}' does not exist.");
                     }
 
                     builder.UseSetting("ContentRoot", appPath);
@@ -153,7 +156,7 @@ namespace RitualWorks.Tests
                         config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
                     });
 
-                    builder.ConfigureServices(services =>
+                    builder.ConfigureTestServices(services =>
                     {
                         services.AddEntityFrameworkNpgsql()
                             .AddDbContext<RitualWorksContext>(options =>
@@ -161,6 +164,8 @@ namespace RitualWorks.Tests
 
                         services.AddAuthentication("Test")
                             .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
+
+                        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
                         var sp = services.BuildServiceProvider();
 
@@ -172,13 +177,15 @@ namespace RitualWorks.Tests
                             SeedData(scopedServices).Wait();
                         }
                     });
+
+                    builder.ConfigureServices(services =>
+                    {
+                        services.AddSingleton<IStartupFilter>(new StartupFilter());
+                    });
                 });
 
             Client = Factory.CreateClient();
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Test");
-
-            // Register and login test user
-            await RegisterAndLoginTestUser();
         }
 
         private async Task WaitForPostgresToBeReadyAsync(int port)
@@ -186,23 +193,83 @@ namespace RitualWorks.Tests
             _logger.LogInformation("Waiting for PostgreSQL to initialize...");
             var timeout = Task.Delay(60000);
 
+            var adminConnectionString = $"Host=localhost;Port={port};Username=myuser;Password=mypassword;Database=postgres;";
+
             while (!timeout.IsCompleted)
             {
                 try
                 {
-                    await using var connection = new NpgsqlConnection(_connectionString);
+                    await using var connection = new NpgsqlConnection(adminConnectionString);
                     await connection.OpenAsync();
                     _logger.LogInformation("PostgreSQL container is ready.");
                     return;
                 }
-                catch (Exception ex)
+                catch (NpgsqlException ex) when (ex.SqlState == "3D000")
                 {
                     _logger.LogWarning($"Waiting for PostgreSQL to be ready: {ex.Message}");
+                    await Task.Delay(1000);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning($"Error waiting for PostgreSQL to be ready: {ex.Message}");
                     await Task.Delay(1000);
                 }
             }
 
             throw new Exception("PostgreSQL did not start within the allocated timeout.");
+        }
+
+       private async Task WaitForRabbitMqToBeReadyAsync(int port)
+{
+    _logger.LogInformation("Waiting for RabbitMQ to initialize...");
+    var timeout = TimeSpan.FromMinutes(5); // Increased timeout for RabbitMQ initialization
+    var startTime = DateTime.UtcNow;
+    int retryCount = 0;
+
+    // Retrieve container logs to help diagnose RabbitMQ readiness issues
+    await LogContainerDetails(_rabbitMqHelper.ContainerName, _rabbitMqHelper.GetDockerClient());
+
+    while (DateTime.UtcNow - startTime < timeout)
+    {
+        try
+        {
+            _logger.LogInformation($"Attempt {++retryCount}: Connecting to RabbitMQ on port {port}...");
+            var factory = new ConnectionFactory() { HostName = "localhost", Port = port };
+            using var connection = factory.CreateConnection();
+            _logger.LogInformation("RabbitMQ is ready.");
+            return;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning($"Waiting for RabbitMQ to be ready: {ex.Message}");
+            
+            // Gradually increase wait time between retries to handle delayed readiness
+            await Task.Delay(3000 * retryCount); // Delay increases with each retry
+        }
+    }
+
+    throw new Exception("RabbitMQ did not start within the allocated timeout.");
+}
+
+        private async Task LogContainerDetails(string containerName, DockerClient dockerClient)
+        {
+            _logger.LogInformation($"Fetching logs for container {containerName} to diagnose startup issues...");
+
+            try
+            {
+                var logs = await dockerClient.Containers.GetContainerLogsAsync(
+                    containerName,
+                    new ContainerLogsParameters { ShowStdout = true, ShowStderr = true },
+                    new System.Threading.CancellationToken());
+
+                using var reader = new StreamReader(logs);
+                string logContent = await reader.ReadToEndAsync();
+                _logger.LogInformation($"Logs for {containerName}:\n{logContent}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Could not retrieve logs for container {containerName}: {ex.Message}");
+            }
         }
 
         private async Task EnsureDatabaseExistsAsync(int port)
@@ -288,53 +355,6 @@ namespace RitualWorks.Tests
             await context.SaveChangesAsync();
         }
 
-        private async Task RegisterAndLoginTestUser()
-        {
-            // Register the test user
-            var registerRequest = new
-            {
-                UserName = "testuser",
-                Email = "testuser@example.com",
-                Password = "Password123!"
-            };
-
-            var registerResponse = await Client.PostAsync("/api/auth/register", 
-                new StringContent(JsonConvert.SerializeObject(registerRequest), Encoding.UTF8, "application/json"));
-
-            // Log the response for debugging
-            var registerResponseContent = await registerResponse.Content.ReadAsStringAsync();
-            Console.WriteLine($"Registration Response: {registerResponseContent}");
-
-            if (!registerResponse.IsSuccessStatusCode)
-            {
-                Console.WriteLine($"Registration failed with status code {registerResponse.StatusCode}: {registerResponseContent}");
-                throw new Exception("Test user registration failed.");
-            }
-
-            // Login the test user
-            var loginRequest = new
-            {
-                Email = "testuser@example.com",
-                Password = "Password123!"
-            };
-
-            var loginResponse = await Client.PostAsync("/api/auth/login", 
-                new StringContent(JsonConvert.SerializeObject(loginRequest), Encoding.UTF8, "application/json"));
-
-            // Log the response for debugging
-            var loginResponseContent = await loginResponse.Content.ReadAsStringAsync();
-            Console.WriteLine($"Login Response: {loginResponseContent}");
-
-            if (!loginResponse.IsSuccessStatusCode)
-            {
-                Console.WriteLine($"Login failed with status code {loginResponse.StatusCode}: {loginResponseContent}");
-                throw new Exception("Test user login failed.");
-            }
-
-            var loginResult = JsonConvert.DeserializeObject<LoginResult>(loginResponseContent);
-            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", loginResult.Token);
-        }
-
         private string GetProjectPath()
         {
             var currentDirectory = AppContext.BaseDirectory;
@@ -355,12 +375,52 @@ namespace RitualWorks.Tests
 
         private string GetApplicationPath()
         {
-            return Path.Combine(GetProjectPath(), "src");
+            var currentDirectory = AppContext.BaseDirectory;
+            var directoryInfo = new DirectoryInfo(currentDirectory);
+
+            while (directoryInfo != null && !File.Exists(Path.Combine(directoryInfo.FullName, "RitualWorks.sln")))
+            {
+                directoryInfo = directoryInfo.Parent;
+            }
+
+            if (directoryInfo == null)
+            {
+                throw new DirectoryNotFoundException("Solution directory could not be found.");
+            }
+
+            var applicationPath = Path.Combine(directoryInfo.FullName, "src");
+
+            if (!Directory.Exists(applicationPath))
+            {
+                throw new DirectoryNotFoundException($"Application path '{applicationPath}' does not exist.");
+            }
+
+            return applicationPath;
         }
 
         private string GetTestConfigPath()
         {
-            return Path.Combine(GetProjectPath(), "tests", "RitualWorks.Tests.integration");
+            var currentDirectory = AppContext.BaseDirectory;
+            var directoryInfo = new DirectoryInfo(currentDirectory);
+
+            while (directoryInfo != null && !File.Exists(Path.Combine(directoryInfo.FullName, "RitualWorks.sln")))
+            {
+                directoryInfo = directoryInfo.Parent;
+            }
+
+            if (directoryInfo == null)
+            {
+                throw new DirectoryNotFoundException("Solution directory could not be found.");
+            }
+
+            var testConfigPath = Path.Combine(directoryInfo.FullName, "tests", "RitualWorks.Tests.integration");
+
+            if (!Directory.Exists(testConfigPath))
+            {
+                throw new DirectoryNotFoundException($"Test configuration path '{testConfigPath}' does not exist.");
+            }
+
+            return testConfigPath;
         }
 
         public async Task DisposeAsync()
@@ -385,9 +445,4 @@ namespace RitualWorks.Tests
 
     [CollectionDefinition("Integration Tests")]
     public class IntegrationTestCollection : ICollectionFixture<IntegrationTestFixture> { }
-
-    public class LoginResult
-    {
-        public string Token { get; set; }
-    }
 }

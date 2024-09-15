@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace RitualWorks.Tests
 {
+    // Middleware to simulate authentication during testing
     public class TestAuthenticationMiddleware
     {
         private readonly RequestDelegate _next;
@@ -21,9 +22,9 @@ namespace RitualWorks.Tests
         {
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
-            new Claim(ClaimTypes.Name, "testuser") // Ensure this claim is included
-        };
+                new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
+                new Claim(ClaimTypes.Name, "testuser") // Ensure this claim is included
+            };
             var identity = new ClaimsIdentity(claims, "Test");
             var principal = new ClaimsPrincipal(identity);
             context.User = principal;
@@ -32,6 +33,7 @@ namespace RitualWorks.Tests
         }
     }
 
+    // Custom authentication handler for testing
     public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         public TestAuthHandler(
@@ -47,9 +49,9 @@ namespace RitualWorks.Tests
         {
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
-            new Claim(ClaimTypes.Name, "testuser") // Add this line to include the Name claim
-        };
+                new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
+                new Claim(ClaimTypes.Name, "testuser") // Add this line to include the Name claim
+            };
             var identity = new ClaimsIdentity(claims, "Test");
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, "Test");
@@ -59,8 +61,4 @@ namespace RitualWorks.Tests
             return Task.FromResult(result);
         }
     }
-
-
-
 }
-

@@ -1,17 +1,24 @@
 ﻿<Properties StartupConfiguration="{205B9001-2688-4920-9CC3-096B7077E2BA}|https">
   <MonoDevelop.Ide.ItemProperties.RitualWorks PreferredExecutionTarget="/Applications/Firefox.app" />
+  <DisabledProjects>
+    <String>tests/RitualWorks.Tests/RitualWorks.Tests.csproj</String>
+  </DisabledProjects>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="/Users/chidionyema/Documents/code/RitualWorks/src/Controllers/AuthenticationController.cs" relfile="src/Controllers/AuthenticationController.cs" line="37" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="tests/RitualWorks.Tests.integration/appsettings.json">
+  <MonoDevelop.Ide.Workbench ActiveDocument="src/Program.cs">
     <Files>
-      <File FileName="src/appsettings.json" Line="3" Column="84" />
+      <File FileName="src/appsettings.json" Line="7" Column="18" />
       <File FileName="src/Services/RitualService.cs" />
       <File FileName="src/Db/RitualType.cs" />
       <File FileName="src/Db/Ritual.cs" />
       <File FileName="src/Db/User.cs" />
-      <File FileName="src/Controllers/AuthenticationController.cs" />
-      <File FileName="src/Program.cs" Line="213" Column="23" />
+      <File FileName="src/Controllers/AuthenticationController.cs" Line="38" Column="1" />
+      <File FileName="src/Program.cs" Line="68" Column="17" />
       <File FileName="src/Contracts/IRitualService.cs" />
       <File FileName="src/Settings/BlobSettings.cs" />
       <File FileName="src/Db/Post.cs" />
@@ -58,9 +65,9 @@
       <File FileName="src/Controllers/OrdersController.cs" />
       <File FileName="src/Controllers/RitualsController.cs" />
       <File FileName="src/Services/OrderService.cs" />
-      <File FileName="tests/RitualWorks.Tests.integration/CheckoutControllerTests.cs" Line="1" Column="1" />
-      <File FileName="tests/RitualWorks.Tests.integration/IntegrationTestFixture.cs" Line="44" Column="30" />
-      <File FileName="tests/RitualWorks.Tests.integration/DockerHelper.cs" Line="82" Column="1" />
+      <File FileName="tests/RitualWorks.Tests.integration/CheckoutControllerTests.cs" />
+      <File FileName="tests/RitualWorks.Tests.integration/IntegrationTestFixture.cs" />
+      <File FileName="tests/RitualWorks.Tests.integration/DockerHelper.cs" />
       <File FileName="tests/RitualWorks.Tests.integration/ProductsControllerTests.cs" />
       <File FileName="tests/RitualWorks.Tests.integration/appsettings.json" Line="3" Column="65" />
       <File FileName="tests/RitualWorks.Tests.integration/AuthenticationControllerTests.cs" />
@@ -71,21 +78,12 @@
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="RitualWorks" expanded="True">
-            <Node name="tests" expanded="True">
-              <Node name="RitualWorks.Tests">
-                <Node name="appsettings.json" selected="True" />
-              </Node>
-            </Node>
+            <Node name="tests" expanded="True" />
             <Node name="RitualWorks" expanded="True" />
           </Node>
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <DisabledProjects>
-    <String>tests/RitualWorks.Tests/RitualWorks.Tests.csproj</String>
-  </DisabledProjects>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
 </Properties>

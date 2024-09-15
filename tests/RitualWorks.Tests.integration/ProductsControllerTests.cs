@@ -141,43 +141,45 @@ namespace RitualWorks.Tests
             Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
         }
 
-        [Fact]
-        public async Task GetProducts_WithPagination_ReturnsCorrectPage()
+       [Fact]
+public async Task GetProducts_WithPagination_ReturnsCorrectPage()
+{
+    // Create a category first
+    var categoryDto = new CategoryDto { Name = "Test Category" };
+    var categoryResponse = await _client.PostAsJsonAsync("/api/products/categories", categoryDto);
+    categoryResponse.EnsureSuccessStatusCode();
+    var createdCategory = await categoryResponse.Content.ReadFromJsonAsync<CategoryDto>();
+
+    // Create multiple products with predictable naming to ensure the order
+    for (int i = 0; i < 20; i++)
+    {
+        var productDto = new ProductDto
         {
-            // Create a category first
-            var categoryDto = new CategoryDto { Name = "Test Category" };
-            var categoryResponse = await _client.PostAsJsonAsync("/api/products/categories", categoryDto);
-            categoryResponse.EnsureSuccessStatusCode();
-            var createdCategory = await categoryResponse.Content.ReadFromJsonAsync<CategoryDto>();
+            Name = $"Product {i:D2}", // Ensure names are formatted correctly
+            Description = "Test Description",
+            Price = 9.99M,
+            Stock = 10,
+            CategoryId = createdCategory.Id,
+            ImageUrls = new List<string> { "http://example.com/image.jpg" }
+        };
 
-            // Create multiple products
-            for (int i = 0; i < 20; i++)
-            {
-                var productDto = new ProductDto
-                {
-                    Name = $"Product {i:D2}", // Ensure names are formatted to maintain order
-                    Description = "Test Description",
-                    Price = 9.99M,
-                    Stock = 10,
-                    CategoryId = createdCategory.Id,
-                    ImageUrls = new List<string> { "http://example.com/image.jpg" }
-                };
+        await _client.PostAsJsonAsync("/api/products", productDto);
+    }
 
-                await _client.PostAsJsonAsync("/api/products", productDto);
-            }
+    // Retrieve the second page of products, expecting items 10 through 19
+    var response = await _client.GetAsync("/api/products?page=2&pageSize=10");
+    response.EnsureSuccessStatusCode();
+    var products = await response.Content.ReadFromJsonAsync<IEnumerable<ProductDto>>();
 
-            // Get the second page of products (assuming 10 per page)
-            var response = await _client.GetAsync("/api/products?page=2&pageSize=10");
-            response.EnsureSuccessStatusCode();
-            var products = await response.Content.ReadFromJsonAsync<IEnumerable<ProductDto>>();
+    // Assert the page contains the correct number of items
+    Assert.Equal(10, products.Count());
 
-            Assert.Equal(10, products.Count());
-            // Ensure products are from the second page, i.e., Product 10 to Product 19
-            for (int i = 0; i < 10; i++)
-            {
-                Assert.Equal($"Product {i + 10:D2}", products.ElementAt(i).Name);
-            }
-        }
+    // Check if products are from the expected second page (names 10 to 19)
+    var expectedNames = Enumerable.Range(10, 10).Select(i => $"Product {i:D2}").ToList();
+    var actualNames = products.Select(p => p.Name).ToList();
+
+    Assert.Equal(expectedNames, actualNames);
+}
 
 
 
