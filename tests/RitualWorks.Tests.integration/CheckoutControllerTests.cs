@@ -8,10 +8,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using RitualWorks.Controllers;
 using RitualWorks.Db;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using static RitualWorks.Controllers.AuthenticationController;
-using RitualWorks.Contracts;
-using Xunit;
 
 namespace RitualWorks.Tests
 {
@@ -23,19 +22,26 @@ namespace RitualWorks.Tests
         private readonly UserManager<User> _userManager;
         private readonly List<User> _testUsers = new();
         private readonly IConfiguration _configuration;
+        private readonly WebApplicationFactory<Program> _factory;
 
         public CheckoutControllerTests(IntegrationTestFixture fixture)
         {
-            _client = fixture.Client;
             _fixture = fixture;
-            var scope = _fixture.Factory.Services.CreateScope();
+            _factory = _fixture.CreateFactory();
+            _client = _factory.CreateClient();
+
+            // Set up authentication header if needed
+            _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Test");
+
+            var scope = _factory.Services.CreateScope();
             _userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             _configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
         }
 
         public async Task InitializeAsync()
         {
-            // No need to initialize anything here
+            // No initialization needed here
+            await Task.CompletedTask;
         }
 
         public async Task DisposeAsync()
@@ -45,6 +51,9 @@ namespace RitualWorks.Tests
             {
                 await _userManager.DeleteAsync(user);
             }
+
+            // Dispose of the factory
+            _factory.Dispose();
         }
 
         [Fact]
@@ -74,6 +83,7 @@ namespace RitualWorks.Tests
             var loginData = await loginResponse.Content.ReadFromJsonAsync<AuthResponse>();
             var token = loginData.Token;
 
+            // Set the Bearer token for authenticated requests
             _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
             // Insert a test product directly
@@ -175,7 +185,7 @@ namespace RitualWorks.Tests
 
             var items = new List<CheckoutItem>
             {
-                new CheckoutItem { ProductId = testProductId, Quantity = 100, Price = 9.99M, Name = "Test Product" } // Set quantity to exceed available stock
+                new CheckoutItem { ProductId = testProductId, Quantity = 100, Price = 9.99M, Name = "Test Product" } // Exceeds available stock
             };
 
             // Act
@@ -191,7 +201,7 @@ namespace RitualWorks.Tests
 
         private async Task<Guid> InsertTestProduct()
         {
-            using var scope = _fixture.Factory.Services.CreateScope();
+            using var scope = _factory.Services.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<RitualWorksContext>();
 
             // Create and insert a test product

@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using System.Linq;
 using Docker.DotNet;
-using Docker.DotNet.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -16,11 +12,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Npgsql;
-using Microsoft.AspNetCore.TestHost;
-using RabbitMQ.Client;
 using RitualWorks.Db;
 using Xunit;
-
+using System.Linq;
+using Microsoft.AspNetCore.TestHost;
 namespace RitualWorks.Tests
 {
     public class IntegrationTestFixture : IAsyncLifetime
@@ -28,9 +23,6 @@ namespace RitualWorks.Tests
         private readonly DockerHelper _postgresHelper;
         private readonly DockerHelper _rabbitMqHelper;
         private readonly DockerHelper _minioHelper;
-
-        public HttpClient Client { get; private set; }
-        public WebApplicationFactory<Program> Factory { get; private set; }
         private readonly ILogger<DockerHelper> _logger;
 
         // Connection string built from environment variables
@@ -80,30 +72,29 @@ namespace RitualWorks.Tests
 
         public async Task InitializeAsync()
         {
-            // Start PostgreSQL container and ensure it's ready
+            // Start PostgreSQL container
             await _postgresHelper.StartContainer(
                 hostPort: 5432,
                 containerPort: 5432,
                 environmentVariables: new List<string> { "POSTGRES_USER=myuser", "POSTGRES_PASSWORD=mypassword" });
 
-            await WaitForPostgresToBeReadyAsync(5432);
-
-            // Start RabbitMQ container and ensure it's ready
+            // Start RabbitMQ container
             await _rabbitMqHelper.StartContainer(
                 hostPort: 5672,
                 containerPort: 5672,
                 environmentVariables: new List<string> { "RABBITMQ_DEFAULT_USER=guest", "RABBITMQ_DEFAULT_PASS=guest" });
 
-            await WaitForRabbitMqToBeReadyAsync(5672);
-
-            // Start MinIO container (adjust ports and env variables as necessary)
+            // Start MinIO container
             await _minioHelper.StartContainer(
                 hostPort: 9000,
                 containerPort: 9000,
                 environmentVariables: new List<string> { "MINIO_ACCESS_KEY=minio", "MINIO_SECRET_KEY=minio123" });
+        }
 
-            // Proceed with the rest of the application setup
-            Factory = new WebApplicationFactory<Program>()
+        // Method to create a new WebApplicationFactory per test class
+        public WebApplicationFactory<Program> CreateFactory()
+        {
+            return new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
                     var appPath = GetApplicationPath();
@@ -118,9 +109,13 @@ namespace RitualWorks.Tests
 
                     builder.ConfigureTestServices(services =>
                     {
+                        // Use a unique database name per test class
+                        var uniqueDbName = "test_db_" + Guid.NewGuid();
+                        var connectionString = $"Host=localhost;Port=5432;Database={uniqueDbName};Username=myuser;Password=mypassword;";
+
                         services.AddEntityFrameworkNpgsql()
                             .AddDbContext<RitualWorksContext>(options =>
-                                options.UseNpgsql(_connectionString));
+                                options.UseNpgsql(connectionString));
 
                         services.AddAuthentication("Test")
                             .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
@@ -135,8 +130,8 @@ namespace RitualWorks.Tests
                             var db = scopedServices.GetRequiredService<RitualWorksContext>();
                             db.Database.Migrate();
 
-                            // Cleanup and seed data
-                            CleanupAndSeedDatabaseAsync(db, scopedServices).GetAwaiter().GetResult();
+                            // Seed data
+                            SeedData(scopedServices).Wait();
                         }
                     });
 
@@ -145,108 +140,19 @@ namespace RitualWorks.Tests
                         services.AddSingleton<IStartupFilter>(new StartupFilter());
                     });
                 });
-
-            Client = Factory.CreateClient();
-            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Test");
         }
 
-        private async Task CleanupAndSeedDatabaseAsync(RitualWorksContext db, IServiceProvider scopedServices)
+        public async Task DisposeAsync()
         {
-            // Clean up the existing data
-            await CleanupDatabaseAsync(db);
-
-            // Seed new data after cleanup
-            await SeedData(scopedServices);
-        }
-
-        private async Task CleanupDatabaseAsync(RitualWorksContext context)
-        {
-            // Remove all data from the necessary tables to ensure a clean state
-            context.Products.RemoveRange(context.Products);
-            context.Categories.RemoveRange(context.Categories);
-            context.Users.RemoveRange(context.Users);
-
-            await context.SaveChangesAsync();
-        }
-
-        private async Task WaitForPostgresToBeReadyAsync(int port)
-        {
-            _logger.LogInformation("Waiting for PostgreSQL to initialize...");
-            var timeout = Task.Delay(60000);
-
-            var adminConnectionString = $"Host=localhost;Port={port};Username=myuser;Password=mypassword;Database=postgres;";
-
-            while (!timeout.IsCompleted)
-            {
-                try
-                {
-                    await using var connection = new NpgsqlConnection(adminConnectionString);
-                    await connection.OpenAsync();
-                    _logger.LogInformation("PostgreSQL container is ready.");
-                    return;
-                }
-                catch (NpgsqlException ex) when (ex.SqlState == "3D000")
-                {
-                    _logger.LogWarning($"Waiting for PostgreSQL to be ready: {ex.Message}");
-                    await Task.Delay(1000);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning($"Error waiting for PostgreSQL to be ready: {ex.Message}");
-                    await Task.Delay(1000);
-                }
-            }
-
-            throw new Exception("PostgreSQL did not start within the allocated timeout.");
-        }
-
-        private async Task WaitForRabbitMqToBeReadyAsync(int port)
-        {
-            _logger.LogInformation("Waiting for RabbitMQ to initialize...");
-            var timeout = TimeSpan.FromMinutes(5);
-            var startTime = DateTime.UtcNow;
-            int retryCount = 0;
-
-            await LogContainerDetails(_rabbitMqHelper.ContainerName, _rabbitMqHelper.GetDockerClient());
-
-            while (DateTime.UtcNow - startTime < timeout)
-            {
-                try
-                {
-                    _logger.LogInformation($"Attempt {++retryCount}: Connecting to RabbitMQ on port {port}...");
-                    var factory = new ConnectionFactory() { HostName = "localhost", Port = port };
-                    using var connection = factory.CreateConnection();
-                    _logger.LogInformation("RabbitMQ is ready.");
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning($"Waiting for RabbitMQ to be ready: {ex.Message}");
-                    await Task.Delay(3000 * retryCount);
-                }
-            }
-
-            throw new Exception("RabbitMQ did not start within the allocated timeout.");
-        }
-
-        private async Task LogContainerDetails(string containerName, DockerClient dockerClient)
-        {
-            _logger.LogInformation($"Fetching logs for container {containerName} to diagnose startup issues...");
-
             try
             {
-                var logs = await dockerClient.Containers.GetContainerLogsAsync(
-                    containerName,
-                    new ContainerLogsParameters { ShowStdout = true, ShowStderr = true },
-                    new System.Threading.CancellationToken());
-
-                using var reader = new StreamReader(logs);
-                string logContent = await reader.ReadToEndAsync();
-                _logger.LogInformation($"Logs for {containerName}:\n{logContent}");
+                await _postgresHelper.StopContainer();
+                await _rabbitMqHelper.StopContainer();
+                await _minioHelper.StopContainer();
             }
             catch (Exception ex)
             {
-                _logger.LogWarning($"Could not retrieve logs for container {containerName}: {ex.Message}");
+                _logger.LogError($"Error during cleanup: {ex.Message}");
             }
         }
 
@@ -353,20 +259,9 @@ namespace RitualWorks.Tests
 
         private string GetApplicationPath()
         {
-            var currentDirectory = AppContext.BaseDirectory;
-            var directoryInfo = new DirectoryInfo(currentDirectory);
+            var projectPath = GetProjectPath();
 
-            while (directoryInfo != null && !File.Exists(Path.Combine(directoryInfo.FullName, "RitualWorks.sln")))
-            {
-                directoryInfo = directoryInfo.Parent;
-            }
-
-            if (directoryInfo == null)
-            {
-                throw new DirectoryNotFoundException("Solution directory could not be found.");
-            }
-
-            var applicationPath = Path.Combine(directoryInfo.FullName, "src");
+            var applicationPath = Path.Combine(projectPath, "src");
 
             if (!Directory.Exists(applicationPath))
             {
@@ -378,20 +273,9 @@ namespace RitualWorks.Tests
 
         private string GetTestConfigPath()
         {
-            var currentDirectory = AppContext.BaseDirectory;
-            var directoryInfo = new DirectoryInfo(currentDirectory);
+            var projectPath = GetProjectPath();
 
-            while (directoryInfo != null && !File.Exists(Path.Combine(directoryInfo.FullName, "RitualWorks.sln")))
-            {
-                directoryInfo = directoryInfo.Parent;
-            }
-
-            if (directoryInfo == null)
-            {
-                throw new DirectoryNotFoundException("Solution directory could not be found.");
-            }
-
-            var testConfigPath = Path.Combine(directoryInfo.FullName, "tests", "RitualWorks.Tests.integration");
+            var testConfigPath = Path.Combine(projectPath, "tests", "RitualWorks.Tests.integration");
 
             if (!Directory.Exists(testConfigPath))
             {
@@ -400,27 +284,10 @@ namespace RitualWorks.Tests
 
             return testConfigPath;
         }
-
-        public async Task DisposeAsync()
-        {
-            try
-            {
-                await _postgresHelper.StopContainer();
-                await _rabbitMqHelper.StopContainer();
-                await _minioHelper.StopContainer();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error during cleanup: {ex.Message}");
-            }
-            finally
-            {
-                Factory?.Dispose();
-                Client?.Dispose();
-            }
-        }
     }
 
-    [CollectionDefinition("Integration Tests")]
-    public class IntegrationTestCollection : ICollectionFixture<IntegrationTestFixture> { }
+    [CollectionDefinition("Integration Tests", DisableParallelization = true)]
+    public class IntegrationTestCollection : ICollectionFixture<IntegrationTestFixture>
+    {
+    }
 }

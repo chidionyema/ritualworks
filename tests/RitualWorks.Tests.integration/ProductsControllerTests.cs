@@ -1,21 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using RitualWorks.Controllers;
+using RitualWorks.Db;
+using Xunit;
 
 namespace RitualWorks.Tests
 {
     [Collection("Integration Tests")]
-    public class ProductsControllerTests
+    public class ProductsControllerTests : IAsyncLifetime
     {
         private readonly HttpClient _client;
+        private readonly IntegrationTestFixture _fixture;
+        private readonly RitualWorksContext _context;
 
         public ProductsControllerTests(IntegrationTestFixture fixture)
         {
-            _client = fixture.Client;
+            _fixture = fixture;
+            var factory = fixture.CreateFactory();
+            _client = factory.CreateClient();
+
+            // Set up authentication header if needed
+            _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Test");
+
+            // Access the DbContext for cleanup
+            _context = factory.Services.CreateScope().ServiceProvider.GetRequiredService<RitualWorksContext>();
+        }
+
+        public async Task InitializeAsync()
+        {
+            // Clean up data before each test
+            await ClearDatabaseAsync();
+        }
+
+        public async Task DisposeAsync()
+        {
+            // Clean up data after each test
+            await ClearDatabaseAsync();
+        }
+
+        private async Task ClearDatabaseAsync()
+        {
+            // Clear products, categories, and other related entities
+            _context.Products.RemoveRange(_context.Products);
+            _context.Categories.RemoveRange(_context.Categories);
+            // Add more entities as necessary
+            await _context.SaveChangesAsync();
         }
 
         [Fact]
@@ -74,6 +108,7 @@ namespace RitualWorks.Tests
                 ImageUrls = new List<string> { "http://example.com/image.jpg" }
             };
             var createResponse = await _client.PostAsJsonAsync("/api/products", createProductDto);
+            createResponse.EnsureSuccessStatusCode();
             var createdProduct = await createResponse.Content.ReadFromJsonAsync<ProductDto>();
 
             // Now update the product
@@ -83,6 +118,7 @@ namespace RitualWorks.Tests
 
             // Verify the update
             var getResponse = await _client.GetAsync($"/api/products/{createdProduct.Id}");
+            getResponse.EnsureSuccessStatusCode();
             var updatedProduct = await getResponse.Content.ReadFromJsonAsync<ProductDto>();
             Assert.Equal("Updated Product Name", updatedProduct.Name);
         }
@@ -140,9 +176,9 @@ namespace RitualWorks.Tests
             var response = await _client.GetAsync($"/api/products/{invalidId}");
             Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
         }
-        
-         [Fact]
-       public async Task GetProducts_WithPagination_ReturnsCorrectPage()
+
+        [Fact]
+        public async Task GetProducts_WithPagination_ReturnsCorrectPage()
         {
             // Create a category first
             var categoryDto = new CategoryDto { Name = "Test Category" };
@@ -191,8 +227,5 @@ namespace RitualWorks.Tests
             // Compare the actual and expected results
             Assert.Equal(expectedNames, actualNames);
         }
-
-
-
     }
 }

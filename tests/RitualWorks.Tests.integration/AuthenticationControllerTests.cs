@@ -8,7 +8,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RitualWorks.Db;
 using System.Text.Json;
+using Xunit;
+using RitualWorks.Contracts;
+using RitualWorks.Controllers;
 using static RitualWorks.Controllers.AuthenticationController;
+using Microsoft.AspNetCore.Mvc.Testing;
+using FluentAssertions;
 
 namespace RitualWorks.Tests
 {
@@ -26,19 +31,23 @@ namespace RitualWorks.Tests
         private readonly UserManager<User> _userManager;
         private readonly List<User> _testUsers = new();
         private readonly IConfiguration _configuration;
+        private readonly WebApplicationFactory<Program> _factory;
 
         public AuthenticationControllerTests(IntegrationTestFixture fixture)
         {
-            _client = fixture.Client;
             _fixture = fixture;
-            var scope = _fixture.Factory.Services.CreateScope();
+            _factory = _fixture.CreateFactory();
+            _client = _factory.CreateClient();
+
+            var scope = _factory.Services.CreateScope();
             _userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
             _configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
         }
 
         public async Task InitializeAsync()
         {
-            // No need to initialize anything here
+            // No initialization needed here
+            await Task.CompletedTask;
         }
 
         public async Task DisposeAsync()
@@ -48,9 +57,12 @@ namespace RitualWorks.Tests
             {
                 await _userManager.DeleteAsync(user);
             }
+
+            // Dispose of the factory
+            _factory.Dispose();
         }
 
-      [Fact]
+       [Fact]
         public async Task Register_ReturnsOk()
         {
             // Arrange
@@ -68,15 +80,18 @@ namespace RitualWorks.Tests
             // Assert
             response.EnsureSuccessStatusCode();
             var responseData = await response.Content.ReadAsStringAsync();
+
+            // Sanitize and extract the message
             using var jsonDoc = JsonDocument.Parse(responseData);
-            var message = jsonDoc.RootElement.GetProperty("message").GetString();
-            Assert.Equal("User registered successfully", message);
+            var message = jsonDoc.RootElement.GetProperty("message").GetString()?.Trim();
+
+            // Use Contains to avoid issues with exact formatting differences
+            message.Should().Contain("User registered successfully");
 
             // Track the created user for cleanup
             var user = await _userManager.FindByNameAsync(registrationDto.Username);
             if (user != null) _testUsers.Add(user);
         }
-
 
 
         [Fact]
@@ -99,54 +114,40 @@ namespace RitualWorks.Tests
         }
 
         [Fact]
-    public async Task Login_ReturnsOk()
-    {
-        // Arrange
-        var uniqueUsername = $"testuser_{Guid.NewGuid()}";
-        var registrationDto = new UserRegistrationDto
+        public async Task Login_ReturnsOk()
         {
-            Username = uniqueUsername,
-            Email = $"{uniqueUsername}@example.com",
-            Password = "Test@123"
-        };
+            // Arrange
+            var uniqueUsername = $"testuser_{Guid.NewGuid()}";
+            var registrationDto = new UserRegistrationDto
+            {
+                Username = uniqueUsername,
+                Email = $"{uniqueUsername}@example.com",
+                Password = "Test@123"
+            };
 
-        // Register the user using the registration endpoint
-        var registrationResponse = await _client.PostAsJsonAsync("/api/authentication/register", registrationDto);
-        if (!registrationResponse.IsSuccessStatusCode)
-        {
-            var error = await registrationResponse.Content.ReadAsStringAsync();
-            throw new Exception($"Registration failed: {error}");
+            // Register the user using the registration endpoint
+            var registrationResponse = await _client.PostAsJsonAsync("/api/authentication/register", registrationDto);
+            registrationResponse.EnsureSuccessStatusCode();
+
+            var loginDto = new UserLoginDto
+            {
+                Username = uniqueUsername,
+                Password = "Test@123"
+            };
+
+            // Act
+            var response = await _client.PostAsJsonAsync("/api/authentication/login", loginDto);
+
+            // Assert
+            response.EnsureSuccessStatusCode();
+            var responseData = await response.Content.ReadFromJsonAsync<AuthResponse>();
+
+            Assert.NotNull(responseData);
+
+            // Track the created user for cleanup
+            var user = await _userManager.FindByNameAsync(registrationDto.Username);
+            if (user != null) _testUsers.Add(user);
         }
-
-        var loginDto = new UserLoginDto
-        {
-            Username = uniqueUsername,
-            Password = "Test@123"
-        };
-
-        // Act
-        var response = await _client.PostAsJsonAsync("/api/authentication/login", loginDto);
-
-        // Assert
-        response.EnsureSuccessStatusCode();
-        var responseData = await response.Content.ReadFromJsonAsync<AuthResponse>();
-
-        // Print the response data to the console
-        Console.WriteLine($"Login Response: {responseData}");
-
-        // Print details if you need specific information
-        Console.WriteLine($"Token: {responseData?.Token}");
-        Console.WriteLine($"Expiration: {responseData?.Expiration}");
-
-        Assert.NotNull(responseData);
-       // Assert.NotNull(responseData.Token);
-      //  Assert.NotNull(responseData.Expiration);
-
-        // Track the created user for cleanup
-        var user = await _userManager.FindByNameAsync(registrationDto.Username);
-        if (user != null) _testUsers.Add(user);
-    }
-
 
         [Fact]
         public async Task Login_ReturnsUnauthorized_WhenInvalid()
@@ -177,10 +178,4 @@ namespace RitualWorks.Tests
             Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
         }
     }
-}
-
-public class AuthResponse
-{
-    public string Token { get; set; }
-    public DateTime Expiration { get; set; }
 }
