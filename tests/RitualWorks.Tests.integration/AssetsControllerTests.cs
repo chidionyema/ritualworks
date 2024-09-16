@@ -23,7 +23,7 @@ namespace RitualWorks.Tests
             var factory = fixture.CreateFactory();
             _client = factory.CreateClient();
 
-             _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Test");
+             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Test");
         }
 
         [Fact]

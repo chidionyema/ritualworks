@@ -1,9 +1,9 @@
-version: '3.8'  # Add the version declaration at the top of the file
+version: '3.8'
 
 services:
   setup_dns:
     build:
-      context: ../../  # Correct context pointing to the correct docker folder
+      context: ../../
       dockerfile: docker/Dockerfile.setup_dns
     network_mode: host
     command: bash /setup_local_dns.sh
@@ -11,7 +11,7 @@ services:
 
   app1:
     build:
-      context: ../../  # Correct context pointing to the correct docker folder
+      context: ../../
       dockerfile: docker/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
@@ -25,7 +25,7 @@ services:
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
     volumes:
-      - uploads:/app/uploads
+      - uploads:/app/uploads:rw  # Ensure volume is mounted as read-write
     networks:
       - internal_network
       - external_network
@@ -40,7 +40,7 @@ services:
 
   app2:
     build:
-      context: ../../  # Correct context pointing to the correct docker folder
+      context: ../../
       dockerfile: docker/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
@@ -54,7 +54,7 @@ services:
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
     volumes:
-      - uploads:/app/uploads
+      - uploads:/app/uploads:rw  # Ensure volume is mounted as read-write
     networks:
       - internal_network
       - external_network
@@ -69,7 +69,7 @@ services:
 
   app3:
     build:
-      context: ../../  # Correct context pointing to the correct docker folder
+      context: ../../
       dockerfile: docker/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
@@ -83,7 +83,7 @@ services:
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
     volumes:
-      - uploads:/app/uploads
+      - uploads:/app/uploads:rw  # Ensure volume is mounted as read-write
     networks:
       - internal_network
       - external_network
@@ -98,11 +98,11 @@ services:
 
   db_migrations:
     build:
-      context: ../../  # Ensure this points to the correct project directory relative to the compose file
-      dockerfile: docker/Dockerfile.migrations  # Ensure this Dockerfile exists and is correct
+      context: ../../
+      dockerfile: docker/Dockerfile.migrations
     environment:
       - ConnectionStrings__DefaultConnection=Host=postgres_primary;Port=5432;Database=${POSTGRES_DB:-your_postgres_db};Username=${POSTGRES_USER:-myuser};Password=${POSTGRES_PASSWORD:-mypassword};SSL Mode=Disable
-    command: ["database", "update"]  # Remove 'dotnet' since the entrypoint is already set to 'dotnet-ef'
+    command: ["database", "update"]
     networks:
       - internal_network
 

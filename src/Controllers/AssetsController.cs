@@ -28,9 +28,9 @@ namespace RitualWorks.Controllers
 
         public AssetsController(IFileStorageService fileStorageService, IProductRepository productRepository, ILogger<AssetsController> logger)
         {
-            _fileStorageService = fileStorageService;
-            _productRepository = productRepository;
-            _logger = logger;
+            _fileStorageService = fileStorageService ?? throw new ArgumentNullException(nameof(fileStorageService));
+            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
             // Ensure the root path exists
             if (!Directory.Exists(_rootPath))
@@ -46,7 +46,7 @@ namespace RitualWorks.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> UploadFileChunk([FromForm] FileChunkUploadDto uploadDto)
         {
-            _logger.LogInformation("Received request to upload file chunk: {FileName} for ProductId: {ProductId}, ChunkIndex: {ChunkIndex}, TotalChunks: {TotalChunks}", 
+            _logger.LogInformation("Received request to upload file chunk: {FileName} for ProductId: {ProductId}, ChunkIndex: {ChunkIndex}, TotalChunks: {TotalChunks}",
                 uploadDto.FileName, uploadDto.ProductId, uploadDto.ChunkIndex, uploadDto.TotalChunks);
 
             if (!ValidateFile(uploadDto.File, out string validationError, out string fileType))
@@ -58,13 +58,14 @@ namespace RitualWorks.Controllers
             string tempFolder = Path.Combine(_rootPath, uploadDto.ProductId.ToString());
             string tempFilePath = Path.Combine(tempFolder, uploadDto.FileName);
 
+            SemaphoreSlim fileLock = _fileLocks.GetOrAdd(uploadDto.FileName, _ => new SemaphoreSlim(1, 1));
+
             try
             {
                 // Ensure the temporary folder exists
                 _logger.LogInformation("Ensuring directory exists: {TempFolder}", tempFolder);
                 Directory.CreateDirectory(tempFolder);
 
-                var fileLock = _fileLocks.GetOrAdd(uploadDto.FileName, _ => new SemaphoreSlim(1, 1));
                 await fileLock.WaitAsync();
 
                 _logger.LogInformation("Writing chunk to file: {TempFilePath}, ChunkIndex: {ChunkIndex}", tempFilePath, uploadDto.ChunkIndex);
@@ -84,7 +85,7 @@ namespace RitualWorks.Controllers
                     return Ok(new { FileName = result });
                 }
 
-                _logger.LogInformation("Chunk uploaded successfully: {ChunkIndex}/{TotalChunks} for file {FileName}", 
+                _logger.LogInformation("Chunk uploaded successfully: {ChunkIndex}/{TotalChunks} for file {FileName}",
                     uploadDto.ChunkIndex + 1, uploadDto.TotalChunks, uploadDto.FileName);
                 return Ok(new { Message = "Chunk uploaded successfully." });
             }
@@ -118,7 +119,7 @@ namespace RitualWorks.Controllers
             }
 
             var tempFilePath = Path.Combine(_rootPath, uploadDto.File.FileName);
-            var fileLock = _fileLocks.GetOrAdd(uploadDto.File.FileName, _ => new SemaphoreSlim(1, 1));
+            SemaphoreSlim fileLock = _fileLocks.GetOrAdd(uploadDto.File.FileName, _ => new SemaphoreSlim(1, 1));
 
             try
             {
@@ -170,12 +171,12 @@ namespace RitualWorks.Controllers
             var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (_allowedImageTypes.Contains(fileExtension))
             {
-                fileType = "products/images";
+                fileType = "productimages";
                 return true;
             }
             else if (_allowedAssetTypes.Contains(fileExtension))
             {
-                fileType = "products/assets";
+                fileType = "productassets";
                 return true;
             }
             else
@@ -186,20 +187,62 @@ namespace RitualWorks.Controllers
             }
         }
 
-        private async Task<string> FinalizeUpload(string tempFilePath, string fileName, string type, Guid productId, string username)
+        private async Task<string> FinalizeUpload(string tempFilePath, string fileName, string type, Guid productId, string? username)
         {
             _logger.LogInformation("Starting finalization of upload for file: {TempFilePath}", tempFilePath);
-            using var stream = new FileStream(tempFilePath, FileMode.Open);
 
-            var filePath = $"{username}/{type}/{fileName}";
-            _logger.LogInformation("Uploading file to storage: {FilePath}", filePath);
+            // Validate inputs thoroughly
+            if (string.IsNullOrWhiteSpace(tempFilePath))
+            {
+                _logger.LogError("Temp file path is null or empty.");
+                throw new ArgumentNullException(nameof(tempFilePath), "Temp file path cannot be null or empty.");
+            }
 
-            var result = await _fileStorageService.UploadFileAsync(stream, filePath, append: false);
-            _logger.LogInformation("File uploaded to storage with result: {Result}", result);
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                _logger.LogError("File name is null or empty.");
+                throw new ArgumentNullException(nameof(fileName), "File name cannot be null or empty.");
+            }
+
+            if (string.IsNullOrWhiteSpace(type))
+            {
+                _logger.LogError("Type is null or empty.");
+                throw new ArgumentNullException(nameof(type), "Type cannot be null or empty.");
+            }
+
+            if (productId == Guid.Empty)
+            {
+                _logger.LogError("Product ID is empty.");
+                throw new ArgumentException("Product ID cannot be empty.", nameof(productId));
+            }
+
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                _logger.LogError("Username is null or empty.");
+                throw new ArgumentNullException(nameof(username), "Username cannot be null or empty.");
+            }
+
+            // Log file information before proceeding
+            if (!System.IO.File.Exists(tempFilePath))
+            {
+                _logger.LogError("Temporary file does not exist at path: {TempFilePath}", tempFilePath);
+                throw new FileNotFoundException("Temporary file not found.", tempFilePath);
+            }
 
             try
             {
-                if (type.Contains("images"))
+                using var stream = new FileStream(tempFilePath, FileMode.Open, FileAccess.Read);
+                _logger.LogInformation("Opened temporary file: {TempFilePath} for reading.", tempFilePath);
+
+                var filePath = $"{username}/{type}/{fileName}";
+                _logger.LogInformation("Uploading file to storage: {FilePath}", filePath);
+
+                // Upload file to storage service
+                var result = await _fileStorageService.UploadFileAsync(stream, filePath, append: false);
+                _logger.LogInformation("File uploaded to storage successfully with result: {Result}", result);
+
+                // Handle the database update according to the type of file (image or asset)
+                if (type.Contains("images", StringComparison.OrdinalIgnoreCase))
                 {
                     _logger.LogInformation("Adding product image record to database for ProductId: {ProductId}", productId);
                     var productImage = new ProductImage(Guid.NewGuid(), productId, null)
@@ -207,7 +250,15 @@ namespace RitualWorks.Controllers
                         Url = result,
                         BlobName = fileName
                     };
+
+                    if (_productRepository == null)
+                    {
+                        _logger.LogError("_productRepository is null. Cannot save product image.");
+                        throw new InvalidOperationException("_productRepository is not initialized.");
+                    }
+
                     await _productRepository.AddProductImageAsync(productImage);
+                    _logger.LogInformation("Product image record added successfully for ProductId: {ProductId}", productId);
                 }
                 else
                 {
@@ -217,18 +268,33 @@ namespace RitualWorks.Controllers
                         AssetUrl = result,
                         BlobName = fileName
                     };
-                    await _productRepository.AddProductAssetAsync(productAsset);
-                }
-            }
-            catch (Exception dbEx)
-            {
-                _logger.LogError(dbEx, "Error occurred while saving product record to database: {Message}", dbEx.Message);
-                throw; // Rethrow to be caught by the calling method
-            }
 
-            _logger.LogInformation("Deleting temporary file: {TempFilePath}", tempFilePath);
-            System.IO.File.Delete(tempFilePath);
-            return result;
+                    if (_productRepository == null)
+                    {
+                        _logger.LogError("_productRepository is null. Cannot save product asset.");
+                        throw new InvalidOperationException("_productRepository is not initialized.");
+                    }
+
+                    await _productRepository.AddProductAssetAsync(productAsset);
+                    _logger.LogInformation("Product asset record added successfully for ProductId: {ProductId}", productId);
+                }
+
+                // Ensure the temporary file is deleted to free up space
+                _logger.LogInformation("Deleting temporary file: {TempFilePath}", tempFilePath);
+                System.IO.File.Delete(tempFilePath);
+
+                if (System.IO.File.Exists(tempFilePath))
+                {
+                    _logger.LogWarning("Temporary file was not deleted: {TempFilePath}", tempFilePath);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while finalizing the upload: {Message}", ex.Message);
+                throw; // Rethrow the exception to propagate it up the call stack
+            }
         }
     }
 
