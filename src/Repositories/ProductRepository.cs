@@ -19,11 +19,14 @@ namespace RitualWorks.Repositories
 
         public async Task<IEnumerable<Product>> GetProductsAsync(int page, int pageSize)
         {
-            return await _context.Products
-                                .OrderBy(p => p.Name) // Sort by creation date
-                                .Skip((page - 1) * pageSize)
-                                .Take(pageSize)
-                                .ToListAsync();
+            var products = await _context.Products
+                             .OrderBy(p => p.Name)
+                             .Skip((page - 1) * pageSize)
+                             .Take(pageSize)
+                             .ToListAsync();
+
+            Console.WriteLine("Products Retrieved: " + string.Join(", ", products.Select(p => p.Name)));
+            return products;
         }
 
         public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(Guid categoryId, int page, int pageSize)

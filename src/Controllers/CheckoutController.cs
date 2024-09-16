@@ -8,6 +8,7 @@ using System;
 using RitualWorks.Contracts;
 using RitualWorks.Db;
 using System.Security.Claims;
+using Stripe;
 
 namespace RitualWorks.Controllers
 {
@@ -57,6 +58,13 @@ namespace RitualWorks.Controllers
                         _logger.LogWarning($"Invalid price for product {item.Name}.");
                         return BadRequest($"Invalid price for product {item.Name}.");
                     }
+
+                    // Check for sufficient stock
+                    if (product.Stock < item.Quantity)
+                    {
+                        _logger.LogWarning($"Insufficient stock for product {item.Name}. Requested: {item.Quantity}, Available: {product.Stock}");
+                        return BadRequest($"Insufficient stock for product {item.Name}.");
+                    }
                 }
 
                 // Derive the domain dynamically from the incoming request
@@ -83,7 +91,7 @@ namespace RitualWorks.Controllers
                     CancelUrl = $"{domain}/cancel"
                 };
 
-                var service = new SessionService();
+                var service = new SessionService(new Stripe.StripeClient("your_stripe_secret_key")); // Ensure correct Stripe API key
                 var session = await service.CreateAsync(options);
 
                 // Create order
@@ -112,6 +120,11 @@ namespace RitualWorks.Controllers
 
                 _logger.LogInformation($"Checkout session created successfully for User {userId} with Order ID {order.Id}.");
                 return Ok(new { id = session.Id });
+            }
+            catch (StripeException stripeEx)
+            {
+                _logger.LogError(stripeEx, "Stripe API error occurred during checkout session creation.");
+                return StatusCode(500, "Payment processing error. Please try again later.");
             }
             catch (Exception ex)
             {

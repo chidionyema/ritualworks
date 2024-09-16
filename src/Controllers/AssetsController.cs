@@ -22,11 +22,18 @@ namespace RitualWorks.Controllers
         private static readonly List<string> _allowedImageTypes = new List<string> { ".jpg", ".jpeg", ".png", ".gif" };
         private static readonly List<string> _allowedAssetTypes = new List<string> { ".pdf", ".doc", ".docx", ".zip", ".rar" };
         private const long _maxFileSize = 100 * 1024 * 1024; // 100 MB
+        private readonly string _rootPath = "/Users/chidionyema/Documents/code/RitualWorks/RitualWorks/";
 
         public AssetsController(IFileStorageService fileStorageService, IProductRepository productRepository)
         {
             _fileStorageService = fileStorageService;
             _productRepository = productRepository;
+
+            // Ensure the root path exists
+            if (!Directory.Exists(_rootPath))
+            {
+                Directory.CreateDirectory(_rootPath);
+            }
         }
 
         [HttpPost("upload-chunk")]
@@ -40,9 +47,10 @@ namespace RitualWorks.Controllers
                 return BadRequest(validationError);
             }
 
-            string tempFolder = Path.Combine(Path.GetTempPath(), uploadDto.ProductId.ToString());
+            string tempFolder = Path.Combine(_rootPath, uploadDto.ProductId.ToString());
             string tempFilePath = Path.Combine(tempFolder, uploadDto.FileName);
 
+            // Ensure the temporary folder exists
             Directory.CreateDirectory(tempFolder);
 
             var fileLock = _fileLocks.GetOrAdd(uploadDto.FileName, _ => new SemaphoreSlim(1, 1));
@@ -92,7 +100,7 @@ namespace RitualWorks.Controllers
                 return BadRequest(validationError);
             }
 
-            var tempFilePath = Path.Combine(Path.GetTempPath(), uploadDto.File.FileName);
+            var tempFilePath = Path.Combine(_rootPath, uploadDto.File.FileName);
             var fileLock = _fileLocks.GetOrAdd(uploadDto.File.FileName, _ => new SemaphoreSlim(1, 1));
 
             try
@@ -183,64 +191,36 @@ namespace RitualWorks.Controllers
         }
     }
 
-    // DTO for File Upload
+    // DTOs for File Upload
     public class FileUploadDto
     {
-        /// <summary>
-        /// The file to be uploaded.
-        /// </summary>
         [Required]
         public IFormFile? File { get; set; }
 
-        /// <summary>
-        /// The ID of the product associated with the file upload.
-        /// </summary>
         [Required]
         public Guid ProductId { get; set; }
 
-        /// <summary>
-        /// The username of the user uploading the file.
-        /// </summary>
         [Required]
         public string? Username { get; set; }
     }
 
-    // DTO for Chunked File Upload
     public class FileChunkUploadDto
     {
-        /// <summary>
-        /// The file chunk being uploaded.
-        /// </summary>
         [Required]
         public IFormFile? File { get; set; }
 
-        /// <summary>
-        /// The index of the current chunk.
-        /// </summary>
         [Required]
         public int ChunkIndex { get; set; }
 
-        /// <summary>
-        /// The total number of chunks expected.
-        /// </summary>
         [Required]
         public int TotalChunks { get; set; }
 
-        /// <summary>
-        /// The name of the file being uploaded.
-        /// </summary>
         [Required]
         public string? FileName { get; set; }
 
-        /// <summary>
-        /// The ID of the product associated with the file upload.
-        /// </summary>
         [Required]
         public Guid ProductId { get; set; }
 
-        /// <summary>
-        /// The username of the user uploading the file.
-        /// </summary>
         [Required]
         public string? Username { get; set; }
     }

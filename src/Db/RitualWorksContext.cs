@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace RitualWorks.Db
 {
@@ -49,9 +51,9 @@ namespace RitualWorks.Db
                 .HasForeignKey(p => p.CategoryId);
 
             modelBuilder.Entity<Order>()
-               .HasMany(o => o.OrderItems)
-               .WithOne(oi => oi.Order)
-               .HasForeignKey(oi => oi.OrderId);
+                .HasMany(o => o.OrderItems)
+                .WithOne(oi => oi.Order)
+                .HasForeignKey(oi => oi.OrderId);
 
             modelBuilder.Entity<OrderItem>()
                 .HasOne(oi => oi.Product)
@@ -73,7 +75,7 @@ namespace RitualWorks.Db
                 .WithOne(c => c.Post)
                 .HasForeignKey(c => c.PostId);
 
-            // Seed initial categories and products
+            // Seed initial categories and products with explicit, valid GUIDs
             var category1Id = Guid.NewGuid();
             var category2Id = Guid.NewGuid();
             var category3Id = Guid.NewGuid();
@@ -86,10 +88,10 @@ namespace RitualWorks.Db
         {
             var categories = new List<Category>
             {
-                new(category1Id, "Electronics"),
-                new(category2Id, "Apparel"),
-                new(category3Id, "Home")
-             };
+                new Category(category1Id, "Electronics"),
+                new Category(category2Id, "Apparel"),
+                new Category(category3Id, "Home")
+            };
 
             modelBuilder.Entity<Category>().HasData(categories);
         }
@@ -170,6 +172,23 @@ namespace RitualWorks.Db
             modelBuilder.Entity<ProductReview>().HasData(productReviews);
         }
 
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        {
+                foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
+                {
+                    if (entry.State == EntityState.Added)
+                    {
+                        entry.Entity.CreatedDate = DateTime.UtcNow;
+                        entry.Entity.CreatedBy = ""; // Provide a suitable default value
+                    }
+                    else if (entry.State == EntityState.Modified)
+                    {
+                        entry.Entity.LastModifiedDate = DateTime.UtcNow;
+                        entry.Entity.LastModifiedBy = ""; // Provide a suitable default value
+                    }
+                }
+                return base.SaveChangesAsync(cancellationToken);
+        }
         public override int SaveChanges()
         {
             var result = base.SaveChanges();

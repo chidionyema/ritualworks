@@ -58,7 +58,11 @@ namespace RitualWorks.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -254,7 +258,11 @@ namespace RitualWorks.Migrations
                     Brand = table.Column<string>(type: "text", nullable: true),
                     Type = table.Column<string>(type: "text", nullable: true),
                     CategoryId = table.Column<Guid>(type: "uuid", nullable: false),
-                    BlobName = table.Column<string>(type: "text", nullable: true)
+                    BlobName = table.Column<string>(type: "text", nullable: true),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -384,22 +392,22 @@ namespace RitualWorks.Migrations
 
             migrationBuilder.InsertData(
                 table: "Categories",
-                columns: new[] { "Id", "Name" },
+                columns: new[] { "Id", "CreatedBy", "CreatedDate", "LastModifiedBy", "LastModifiedDate", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("40686f4a-98dc-4a70-a668-6b11c1f3842d"), "Electronics" },
-                    { new Guid("716946a1-51e3-49eb-9f48-fdfec8652f65"), "Home" },
-                    { new Guid("d9612e92-0681-47b5-87f1-125230474149"), "Apparel" }
+                    { new Guid("05cbdf14-2bbc-4d21-b05f-a4b659f4b016"), null, new DateTime(2024, 9, 15, 23, 4, 54, 802, DateTimeKind.Utc).AddTicks(7570), null, null, "Apparel" },
+                    { new Guid("d05aeede-f1aa-40f4-aea4-591ac839183e"), null, new DateTime(2024, 9, 15, 23, 4, 54, 802, DateTimeKind.Utc).AddTicks(7550), null, null, "Electronics" },
+                    { new Guid("f463dcce-5c47-4018-a659-f1a0860722a2"), null, new DateTime(2024, 9, 15, 23, 4, 54, 802, DateTimeKind.Utc).AddTicks(7570), null, null, "Home" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "Id", "BlobName", "Brand", "CategoryId", "Description", "InStock", "IsNew", "Name", "Price", "Rating", "Stock", "Type" },
+                columns: new[] { "Id", "BlobName", "Brand", "CategoryId", "CreatedBy", "CreatedDate", "Description", "InStock", "IsNew", "LastModifiedBy", "LastModifiedDate", "Name", "Price", "Rating", "Stock", "Type" },
                 values: new object[,]
                 {
-                    { new Guid("09688453-943f-4669-9359-3618c878cd8d"), null, "Brand C", new Guid("716946a1-51e3-49eb-9f48-fdfec8652f65"), "Description of Product 3", false, true, "Product 3", 39.99m, 3.5, 200, "physical" },
-                    { new Guid("7e67d2f0-4658-45ea-b91e-6164e41345ba"), null, "Brand B", new Guid("d9612e92-0681-47b5-87f1-125230474149"), "Description of Product 2", true, false, "Product 2", 29.99m, 4.0, 150, "digital" },
-                    { new Guid("935d943e-d07d-4faf-aedf-c05706ccaa59"), null, "Brand A", new Guid("40686f4a-98dc-4a70-a668-6b11c1f3842d"), "Description of Product 1", true, true, "Product 1", 19.99m, 4.5, 100, "physical" }
+                    { new Guid("093b1bad-d22e-4f48-9df0-323a506cc2ae"), null, "Brand C", new Guid("f463dcce-5c47-4018-a659-f1a0860722a2"), null, new DateTime(2024, 9, 15, 23, 4, 54, 802, DateTimeKind.Utc).AddTicks(7690), "Description of Product 3", false, true, null, null, "Product 3", 39.99m, 3.5, 200, "physical" },
+                    { new Guid("7572aa32-8acb-4984-b2df-9706427c9228"), null, "Brand B", new Guid("05cbdf14-2bbc-4d21-b05f-a4b659f4b016"), null, new DateTime(2024, 9, 15, 23, 4, 54, 802, DateTimeKind.Utc).AddTicks(7680), "Description of Product 2", true, false, null, null, "Product 2", 29.99m, 4.0, 150, "digital" },
+                    { new Guid("975ceda4-b6cb-4723-86a5-9362ad8372e0"), null, "Brand A", new Guid("d05aeede-f1aa-40f4-aea4-591ac839183e"), null, new DateTime(2024, 9, 15, 23, 4, 54, 802, DateTimeKind.Utc).AddTicks(7670), "Description of Product 1", true, true, null, null, "Product 1", 19.99m, 4.5, 100, "physical" }
                 });
 
             migrationBuilder.InsertData(
@@ -407,9 +415,9 @@ namespace RitualWorks.Migrations
                 columns: new[] { "Id", "BlobName", "ProductId", "Url" },
                 values: new object[,]
                 {
-                    { new Guid("0c645b17-a6d8-44c9-b409-c1d43d84520a"), "", new Guid("935d943e-d07d-4faf-aedf-c05706ccaa59"), "https://via.placeholder.com/300" },
-                    { new Guid("9447758a-d9db-4823-890c-46bd255e2a44"), "", new Guid("7e67d2f0-4658-45ea-b91e-6164e41345ba"), "https://via.placeholder.com/300" },
-                    { new Guid("c2737562-fce0-4cf6-9085-dc59813b5a21"), "", new Guid("09688453-943f-4669-9359-3618c878cd8d"), "https://via.placeholder.com/300" }
+                    { new Guid("07cab595-e3ae-4112-8d79-f74630bb68c4"), "", new Guid("093b1bad-d22e-4f48-9df0-323a506cc2ae"), "https://via.placeholder.com/300" },
+                    { new Guid("3f97b86f-1a8c-4fa8-9538-3b9410c9461c"), "", new Guid("975ceda4-b6cb-4723-86a5-9362ad8372e0"), "https://via.placeholder.com/300" },
+                    { new Guid("f5e44360-9f85-49d7-a844-66c6f14286f4"), "", new Guid("7572aa32-8acb-4984-b2df-9706427c9228"), "https://via.placeholder.com/300" }
                 });
 
             migrationBuilder.InsertData(
@@ -417,12 +425,12 @@ namespace RitualWorks.Migrations
                 columns: new[] { "Id", "Comment", "ProductId", "Rating", "User" },
                 values: new object[,]
                 {
-                    { new Guid("068facb8-40c5-4805-b682-29c1e233c68d"), "Could be better.", new Guid("09688453-943f-4669-9359-3618c878cd8d"), 3.0, "Eve" },
-                    { new Guid("071411de-8126-418c-b648-9e4eeccbbe4c"), "Great product!", new Guid("935d943e-d07d-4faf-aedf-c05706ccaa59"), 5.0, "Alice" },
-                    { new Guid("350df5ac-9063-45fd-95e6-f31a9531348d"), "Good value for money.", new Guid("935d943e-d07d-4faf-aedf-c05706ccaa59"), 4.0, "Bob" },
-                    { new Guid("75d14e04-4721-4295-8b67-28bf5cb6ee5f"), "Excellent quality!", new Guid("7e67d2f0-4658-45ea-b91e-6164e41345ba"), 5.0, "Charlie" },
-                    { new Guid("924b4cd2-2f05-4f2d-9aee-c23967d7f1a8"), "Satisfactory.", new Guid("7e67d2f0-4658-45ea-b91e-6164e41345ba"), 3.0, "Dana" },
-                    { new Guid("9f4e9f2e-c34a-490d-99b0-1f692b1fc181"), "Not worth the price.", new Guid("09688453-943f-4669-9359-3618c878cd8d"), 2.0, "Frank" }
+                    { new Guid("4a5255e7-f567-4919-8a34-9814d04fb228"), "Not worth the price.", new Guid("093b1bad-d22e-4f48-9df0-323a506cc2ae"), 2.0, "Frank" },
+                    { new Guid("73d8447e-5d38-4a18-8698-5666bebcf0b4"), "Could be better.", new Guid("093b1bad-d22e-4f48-9df0-323a506cc2ae"), 3.0, "Eve" },
+                    { new Guid("b47dd744-49c2-4fc2-b984-a5c9026151d3"), "Great product!", new Guid("975ceda4-b6cb-4723-86a5-9362ad8372e0"), 5.0, "Alice" },
+                    { new Guid("bcb2fa4c-d514-4841-8617-7c3a0776cfcb"), "Excellent quality!", new Guid("7572aa32-8acb-4984-b2df-9706427c9228"), 5.0, "Charlie" },
+                    { new Guid("d368f51f-aa55-490f-855c-0795085a4727"), "Satisfactory.", new Guid("7572aa32-8acb-4984-b2df-9706427c9228"), 3.0, "Dana" },
+                    { new Guid("f9489a5d-acd2-4639-b763-9a40d10215a7"), "Good value for money.", new Guid("975ceda4-b6cb-4723-86a5-9362ad8372e0"), 4.0, "Bob" }
                 });
 
             migrationBuilder.CreateIndex(

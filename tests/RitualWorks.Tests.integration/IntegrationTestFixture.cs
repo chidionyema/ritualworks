@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-using Castle.Core;
+using System.Linq;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -18,15 +15,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.AspNetCore.TestHost;
-using Newtonsoft.Json;
 using Npgsql;
-using RitualWorks;
+using Microsoft.AspNetCore.TestHost;
+using RabbitMQ.Client;
 using RitualWorks.Db;
 using Xunit;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
-using RabbitMQ.Client;
 
 namespace RitualWorks.Tests
 {
@@ -116,39 +109,6 @@ namespace RitualWorks.Tests
                     var appPath = GetApplicationPath();
                     var testPath = GetTestConfigPath();
 
-                    Console.WriteLine($"Application Path: {appPath}");
-                    Console.WriteLine($"Test Configuration Path: {testPath}");
-
-                    // Print the contents of the application path
-                    if (Directory.Exists(appPath))
-                    {
-                        Console.WriteLine("Application Path Contents:");
-                        foreach (var file in Directory.GetFiles(appPath, "*.*", SearchOption.AllDirectories))
-                        {
-                            Console.WriteLine(file);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Application path '{appPath}' does not exist.");
-                        throw new DirectoryNotFoundException($"Application path '{appPath}' does not exist.");
-                    }
-
-                    // Print the contents of the test configuration path
-                    if (Directory.Exists(testPath))
-                    {
-                        Console.WriteLine("Test Configuration Path Contents:");
-                        foreach (var file in Directory.GetFiles(testPath, "*.*", SearchOption.AllDirectories))
-                        {
-                            Console.WriteLine(file);
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($"Test configuration path '{testPath}' does not exist.");
-                        throw new DirectoryNotFoundException($"Test configuration path '{testPath}' does not exist.");
-                    }
-
                     builder.UseSetting("ContentRoot", appPath);
                     builder.ConfigureAppConfiguration((context, config) =>
                     {
@@ -174,7 +134,9 @@ namespace RitualWorks.Tests
                             var scopedServices = scope.ServiceProvider;
                             var db = scopedServices.GetRequiredService<RitualWorksContext>();
                             db.Database.Migrate();
-                            SeedData(scopedServices).Wait();
+
+                            // Cleanup and seed data
+                            CleanupAndSeedDatabaseAsync(db, scopedServices).GetAwaiter().GetResult();
                         }
                     });
 
@@ -186,6 +148,25 @@ namespace RitualWorks.Tests
 
             Client = Factory.CreateClient();
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Test");
+        }
+
+        private async Task CleanupAndSeedDatabaseAsync(RitualWorksContext db, IServiceProvider scopedServices)
+        {
+            // Clean up the existing data
+            await CleanupDatabaseAsync(db);
+
+            // Seed new data after cleanup
+            await SeedData(scopedServices);
+        }
+
+        private async Task CleanupDatabaseAsync(RitualWorksContext context)
+        {
+            // Remove all data from the necessary tables to ensure a clean state
+            context.Products.RemoveRange(context.Products);
+            context.Categories.RemoveRange(context.Categories);
+            context.Users.RemoveRange(context.Users);
+
+            await context.SaveChangesAsync();
         }
 
         private async Task WaitForPostgresToBeReadyAsync(int port)
@@ -219,37 +200,34 @@ namespace RitualWorks.Tests
             throw new Exception("PostgreSQL did not start within the allocated timeout.");
         }
 
-       private async Task WaitForRabbitMqToBeReadyAsync(int port)
-{
-    _logger.LogInformation("Waiting for RabbitMQ to initialize...");
-    var timeout = TimeSpan.FromMinutes(5); // Increased timeout for RabbitMQ initialization
-    var startTime = DateTime.UtcNow;
-    int retryCount = 0;
-
-    // Retrieve container logs to help diagnose RabbitMQ readiness issues
-    await LogContainerDetails(_rabbitMqHelper.ContainerName, _rabbitMqHelper.GetDockerClient());
-
-    while (DateTime.UtcNow - startTime < timeout)
-    {
-        try
+        private async Task WaitForRabbitMqToBeReadyAsync(int port)
         {
-            _logger.LogInformation($"Attempt {++retryCount}: Connecting to RabbitMQ on port {port}...");
-            var factory = new ConnectionFactory() { HostName = "localhost", Port = port };
-            using var connection = factory.CreateConnection();
-            _logger.LogInformation("RabbitMQ is ready.");
-            return;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning($"Waiting for RabbitMQ to be ready: {ex.Message}");
-            
-            // Gradually increase wait time between retries to handle delayed readiness
-            await Task.Delay(3000 * retryCount); // Delay increases with each retry
-        }
-    }
+            _logger.LogInformation("Waiting for RabbitMQ to initialize...");
+            var timeout = TimeSpan.FromMinutes(5);
+            var startTime = DateTime.UtcNow;
+            int retryCount = 0;
 
-    throw new Exception("RabbitMQ did not start within the allocated timeout.");
-}
+            await LogContainerDetails(_rabbitMqHelper.ContainerName, _rabbitMqHelper.GetDockerClient());
+
+            while (DateTime.UtcNow - startTime < timeout)
+            {
+                try
+                {
+                    _logger.LogInformation($"Attempt {++retryCount}: Connecting to RabbitMQ on port {port}...");
+                    var factory = new ConnectionFactory() { HostName = "localhost", Port = port };
+                    using var connection = factory.CreateConnection();
+                    _logger.LogInformation("RabbitMQ is ready.");
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning($"Waiting for RabbitMQ to be ready: {ex.Message}");
+                    await Task.Delay(3000 * retryCount);
+                }
+            }
+
+            throw new Exception("RabbitMQ did not start within the allocated timeout.");
+        }
 
         private async Task LogContainerDetails(string containerName, DockerClient dockerClient)
         {

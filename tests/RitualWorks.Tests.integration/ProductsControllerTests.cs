@@ -140,48 +140,57 @@ namespace RitualWorks.Tests
             var response = await _client.GetAsync($"/api/products/{invalidId}");
             Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
         }
-
-       [Fact]
-public async Task GetProducts_WithPagination_ReturnsCorrectPage()
-{
-    // Create a category first
-    var categoryDto = new CategoryDto { Name = "Test Category" };
-    var categoryResponse = await _client.PostAsJsonAsync("/api/products/categories", categoryDto);
-    categoryResponse.EnsureSuccessStatusCode();
-    var createdCategory = await categoryResponse.Content.ReadFromJsonAsync<CategoryDto>();
-
-    // Create multiple products with predictable naming to ensure the order
-    for (int i = 0; i < 20; i++)
-    {
-        var productDto = new ProductDto
+        
+         [Fact]
+       public async Task GetProducts_WithPagination_ReturnsCorrectPage()
         {
-            Name = $"Product {i:D2}", // Ensure names are formatted correctly
-            Description = "Test Description",
-            Price = 9.99M,
-            Stock = 10,
-            CategoryId = createdCategory.Id,
-            ImageUrls = new List<string> { "http://example.com/image.jpg" }
-        };
+            // Create a category first
+            var categoryDto = new CategoryDto { Name = "Test Category" };
+            var categoryResponse = await _client.PostAsJsonAsync("/api/products/categories", categoryDto);
+            categoryResponse.EnsureSuccessStatusCode();
+            var createdCategory = await categoryResponse.Content.ReadFromJsonAsync<CategoryDto>();
 
-        await _client.PostAsJsonAsync("/api/products", productDto);
-    }
+            // Create multiple products with alphabetic names to ensure predictable ordering
+            var productNames = new List<string>
+            {
+                "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", "Hotel", "India", "Juliet",
+                "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango"
+            };
 
-    // Retrieve the second page of products, expecting items 10 through 19
-    var response = await _client.GetAsync("/api/products?page=2&pageSize=10");
-    response.EnsureSuccessStatusCode();
-    var products = await response.Content.ReadFromJsonAsync<IEnumerable<ProductDto>>();
+            foreach (var name in productNames)
+            {
+                var productDto = new ProductDto
+                {
+                    Name = name,
+                    Description = "Test Description",
+                    Price = 9.99M,
+                    Stock = 10,
+                    CategoryId = createdCategory.Id,
+                    ImageUrls = new List<string> { "http://example.com/image.jpg" }
+                };
 
-    // Assert the page contains the correct number of items
-    Assert.Equal(10, products.Count());
+                await _client.PostAsJsonAsync("/api/products", productDto);
+            }
 
-    // Check if products are from the expected second page (names 10 to 19)
-    var expectedNames = Enumerable.Range(10, 10).Select(i => $"Product {i:D2}").ToList();
-    var actualNames = products.Select(p => p.Name).ToList();
+            // Retrieve the second page of products, expecting items sorted alphabetically
+            var response = await _client.GetAsync("/api/products?page=2&pageSize=10");
+            response.EnsureSuccessStatusCode();
+            var products = await response.Content.ReadFromJsonAsync<IEnumerable<ProductDto>>();
 
-    Assert.Equal(expectedNames, actualNames);
-}
+            // Assert the page contains the correct number of items
+            Assert.Equal(10, products.Count());
 
+            // Manually define the expected names based on alphabetical order of the full list
+            var expectedNames = new List<string>
+            {
+                "Kilo", "Lima", "Mike", "November", "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango"
+            };
 
+            var actualNames = products.Select(p => p.Name).ToList();
+
+            // Compare the actual and expected results
+            Assert.Equal(expectedNames, actualNames);
+        }
 
 
 

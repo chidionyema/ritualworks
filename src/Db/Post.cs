@@ -7,7 +7,7 @@ namespace RitualWorks.Db
     {
         public Post()
         {
-            Comments = new List<Comment>();
+            Comments = [];
         }
 
         public Guid Id { get; set; }

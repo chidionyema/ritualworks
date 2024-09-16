@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using RitualWorks.Controllers;
 using RitualWorks.Db;
-using Xunit;
 using Microsoft.Extensions.Configuration;
 using static RitualWorks.Controllers.AuthenticationController;
 using RitualWorks.Contracts;
+using Xunit;
 
 namespace RitualWorks.Tests
 {
@@ -61,11 +61,7 @@ namespace RitualWorks.Tests
 
             // Register the user using the registration endpoint
             var registrationResponse = await _client.PostAsJsonAsync("/api/authentication/register", registrationDto);
-            if (!registrationResponse.IsSuccessStatusCode)
-            {
-                var error = await registrationResponse.Content.ReadAsStringAsync();
-                throw new Exception($"Registration failed: {error}");
-            }
+            registrationResponse.EnsureSuccessStatusCode();
 
             var loginDto = new UserLoginDto
             {
@@ -80,9 +76,12 @@ namespace RitualWorks.Tests
 
             _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
+            // Insert a test product directly
+            var testProductId = await InsertTestProduct();
+
             var items = new List<CheckoutItem>
             {
-                new CheckoutItem { ProductId = GetTestProductId(), Quantity = 1, Price = 9.99M, Name = "Test Product" }
+                new CheckoutItem { ProductId = testProductId, Quantity = 1, Price = 9.99M, Name = "Test Product" }
             };
 
             // Act
@@ -111,13 +110,8 @@ namespace RitualWorks.Tests
                 Password = "Test@123"
             };
 
-            // Register the user using the registration endpoint
             var registrationResponse = await _client.PostAsJsonAsync("/api/authentication/register", registrationDto);
-            if (!registrationResponse.IsSuccessStatusCode)
-            {
-                var error = await registrationResponse.Content.ReadAsStringAsync();
-                throw new Exception($"Registration failed: {error}");
-            }
+            registrationResponse.EnsureSuccessStatusCode();
 
             var loginDto = new UserLoginDto
             {
@@ -160,13 +154,8 @@ namespace RitualWorks.Tests
                 Password = "Test@123"
             };
 
-            // Register the user using the registration endpoint
             var registrationResponse = await _client.PostAsJsonAsync("/api/authentication/register", registrationDto);
-            if (!registrationResponse.IsSuccessStatusCode)
-            {
-                var error = await registrationResponse.Content.ReadAsStringAsync();
-                throw new Exception($"Registration failed: {error}");
-            }
+            registrationResponse.EnsureSuccessStatusCode();
 
             var loginDto = new UserLoginDto
             {
@@ -181,9 +170,12 @@ namespace RitualWorks.Tests
 
             _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
+            // Insert a test product directly
+            var testProductId = await InsertTestProduct();
+
             var items = new List<CheckoutItem>
             {
-                new CheckoutItem { ProductId = GetTestProductId(), Quantity = 100, Price = 9.99M, Name = "Test Product" }
+                new CheckoutItem { ProductId = testProductId, Quantity = 100, Price = 9.99M, Name = "Test Product" } // Set quantity to exceed available stock
             };
 
             // Act
@@ -197,12 +189,27 @@ namespace RitualWorks.Tests
             if (user != null) _testUsers.Add(user);
         }
 
-        private Guid GetTestProductId()
+        private async Task<Guid> InsertTestProduct()
         {
             using var scope = _fixture.Factory.Services.CreateScope();
-            var productRepository = scope.ServiceProvider.GetRequiredService<IProductRepository>();
-            var product = productRepository.GetProductsAsync(1, 1).Result.FirstOrDefault();
-            return product?.Id ?? throw new Exception("Test product not found");
+            var context = scope.ServiceProvider.GetRequiredService<RitualWorksContext>();
+
+            // Create and insert a test product
+            var testProduct = new Product
+            {
+                Id = Guid.NewGuid(),
+                Name = "Test Product",
+                Description = "This is a test product.",
+                Price = 9.99M,
+                Stock = 10,
+                CreatedDate = DateTime.UtcNow,
+                Category = context.Categories.FirstOrDefault() ?? new Category { Id = Guid.NewGuid(), Name = "Test Category" }
+            };
+
+            context.Products.Add(testProduct);
+            await context.SaveChangesAsync();
+
+            return testProduct.Id;
         }
     }
 }

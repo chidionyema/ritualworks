@@ -160,6 +160,18 @@ namespace RitualWorks.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -171,17 +183,20 @@ namespace RitualWorks.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("40686f4a-98dc-4a70-a668-6b11c1f3842d"),
+                            Id = new Guid("d05aeede-f1aa-40f4-aea4-591ac839183e"),
+                            CreatedDate = new DateTime(2024, 9, 15, 23, 4, 54, 802, DateTimeKind.Utc).AddTicks(7550),
                             Name = "Electronics"
                         },
                         new
                         {
-                            Id = new Guid("d9612e92-0681-47b5-87f1-125230474149"),
+                            Id = new Guid("05cbdf14-2bbc-4d21-b05f-a4b659f4b016"),
+                            CreatedDate = new DateTime(2024, 9, 15, 23, 4, 54, 802, DateTimeKind.Utc).AddTicks(7570),
                             Name = "Apparel"
                         },
                         new
                         {
-                            Id = new Guid("716946a1-51e3-49eb-9f48-fdfec8652f65"),
+                            Id = new Guid("f463dcce-5c47-4018-a659-f1a0860722a2"),
+                            CreatedDate = new DateTime(2024, 9, 15, 23, 4, 54, 802, DateTimeKind.Utc).AddTicks(7570),
                             Name = "Home"
                         });
                 });
@@ -315,6 +330,12 @@ namespace RitualWorks.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
@@ -324,6 +345,12 @@ namespace RitualWorks.Migrations
 
                     b.Property<bool>("IsNew")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -350,9 +377,10 @@ namespace RitualWorks.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("935d943e-d07d-4faf-aedf-c05706ccaa59"),
+                            Id = new Guid("975ceda4-b6cb-4723-86a5-9362ad8372e0"),
                             Brand = "Brand A",
-                            CategoryId = new Guid("40686f4a-98dc-4a70-a668-6b11c1f3842d"),
+                            CategoryId = new Guid("d05aeede-f1aa-40f4-aea4-591ac839183e"),
+                            CreatedDate = new DateTime(2024, 9, 15, 23, 4, 54, 802, DateTimeKind.Utc).AddTicks(7670),
                             Description = "Description of Product 1",
                             InStock = true,
                             IsNew = true,
@@ -364,9 +392,10 @@ namespace RitualWorks.Migrations
                         },
                         new
                         {
-                            Id = new Guid("7e67d2f0-4658-45ea-b91e-6164e41345ba"),
+                            Id = new Guid("7572aa32-8acb-4984-b2df-9706427c9228"),
                             Brand = "Brand B",
-                            CategoryId = new Guid("d9612e92-0681-47b5-87f1-125230474149"),
+                            CategoryId = new Guid("05cbdf14-2bbc-4d21-b05f-a4b659f4b016"),
+                            CreatedDate = new DateTime(2024, 9, 15, 23, 4, 54, 802, DateTimeKind.Utc).AddTicks(7680),
                             Description = "Description of Product 2",
                             InStock = true,
                             IsNew = false,
@@ -378,9 +407,10 @@ namespace RitualWorks.Migrations
                         },
                         new
                         {
-                            Id = new Guid("09688453-943f-4669-9359-3618c878cd8d"),
+                            Id = new Guid("093b1bad-d22e-4f48-9df0-323a506cc2ae"),
                             Brand = "Brand C",
-                            CategoryId = new Guid("716946a1-51e3-49eb-9f48-fdfec8652f65"),
+                            CategoryId = new Guid("f463dcce-5c47-4018-a659-f1a0860722a2"),
+                            CreatedDate = new DateTime(2024, 9, 15, 23, 4, 54, 802, DateTimeKind.Utc).AddTicks(7690),
                             Description = "Description of Product 3",
                             InStock = false,
                             IsNew = true,
@@ -442,23 +472,23 @@ namespace RitualWorks.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("0c645b17-a6d8-44c9-b409-c1d43d84520a"),
+                            Id = new Guid("3f97b86f-1a8c-4fa8-9538-3b9410c9461c"),
                             BlobName = "",
-                            ProductId = new Guid("935d943e-d07d-4faf-aedf-c05706ccaa59"),
+                            ProductId = new Guid("975ceda4-b6cb-4723-86a5-9362ad8372e0"),
                             Url = "https://via.placeholder.com/300"
                         },
                         new
                         {
-                            Id = new Guid("9447758a-d9db-4823-890c-46bd255e2a44"),
+                            Id = new Guid("f5e44360-9f85-49d7-a844-66c6f14286f4"),
                             BlobName = "",
-                            ProductId = new Guid("7e67d2f0-4658-45ea-b91e-6164e41345ba"),
+                            ProductId = new Guid("7572aa32-8acb-4984-b2df-9706427c9228"),
                             Url = "https://via.placeholder.com/300"
                         },
                         new
                         {
-                            Id = new Guid("c2737562-fce0-4cf6-9085-dc59813b5a21"),
+                            Id = new Guid("07cab595-e3ae-4112-8d79-f74630bb68c4"),
                             BlobName = "",
-                            ProductId = new Guid("09688453-943f-4669-9359-3618c878cd8d"),
+                            ProductId = new Guid("093b1bad-d22e-4f48-9df0-323a506cc2ae"),
                             Url = "https://via.placeholder.com/300"
                         });
                 });
@@ -492,49 +522,49 @@ namespace RitualWorks.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("071411de-8126-418c-b648-9e4eeccbbe4c"),
+                            Id = new Guid("b47dd744-49c2-4fc2-b984-a5c9026151d3"),
                             Comment = "Great product!",
-                            ProductId = new Guid("935d943e-d07d-4faf-aedf-c05706ccaa59"),
+                            ProductId = new Guid("975ceda4-b6cb-4723-86a5-9362ad8372e0"),
                             Rating = 5.0,
                             User = "Alice"
                         },
                         new
                         {
-                            Id = new Guid("350df5ac-9063-45fd-95e6-f31a9531348d"),
+                            Id = new Guid("f9489a5d-acd2-4639-b763-9a40d10215a7"),
                             Comment = "Good value for money.",
-                            ProductId = new Guid("935d943e-d07d-4faf-aedf-c05706ccaa59"),
+                            ProductId = new Guid("975ceda4-b6cb-4723-86a5-9362ad8372e0"),
                             Rating = 4.0,
                             User = "Bob"
                         },
                         new
                         {
-                            Id = new Guid("75d14e04-4721-4295-8b67-28bf5cb6ee5f"),
+                            Id = new Guid("bcb2fa4c-d514-4841-8617-7c3a0776cfcb"),
                             Comment = "Excellent quality!",
-                            ProductId = new Guid("7e67d2f0-4658-45ea-b91e-6164e41345ba"),
+                            ProductId = new Guid("7572aa32-8acb-4984-b2df-9706427c9228"),
                             Rating = 5.0,
                             User = "Charlie"
                         },
                         new
                         {
-                            Id = new Guid("924b4cd2-2f05-4f2d-9aee-c23967d7f1a8"),
+                            Id = new Guid("d368f51f-aa55-490f-855c-0795085a4727"),
                             Comment = "Satisfactory.",
-                            ProductId = new Guid("7e67d2f0-4658-45ea-b91e-6164e41345ba"),
+                            ProductId = new Guid("7572aa32-8acb-4984-b2df-9706427c9228"),
                             Rating = 3.0,
                             User = "Dana"
                         },
                         new
                         {
-                            Id = new Guid("068facb8-40c5-4805-b682-29c1e233c68d"),
+                            Id = new Guid("73d8447e-5d38-4a18-8698-5666bebcf0b4"),
                             Comment = "Could be better.",
-                            ProductId = new Guid("09688453-943f-4669-9359-3618c878cd8d"),
+                            ProductId = new Guid("093b1bad-d22e-4f48-9df0-323a506cc2ae"),
                             Rating = 3.0,
                             User = "Eve"
                         },
                         new
                         {
-                            Id = new Guid("9f4e9f2e-c34a-490d-99b0-1f692b1fc181"),
+                            Id = new Guid("4a5255e7-f567-4919-8a34-9814d04fb228"),
                             Comment = "Not worth the price.",
-                            ProductId = new Guid("09688453-943f-4669-9359-3618c878cd8d"),
+                            ProductId = new Guid("093b1bad-d22e-4f48-9df0-323a506cc2ae"),
                             Rating = 2.0,
                             User = "Frank"
                         });
