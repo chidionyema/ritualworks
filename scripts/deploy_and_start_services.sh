@@ -39,16 +39,20 @@ start_services() {
 # Main execution flow
 echo "Starting Vault and Docker Services Deployment..."
 
+# Create Docker networks by calling the external script
+log "Creating Docker networks..."
+./create_networks.sh || error_exit "Failed to create Docker networks."
+
+# Step 4: Start All Services
+start_services
 # Step 1: Deploy Vault
 deploy_vault
 
-# Step 2: Configure Vault Secrets
-configure_vault_secrets
+
 
 # Step 3: Generate Certificates
 generate_certs
 
-# Step 4: Start All Services
-start_services
+
 
 echo "Deployment and Service Startup Complete!"

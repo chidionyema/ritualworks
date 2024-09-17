@@ -1,5 +1,18 @@
 #!/bin/bash
 
+set -e
+
+# Function to log messages with timestamp
+log() {
+  echo "$(date +'%Y-%m-%d %H:%M:%S') - $1" | tee -a deployment.log
+}
+
+# Function to handle errors and exit
+error_exit() {
+  log "Error: $1"
+  exit 1
+}
+
 # Function to find an available subnet
 find_available_subnet() {
   local subnet_prefix=$1
@@ -16,13 +29,24 @@ find_available_subnet() {
   exit 1
 }
 
-# Ensure Docker networks are created with non-overlapping subnets
-if ! docker network ls | grep -q 'internal_network'; then
-  internal_subnet=$(find_available_subnet "172.20")
-  docker network create --subnet=$internal_subnet internal_network
-fi
+# Function to create necessary Docker networks with non-overlapping subnets
+create_networks() {
+  if ! docker network ls | grep -q 'internal_network'; then
+    internal_subnet=$(find_available_subnet "172.20")
+    log "Creating Docker network 'internal_network' with subnet $internal_subnet"
+    docker network create --subnet="$internal_subnet" internal_network || error_exit "Failed to create internal network"
+  else
+    log "Docker network 'internal_network' already exists."
+  fi
 
-if ! docker network ls | grep -q 'external_network'; then
-  external_subnet=$(find_available_subnet "172.21")
-  docker network create --subnet=$external_subnet external_network
-fi
+  if ! docker network ls | grep -q 'external_network'; then
+    external_subnet=$(find_available_subnet "172.21")
+    log "Creating Docker network 'external_network' with subnet $external_subnet"
+    docker network create --subnet="$external_subnet" external_network || error_exit "Failed to create external network"
+  else
+    log "Docker network 'external_network' already exists."
+  fi
+}
+
+# Run the network creation function
+create_networks

@@ -26,41 +26,6 @@ cd "$(dirname "$0")" || error_exit "Failed to change directory to the script's l
 # Set the Docker Compose project name
 PROJECT_NAME="${PROJECT_NAME:-ritualworks}"
 
-# Function to find an available subnet
-find_available_subnet() {
-  local subnet_prefix=$1
-  local existing_subnets=$(docker network inspect $(docker network ls -q) -f '{{range .IPAM.Config}}{{.Subnet}}{{end}}')
-
-  for i in {0..255}; do
-    local subnet="${subnet_prefix}.${i}.0/24"
-    if ! echo "$existing_subnets" | grep -q "$subnet"; then
-      echo "$subnet"
-      return
-    fi
-  done
-  echo "Error: No available subnets found" >&2
-  exit 1
-}
-
-# Function to create necessary Docker networks with non-overlapping subnets
-create_networks() {
-  if ! docker network ls | grep -q 'internal_network'; then
-    internal_subnet=$(find_available_subnet "172.20")
-    log "Creating Docker network 'internal_network' with subnet $internal_subnet"
-    docker network create --subnet="$internal_subnet" internal_network || error_exit "Failed to create internal network"
-  else
-    log "Docker network 'internal_network' already exists."
-  fi
-
-  if ! docker network ls | grep -q 'external_network'; then
-    external_subnet=$(find_available_subnet "172.21")
-    log "Creating Docker network 'external_network' with subnet $external_subnet"
-    docker network create --subnet="$external_subnet" external_network || error_exit "Failed to create external network"
-  else
-    log "Docker network 'external_network' already exists."
-  fi
-}
-
 # Function to build and start Docker services with an option to skip cache for specific services
 start_services() {
   local compose_file=$1
@@ -83,19 +48,18 @@ start_services() {
 # Services to be rebuilt without cache
 no_cache_services=()
 
-# Set the correct Docker Compose file path
+# Set the correct Docker Compose file paths
 COMPOSE_FINAL_FILE="../docker/compose/docker-compose-backend.yml"
 COMPOSE_FE_FILE="../docker/compose/docker-compose-frontend-api.yml"
 
-# Create Docker networks
-create_networks
+
 
 # Start backend services
 start_services "$COMPOSE_FINAL_FILE" "backend" "${no_cache_services[@]}"
 
 # Add a delay before starting the frontend services to allow backend services to stabilize
 log "Delaying startup of frontend services to ensure backend services are ready..."
-sleep 30  # Adjust the delay time as necessary
+sleep 10  # Adjust the delay time as necessary
 
 # Start frontend services
 start_services "$COMPOSE_FE_FILE" "frontend" "${no_cache_services[@]}"

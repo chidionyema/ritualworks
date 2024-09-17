@@ -35,7 +35,17 @@ services:
 
 networks:
   internal_network:
-    driver: bridge
+    name: internal_network
+    external: true
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
+  external_network:
+    name: external_network
+    external: true
+    ipam:
+        config:
+        - subnet: 172.23.0.0/16
 
 volumes:
   consul-data:

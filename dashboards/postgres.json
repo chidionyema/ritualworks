@@ -1,0 +1,87 @@
+{
+    "id": null,
+    "uid": "postgres-dashboard",
+    "title": "PostgreSQL Overview",
+    "tags": ["postgres", "database"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 1,
+    "panels": [
+      {
+        "type": "graph",
+        "title": "CPU Usage",
+        "targets": [
+          {
+            "expr": "rate(node_cpu_seconds_total{job='postgres'}[5m])",
+            "legendFormat": "{{cpu}}",
+            "interval": ""
+          }
+        ],
+        "xaxis": {
+          "show": true
+        },
+        "yaxes": [
+          {
+            "format": "percent",
+            "show": true
+          },
+          {
+            "show": true
+          }
+        ]
+      },
+      {
+        "type": "graph",
+        "title": "Queries Per Second",
+        "targets": [
+          {
+            "expr": "rate(pg_stat_activity_count{job='postgres'}[5m])",
+            "legendFormat": "QPS",
+            "interval": ""
+          }
+        ],
+        "xaxis": {
+          "show": true
+        },
+        "yaxes": [
+          {
+            "format": "short",
+            "show": true
+          },
+          {
+            "show": true
+          }
+        ]
+      },
+      {
+        "type": "stat",
+        "title": "Replication Lag",
+        "targets": [
+          {
+            "expr": "pg_replication_lag{job='postgres'}",
+            "legendFormat": "Lag",
+            "interval": ""
+          }
+        ],
+        "colorMode": "value",
+        "mappingType": 1,
+        "rangeMaps": [
+          {
+            "from": "null",
+            "to": "null",
+            "text": "N/A"
+          }
+        ],
+        "thresholds": "50,80",
+        "valueMaps": [
+          {
+            "op": "=",
+            "text": "N/A",
+            "value": "null"
+          }
+        ],
+        "valueName": "current"
+      }
+    ]
+  }
+  

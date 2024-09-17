@@ -49,6 +49,13 @@ namespace RitualWorks.Controllers
             _logger.LogInformation("Received request to upload file chunk: {FileName} for ProductId: {ProductId}, ChunkIndex: {ChunkIndex}, TotalChunks: {TotalChunks}",
                 uploadDto.FileName, uploadDto.ProductId, uploadDto.ChunkIndex, uploadDto.TotalChunks);
 
+            // Check if the file is null
+            if (uploadDto.File == null)
+            {
+                _logger.LogWarning("File upload failed: No file provided.");
+                return BadRequest("No file uploaded.");
+            }
+
             if (!ValidateFile(uploadDto.File, out string validationError, out string fileType))
             {
                 _logger.LogWarning("File validation failed: {ValidationError}", validationError);
@@ -111,6 +118,13 @@ namespace RitualWorks.Controllers
         public async Task<IActionResult> UploadFile([FromForm] FileUploadDto uploadDto)
         {
             _logger.LogInformation("Received request to upload file: {FileName} for ProductId: {ProductId}", uploadDto.File?.FileName, uploadDto.ProductId);
+
+            // Check if the file is null
+            if (uploadDto.File == null)
+            {
+                _logger.LogWarning("File upload failed: No file provided.");
+                return BadRequest("No file uploaded.");
+            }
 
             if (!ValidateFile(uploadDto.File, out string validationError, out string fileType))
             {

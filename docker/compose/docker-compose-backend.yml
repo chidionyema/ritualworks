@@ -316,7 +316,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-    command: server https://minio{1...4}/data --certs-dir /etc/ssl/certs
+    command: server https://minio{1...2}/data --certs-dir /etc/ssl/certs
     deploy:
       restart_policy:
         condition: on-failure
@@ -341,7 +341,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-    command: server https://minio{1...4}/data --certs-dir /etc/ssl/certs
+    command: server https://minio{1...2}/data --certs-dir /etc/ssl/certs
     deploy:
       restart_policy:
         condition: on-failure
@@ -375,7 +375,10 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - grafana-data:/var/lib/grafana
+      - ../../grafana-data:/var/lib/grafana
+      - ../../provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ../../provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ../../dashboards:/var/lib/grafana/dashboards
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin  # Change this for security
@@ -398,13 +401,15 @@ services:
 networks:
   internal_network:
     name: internal_network
+    external: true
     ipam:
       config:
         - subnet: 172.22.0.0/16
   external_network:
     name: external_network
+    external: true
     ipam:
-      config:
+        config:
         - subnet: 172.23.0.0/16
 
 volumes:

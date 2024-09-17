@@ -69,27 +69,76 @@ your-project/
 
 
 ### Configure Grafana
-### Add Prometheus Data Source:
 
-Open Grafana in your browser (http://localhost:3001).
-Log in with the default credentials (admin / admin).
-Add a new data source and select Prometheus.
-Set the URL to http://prometheus:9090 and save the data source.
-### Import Dashboards:
+#### Add Prometheus Data Source:
+
+1. Open Grafana in your browser (`http://localhost:3001`).
+2. Log in with the default credentials (`admin / admin`).
+3. Add a new data source and select Prometheus.
+4. Set the URL to `http://prometheus:9090` and save the data source.
+
+#### Import Dashboards:
 
 You can import predefined dashboards for Postgres, Redis, Elasticsearch, RabbitMQ, etc.
-Go to the Dashboard section in Grafana and import a new dashboard by entering the dashboard ID from the Grafana website (e.g., 11074 for PostgreSQL, 763 for Redis, etc.).
 
-### Deploy 
+1. Go to the Dashboard section in Grafana.
+2. Import a new dashboard by entering the dashboard ID from the Grafana website (e.g., 11074 for PostgreSQL, 763 for Redis, etc.).
 
-to deploy
-run ./scripts/automate_deployment.sh to deploy vault
-save contents of scripts/unseal_keys.json externally and delete the file
-or
+### Setting Up Permissions for Grafana Provisioning Files
+
+To ensure that Grafana can access and read the provisioning files correctly, follow these steps to set the appropriate ownership and permissions:
+
+1. **Set Ownership to the Grafana User**
+
+   Replace `/path/to` with the actual paths where your provisioning files and dashboards are located. The Grafana service typically runs with the user ID `472`, so it's important to adjust the ownership accordingly:
+
+   ```bash
+   # Set ownership to the Grafana user (replace with the correct user if needed)
+   sudo chown -R 472:472 /path/to/config/provisioning/datasources
+   sudo chown -R 472:472 /path/to/config/provisioning/dashboards
+   sudo chown -R 472:472 /path/to/dashboards
+
+2. **Set Read and Execute Permissions for Directories and Read Permissions for Files
+```bash
+   sudo chmod -R 755 /path/to/config/provisioning/datasources
+   sudo chmod -R 755 /path/to/config/provisioning/dashboards
+   sudo chmod -R 755 /path/to/dashboards
+
+This step ensures that the Grafana service has the correct permissions to execute the necessary files:
+3. *Ensure That Files Have Read Permissions
+
+To make sure all files within the directories are readable, execute the following commands:
 
 
-###  sTroubleshooting 
-Code: 400. Errors:
+```bash
+sudo find /path/to/config/provisioning/datasources -type f -exec chmod 644 {} \;
+sudo find /path/to/config/provisioning/dashboards -type f -exec chmod 644 {} \;
+sudo find /path/to/dashboards -type f -exec chmod 644 {} \;
+
+e.g 
+```bash
+      sudo chown -R 472:472 ./provisioning/datasources
+      sudo chown -R 472:472 ./provisioning/dashboards
+      sudo chown -R 472:472 ./dashboards
+       # Set read and execute permissions for directories, and read permissions for files
+      sudo chmod -R 755 ./provisioning/datasources
+      sudo chmod -R 755 ./provisioning/dashboards
+      sudo chmod -R 755 ./dashboards
+      # Ensure that files have read permissions
+      sudo find ./provisioning/datasources -type f -exec chmod 644 {} \;
+      sudo find ./provisioning/dashboards -type f -exec chmod 644 {} \;
+      sudo find ./dashboards -type f -exec chmod 644 {} \;
+
+      
+
+4. *Restart Grafana
+
+After adjusting the permissions, restart Grafana to apply the changes:
+```bash docker-compose restart grafana
+
+5. Check Grafana's logs to ensure that all provisioning files are being loaded correctly:
+```bash docker logs <grafana_container_name>
+
 
 * Vault is already initialized
 delete vault/data folder  stop and delete vault and consul containers
