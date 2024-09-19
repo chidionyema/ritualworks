@@ -261,11 +261,19 @@ update_env_file "$env_vars"
 log "Managing and recreating PostgreSQL service for dynamic secrets..."
 manage_and_recreate_service "$BACKEND_COMPOSE_FILE" "postgres_primary"
 
+log "Managing and recreating PostgreSQL service for dynamic secrets..."
+manage_and_recreate_service "$BACKEND_COMPOSE_FILE" "postgres_standby"
+
 log "Managing and recreating MinIO service for dynamic secrets..."
 manage_and_recreate_service "$BACKEND_COMPOSE_FILE" "minio1"
+log "Managing and recreating MinIO service for dynamic secrets..."
+manage_and_recreate_service "$BACKEND_COMPOSE_FILE" "minio2"
 
 log "Managing and recreating RabbitMQ service for dynamic secrets..."
 manage_and_recreate_service "$BACKEND_COMPOSE_FILE" "rabbitmq-node1"
+
+log "Managing and recreating RabbitMQ service for dynamic secrets..."
+manage_and_recreate_service "$BACKEND_COMPOSE_FILE" "rabbitmq-node2"
 
 # Step 7: Configure PostgreSQL roles after restarting the container
 log "Configuring PostgreSQL roles in Vault..."
