@@ -21,6 +21,8 @@ using Stripe;
 using RitualWorks.Repositories.RitualWorks.Repositories;
 using MassTransit;
 using Amazon.S3;
+using System.Security.Authentication;
+
 public partial class Program
 {
     public static void Main(string[] args)
@@ -46,7 +48,7 @@ public partial class Program
         builder.Services.Configure<BlobSettings>(builder.Configuration.GetSection("AzureBlobStorage"));
 
         // Add MassTransit configuration with RabbitMQ settings
-        
+        /*
             builder.Services.AddMassTransit(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
@@ -76,7 +78,7 @@ public partial class Program
 
                 cfg.ConfigureEndpoints(context);
             });
-        });
+        });*/
 
         // Add services to the container.
         builder.Services.AddControllers();
@@ -118,11 +120,6 @@ public partial class Program
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
             };
         });
-
-        builder.Services.Configure<VaultSettings>(builder.Configuration.GetSection("Vault"));
-
-        // Register VaultService with HttpClient support
-        builder.Services.AddHttpClient<VaultService>();
 
         builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
         // Configure Stripe

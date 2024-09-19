@@ -3,7 +3,7 @@ export VAULT_ADDR="http://127.0.0.1:8200"
 export VAULT_UNSEAL_KEY_1="your-unseal-key-1"
 export VAULT_UNSEAL_KEY_2="your-unseal-key-2"
 export VAULT_UNSEAL_KEY_3="your-unseal-key-3"
-export VAULT_ROOT_TOKEN="your-root-token"
+export VAULT_ROOT_TOKEN="hvs.8fvKtYAjIr1cgitjSOLCY2lE"
 
 # Environment Configuration=
 export ENVIRONMENT="dev"  # Change this to 'staging' or 'prod' as needed
@@ -11,7 +11,7 @@ export ENVIRONMENT="dev"  # Change this to 'staging' or 'prod' as needed
 # PostgreSQL Configuration=
 export POSTGRES_DB="your_postgres_db"
 export POSTGRES_USER="myuser"
-export POSTGRES_PASSWORD="wMrOsJ1B9rU9NdqiY4NyHw=="
+export POSTGRES_PASSWORD="a3cEaaYkeLbz4BrJdDOyZQ=="
 
 # AWS Configuration=
 export AWS_ACCESS_KEY="your-aws-access-key"
@@ -27,14 +27,14 @@ export RABBITMQ_SERVER_NAME="rabbitmq"
 export ELASTIC_PASSWORD="your-elastic-password"
 
 # MinIO Configuration=
-export MINIO_ACCESS_KEY="eaecca8abddf23ad0b58ded6"
-export MINIO_SECRET_KEY="Rb+qpX89OaaEdz/r8T+3Qz75IKSTjEtk"
+export MINIO_ACCESS_KEY="b895981bf204a14d2b6e2324"
+export MINIO_SECRET_KEY="H5jBj/gG1Z/OVjbpos0ndp9HvJjQ11W0"
 export MINIO_ENDPOINT="localhost:9000"
 export MINIO_BUCKET_NAME="your-bucket-name"
 export MINIO_SECURE="false"
 
 # JWT Configuration=
-export JWT_KEY="YGZRSewtLTb/NjwbnSlcnK6mxfHX8o1R6/kKfzsIhCk="
+export JWT_KEY="qbk5jaNfZj9QnjM4pO8rrTMdvvlXsyvHRVjFSdWDtLI="
 
 # Recaptcha Configuration=
 export RECAPTCHA_SECRET_KEY="6LcZLxQqAAAAAHQ1YkkdQbVP3cDD7RBLDkrNtoW0"
@@ -56,3 +56,4 @@ export MASS_TRANSIT_RABBITMQ_SSL_ENABLED="true"
 export RABBITMQ_CERTIFICATE_PATH="/etc/ssl/certs/rabbitmq.crt"
 export RABBITMQ_CERTIFICATE_PASSPHRASE="your-certificate-passphrase"
 export USE_CERTIFICATE_AS_AUTHENTICATION="true"
+export VAULT_ROOT_TOKEN="hvs.8fvKtYAjIr1cgitjSOLCY2lE"

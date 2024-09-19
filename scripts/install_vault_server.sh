@@ -199,6 +199,9 @@ fi
 log "Authenticating with Vault..."
 docker exec "$VAULT_CONTAINER_NAME" vault login "$VAULT_ROOT_TOKEN" || error_exit "Failed to authenticate with Vault"
 
+# Update the .env file with the Vault root token
+update_env_file "VAULT_ROOT_TOKEN=$VAULT_ROOT_TOKEN"
+
 # Step 4: Configure Vault secrets engines and regenerate secrets based on the environment
 log "Configuring Vault with secrets engines and regenerating secrets for the $ENVIRONMENT environment..."
 
@@ -250,6 +253,7 @@ MINIO_SECRET_KEY=$MINIO_SECRET_KEY
 RABBITMQ_PASSWORD=$RABBITMQ_PASSWORD
 JWT_KEY=$JWT_KEY"
 
+
 # Update the .env file with the new secrets
 update_env_file "$env_vars"
 
@@ -279,5 +283,9 @@ docker exec "$VAULT_CONTAINER_NAME" /bin/sh -c "
       default_ttl='1h' \
       max_ttl='24h'
 " || error_exit "Failed to configure PostgreSQL roles in Vault."
+
+manage_and_recreate_service "$FRONTEND_COMPOSE_FILE" "app1"
+manage_and_recreate_service "$FRONTEND_COMPOSE_FILE" "app2"
+manage_and_recreate_service "$FRONTEND_COMPOSE_FILE" "app3"
 
 log "All dynamic secrets updated and relevant services restarted successfully."

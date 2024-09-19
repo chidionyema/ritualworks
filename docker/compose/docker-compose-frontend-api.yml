@@ -24,6 +24,7 @@ services:
       - SocialMedia__Twitter__ApiSecret=${TWITTER_API_SECRET}
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
+      - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
     volumes:
       - uploads:/app/uploads
     networks:
@@ -53,6 +54,7 @@ services:
       - SocialMedia__Twitter__ApiSecret=${TWITTER_API_SECRET}
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
+      - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
     volumes:
       - uploads:/app/uploads
     networks:
@@ -82,6 +84,7 @@ services:
       - SocialMedia__Twitter__ApiSecret=${TWITTER_API_SECRET}
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
+      - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
     volumes:
       - uploads:/app/uploads
     networks:
