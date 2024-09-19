@@ -21,16 +21,15 @@ using Stripe;
 using RitualWorks.Repositories.RitualWorks.Repositories;
 using MassTransit;
 using Amazon.S3;
-using System.Security.Authentication;
 
 public partial class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = CreateWebHostBuilder(args);
         var app = builder.Build();
 
-        ConfigurePipeline(app);
+        await ConfigurePipeline(app);
 
         app.Run();
     }
@@ -47,28 +46,25 @@ public partial class Program
         // Configure BlobSettings
         builder.Services.Configure<BlobSettings>(builder.Configuration.GetSection("AzureBlobStorage"));
 
+        // Register VaultService with HttpClient support
+        builder.Services.Configure<VaultSettings>(builder.Configuration.GetSection("Vault"));
+        builder.Services.AddHttpClient<VaultService>();
+
         // Add MassTransit configuration with RabbitMQ settings
-        /*
-            builder.Services.AddMassTransit(x =>
+        builder.Services.AddMassTransit(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
             x.AddConsumer<MyConsumer>();
 
             x.UsingRabbitMq((context, cfg) =>
             {
-                // Read RabbitMQ settings from the configuration
                 var rabbitMqHost = builder.Configuration["MassTransit:RabbitMq:Host"];
-                var rabbitMqUsername = builder.Configuration["MassTransit:RabbitMq:Username"];
-                var rabbitMqPassword = builder.Configuration["MassTransit:RabbitMq:Password"];
-                var heartbeatInterval = builder.Configuration.GetValue<int>("MassTransit:RabbitMq:HeartbeatInterval", 10);
-                var connectionTimeoutSeconds = builder.Configuration.GetValue<int>("MassTransit:RabbitMq:ConnectionTimeoutSeconds", 30);
-
                 cfg.Host(new Uri(rabbitMqHost), h =>
                 {
-                    h.Username(rabbitMqUsername);
-                    h.Password(rabbitMqPassword);
-                    h.Heartbeat((ushort)heartbeatInterval);// Use configured heartbeat interval
-                    h.RequestedConnectionTimeout(TimeSpan.FromSeconds(connectionTimeoutSeconds)); // Use configured connection timeout
+                    h.Username(builder.Configuration["MassTransit:RabbitMq:Username"]);
+                    h.Password(builder.Configuration["MassTransit:RabbitMq:Password"]);
+                    h.Heartbeat(10); // Heartbeat interval
+                    h.RequestedConnectionTimeout(TimeSpan.FromSeconds(30)); // Connection timeout
                 });
 
                 // Additional MassTransit configurations
@@ -78,9 +74,9 @@ public partial class Program
 
                 cfg.ConfigureEndpoints(context);
             });
-        });*/
+        });
 
-        // Add services to the container.
+        // Add services to the container
         builder.Services.AddControllers();
 
         // Log the configuration values to verify they are being read
@@ -121,8 +117,8 @@ public partial class Program
             };
         });
 
-        builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
         // Configure Stripe
+        builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
         StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretKey"];
 
         // Add DbContext
@@ -191,9 +187,26 @@ public partial class Program
         return builder;
     }
 
-    public static void ConfigurePipeline(WebApplication app)
+    public static async Task ConfigurePipeline(WebApplication app)
     {
-        // Configure the HTTP request pipeline.
+        var vaultService = app.Services.GetRequiredService<VaultService>();
+
+        // Fetch secrets from Vault for various services (e.g., JWT, PostgreSQL, RabbitMQ, MinIO)
+        var secrets = await vaultService.FetchSecretsAsync($"secret/data/{app.Environment.EnvironmentName}",
+            "jwt_key", "postgres_password", "minio_access_key", "minio_secret_key", "rabbitmq_password");
+
+        var configuration = app.Configuration;
+
+        // Inject secrets into configuration
+        configuration["Jwt:Key"] = secrets["jwt_key"];
+        configuration["ConnectionStrings:DefaultConnection"] =
+            $"Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=myuser;Password={secrets["postgres_password"]}";
+
+        configuration["MassTransit:RabbitMq:Password"] = secrets["rabbitmq_password"];
+        configuration["MinIO:AccessKey"] = secrets["minio_access_key"];
+        configuration["MinIO:SecretKey"] = secrets["minio_secret_key"];
+
+        // Standard middleware setup
         if (app.Environment.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
@@ -206,12 +219,8 @@ public partial class Program
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();
-
         app.UseRouting();
-
-        // Enable CORS
         app.UseCors("Allow3001");
-
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -224,15 +233,11 @@ public partial class Program
             await next();
         });
 
-        // Enable middleware to serve generated Swagger as a JSON endpoint.
         app.UseSwagger();
-
-        // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-        // specifying the Swagger JSON endpoint.
         app.UseSwaggerUI(c =>
         {
             c.SwaggerEndpoint("/swagger/v1/swagger.json", "RitualWorks API V1");
-            c.RoutePrefix = "swagger"; // Swagger UI will be served at /swagger
+            c.RoutePrefix = "swagger";
         });
 
         app.MapControllers();
