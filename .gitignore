@@ -33,3 +33,5 @@ scripts/unseal_keys.json
 scripts/new_vault_token.txt
 scripts/unseal_keys.json
 scripts/new_vault_token.txt
+# To ignore the entire ssl/certs directory
+ssl/certs/

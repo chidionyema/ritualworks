@@ -4,16 +4,10 @@
 
 # Function to deploy Vault
 deploy_vault() {
-    if [ -f "./install_vault_server.sh" ]; then
+
         echo "Deploying Vault using install_vault_server.sh..."
         ./install_vault_server.sh
-    elif [ -f "./scripts/deploy_vault.sh" ]; then
-        echo "Deploying Vault using deploy_vault.sh..."
-        ./scripts/deploy_vault.sh
-    else
-        echo "Error: Vault deployment script not found!"
         exit 1
-    fi
 }
 
 # Function to generate certificates

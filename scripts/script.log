@@ -1,0 +1,17 @@
+2024-09-17 21:58:56 - Environment: dev
+2024-09-17 21:58:56 - Vault address: http://127.0.0.1:8200
+2024-09-17 21:58:56 - Compose project name: compose
+2024-09-17 21:58:56 - Starting Vault and Consul...
+2024-09-17 21:58:58 - Docker Compose output:\ntime="2024-09-17T21:58:56+01:00" level=warning msg="/Users/chidionyema/Documents/code/ritualworks/docker/compose/docker-compose-vault.yml: `version` is obsolete"
+ Container compose-consul-1  Creating
+ Container compose-consul-1  Created
+ Container compose-vault-1  Creating
+ Container compose-vault-1  Created
+ Container compose-consul-1  Starting
+ Container compose-consul-1  Started
+ Container compose-vault-1  Starting
+ Container compose-vault-1  Started
+2024-09-17 21:58:58 - Waiting for Vault to start...
+2024-09-17 21:59:13 - Checking if Vault container is running...
+2024-09-17 21:59:14 - Vault container status: running
+2024-09-17 21:59:14 - Checking if Vault is initialized...

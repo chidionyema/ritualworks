@@ -5,9 +5,9 @@ services:
     image: bitnami/postgresql-repmgr:latest
     user: "1001"
     environment:
-      - POSTGRES_PASSWORD=mypassword  # Updated to match the default password in init_pg.sh
-      - POSTGRES_USER=myuser          # Updated to match the default user in init_pg.sh
-      - POSTGRES_DB=your_postgres_db
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Referencing the value from .env
+      - POSTGRES_USER=${POSTGRES_USER}          # Referencing the value from .env
+      - POSTGRES_DB=${POSTGRES_DB} 
       - REPMGR_PRIMARY_ROLE=true
       - REPMGR_NODE_ID=1
       - REPMGR_NODE_NAME=postgres-primary-1
@@ -42,9 +42,9 @@ services:
     image: bitnami/postgresql-repmgr:latest
     user: "1001"
     environment:
-      - POSTGRES_PASSWORD=mypassword  # Update to match the default password in init_pg.sh
-      - POSTGRES_USER=myuser          # Update to match the default user in init_pg.sh
-      - POSTGRES_DB=your_postgres_db
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Referencing the value from .env
+      - POSTGRES_USER=${POSTGRES_USER}          # Referencing the value from .env
+      - POSTGRES_DB=${POSTGRES_DB}              # Referencing the value from .env
       - REPMGR_PRIMARY_ROLE=false
       - REPMGR_NODE_ID=2
       - REPMGR_NODE_NAME=postgres-standby-2

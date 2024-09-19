@@ -14,7 +14,9 @@ services:
     command: consul agent -server -bootstrap-expect=1 -client=0.0.0.0 -ui -config-file=/etc/consul.d/consul-http.hcl
 
   vault:
-    image: vault:1.10.0
+    build:
+      context: ../
+      dockerfile: Dockerfile.vault  # Specify the Dockerfile for Vault
     environment:
       - VAULT_ADDR=http://vault:8200
       - VAULT_API_ADDR=http://vault:8200
@@ -44,7 +46,7 @@ networks:
     name: external_network
     external: true
     ipam:
-        config:
+      config:
         - subnet: 172.23.0.0/16
 
 volumes:
