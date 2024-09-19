@@ -35,3 +35,15 @@ scripts/unseal_keys.json
 scripts/new_vault_token.txt
 # To ignore the entire ssl/certs directory
 ssl/certs/
+docker/compose/.env
+docker/compose/.env.bak
+data/postgres-primary-data/data/base/49152/49165
+data/postgres-primary-data/data/base/49152/49170
+data/postgres-primary-data/data/base/49152/49365
+data/postgres-primary-data/data/base/49152/49366
+data/postgres-primary-data/data/global/pg_control
+data/postgres-primary-data/data/pg_wal/000000010000000000000001
+data/postgres-primary-data/data/pg_xact/0000
+elasticsearch/logs/gc.log
+elasticsearch/logs/gc.log.2
+grafana-data/grafana.db
