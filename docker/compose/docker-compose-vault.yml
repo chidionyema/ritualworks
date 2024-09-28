@@ -12,6 +12,11 @@ services:
     networks:
       - internal_network
     command: consul agent -server -bootstrap-expect=1 -client=0.0.0.0 -ui -config-file=/etc/consul.d/consul-http.hcl
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8500/v1/status/leader"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   vault:
     build:
@@ -21,6 +26,7 @@ services:
       - VAULT_ADDR=http://vault:8200
       - VAULT_API_ADDR=http://vault:8200
       - VAULT_CLUSTER_ADDR=https://vault:8201
+      - ASPNETCORE_ENVIRONMENT=Development  
     ports:
       - "8200:8200"
     volumes:
@@ -31,9 +37,106 @@ services:
       - internal_network
     cap_add:
       - IPC_LOCK
-    command: vault server -config=/vault/config/vault-config.hcl
     depends_on:
       - consul
+      - postgres_primary
+      - postgres_standby
+    command: vault server -config=/vault/config/vault-config.hcl
+
+  postgres_primary:
+    image: bitnami/postgresql-repmgr:latest
+    user: "1001"
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Referencing the value from .env
+      - POSTGRES_USER=${POSTGRES_USER}          # Referencing the value from .env
+      - POSTGRES_DB=${POSTGRES_DB} 
+      - REPMGR_PRIMARY_ROLE=true
+      - REPMGR_NODE_ID=1
+      - REPMGR_NODE_NAME=postgres-primary-1
+      - REPMGR_NODE_NETWORK_NAME=postgres_primary
+      - REPMGR_PARTNER_NODES=postgres-primary-1,postgres-standby-2
+      - REPMGR_PRIMARY_HOST=postgres_primary
+      - REPMGR_PASSWORD=${POSTGRES_PASSWORD}   # Ensure consistency if this password is used for replication
+      - VAULT_ADDR=http://vault:8200
+    ports:
+      - "5432:5432"
+    volumes:
+      - ../../data/postgres-primary-data:/bitnami/postgresql
+      - ../../scripts:/scripts  # Ensure the path mounts the scripts directory correctly
+      - ../../ssl/certs:/etc/ssl/certs
+      - ./postgres_logs:/opt/bitnami/postgresql/logs
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: ["/bin/sh", "-c", "/scripts/init_pg.sh"]
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  postgres_standby:
+    image: bitnami/postgresql-repmgr:latest
+    user: "1001"
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Referencing the value from .env
+      - POSTGRES_USER=${POSTGRES_USER}          # Referencing the value from .env
+      - POSTGRES_DB=${POSTGRES_DB}              # Referencing the value from .env
+      - REPMGR_PRIMARY_ROLE=false
+      - REPMGR_NODE_ID=2
+      - REPMGR_NODE_NAME=postgres-standby-2
+      - REPMGR_NODE_NETWORK_NAME=postgres_standby
+      - REPMGR_PARTNER_NODES=postgres-primary-1,postgres-standby-2
+      - REPMGR_PRIMARY_HOST=postgres_primary
+      - REPMGR_PASSWORD=${POSTGRES_PASSWORD}   # Ensure consistency if this is related to user permissions
+    ports:
+      - "5434:5432"
+    volumes:
+      - ../../data/postgres-standby-data:/bitnami/postgresql
+      - ../../scripts:/scripts
+      - ../../ssl/certs:/etc/ssl/certs
+      - ./postgres_logs:/opt/bitnami/postgresql/logs
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: ["/bin/sh", "-c", "/scripts/init_pg.sh"]
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  haproxy:
+    build:
+      context: ../..
+      dockerfile: docker/Dockerfile.haproxy
+    volumes:
+      - ../../haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+      - ../../ssl/certs:/etc/ssl/certs
+    ports:
+      - "5433:5432"
+      - "8404:8404"
+    depends_on:
+      - postgres_primary
+      - postgres_standby
+    networks:
+      - internal_network
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
 
 networks:
   internal_network:

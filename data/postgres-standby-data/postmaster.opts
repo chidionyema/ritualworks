@@ -1,1 +1,0 @@
-/opt/bitnami/postgresql/bin/postgres "-D" "/bitnami/postgresql/data" "-c" "ssl=on" "-c" "ssl_cert_file=/etc/ssl/certs/postgres.crt" "-c" "ssl_key_file=/etc/ssl/certs/postgres.key" "-c" "ssl_ca_file=/etc/ssl/certs/ca.crt" "-c" "logging_collector=on" "-c" "log_directory=/opt/bitnami/postgresql/logs" "-c" "log_filename=postgresql.log"

@@ -1,84 +1,155 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
+using System.Text.Json;
+using Newtonsoft.Json;
+
 namespace RitualWorks.Services
 {
     public class VaultSettings
     {
-        public string VaultAddress { get; set; }
+        public string VaultAddress { get; set; } // URL for the Vault server
+        public string TokenPath { get; set; } // Optional: Path to a file or source for the token
     }
 
     public class VaultService
+    {
+        private readonly HttpClient _httpClient;
+        private readonly ILogger<VaultService> _logger;
+        private readonly string _vaultToken;
+
+        public VaultService(HttpClient httpClient, ILogger<VaultService> logger, string vaultToken)
+        {
+            _httpClient = httpClient;
+            _logger = logger;
+            _vaultToken = vaultToken ?? throw new ArgumentNullException(nameof(vaultToken));
+
+            _logger.LogInformation("VaultService initialized with Vault token.");
+        }
+
+        public async Task<Dictionary<string, string>> FetchSecretsAsync(string secretPath, params string[] keys)
+        {
+            try
+            {
+                _logger.LogInformation("Fetching secrets from Vault at path: {SecretPath}", secretPath);
+
+                var request = new HttpRequestMessage(HttpMethod.Get, $"/v1/{secretPath}");
+                request.Headers.Add("X-Vault-Token", _vaultToken);
+
+                var response = await _httpClient.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError("Failed to fetch secrets from Vault. Status Code: {StatusCode}. Reason: {ReasonPhrase}",
+                        response.StatusCode, response.ReasonPhrase);
+                    throw new HttpRequestException($"Error fetching secrets from Vault: {response.ReasonPhrase}");
+                }
+
+                var content = await response.Content.ReadAsStringAsync();
+                var json = JsonDocument.Parse(content);
+
+                var secrets = new Dictionary<string, string>();
+
+                foreach (var key in keys)
+                {
+                    if (json.RootElement.TryGetProperty("data", out var data) &&
+                        data.TryGetProperty(key, out var value))
+                    {
+                        secrets[key] = value.GetString();
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Secret key '{Key}' not found in Vault response.", key);
+                    }
+                }
+
+                return secrets;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching secrets from Vault.");
+                throw;
+            }
+        }
+      public async Task<(string, string)> FetchPostgresCredentialsAsync(string role)
 {
-    private readonly HttpClient _httpClient;
-    private readonly string _vaultToken;
-    private readonly ILogger<VaultService> _logger;
-
-    public VaultService(HttpClient httpClient, IOptions<VaultSettings> options, ILogger<VaultService> logger)
+    try
     {
-        _httpClient = httpClient;
-        _logger = logger;
-        _httpClient.BaseAddress = new Uri(options.Value.VaultAddress);
+        var path = $"database/creds/{role}";
+        var fullUrl = $"v1/{path}";
 
-        _vaultToken = Environment.GetEnvironmentVariable("VAULT_ROOT_TOKEN");
+        _logger.LogInformation("Requesting Vault endpoint: {Url}", fullUrl);
 
-        if (string.IsNullOrEmpty(_vaultToken))
+        var request = new HttpRequestMessage(HttpMethod.Get, fullUrl);
+        request.Headers.Add("X-Vault-Token", _vaultToken);
+
+        _logger.LogInformation("Using Vault token: {VaultToken}", _vaultToken);
+
+        var response = await _httpClient.SendAsync(request);
+
+        if (!response.IsSuccessStatusCode)
         {
-            _logger.LogError("Vault token not found. Ensure VAULT_ROOT_TOKEN is set in the environment.");
-            throw new InvalidOperationException("Vault token not found. Ensure VAULT_ROOT_TOKEN is set in the environment.");
+            var errorResponseBody = await response.Content.ReadAsStringAsync(); // Rename responseBody to errorResponseBody here
+            _logger.LogError("Failed to fetch PostgreSQL credentials from Vault. Status Code: {StatusCode}. Reason: {Reason}. Response Body: {ResponseBody}", 
+                            response.StatusCode, response.ReasonPhrase, errorResponseBody);
+            throw new HttpRequestException($"Error fetching PostgreSQL credentials from Vault: {response.ReasonPhrase}");
         }
 
-        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _vaultToken);
+        var successResponseBody = await response.Content.ReadAsStringAsync(); // Rename responseBody to successResponseBody here
+        _logger.LogInformation("Vault Response Body: {ResponseBody}", successResponseBody);
+
+        var data = JsonConvert.DeserializeObject<VaultSecretResponse>(successResponseBody);
+
+        if (data?.Data == null || !data.Data.ContainsKey("username") || !data.Data.ContainsKey("password"))
+        {
+            throw new HttpRequestException("Vault response does not contain the expected 'username' or 'password' fields.");
+        }
+
+        var username = data.Data["username"];
+        var password = data.Data["password"];
+
+        _logger.LogInformation("Successfully fetched PostgreSQL credentials: Username: {Username}", username);
+
+        return (username, password);
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "An error occurred while fetching PostgreSQL credentials from Vault.");
+        throw;
+    }
+}
+
+
+
     }
 
-    public async Task<Dictionary<string, string>> FetchSecretsAsync(string secretPath, params string[] fields)
-    {
-        var secrets = new Dictionary<string, string>();
-        var secretData = await GetSecretAsync(secretPath);
+public class VaultSecretResponse
+{
+    [JsonProperty("request_id")]
+    public string RequestId { get; set; }
 
-        foreach (var field in fields)
-        {
-            if (secretData[field] != null)
-            {
-                secrets[field] = secretData[field].ToString();
-            }
-            else
-            {
-                _logger.LogError($"Field '{field}' not found in the secret path '{secretPath}'");
-            }
-        }
+    [JsonProperty("lease_id")]
+    public string LeaseId { get; set; }
 
-        return secrets;
-    }
+    [JsonProperty("renewable")]
+    public bool Renewable { get; set; }
 
-    public async Task<JObject?> GetSecretAsync(string secretPath)
-    {
-        try
-        {
-            _logger.LogInformation("Fetching secret from path: {SecretPath}", secretPath);
-            var response = await _httpClient.GetAsync($"/v1/{secretPath}");
+    [JsonProperty("lease_duration")]
+    public int LeaseDuration { get; set; }
 
-            if (response.IsSuccessStatusCode)
-            {
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                return JObject.Parse(jsonResponse)["data"] as JObject;
-            }
+    [JsonProperty("data")]
+    public Dictionary<string, string> Data { get; set; }
 
-            _logger.LogError("Failed to fetch secret from path: {SecretPath}. Status code: {StatusCode}, Reason: {Reason}", 
-                secretPath, response.StatusCode, response.ReasonPhrase);
-            return null;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error accessing Vault at path: {SecretPath}", secretPath);
-            return null;
-        }
-    }
+    [JsonProperty("wrap_info")]
+    public object WrapInfo { get; set; }
+
+    [JsonProperty("warnings")]
+    public object Warnings { get; set; }
+
+    [JsonProperty("auth")]
+    public object Auth { get; set; }
 }
 
 }

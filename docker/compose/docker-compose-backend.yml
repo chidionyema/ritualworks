@@ -1,100 +1,7 @@
 version: '3.8'
 
 services:
-  postgres_primary:
-    image: bitnami/postgresql-repmgr:latest
-    user: "1001"
-    environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Referencing the value from .env
-      - POSTGRES_USER=${POSTGRES_USER}          # Referencing the value from .env
-      - POSTGRES_DB=${POSTGRES_DB} 
-      - REPMGR_PRIMARY_ROLE=true
-      - REPMGR_NODE_ID=1
-      - REPMGR_NODE_NAME=postgres-primary-1
-      - REPMGR_NODE_NETWORK_NAME=postgres_primary
-      - REPMGR_PARTNER_NODES=postgres-primary-1,postgres-standby-2
-      - REPMGR_PRIMARY_HOST=postgres_primary
-      - REPMGR_PASSWORD=mypassword   # Ensure consistency if this password is used for replication
-      - VAULT_ADDR=http://vault:8200
-    ports:
-      - "5432:5432"
-    volumes:
-      - ../../data/postgres-primary-data:/bitnami/postgresql
-      - ../../scripts:/scripts  # Ensure the path mounts the scripts directory correctly
-      - ../../ssl/certs:/etc/ssl/certs
-    networks:
-      - internal_network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U myuser -d postgres"]  # Match with the user used in init_pg.sh
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    command: ["/scripts/init_pg.sh"]
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
 
-
-  postgres_standby:
-    image: bitnami/postgresql-repmgr:latest
-    user: "1001"
-    environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Referencing the value from .env
-      - POSTGRES_USER=${POSTGRES_USER}          # Referencing the value from .env
-      - POSTGRES_DB=${POSTGRES_DB}              # Referencing the value from .env
-      - REPMGR_PRIMARY_ROLE=false
-      - REPMGR_NODE_ID=2
-      - REPMGR_NODE_NAME=postgres-standby-2
-      - REPMGR_NODE_NETWORK_NAME=postgres_standby
-      - REPMGR_PARTNER_NODES=postgres-primary-1,postgres-standby-2
-      - REPMGR_PRIMARY_HOST=postgres_primary
-      - REPMGR_PASSWORD=mypassword   # Ensure consistency if this is related to user permissions
-    ports:
-      - "5434:5432"
-    volumes:
-      - ../../data/postgres-standby-data:/bitnami/postgresql
-      - ../../scripts:/scripts
-      - ../../ssl/certs:/etc/ssl/certs
-    networks:
-      - internal_network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U myuser -d postgres"]  # Match with the user used in init_pg.sh
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    command: ["/scripts/init_pg.sh"]
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
-
-  haproxy:
-    build:
-      context: ../..
-      dockerfile: docker/Dockerfile.haproxy
-    volumes:
-      - ../../haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
-      - ../../ssl/certs:/etc/ssl/certs
-    ports:
-      - "5433:5432"
-      - "8404:8404"
-    depends_on:
-      - postgres_primary
-      - postgres_standby
-    networks:
-      - internal_network
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
 
   redis-master:
     image: redis:latest
@@ -218,7 +125,7 @@ services:
     image: rabbitmq:3-management
     environment:
       - RABBITMQ_DEFAULT_USER=rabbit_user
-      - RABBITMQ_DEFAULT_PASS=rabbit_password
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
       - RABBITMQ_NODENAME=rabbit@rabbitmq-node1
     hostname: rabbitmq-node1
     networks:
@@ -255,7 +162,7 @@ services:
     image: rabbitmq:3-management
     environment:
       - RABBITMQ_DEFAULT_USER=rabbit_user
-      - RABBITMQ_DEFAULT_PASS=rabbit_password
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
       - RABBITMQ_NODENAME=rabbit@rabbitmq-node2
     hostname: rabbitmq-node2
     networks:

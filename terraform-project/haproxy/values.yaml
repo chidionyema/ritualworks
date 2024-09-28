@@ -1,0 +1,35 @@
+# haproxy/values.yaml
+
+replicaCount: 1
+
+service:
+  type: ClusterIP
+  ports:
+    - name: tcp
+      port: 5432
+      targetPort: 5432
+      protocol: TCP
+
+haproxy:
+  config: |
+    global
+        log stdout format raw local0
+        maxconn 4096
+        tune.ssl.default-dh-param 2048
+
+    defaults
+        log global
+        mode tcp
+        retries 2
+        timeout connect 3s
+        timeout client  30s
+        timeout server  30s
+
+    frontend postgres_frontend
+        bind *:5432
+        default_backend postgres_backend
+
+    backend postgres_backend
+        balance roundrobin
+        server postgres-primary postgres.{{ .Values.NAMESPACE }}.svc.cluster.local:5432 check
+        server postgres-standby postgres-standby.{{ .Values.NAMESPACE }}.svc.cluster.local:5432 check backup

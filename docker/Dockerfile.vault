@@ -1,7 +1,5 @@
 # Dockerfile.vault
 FROM vault:1.10.0
 
-# Install OpenSSL
-RUN apk add --no-cache openssl  # For Alpine-based images
-# If using a Debian-based image, use:
-# RUN apt-get update && apt-get install -y openssl
+# Install OpenSSL, jq, and curl
+RUN apk add --no-cache openssl jq curl  # Add curl to the installation list

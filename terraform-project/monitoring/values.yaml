@@ -1,0 +1,18 @@
+# monitoring/values.yaml
+
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+
+grafana:
+  adminUser: admin
+  adminPassword: admin  # Change this in production
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    paths:
+      - /
+    hosts:
+      - grafana.local  # Replace with your domain or access via port-forward
+    annotations: {}

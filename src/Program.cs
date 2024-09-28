@@ -17,6 +17,10 @@ using RitualWorks.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
+using Microsoft.Extensions.Http;
+using System.Net.Http;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Stripe;
 using RitualWorks.Repositories.RitualWorks.Repositories;
 using MassTransit;
@@ -26,16 +30,6 @@ public partial class Program
 {
     public static async Task Main(string[] args)
     {
-        var builder = CreateWebHostBuilder(args);
-        var app = builder.Build();
-
-        await ConfigurePipeline(app);
-
-        app.Run();
-    }
-
-    public static WebApplicationBuilder CreateWebHostBuilder(string[] args)
-    {
         var builder = WebApplication.CreateBuilder(args);
 
         // Add environment variables before appsettings.json
@@ -43,14 +37,102 @@ public partial class Program
             .AddEnvironmentVariables()
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
+        // Configure services and other configurations
+        await ConfigureServicesAsync(builder);
+
+        var app = builder.Build();
+
+        await ConfigurePipeline(app);
+
+        app.Run();
+    }
+
+    public static async Task ConfigureServicesAsync(WebApplicationBuilder builder)
+    {
         // Configure BlobSettings
         builder.Services.Configure<BlobSettings>(builder.Configuration.GetSection("AzureBlobStorage"));
+        // Configure VaultSettings
+        builder.Services.Configure<VaultSettings>(builder.Configuration.GetSection("Vault"));
 
         // Register VaultService with HttpClient support
-        builder.Services.Configure<VaultSettings>(builder.Configuration.GetSection("Vault"));
-        builder.Services.AddHttpClient<VaultService>();
+        builder.Services.AddHttpClient<VaultService>((sp, client) =>
+        {
+            var vaultSettings = sp.GetRequiredService<IOptions<VaultSettings>>().Value;
+            client.BaseAddress = new Uri(vaultSettings.VaultAddress);
+        });
 
-        // Add MassTransit configuration with RabbitMQ settings
+        // Register VaultService
+        builder.Services.AddSingleton(sp =>
+        {
+            var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
+            var httpClient = httpClientFactory.CreateClient(nameof(VaultService));
+
+            var vaultToken = Environment.GetEnvironmentVariable("VAULT_ROOT_TOKEN");
+            if (string.IsNullOrEmpty(vaultToken))
+            {
+                throw new InvalidOperationException("Vault token not found.");
+            }
+
+            return new VaultService(httpClient, sp.GetRequiredService<ILogger<VaultService>>(), vaultToken);
+        });
+
+        // Build a temporary service provider to fetch secrets
+        var tempProvider = builder.Services.BuildServiceProvider();
+        var vaultService = tempProvider.GetRequiredService<VaultService>();
+
+        // Fetch PostgreSQL vault user credentials dynamically
+        (string vaultUsername, string vaultPassword) = await vaultService.FetchPostgresCredentialsAsync("vault");
+
+        // Fetch other secrets from Vault
+        try
+        {
+            var secrets = await vaultService.FetchSecretsAsync(
+                $"secret/{builder.Environment.EnvironmentName}",
+                "jwt_key", "minio_access_key", "minio_secret_key", "rabbitmq_password"
+            );
+
+            // Inject PostgreSQL vault credentials and other secrets into configuration
+            builder.Configuration.AddInMemoryCollection(new Dictionary<string, string>
+            {
+                ["Jwt:Key"] = secrets["jwt_key"],
+                ["MassTransit:RabbitMq:Password"] = secrets["rabbitmq_password"],
+                ["MinIO:AccessKey"] = secrets["minio_access_key"],
+                ["MinIO:SecretKey"] = secrets["minio_secret_key"]
+            });
+
+            // Set up the connection string using the vault-provided username and password
+            var postgresConnectionString = $"Host=postgres_primary;Port=5432;Database=your_postgres_db;Username={vaultUsername};Password={vaultPassword}";
+            builder.Configuration["ConnectionStrings:DefaultConnection"] = postgresConnectionString;
+
+            // Logging the configuration values
+            var loggerFactory = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>();
+            var logger = loggerFactory.CreateLogger<Program>();
+
+            logger.LogInformation("Secrets from Vault:");
+            logger.LogInformation("Jwt Key: {JwtKey}", builder.Configuration["Jwt:Key"]);
+            logger.LogInformation("Postgres Vault Username: {VaultUsername}", vaultUsername);
+            logger.LogInformation("RabbitMQ Password: {RabbitMqPassword}", builder.Configuration["MassTransit:RabbitMq:Password"]);
+            logger.LogInformation("MinIO Access Key: {MinioAccessKey}", builder.Configuration["MinIO:AccessKey"]);
+            logger.LogInformation("MinIO Secret Key: {MinioSecretKey}", builder.Configuration["MinIO:SecretKey"]);
+
+        }
+        catch (HttpRequestException ex)
+        {
+            var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred while fetching secrets from Vault.");
+            throw;
+        }
+
+        // Add PostgreSQL DbContext using dynamically configured Vault user credentials
+        builder.Services.AddDbContext<RitualWorksContext>(options =>
+        {
+            var connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
+            var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Connecting to PostgreSQL with Vault user connection string: {ConnectionString}", connectionString);
+            options.UseNpgsql(connectionString);
+        });
+
+        // Add MassTransit with RabbitMQ and log connection details
         builder.Services.AddMassTransit(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
@@ -59,15 +141,20 @@ public partial class Program
             x.UsingRabbitMq((context, cfg) =>
             {
                 var rabbitMqHost = builder.Configuration["MassTransit:RabbitMq:Host"];
+                var rabbitMqUsername = builder.Configuration["MassTransit:RabbitMq:Username"];
+                var rabbitMqPassword = builder.Configuration["MassTransit:RabbitMq:Password"];
+
+                var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+                logger.LogInformation("Connecting to RabbitMQ Host: {Host}, Username: {Username}", rabbitMqHost, rabbitMqUsername);
+
                 cfg.Host(new Uri(rabbitMqHost), h =>
                 {
-                    h.Username(builder.Configuration["MassTransit:RabbitMq:Username"]);
-                    h.Password(builder.Configuration["MassTransit:RabbitMq:Password"]);
+                    h.Username(rabbitMqUsername);
+                    h.Password(rabbitMqPassword);
                     h.Heartbeat(10); // Heartbeat interval
                     h.RequestedConnectionTimeout(TimeSpan.FromSeconds(30)); // Connection timeout
                 });
 
-                // Additional MassTransit configurations
                 cfg.PrefetchCount = 16;
                 cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
                 cfg.UseInMemoryOutbox();
@@ -76,7 +163,7 @@ public partial class Program
             });
         });
 
-        // Add services to the container
+        // Add other services to the container
         builder.Services.AddControllers();
 
         // Log the configuration values to verify they are being read
@@ -105,6 +192,7 @@ public partial class Program
         })
         .AddJwtBearer(options =>
         {
+            var keyBytes = Encoding.UTF8.GetBytes(jwtKey);
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
@@ -113,17 +201,13 @@ public partial class Program
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = jwtIssuer,
                 ValidAudience = jwtAudience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+                IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
             };
         });
 
         // Configure Stripe
         builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
         StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretKey"];
-
-        // Add DbContext
-        builder.Services.AddDbContext<RitualWorksContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
         // Add repository and service dependencies
         builder.Services.AddScoped<IRitualRepository, RitualRepository>();
@@ -183,29 +267,10 @@ public partial class Program
                 }
             });
         });
-
-        return builder;
     }
 
     public static async Task ConfigurePipeline(WebApplication app)
     {
-        var vaultService = app.Services.GetRequiredService<VaultService>();
-
-        // Fetch secrets from Vault for various services (e.g., JWT, PostgreSQL, RabbitMQ, MinIO)
-        var secrets = await vaultService.FetchSecretsAsync($"secret/data/{app.Environment.EnvironmentName}",
-            "jwt_key", "postgres_password", "minio_access_key", "minio_secret_key", "rabbitmq_password");
-
-        var configuration = app.Configuration;
-
-        // Inject secrets into configuration
-        configuration["Jwt:Key"] = secrets["jwt_key"];
-        configuration["ConnectionStrings:DefaultConnection"] =
-            $"Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=myuser;Password={secrets["postgres_password"]}";
-
-        configuration["MassTransit:RabbitMq:Password"] = secrets["rabbitmq_password"];
-        configuration["MinIO:AccessKey"] = secrets["minio_access_key"];
-        configuration["MinIO:SecretKey"] = secrets["minio_secret_key"];
-
         // Standard middleware setup
         if (app.Environment.IsDevelopment())
         {
@@ -224,15 +289,6 @@ public partial class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.Use(async (context, next) =>
-        {
-            context.Response.Headers["Content-Security-Policy"] = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'self'";
-            context.Response.Headers["X-Frame-Options"] = "DENY";
-            context.Response.Headers["X-Content-Type-Options"] = "nosniff";
-            context.Response.Headers["X-XSS-Protection"] = "1; mode=block";
-            await next();
-        });
-
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
@@ -241,5 +297,7 @@ public partial class Program
         });
 
         app.MapControllers();
+
+        await Task.CompletedTask;
     }
 }

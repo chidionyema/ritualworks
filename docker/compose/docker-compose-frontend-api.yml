@@ -14,8 +14,8 @@ services:
       context: ../../  # Correct context pointing to the correct docker folder
       dockerfile: docker/Dockerfile
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT} 
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USERNAME};Password=${POSTGRES_PASSWORD}
       - Elasticsearch__Uri=http://elasticsearch:9200
       - Stripe__ApiKey=${STRIPE_API_KEY}
       - SocialMedia__Facebook__AppId=${FACEBOOK_APP_ID}
@@ -25,6 +25,8 @@ services:
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
       - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
+      - RABBITMQ_PASSWORD =${RABBITMQ_PASSWORD}
+      - VAULT_TOKEN=${VAULT_TOKEN}
     volumes:
       - uploads:/app/uploads
     networks:
@@ -44,8 +46,8 @@ services:
       context: ../../  # Correct context pointing to the correct docker folder
       dockerfile: docker/Dockerfile
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT} 
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USERNAME};Password=${POSTGRES_PASSWORD}
       - Elasticsearch__Uri=http://elasticsearch:9200
       - Stripe__ApiKey=${STRIPE_API_KEY}
       - SocialMedia__Facebook__AppId=${FACEBOOK_APP_ID}
@@ -55,6 +57,8 @@ services:
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
       - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
+      - RABBITMQ_PASSWORD =${RABBITMQ_PASSWORD}
+      - VAULT_TOKEN=${VAULT_TOKEN}
     volumes:
       - uploads:/app/uploads
     networks:
@@ -74,8 +78,8 @@ services:
       context: ../../  # Correct context pointing to the correct docker folder
       dockerfile: docker/Dockerfile
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USERNAME};Password=${POSTGRES_PASSWORD}
       - Elasticsearch__Uri=http://elasticsearch:9200
       - Stripe__ApiKey=${STRIPE_API_KEY}
       - SocialMedia__Facebook__AppId=${FACEBOOK_APP_ID}
@@ -85,6 +89,8 @@ services:
       - SomeOtherService__ApiKey=${SOME_OTHER_SERVICE_API_KEY}
       - RabbitMq__Host=rabbitmq
       - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
+      - RABBITMQ_PASSWORD =${RABBITMQ_PASSWORD}
+      - VAULT_TOKEN=${VAULT_TOKEN}
     volumes:
       - uploads:/app/uploads
     networks:
@@ -104,7 +110,11 @@ services:
       context: ../../  # Ensure this points to the correct project directory relative to the compose file
       dockerfile: docker/Dockerfile.migrations  # Ensure this Dockerfile exists and is correct
     environment:
-      - ConnectionStrings__DefaultConnection=Host=postgres_primary;Port=5432;Database=${POSTGRES_DB:-your_postgres_db};Username=${POSTGRES_USER:-myuser};Password=${POSTGRES_PASSWORD:-mypassword};SSL Mode=Disable
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USERNAME};Password=${POSTGRES_PASSWORD};SSL Mode=Disable
+      - VAULT_TOKEN=${VAULT_TOKEN}
+      - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
+      - POSTGRES_USERNAME =${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD =${POSTGRES_PASSWORD}
     command: ["database", "update"]  # Remove 'dotnet' since the entrypoint is already set to 'dotnet-ef'
     networks:
       - internal_network

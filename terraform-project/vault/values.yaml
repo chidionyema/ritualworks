@@ -1,0 +1,9 @@
+# vault/values.yaml
+
+server:
+  dataStorage:
+    enabled: true
+    size: 10Gi
+  extraEnvironmentVars:
+    VAULT_DEV_ROOT_TOKEN_ID: "your_vault_root_token"
+    VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"

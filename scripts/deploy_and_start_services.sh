@@ -1,52 +1,69 @@
 #!/bin/bash
 
-# Main script to coordinate Vault deployment and Docker services
+# Vault and Docker Services Deployment Script
+# This script handles the deployment of Vault, the generation of certificates, automation, and the startup of all services.
+
+set -e  # Exit immediately if a command exits with a non-zero status
+
+# Logging function with timestamps
+log() {
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $1"
+}
+
+# Error handling function to log errors and exit
+error_exit() {
+    log "Error: $1"
+    exit 1
+}
 
 # Function to deploy Vault
 deploy_vault() {
+    log "Deploying Vault using install_vault_server.sh..."
+    ./install_vault_server.sh || error_exit "Failed to deploy Vault."
 
-        echo "Deploying Vault using install_vault_server.sh..."
-        ./install_vault_server.sh
-        exit 1
+ 
+    log "Configuring Vault..."
+    ./configure_vault.sh
+
+    log "Configuring Vault secrets..."
+    ./configure_vault_secrets.sh || error_exit "Failed to configure Vault secrets."
 }
 
 # Function to generate certificates
 generate_certs() {
-    echo "Generating certificates..."
-    sudo ./generate_certs.sh
-    if [ $? -ne 0 ]; then
-        echo "Error: Certificate generation failed!"
-        exit 1
-    fi
+    log "Generating certificates..."
+    sudo ./generate_certs.sh || error_exit "Certificate generation failed."
+}
+
+# Function to automate deployment steps
+automate_deployment() {
+    log "Automating the deployment process..."
+    sudo ./automate_deployment.sh || error_exit "Failed to automate the deployment process."
 }
 
 # Function to start all services
 start_services() {
-    echo "Starting all services..."
-    ./start_all_services.sh
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to start services!"
-        exit 1
-    fi
+    log "Starting all services..."
+    ./start_all_services.sh || error_exit "Failed to start services."
 }
 
 # Main execution flow
-echo "Starting Vault and Docker Services Deployment..."
+log "Starting Vault and Docker services deployment..."
 
-# Create Docker networks by calling the external script
+# Step 1: Create Docker networks
 log "Creating Docker networks..."
 ./create_networks.sh || error_exit "Failed to create Docker networks."
 
-# Step 4: Start All Services
-start_services
-# Step 1: Deploy Vault
+# Step 2: Deploy Vault
 deploy_vault
 
-
-
-# Step 3: Generate Certificates
+# Step 3: Generate certificates
 generate_certs
 
+# Step 4: Automate the deployment process
+# automate_deployment
 
+# Step 5: Start all services
+start_services
 
-echo "Deployment and Service Startup Complete!"
+log "Deployment and service startup complete!"

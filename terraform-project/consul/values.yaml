@@ -1,0 +1,8 @@
+# consul/values.yaml
+
+global:
+  name: consul
+server:
+  replicas: 1
+ui:
+  enabled: true

@@ -1,0 +1,4 @@
+# ingress/values.yaml
+
+controller:
+  replicaCount: 2
