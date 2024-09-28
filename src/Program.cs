@@ -72,7 +72,7 @@ public partial class Program
             {
                 throw new InvalidOperationException("Vault token not found.");
             }
-
+            Console.WriteLine($"Using Vault Token: {vaultToken}");
             return new VaultService(httpClient, sp.GetRequiredService<ILogger<VaultService>>(), vaultToken);
         });
 
