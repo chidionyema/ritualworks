@@ -12,7 +12,28 @@ error_exit() {
     exit 1
 }
 
-# Update .env file with key-value pairs and ensure 'export' keyword is present
+# Function to update the pg_hba.conf file and reload PostgreSQL configuration
+update_pg_hba_conf() {
+    local postgres_container="$1"
+    local username_pattern="$2"
+    local subnet_range="$3"
+    local pg_hba_conf="/bitnami/postgresql/data/pg_hba.conf"  # Replace with the actual path to your pg_hba.conf
+
+    log "Updating pg_hba.conf to allow access for Vault users starting with '$username_pattern' from subnet '$subnet_range'..."
+
+    # Append entries to allow connections from Vault users and the subnet range
+    docker exec "$postgres_container" bash -c "echo 'host    all    $username_pattern    $subnet_range    md5' >> $pg_hba_conf"
+    docker exec "$postgres_container" bash -c "echo 'host    your_postgres_db    $username_pattern    $subnet_range    md5' >> $pg_hba_conf"
+
+    log "pg_hba.conf updated successfully. Reloading PostgreSQL configuration..."
+
+    # Reload the PostgreSQL configuration
+    docker exec "$postgres_container" psql -U postgres -c "SELECT pg_reload_conf();" || error_exit "Failed to reload PostgreSQL configuration."
+
+    log "PostgreSQL configuration reloaded successfully."
+}
+
+# Function to update .env file with key-value pairs
 update_env_variable() {
     local key="$1"
     local value="$2"
@@ -37,10 +58,6 @@ update_env_variable() {
     # Append the key-value pair with the export keyword
     echo "export $key=\"$value\"" >> "$env_file"
     log "$key added or updated successfully in $env_file"
-
-    if [[ "$OSTYPE" == "darwin"* ]]; then
-        rm -f "$env_file.bak"
-    fi
 }
 
 # Backup and update .env file
@@ -69,7 +86,7 @@ update_env_file() {
 create_or_update_vault_user() {
     local db_user="vault"
     local db_password="your_actual_password"  # Change this to the actual password you want for the vault user
-    local postgres_container="compose-postgres_primary-1" # Replace with your actual PostgreSQL container name
+    local postgres_container="compose-postgres_primary-1"  # Replace with your actual PostgreSQL container name
 
     log "Checking if PostgreSQL user '$db_user' exists..."
 
@@ -84,6 +101,9 @@ create_or_update_vault_user() {
         docker exec "$postgres_container" psql -U postgres -d postgres -c "CREATE ROLE $db_user WITH LOGIN PASSWORD '$db_password' SUPERUSER CREATEROLE;"
         log "User '$db_user' created successfully."
     fi
+
+    # Update pg_hba.conf to allow the new Vault user and reload the configuration
+    update_pg_hba_conf "$postgres_container" "v-root-vault%" "172.20.0.0/16"  # Customize pattern and subnet range if needed
 
     # Return the created/updated username and password for further use
     echo "$db_user:$db_password"
