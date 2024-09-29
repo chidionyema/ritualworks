@@ -4,6 +4,12 @@ storage "consul" {
   path    = "vault/"             # Consul KV path where Vault data will be stored
 }
 
+ha_storage "consul" {
+  address  = "http://consul:8500" 
+  path    = "vault/"
+}
+
+
 # Listener configuration
 listener "tcp" {
   address     = "0.0.0.0:8200"   # Vault will listen on all available network interfaces

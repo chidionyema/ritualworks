@@ -91,7 +91,7 @@ namespace RitualWorks.Controllers
                     CancelUrl = $"{domain}/cancel"
                 };
 
-                var service = new SessionService(new Stripe.StripeClient("your_stripe_secret_key")); // Ensure correct Stripe API key
+                var service = new SessionService(new Stripe.StripeClient("sk_test_rFKcXHBjjcSRkHER52H5zclL")); // Ensure correct Stripe API key
                 var session = await service.CreateAsync(options);
 
                 // Create order

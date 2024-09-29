@@ -8,7 +8,8 @@ services:
     ports:
       - "8500:8500"
     volumes:
-      - ../../consul/config:/etc/consul.d
+      - ../../consul/config:/etc/consul.d  # Configuration files
+      - consul-data:/consul/data           # Persistent data directory
     networks:
       - internal_network
     command: consul agent -server -bootstrap-expect=1 -client=0.0.0.0 -ui -config-file=/etc/consul.d/consul-http.hcl
@@ -21,18 +22,19 @@ services:
   vault:
     build:
       context: ../
-      dockerfile: Dockerfile.vault  # Specify the Dockerfile for Vault
+      dockerfile: Dockerfile.vault
     environment:
       - VAULT_ADDR=http://vault:8200
       - VAULT_API_ADDR=http://vault:8200
       - VAULT_CLUSTER_ADDR=https://vault:8201
-      - ASPNETCORE_ENVIRONMENT=Development  
+      - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "8200:8200"
     volumes:
       - ../../vault/data:/vault/data
       - ../../vault/config:/vault/config
       - ../../scripts:/vault/scripts
+      - vault-data:/vault/file             # Persistent data directory for Vault
     networks:
       - internal_network
     cap_add:
@@ -47,22 +49,22 @@ services:
     image: bitnami/postgresql-repmgr:latest
     user: "1001"
     environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Referencing the value from .env
-      - POSTGRES_USER=${POSTGRES_USER}          # Referencing the value from .env
-      - POSTGRES_DB=${POSTGRES_DB} 
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
       - REPMGR_PRIMARY_ROLE=true
       - REPMGR_NODE_ID=1
       - REPMGR_NODE_NAME=postgres-primary-1
       - REPMGR_NODE_NETWORK_NAME=postgres_primary
       - REPMGR_PARTNER_NODES=postgres-primary-1,postgres-standby-2
       - REPMGR_PRIMARY_HOST=postgres_primary
-      - REPMGR_PASSWORD=${POSTGRES_PASSWORD}   # Ensure consistency if this password is used for replication
+      - REPMGR_PASSWORD=${POSTGRES_PASSWORD}
       - VAULT_ADDR=http://vault:8200
     ports:
       - "5432:5432"
     volumes:
       - ../../data/postgres-primary-data:/bitnami/postgresql
-      - ../../scripts:/scripts  # Ensure the path mounts the scripts directory correctly
+      - ../../scripts:/scripts
       - ../../ssl/certs:/etc/ssl/certs
       - ./postgres_logs:/opt/bitnami/postgresql/logs
     networks:
@@ -84,16 +86,16 @@ services:
     image: bitnami/postgresql-repmgr:latest
     user: "1001"
     environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}  # Referencing the value from .env
-      - POSTGRES_USER=${POSTGRES_USER}          # Referencing the value from .env
-      - POSTGRES_DB=${POSTGRES_DB}              # Referencing the value from .env
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
       - REPMGR_PRIMARY_ROLE=false
       - REPMGR_NODE_ID=2
       - REPMGR_NODE_NAME=postgres-standby-2
       - REPMGR_NODE_NETWORK_NAME=postgres_standby
       - REPMGR_PARTNER_NODES=postgres-primary-1,postgres-standby-2
       - REPMGR_PRIMARY_HOST=postgres_primary
-      - REPMGR_PASSWORD=${POSTGRES_PASSWORD}   # Ensure consistency if this is related to user permissions
+      - REPMGR_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5434:5432"
     volumes:
@@ -116,27 +118,7 @@ services:
         max_attempts: 3
         window: 120s
 
-  haproxy:
-    build:
-      context: ../..
-      dockerfile: docker/Dockerfile.haproxy
-    volumes:
-      - ../../haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
-      - ../../ssl/certs:/etc/ssl/certs
-    ports:
-      - "5433:5432"
-      - "8404:8404"
-    depends_on:
-      - postgres_primary
-      - postgres_standby
-    networks:
-      - internal_network
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
+
 
 networks:
   internal_network:
@@ -153,7 +135,6 @@ networks:
         - subnet: 172.23.0.0/16
 
 volumes:
-  consul-data:
-    driver: local
-  vault-data:
-    driver: local
+  consul-data:          # Persistent volume for Consul data
+  vault-data:           # Persistent volume for Vault data
+

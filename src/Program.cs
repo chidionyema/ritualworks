@@ -49,6 +49,9 @@ public partial class Program
 
     public static async Task ConfigureServicesAsync(WebApplicationBuilder builder)
     {
+        builder.Services.AddSingleton<DbCredentialsService>();
+    builder.Services.AddHostedService<DbCredentialsService>(sp => sp.GetRequiredService<DbCredentialsService>());
+
         // Configure BlobSettings
         builder.Services.Configure<BlobSettings>(builder.Configuration.GetSection("AzureBlobStorage"));
         // Configure VaultSettings
@@ -124,13 +127,16 @@ public partial class Program
         }
 
         // Add PostgreSQL DbContext using dynamically configured Vault user credentials
-        builder.Services.AddDbContext<RitualWorksContext>(options =>
-        {
-            var connectionString = builder.Configuration["ConnectionStrings:DefaultConnection"];
-            var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("Connecting to PostgreSQL with Vault user connection string: {ConnectionString}", connectionString);
-            options.UseNpgsql(connectionString);
-        });
+         builder.Services.AddDbContext<RitualWorksContext>(options =>
+    {
+        var dbCredentialsService = builder.Services.BuildServiceProvider().GetRequiredService<DbCredentialsService>();
+        var connectionString = $"Host=postgres_primary;Port=5432;Database=your_postgres_db;Username={dbCredentialsService.Username};Password={dbCredentialsService.Password}";
+
+        var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+        logger.LogInformation("Connecting to PostgreSQL with connection string: {ConnectionString}", connectionString);
+
+        options.UseNpgsql(connectionString);
+    });
 
         // Add MassTransit with RabbitMQ and log connection details
         builder.Services.AddMassTransit(x =>

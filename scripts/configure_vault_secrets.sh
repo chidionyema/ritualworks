@@ -13,25 +13,39 @@ error_exit() {
 }
 
 # Function to update the pg_hba.conf file and reload PostgreSQL configuration
+# Function to update the pg_hba.conf file and reload PostgreSQL configuration
 update_pg_hba_conf() {
     local postgres_container="$1"
     local username_pattern="$2"
     local subnet_range="$3"
-    local pg_hba_conf="/bitnami/postgresql/data/pg_hba.conf"  # Replace with the actual path to your pg_hba.conf
+    local pg_hba_conf="/bitnami/postgresql/data/pg_hba.conf"  # Replace with your pg_hba.conf path
 
     log "Updating pg_hba.conf to allow access for Vault users starting with '$username_pattern' from subnet '$subnet_range'..."
 
-    # Append entries to allow connections from Vault users and the subnet range
-    docker exec "$postgres_container" bash -c "echo 'host    all    $username_pattern    $subnet_range    md5' >> $pg_hba_conf"
-    docker exec "$postgres_container" bash -c "echo 'host    your_postgres_db    $username_pattern    $subnet_range    md5' >> $pg_hba_conf"
+    # Check if the specific entry for the given username pattern and subnet already exists
+    specific_entry_exists=$(docker exec "$postgres_container" grep -q "host    all    $username_pattern    $subnet_range    md5" "$pg_hba_conf" && echo "1" || echo "0")
+    if [[ "$specific_entry_exists" == "0" ]]; then
+        docker exec "$postgres_container" bash -c "echo 'host    all    $username_pattern    $subnet_range    md5' >> $pg_hba_conf"
+        docker exec "$postgres_container" bash -c "echo 'host    your_postgres_db    $username_pattern    $subnet_range    md5' >> $pg_hba_conf"
+        log "pg_hba.conf updated successfully with specific entry for user pattern '$username_pattern' and subnet '$subnet_range'."
+    else
+        log "pg_hba.conf entry already exists for user pattern '$username_pattern' and subnet '$subnet_range'. Skipping specific entry update."
+    fi
 
-    log "pg_hba.conf updated successfully. Reloading PostgreSQL configuration..."
+    # Check if the catch-all entry for Vault users already exists
+    catch_all_entry_exists=$(docker exec "$postgres_container" grep -q "host    all    v-root-vault-%    0.0.0.0/0    md5" "$pg_hba_conf" && echo "1" || echo "0")
+    if [[ "$catch_all_entry_exists" == "0" ]]; then
+        docker exec "$postgres_container" bash -c "echo 'host    all    v-root-vault-%    0.0.0.0/0    md5' >> $pg_hba_conf"
+        log "pg_hba.conf updated successfully with catch-all entry for Vault users."
+    else
+        log "Catch-all pg_hba.conf entry for Vault users already exists. Skipping catch-all entry update."
+    fi
 
-    # Reload the PostgreSQL configuration
+    log "Reloading PostgreSQL configuration..."
     docker exec "$postgres_container" psql -U postgres -c "SELECT pg_reload_conf();" || error_exit "Failed to reload PostgreSQL configuration."
-
     log "PostgreSQL configuration reloaded successfully."
 }
+
 
 # Function to update .env file with key-value pairs
 update_env_variable() {
@@ -82,11 +96,32 @@ update_env_file() {
     log ".env file updated successfully."
 }
 
-# Create or update the vault user in PostgreSQL with SUPERUSER and CREATEROLE privileges
+grant_permissions_to_vault() {
+    local postgres_container="$1"
+    local db_user="$2"
+    local db_name="$3"
+    local schema="public"
+
+    log "Granting broad permissions to user '$db_user' on all tables, views, sequences, and schemas in the database '$db_name'..."
+
+    # Grant all privileges on all tables, sequences, and functions in the public schema to the user
+    docker exec "$postgres_container" psql -U postgres -d "$db_name" -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA $schema TO \"$db_user\";" || error_exit "Failed to grant permissions on tables."
+    docker exec "$postgres_container" psql -U postgres -d "$db_name" -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA $schema TO \"$db_user\";" || error_exit "Failed to grant permissions on sequences."
+    docker exec "$postgres_container" psql -U postgres -d "$db_name" -c "GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA $schema TO \"$db_user\";" || error_exit "Failed to grant permissions on functions."
+    
+    # Grant usage on the schema itself
+    docker exec "$postgres_container" psql -U postgres -d "$db_name" -c "GRANT USAGE ON SCHEMA $schema TO \"$db_user\";" || error_exit "Failed to grant schema usage permissions."
+
+    log "Permissions granted successfully."
+}
+
+
+# Create or update the Vault user and grant broad permissions
 create_or_update_vault_user() {
     local db_user="vault"
     local db_password="your_actual_password"  # Change this to the actual password you want for the vault user
     local postgres_container="compose-postgres_primary-1"  # Replace with your actual PostgreSQL container name
+    local db_name="your_postgres_db"  # Replace with your PostgreSQL database name
 
     log "Checking if PostgreSQL user '$db_user' exists..."
 
@@ -94,21 +129,23 @@ create_or_update_vault_user() {
 
     if [[ "$user_exists" == "1" ]]; then
         log "User '$db_user' already exists in PostgreSQL. Updating the password and privileges..."
-        docker exec "$postgres_container" psql -U postgres -d postgres -c "ALTER ROLE $db_user WITH PASSWORD '$db_password' SUPERUSER CREATEROLE;"
+        docker exec "$postgres_container" psql -U postgres -d postgres -c "ALTER ROLE $db_user WITH PASSWORD '$db_password' SUPERUSER CREATEROLE;" || error_exit "Failed to update user '$db_user'."
         log "Password and privileges for user '$db_user' updated successfully."
     else
         log "Creating user '$db_user' in PostgreSQL with SUPERUSER and CREATEROLE privileges..."
-        docker exec "$postgres_container" psql -U postgres -d postgres -c "CREATE ROLE $db_user WITH LOGIN PASSWORD '$db_password' SUPERUSER CREATEROLE;"
+        docker exec "$postgres_container" psql -U postgres -d postgres -c "CREATE ROLE $db_user WITH LOGIN PASSWORD '$db_password' SUPERUSER CREATEROLE;" || error_exit "Failed to create user '$db_user'."
         log "User '$db_user' created successfully."
     fi
 
     # Update pg_hba.conf to allow the new Vault user and reload the configuration
     update_pg_hba_conf "$postgres_container" "v-root-vault%" "172.20.0.0/16"  # Customize pattern and subnet range if needed
 
+    # Grant broad permissions on all objects in the database
+    grant_permissions_to_vault "$postgres_container" "$db_user" "$db_name"
+
     # Return the created/updated username and password for further use
     echo "$db_user:$db_password"
 }
-
 # Fetch dynamic PostgreSQL credentials from Vault
 fetch_dynamic_postgres_credentials() {
     local role=$1
@@ -147,7 +184,7 @@ configure_vault_postgresql_roles() {
             echo \"Database secrets engine enabled\"
         fi
 
-        # Configure the PostgreSQL connection using a template for better security
+        # Configure the PostgreSQL connection
         vault write database/config/postgresql \
             plugin_name=postgresql-database-plugin \
             allowed_roles=\"readonly,vault\" \
@@ -155,17 +192,13 @@ configure_vault_postgresql_roles() {
             username=\"vault\" \
             password=\"$VAULT_POSTGRES_ADMIN_PASSWORD\"
 
-        echo \"Vault PostgreSQL database configuration created.\"
-
-        # Define a read-write role for the 'vault' role in the Vault database secrets engine
+        # Define a role for the 'vault' user
         vault write database/roles/vault \
             db_name=postgresql \
             creation_statements=\"CREATE ROLE \\\"{{name}}\\\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; \
             GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \\\"{{name}}\\\";\" \
             default_ttl=\"1h\" \
             max_ttl=\"24h\"
-
-        echo \"Vault role 'vault' created in Vault database secrets engine.\"
     " || error_exit "Failed to configure Vault PostgreSQL roles."
 }
 
@@ -185,36 +218,12 @@ configure_vault_secrets() {
             vault secrets enable database
         fi
 
-        # Path for storing static secrets
-        SECRET_PATH=\"secret/$ENVIRONMENT\"
-
-        # Generate random secrets for static storage (excluding POSTGRES_PASSWORD)
-        JWT_KEY=\$(openssl rand -base64 32)
-        MINIO_ACCESS_KEY=\$(openssl rand -hex 12)
-        MINIO_SECRET_KEY=\$(openssl rand -base64 24)
-        RABBITMQ_PASSWORD=\$(openssl rand -base64 16)
-
         # Store static secrets in KV engine
-        vault kv put \$SECRET_PATH \
-            jwt_key=\"\$JWT_KEY\" \
-            minio_access_key=\"\$MINIO_ACCESS_KEY\" \
-            minio_secret_key=\"\$MINIO_SECRET_KEY\" \
-            rabbitmq_password=\"\$RABBITMQ_PASSWORD\"
-
-        # Configure PostgreSQL dynamic secrets engine
-        vault write database/config/postgresql \
-            plugin_name=postgresql-database-plugin \
-            allowed_roles=\"readonly,vault\" \
-            connection_url=\"postgresql://{{username}}:{{password}}@postgres_primary:5432/your_postgres_db?sslmode=disable\" \
-            username=\"vault\" \
-            password=\"$VAULT_POSTGRES_ADMIN_PASSWORD\"
-
-        # Define a read-only role for dynamic credentials
-        vault write database/roles/readonly \
-            db_name=postgresql \
-            creation_statements=\"CREATE ROLE \\\"{{name}}\\\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}';\" \
-            default_ttl=\"1h\" \
-            max_ttl=\"24h\"
+        vault kv put secret/$ENVIRONMENT \
+            jwt_key=\"\$(openssl rand -base64 32)\" \
+            minio_access_key=\"\$(openssl rand -hex 12)\" \
+            minio_secret_key=\"\$(openssl rand -base64 24)\" \
+            rabbitmq_password=\"\$(openssl rand -base64 16)\"
     " || error_exit "Failed to configure Vault secrets."
 
     log "Vault secrets configured successfully."
@@ -258,19 +267,13 @@ main() {
     dynamic_username=$(echo "$dynamic_creds" | cut -d':' -f1)
     dynamic_password=$(echo "$dynamic_creds" | cut -d':' -f2)
 
-    # Step 5: Fetch static secrets
-    local jwt_key=$(fetch_static_secret "secret/$ENVIRONMENT" "jwt_key")
-    local minio_access_key=$(fetch_static_secret "secret/$ENVIRONMENT" "minio_access_key")
-    local minio_secret_key=$(fetch_static_secret "secret/$ENVIRONMENT" "minio_secret_key")
-    local rabbitmq_password=$(fetch_static_secret "secret/$ENVIRONMENT" "rabbitmq_password")
-
-    # Step 6: Collect environment variables with Vault-provided username and password
+    # Collect environment variables with Vault-provided username and password
     local env_vars="POSTGRES_USERNAME=vault
-    POSTGRES_PASSWORD=VAULT_POSTGRES_ADMIN_PASSWORD
-    JWT_KEY=$jwt_key
-    MINIO_ACCESS_KEY=$minio_access_key
-    MINIO_SECRET_KEY=$minio_secret_key
-    RABBITMQ_PASSWORD=$rabbitmq_password"
+    POSTGRES_PASSWORD=$VAULT_POSTGRES_ADMIN_PASSWORD
+    JWT_KEY=$(fetch_static_secret "secret/$ENVIRONMENT" "jwt_key")
+    MINIO_ACCESS_KEY=$(fetch_static_secret "secret/$ENVIRONMENT" "minio_access_key")
+    MINIO_SECRET_KEY=$(fetch_static_secret "secret/$ENVIRONMENT" "minio_secret_key")
+    RABBITMQ_PASSWORD=$(fetch_static_secret "secret/$ENVIRONMENT" "rabbitmq_password")"
 
     log "Updating environment variables..."
     update_env_file "$env_vars"

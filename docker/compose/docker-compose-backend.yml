@@ -2,7 +2,49 @@ version: '3.8'
 
 services:
 
+  
+  vault-agent:
+    image: vault:1.9.3 
+    environment:
+      VAULT_ADDR: http://vault:8200
+    volumes:
+      - ../../vault/config:/vault/config  # Path to the Vault Agent configuration
+      - postgres-creds:/vault/secrets  # Shared volume for credentials
+    networks:
+      - internal_network
+      
+    user: root  # Run as root to set permissions
 
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+    
+    user: "vault"  # Ensure the container is run as the Vault user
+    command: sh -c "chown -R vault:vault /vault/secrets && chmod -R 770 /vault/secrets && agent -config=/vault/config/vault-agent-config.hcl"
+
+
+  haproxy:
+    build:
+      context: ../..
+      dockerfile: docker/Dockerfile.haproxy
+    volumes:
+      - ../../haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+      - ../../ssl/certs:/etc/ssl/certs
+    ports:
+      - "5433:5432"
+      - "8404:8404"
+
+    networks:
+      - internal_network
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
   redis-master:
     image: redis:latest
     command: ["redis-server", "/etc/redis/redis.conf", "--appendonly", "yes"]
@@ -320,6 +362,7 @@ networks:
         - subnet: 172.23.0.0/16
 
 volumes:
+  postgres-creds:
   redis-master-data:
     driver: local
   redis-replica-data:
