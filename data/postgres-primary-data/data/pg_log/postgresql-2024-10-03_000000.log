@@ -1,0 +1,2287 @@
+2024-10-03 06:27:18.639 UTC [18962] LOG:  invalid length of startup packet
+2024-10-03 06:27:33.632 UTC [18971] LOG:  invalid length of startup packet
+2024-10-03 06:27:48.603 UTC [18989] LOG:  invalid length of startup packet
+2024-10-03 06:28:03.603 UTC [18998] LOG:  invalid length of startup packet
+2024-10-03 06:28:18.608 UTC [19008] LOG:  invalid length of startup packet
+2024-10-03 06:28:33.606 UTC [19025] LOG:  invalid length of startup packet
+2024-10-03 06:28:48.606 UTC [19035] LOG:  invalid length of startup packet
+2024-10-03 06:29:03.605 UTC [19052] LOG:  invalid length of startup packet
+2024-10-03 06:31:06.063 UTC [19062] LOG:  invalid length of startup packet
+2024-10-03 06:31:21.060 UTC [19079] LOG:  invalid length of startup packet
+2024-10-03 06:31:36.060 UTC [19089] LOG:  invalid length of startup packet
+2024-10-03 06:31:51.059 UTC [19106] LOG:  invalid length of startup packet
+2024-10-03 06:32:06.060 UTC [19116] LOG:  invalid length of startup packet
+2024-10-03 06:32:21.061 UTC [19133] LOG:  invalid length of startup packet
+2024-10-03 06:32:36.060 UTC [19143] LOG:  invalid length of startup packet
+2024-10-03 06:32:51.059 UTC [19160] LOG:  invalid length of startup packet
+2024-10-03 06:33:06.060 UTC [19170] LOG:  invalid length of startup packet
+2024-10-03 06:33:21.060 UTC [19187] LOG:  invalid length of startup packet
+2024-10-03 06:33:36.060 UTC [19197] LOG:  invalid length of startup packet
+2024-10-03 06:33:51.059 UTC [19215] LOG:  invalid length of startup packet
+2024-10-03 06:34:06.061 UTC [19225] LOG:  invalid length of startup packet
+2024-10-03 06:34:21.060 UTC [19242] LOG:  invalid length of startup packet
+2024-10-03 06:34:36.062 UTC [19252] LOG:  invalid length of startup packet
+2024-10-03 06:34:51.060 UTC [19269] LOG:  invalid length of startup packet
+2024-10-03 06:35:06.060 UTC [19279] LOG:  invalid length of startup packet
+2024-10-03 06:35:21.063 UTC [19296] LOG:  invalid length of startup packet
+2024-10-03 06:35:36.060 UTC [19306] LOG:  invalid length of startup packet
+2024-10-03 06:35:51.059 UTC [19323] LOG:  invalid length of startup packet
+2024-10-03 06:36:06.060 UTC [19333] LOG:  invalid length of startup packet
+2024-10-03 06:36:21.061 UTC [19350] LOG:  invalid length of startup packet
+2024-10-03 06:36:36.061 UTC [19360] LOG:  invalid length of startup packet
+2024-10-03 06:36:51.061 UTC [19377] LOG:  invalid length of startup packet
+2024-10-03 06:37:06.064 UTC [19387] LOG:  invalid length of startup packet
+2024-10-03 06:37:21.063 UTC [19404] LOG:  invalid length of startup packet
+2024-10-03 06:37:36.061 UTC [19414] LOG:  invalid length of startup packet
+2024-10-03 06:37:51.061 UTC [19423] LOG:  invalid length of startup packet
+2024-10-03 06:38:06.060 UTC [19441] LOG:  invalid length of startup packet
+2024-10-03 06:38:21.062 UTC [19450] LOG:  invalid length of startup packet
+2024-10-03 06:38:36.062 UTC [19468] LOG:  invalid length of startup packet
+2024-10-03 06:38:51.060 UTC [19477] LOG:  invalid length of startup packet
+2024-10-03 06:39:06.061 UTC [19495] LOG:  invalid length of startup packet
+2024-10-03 06:39:21.060 UTC [19504] LOG:  invalid length of startup packet
+2024-10-03 06:39:36.060 UTC [19523] LOG:  invalid length of startup packet
+2024-10-03 06:39:51.060 UTC [19532] LOG:  invalid length of startup packet
+2024-10-03 06:40:06.060 UTC [19550] LOG:  invalid length of startup packet
+2024-10-03 06:40:21.062 UTC [19559] LOG:  invalid length of startup packet
+2024-10-03 06:40:36.071 UTC [19577] LOG:  invalid length of startup packet
+2024-10-03 06:40:51.061 UTC [19586] LOG:  invalid length of startup packet
+2024-10-03 06:41:06.062 UTC [19604] LOG:  invalid length of startup packet
+2024-10-03 06:41:21.062 UTC [19613] LOG:  invalid length of startup packet
+2024-10-03 06:41:36.062 UTC [19631] LOG:  invalid length of startup packet
+2024-10-03 06:41:51.061 UTC [19640] LOG:  invalid length of startup packet
+2024-10-03 06:42:06.061 UTC [19658] LOG:  invalid length of startup packet
+2024-10-03 06:42:21.065 UTC [19667] LOG:  invalid length of startup packet
+2024-10-03 06:42:36.066 UTC [19685] LOG:  invalid length of startup packet
+2024-10-03 06:42:51.066 UTC [19694] LOG:  invalid length of startup packet
+2024-10-03 06:43:06.071 UTC [19712] LOG:  invalid length of startup packet
+2024-10-03 06:43:21.075 UTC [19721] LOG:  invalid length of startup packet
+2024-10-03 06:43:36.070 UTC [19739] LOG:  invalid length of startup packet
+2024-10-03 06:43:51.071 UTC [19748] LOG:  invalid length of startup packet
+2024-10-03 06:44:06.074 UTC [19766] LOG:  invalid length of startup packet
+2024-10-03 06:44:21.071 UTC [19775] LOG:  invalid length of startup packet
+2024-10-03 06:44:36.082 UTC [19794] LOG:  invalid length of startup packet
+2024-10-03 06:44:51.073 UTC [19803] LOG:  invalid length of startup packet
+2024-10-03 06:45:06.075 UTC [19821] LOG:  invalid length of startup packet
+2024-10-03 06:45:21.075 UTC [19830] LOG:  invalid length of startup packet
+2024-10-03 06:45:36.073 UTC [19848] LOG:  invalid length of startup packet
+2024-10-03 06:45:51.071 UTC [19857] LOG:  invalid length of startup packet
+2024-10-03 06:46:06.070 UTC [19873] LOG:  invalid length of startup packet
+2024-10-03 06:46:21.075 UTC [19884] LOG:  invalid length of startup packet
+2024-10-03 06:46:36.071 UTC [19894] LOG:  invalid length of startup packet
+2024-10-03 06:46:51.071 UTC [19911] LOG:  invalid length of startup packet
+2024-10-03 06:47:06.072 UTC [19921] LOG:  invalid length of startup packet
+2024-10-03 06:47:21.070 UTC [19938] LOG:  invalid length of startup packet
+2024-10-03 06:47:27.396 UTC [19954] LOG:  statement: SELECT 1 FROM pg_roles WHERE rolname='vault'
+2024-10-03 06:47:27.627 UTC [19961] LOG:  statement: ALTER ROLE vault WITH PASSWORD 'your_actual_password' SUPERUSER CREATEROLE;
+2024-10-03 06:47:28.309 UTC [19980] LOG:  statement: SELECT pg_reload_conf();
+2024-10-03 06:47:28.314 UTC [44] LOG:  received SIGHUP, reloading configuration files
+2024-10-03 06:47:28.498 UTC [19987] LOG:  statement: GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "vault";
+2024-10-03 06:47:28.672 UTC [19994] LOG:  statement: GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO "vault";
+2024-10-03 06:47:28.868 UTC [20001] LOG:  statement: GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO "vault";
+2024-10-03 06:47:29.097 UTC [20008] LOG:  statement: GRANT USAGE ON SCHEMA public TO "vault";
+2024-10-03 06:47:29.518 UTC [20009] LOG:  statement: ;
+2024-10-03 06:47:30.554 UTC [20009] LOG:  statement: ;
+2024-10-03 06:47:30.556 UTC [20009] LOG:  statement: begin
+2024-10-03 06:47:30.558 UTC [20009] LOG:  statement: CREATE ROLE "v-root-vault-OPRD29zbRnMYWgl6PgdW-1727938050" WITH LOGIN PASSWORD 'JAxgT1O1yZfZv6IvNd-z' VALID UNTIL '2024-10-03 07:47:35+0000'
+2024-10-03 06:47:30.576 UTC [20009] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-OPRD29zbRnMYWgl6PgdW-1727938050"
+2024-10-03 06:47:30.589 UTC [20009] LOG:  statement: commit
+2024-10-03 06:47:36.071 UTC [20010] LOG:  invalid length of startup packet
+2024-10-03 06:47:51.071 UTC [20027] LOG:  invalid length of startup packet
+2024-10-03 06:48:06.073 UTC [20037] LOG:  invalid length of startup packet
+2024-10-03 06:48:21.070 UTC [20054] LOG:  invalid length of startup packet
+2024-10-03 06:48:36.091 UTC [20064] LOG:  invalid length of startup packet
+2024-10-03 06:48:36.739 UTC [20009] LOG:  statement: ;
+2024-10-03 06:48:36.739 UTC [20009] LOG:  statement: begin
+2024-10-03 06:48:36.740 UTC [20009] LOG:  statement: CREATE ROLE "v-root-vault-GFjorPXWofaES6UERlhp-1727938116" WITH LOGIN PASSWORD 'saR4JD-yJnTgCj7owuxS' VALID UNTIL '2024-10-03 07:48:41+0000'
+2024-10-03 06:48:36.763 UTC [20009] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-GFjorPXWofaES6UERlhp-1727938116"
+2024-10-03 06:48:36.766 UTC [20009] LOG:  statement: commit
+2024-10-03 06:48:36.805 UTC [20009] LOG:  statement: ;
+2024-10-03 06:48:36.806 UTC [20009] LOG:  statement: begin
+2024-10-03 06:48:36.807 UTC [20009] LOG:  statement: CREATE ROLE "v-root-vault-JrAJ9vWZON9ZusRbEJbf-1727938116" WITH LOGIN PASSWORD 'un4XdGW-YRja3yJgB2eK' VALID UNTIL '2024-10-03 07:48:41+0000'
+2024-10-03 06:48:36.855 UTC [20009] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-JrAJ9vWZON9ZusRbEJbf-1727938116"
+2024-10-03 06:48:36.857 UTC [20009] LOG:  statement: commit
+2024-10-03 06:48:36.873 UTC [20009] LOG:  statement: ;
+2024-10-03 06:48:36.874 UTC [20009] LOG:  statement: begin
+2024-10-03 06:48:36.875 UTC [20009] LOG:  statement: CREATE ROLE "v-root-vault-xSEyu1CGr06Q53cdpwh0-1727938116" WITH LOGIN PASSWORD 'FaAVUj4Bq8-bGWIpNoVe' VALID UNTIL '2024-10-03 07:48:41+0000'
+2024-10-03 06:48:36.904 UTC [20009] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-xSEyu1CGr06Q53cdpwh0-1727938116"
+2024-10-03 06:48:36.910 UTC [20009] LOG:  statement: commit
+2024-10-03 06:48:51.072 UTC [20081] LOG:  invalid length of startup packet
+2024-10-03 06:49:06.073 UTC [20091] LOG:  invalid length of startup packet
+2024-10-03 06:49:08.142 UTC [20009] LOG:  statement: ;
+2024-10-03 06:49:08.143 UTC [20009] LOG:  statement: begin
+2024-10-03 06:49:08.144 UTC [20009] LOG:  statement: CREATE ROLE "v-root-vault-EMQ6ognvwReqKOzJwsks-1727938148" WITH LOGIN PASSWORD 'qk4JiuyH52FBb9oVKIt-' VALID UNTIL '2024-10-03 07:49:13+0000'
+2024-10-03 06:49:08.157 UTC [20009] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-EMQ6ognvwReqKOzJwsks-1727938148"
+2024-10-03 06:49:08.162 UTC [20009] LOG:  statement: commit
+2024-10-03 06:49:10.451 UTC [20100] LOG:  statement: SELECT version();
+	
+	SELECT ns.nspname, t.oid, t.typname, t.typtype, t.typnotnull, t.elemtypoid
+	FROM (
+	    -- Arrays have typtype=b - this subquery identifies them by their typreceive and converts their typtype to a
+	    -- We first do this for the type (innerest-most subquery), and then for its element type
+	    -- This also returns the array element, range subtype and domain base type as elemtypoid
+	    SELECT
+	        typ.oid, typ.typnamespace, typ.typname, typ.typtype, typ.typrelid, typ.typnotnull, typ.relkind,
+	        elemtyp.oid AS elemtypoid, elemtyp.typname AS elemtypname, elemcls.relkind AS elemrelkind,
+	        CASE WHEN elemproc.proname='array_recv' THEN 'a' ELSE elemtyp.typtype END AS elemtyptype
+	    FROM (
+	        SELECT typ.oid, typnamespace, typname, typrelid, typnotnull, relkind, typelem AS elemoid,
+	            CASE WHEN proc.proname='array_recv' THEN 'a' ELSE typ.typtype END AS typtype,
+	            CASE
+	                WHEN proc.proname='array_recv' THEN typ.typelem
+	                WHEN typ.typtype='r' THEN rngsubtype
+	                WHEN typ.typtype='m' THEN (SELECT rngtypid FROM pg_range WHERE rngmultitypid = typ.oid)
+	                WHEN typ.typtype='d' THEN typ.typbasetype
+	            END AS elemtypoid
+	        FROM pg_type AS typ
+	        LEFT JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	        LEFT JOIN pg_proc AS proc ON proc.oid = typ.typreceive
+	        LEFT JOIN pg_range ON (pg_range.rngtypid = typ.oid)
+	    ) AS typ
+	    LEFT JOIN pg_type AS elemtyp ON elemtyp.oid = elemtypoid
+	    LEFT JOIN pg_class AS elemcls ON (elemcls.oid = elemtyp.typrelid)
+	    LEFT JOIN pg_proc AS elemproc ON elemproc.oid = elemtyp.typreceive
+	) AS t
+	JOIN pg_namespace AS ns ON (ns.oid = typnamespace)
+	WHERE
+	    typtype IN ('b', 'r', 'm', 'e', 'd') OR -- Base, range, multirange, enum, domain
+	    (typtype = 'c' AND relkind='c') OR -- User-defined free-standing composites (not table composites) by default
+	    (typtype = 'p' AND typname IN ('record', 'void', 'unknown')) OR -- Some special supported pseudo-types
+	    (typtype = 'a' AND (  -- Array of...
+	        elemtyptype IN ('b', 'r', 'm', 'e', 'd') OR -- Array of base, range, multirange, enum, domain
+	        (elemtyptype = 'p' AND elemtypname IN ('record', 'void')) OR -- Arrays of special supported pseudo-types
+	        (elemtyptype = 'c' AND elemrelkind='c') -- Array of user-defined free-standing composites (not table composites) by default
+	    ))
+	ORDER BY CASE
+	       WHEN typtype IN ('b', 'e', 'p') THEN 0           -- First base types, enums, pseudo-types
+	       WHEN typtype = 'c' THEN 1                        -- Composites after (fields loaded later in 2nd pass)
+	       WHEN typtype = 'r' THEN 2                        -- Ranges after
+	       WHEN typtype = 'm' THEN 3                        -- Multiranges after
+	       WHEN typtype = 'd' AND elemtyptype <> 'a' THEN 4 -- Domains over non-arrays after
+	       WHEN typtype = 'a' THEN 5                        -- Arrays after
+	       WHEN typtype = 'd' AND elemtyptype = 'a' THEN 6  -- Domains over arrays last
+	END;
+	
+	-- Load field definitions for (free-standing) composite types
+	SELECT typ.oid, att.attname, att.atttypid
+	FROM pg_type AS typ
+	JOIN pg_namespace AS ns ON (ns.oid = typ.typnamespace)
+	JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	JOIN pg_attribute AS att ON (att.attrelid = typ.typrelid)
+	WHERE
+	  (typ.typtype = 'c' AND cls.relkind='c') AND
+	  attnum > 0 AND     -- Don't load system attributes
+	  NOT attisdropped
+	ORDER BY typ.oid, att.attnum;
+	
+	-- Load enum fields
+	SELECT pg_type.oid, enumlabel
+	FROM pg_enum
+	JOIN pg_type ON pg_type.oid=enumtypid
+	ORDER BY oid, enumsortorder;
+	
+2024-10-03 06:49:10.622 UTC [20101] LOG:  statement: SELECT version();
+	
+	SELECT ns.nspname, t.oid, t.typname, t.typtype, t.typnotnull, t.elemtypoid
+	FROM (
+	    -- Arrays have typtype=b - this subquery identifies them by their typreceive and converts their typtype to a
+	    -- We first do this for the type (innerest-most subquery), and then for its element type
+	    -- This also returns the array element, range subtype and domain base type as elemtypoid
+	    SELECT
+	        typ.oid, typ.typnamespace, typ.typname, typ.typtype, typ.typrelid, typ.typnotnull, typ.relkind,
+	        elemtyp.oid AS elemtypoid, elemtyp.typname AS elemtypname, elemcls.relkind AS elemrelkind,
+	        CASE WHEN elemproc.proname='array_recv' THEN 'a' ELSE elemtyp.typtype END AS elemtyptype
+	    FROM (
+	        SELECT typ.oid, typnamespace, typname, typrelid, typnotnull, relkind, typelem AS elemoid,
+	            CASE WHEN proc.proname='array_recv' THEN 'a' ELSE typ.typtype END AS typtype,
+	            CASE
+	                WHEN proc.proname='array_recv' THEN typ.typelem
+	                WHEN typ.typtype='r' THEN rngsubtype
+	                WHEN typ.typtype='m' THEN (SELECT rngtypid FROM pg_range WHERE rngmultitypid = typ.oid)
+	                WHEN typ.typtype='d' THEN typ.typbasetype
+	            END AS elemtypoid
+	        FROM pg_type AS typ
+	        LEFT JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	        LEFT JOIN pg_proc AS proc ON proc.oid = typ.typreceive
+	        LEFT JOIN pg_range ON (pg_range.rngtypid = typ.oid)
+	    ) AS typ
+	    LEFT JOIN pg_type AS elemtyp ON elemtyp.oid = elemtypoid
+	    LEFT JOIN pg_class AS elemcls ON (elemcls.oid = elemtyp.typrelid)
+	    LEFT JOIN pg_proc AS elemproc ON elemproc.oid = elemtyp.typreceive
+	) AS t
+	JOIN pg_namespace AS ns ON (ns.oid = typnamespace)
+	WHERE
+	    typtype IN ('b', 'r', 'm', 'e', 'd') OR -- Base, range, multirange, enum, domain
+	    (typtype = 'c' AND relkind='c') OR -- User-defined free-standing composites (not table composites) by default
+	    (typtype = 'p' AND typname IN ('record', 'void', 'unknown')) OR -- Some special supported pseudo-types
+	    (typtype = 'a' AND (  -- Array of...
+	        elemtyptype IN ('b', 'r', 'm', 'e', 'd') OR -- Array of base, range, multirange, enum, domain
+	        (elemtyptype = 'p' AND elemtypname IN ('record', 'void')) OR -- Arrays of special supported pseudo-types
+	        (elemtyptype = 'c' AND elemrelkind='c') -- Array of user-defined free-standing composites (not table composites) by default
+	    ))
+	ORDER BY CASE
+	       WHEN typtype IN ('b', 'e', 'p') THEN 0           -- First base types, enums, pseudo-types
+	       WHEN typtype = 'c' THEN 1                        -- Composites after (fields loaded later in 2nd pass)
+	       WHEN typtype = 'r' THEN 2                        -- Ranges after
+	       WHEN typtype = 'm' THEN 3                        -- Multiranges after
+	       WHEN typtype = 'd' AND elemtyptype <> 'a' THEN 4 -- Domains over non-arrays after
+	       WHEN typtype = 'a' THEN 5                        -- Arrays after
+	       WHEN typtype = 'd' AND elemtyptype = 'a' THEN 6  -- Domains over arrays last
+	END;
+	
+	-- Load field definitions for (free-standing) composite types
+	SELECT typ.oid, att.attname, att.atttypid
+	FROM pg_type AS typ
+	JOIN pg_namespace AS ns ON (ns.oid = typ.typnamespace)
+	JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	JOIN pg_attribute AS att ON (att.attrelid = typ.typrelid)
+	WHERE
+	  (typ.typtype = 'c' AND cls.relkind='c') AND
+	  attnum > 0 AND     -- Don't load system attributes
+	  NOT attisdropped
+	ORDER BY typ.oid, att.attnum;
+	
+	-- Load enum fields
+	SELECT pg_type.oid, enumlabel
+	FROM pg_enum
+	JOIN pg_type ON pg_type.oid=enumtypid
+	ORDER BY oid, enumsortorder;
+	
+2024-10-03 06:49:10.697 UTC [20101] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 06:49:10.858 UTC [20101] LOG:  statement: DISCARD ALL
+2024-10-03 06:49:10.864 UTC [20101] LOG:  execute <unnamed>: SELECT "MigrationId", "ProductVersion"
+	FROM "__EFMigrationsHistory"
+	ORDER BY "MigrationId"
+2024-10-03 06:49:10.913 UTC [20101] LOG:  statement: DISCARD ALL
+2024-10-03 06:49:10.914 UTC [20101] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 06:49:10.941 UTC [20101] LOG:  statement: DISCARD ALL
+2024-10-03 06:49:10.942 UTC [20101] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 06:49:10.943 UTC [20101] LOG:  statement: DISCARD ALL
+2024-10-03 06:49:10.944 UTC [20101] LOG:  execute <unnamed>: SELECT "MigrationId", "ProductVersion"
+	FROM "__EFMigrationsHistory"
+	ORDER BY "MigrationId"
+2024-10-03 06:49:21.083 UTC [20112] LOG:  invalid length of startup packet
+2024-10-03 06:49:36.076 UTC [20122] LOG:  invalid length of startup packet
+2024-10-03 06:49:51.073 UTC [20139] LOG:  invalid length of startup packet
+2024-10-03 06:50:06.072 UTC [20149] LOG:  invalid length of startup packet
+2024-10-03 06:50:21.071 UTC [20158] LOG:  invalid length of startup packet
+2024-10-03 06:50:36.071 UTC [20176] LOG:  invalid length of startup packet
+2024-10-03 06:50:51.072 UTC [20185] LOG:  invalid length of startup packet
+2024-10-03 06:51:06.075 UTC [20203] LOG:  invalid length of startup packet
+2024-10-03 06:51:11.434 UTC [50] LOG:  checkpoint starting: time
+2024-10-03 06:51:14.484 UTC [50] LOG:  checkpoint complete: wrote 30 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.021 s, sync=0.009 s, total=3.051 s; sync files=14, longest=0.002 s, average=0.001 s; distance=256 kB, estimate=256 kB; lsn=0/2BA9960, redo lsn=0/2BA9928
+2024-10-03 06:51:21.075 UTC [20212] LOG:  invalid length of startup packet
+2024-10-03 06:51:36.071 UTC [20230] LOG:  invalid length of startup packet
+2024-10-03 06:51:45.794 UTC [20245] LOG:  statement: SELECT 1 FROM pg_roles WHERE rolname='vault'
+2024-10-03 06:51:45.993 UTC [20252] LOG:  statement: ALTER ROLE vault WITH PASSWORD 'your_actual_password' SUPERUSER CREATEROLE;
+2024-10-03 06:51:46.601 UTC [20270] LOG:  statement: SELECT pg_reload_conf();
+2024-10-03 06:51:46.602 UTC [44] LOG:  received SIGHUP, reloading configuration files
+2024-10-03 06:51:46.820 UTC [20277] LOG:  statement: GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "vault";
+2024-10-03 06:51:47.081 UTC [20284] LOG:  statement: GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO "vault";
+2024-10-03 06:51:47.380 UTC [20291] LOG:  statement: GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO "vault";
+2024-10-03 06:51:47.634 UTC [20298] LOG:  statement: GRANT USAGE ON SCHEMA public TO "vault";
+2024-10-03 06:51:48.138 UTC [20299] LOG:  statement: ;
+2024-10-03 06:51:49.127 UTC [20299] LOG:  statement: ;
+2024-10-03 06:51:49.127 UTC [20299] LOG:  statement: begin
+2024-10-03 06:51:49.128 UTC [20299] LOG:  statement: CREATE ROLE "v-root-vault-3ZBezPYGcNr3U4EHqHQj-1727938309" WITH LOGIN PASSWORD 'qTdfkYSzL5GE-KqqTPbn' VALID UNTIL '2024-10-03 07:51:54+0000'
+2024-10-03 06:51:49.152 UTC [20299] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-3ZBezPYGcNr3U4EHqHQj-1727938309"
+2024-10-03 06:51:49.159 UTC [20299] LOG:  statement: commit
+2024-10-03 06:51:51.071 UTC [20300] LOG:  invalid length of startup packet
+2024-10-03 06:52:06.074 UTC [20317] LOG:  invalid length of startup packet
+2024-10-03 06:52:21.084 UTC [20327] LOG:  invalid length of startup packet
+2024-10-03 06:52:36.104 UTC [20344] LOG:  invalid length of startup packet
+2024-10-03 06:52:51.077 UTC [20354] LOG:  invalid length of startup packet
+2024-10-03 06:52:52.296 UTC [20299] LOG:  statement: ;
+2024-10-03 06:52:52.298 UTC [20299] LOG:  statement: begin
+2024-10-03 06:52:52.298 UTC [20299] LOG:  statement: CREATE ROLE "v-root-vault-Fj4JvHvvakGGHjx6dFPM-1727938372" WITH LOGIN PASSWORD 'Gcyi5jwW3-BGsqRUeImH' VALID UNTIL '2024-10-03 07:52:57+0000'
+2024-10-03 06:52:52.543 UTC [20299] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-Fj4JvHvvakGGHjx6dFPM-1727938372"
+2024-10-03 06:52:52.579 UTC [20299] LOG:  statement: commit
+2024-10-03 06:52:52.746 UTC [20299] LOG:  statement: ;
+2024-10-03 06:52:52.780 UTC [20299] LOG:  statement: begin
+2024-10-03 06:52:52.786 UTC [20299] LOG:  statement: CREATE ROLE "v-root-vault-JJid9EKYlAJKTbv23WpL-1727938372" WITH LOGIN PASSWORD 'F80m1c-7Dd6aJzq1KWqt' VALID UNTIL '2024-10-03 07:52:57+0000'
+2024-10-03 06:52:52.847 UTC [20299] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-JJid9EKYlAJKTbv23WpL-1727938372"
+2024-10-03 06:52:52.857 UTC [20299] LOG:  statement: commit
+2024-10-03 06:52:53.180 UTC [20299] LOG:  statement: ;
+2024-10-03 06:52:53.181 UTC [20299] LOG:  statement: begin
+2024-10-03 06:52:53.182 UTC [20299] LOG:  statement: CREATE ROLE "v-root-vault-NHqa5rYXXNBONHQzSj6l-1727938373" WITH LOGIN PASSWORD '--1rAavmV8UgRWONmFYK' VALID UNTIL '2024-10-03 07:52:58+0000'
+2024-10-03 06:52:53.244 UTC [20299] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-NHqa5rYXXNBONHQzSj6l-1727938373"
+2024-10-03 06:52:53.251 UTC [20299] LOG:  statement: commit
+2024-10-03 06:53:06.126 UTC [20369] LOG:  invalid length of startup packet
+2024-10-03 06:53:21.077 UTC [20381] LOG:  invalid length of startup packet
+2024-10-03 06:53:36.073 UTC [20389] LOG:  invalid length of startup packet
+2024-10-03 06:53:51.074 UTC [20405] LOG:  invalid length of startup packet
+2024-10-03 06:53:52.601 UTC [20299] LOG:  statement: ;
+2024-10-03 06:53:52.603 UTC [20299] LOG:  statement: begin
+2024-10-03 06:53:52.606 UTC [20299] LOG:  statement: CREATE ROLE "v-root-vault-WfFjNaszupHZD6sEH7dG-1727938432" WITH LOGIN PASSWORD 'I88c-yB3BYjPT8QAmsyf' VALID UNTIL '2024-10-03 07:53:57+0000'
+2024-10-03 06:53:52.654 UTC [20299] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-WfFjNaszupHZD6sEH7dG-1727938432"
+2024-10-03 06:53:52.663 UTC [20299] LOG:  statement: commit
+2024-10-03 06:53:56.468 UTC [20406] LOG:  statement: SELECT version();
+	
+	SELECT ns.nspname, t.oid, t.typname, t.typtype, t.typnotnull, t.elemtypoid
+	FROM (
+	    -- Arrays have typtype=b - this subquery identifies them by their typreceive and converts their typtype to a
+	    -- We first do this for the type (innerest-most subquery), and then for its element type
+	    -- This also returns the array element, range subtype and domain base type as elemtypoid
+	    SELECT
+	        typ.oid, typ.typnamespace, typ.typname, typ.typtype, typ.typrelid, typ.typnotnull, typ.relkind,
+	        elemtyp.oid AS elemtypoid, elemtyp.typname AS elemtypname, elemcls.relkind AS elemrelkind,
+	        CASE WHEN elemproc.proname='array_recv' THEN 'a' ELSE elemtyp.typtype END AS elemtyptype
+	    FROM (
+	        SELECT typ.oid, typnamespace, typname, typrelid, typnotnull, relkind, typelem AS elemoid,
+	            CASE WHEN proc.proname='array_recv' THEN 'a' ELSE typ.typtype END AS typtype,
+	            CASE
+	                WHEN proc.proname='array_recv' THEN typ.typelem
+	                WHEN typ.typtype='r' THEN rngsubtype
+	                WHEN typ.typtype='m' THEN (SELECT rngtypid FROM pg_range WHERE rngmultitypid = typ.oid)
+	                WHEN typ.typtype='d' THEN typ.typbasetype
+	            END AS elemtypoid
+	        FROM pg_type AS typ
+	        LEFT JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	        LEFT JOIN pg_proc AS proc ON proc.oid = typ.typreceive
+	        LEFT JOIN pg_range ON (pg_range.rngtypid = typ.oid)
+	    ) AS typ
+	    LEFT JOIN pg_type AS elemtyp ON elemtyp.oid = elemtypoid
+	    LEFT JOIN pg_class AS elemcls ON (elemcls.oid = elemtyp.typrelid)
+	    LEFT JOIN pg_proc AS elemproc ON elemproc.oid = elemtyp.typreceive
+	) AS t
+	JOIN pg_namespace AS ns ON (ns.oid = typnamespace)
+	WHERE
+	    typtype IN ('b', 'r', 'm', 'e', 'd') OR -- Base, range, multirange, enum, domain
+	    (typtype = 'c' AND relkind='c') OR -- User-defined free-standing composites (not table composites) by default
+	    (typtype = 'p' AND typname IN ('record', 'void', 'unknown')) OR -- Some special supported pseudo-types
+	    (typtype = 'a' AND (  -- Array of...
+	        elemtyptype IN ('b', 'r', 'm', 'e', 'd') OR -- Array of base, range, multirange, enum, domain
+	        (elemtyptype = 'p' AND elemtypname IN ('record', 'void')) OR -- Arrays of special supported pseudo-types
+	        (elemtyptype = 'c' AND elemrelkind='c') -- Array of user-defined free-standing composites (not table composites) by default
+	    ))
+	ORDER BY CASE
+	       WHEN typtype IN ('b', 'e', 'p') THEN 0           -- First base types, enums, pseudo-types
+	       WHEN typtype = 'c' THEN 1                        -- Composites after (fields loaded later in 2nd pass)
+	       WHEN typtype = 'r' THEN 2                        -- Ranges after
+	       WHEN typtype = 'm' THEN 3                        -- Multiranges after
+	       WHEN typtype = 'd' AND elemtyptype <> 'a' THEN 4 -- Domains over non-arrays after
+	       WHEN typtype = 'a' THEN 5                        -- Arrays after
+	       WHEN typtype = 'd' AND elemtyptype = 'a' THEN 6  -- Domains over arrays last
+	END;
+	
+	-- Load field definitions for (free-standing) composite types
+	SELECT typ.oid, att.attname, att.atttypid
+	FROM pg_type AS typ
+	JOIN pg_namespace AS ns ON (ns.oid = typ.typnamespace)
+	JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	JOIN pg_attribute AS att ON (att.attrelid = typ.typrelid)
+	WHERE
+	  (typ.typtype = 'c' AND cls.relkind='c') AND
+	  attnum > 0 AND     -- Don't load system attributes
+	  NOT attisdropped
+	ORDER BY typ.oid, att.attnum;
+	
+	-- Load enum fields
+	SELECT pg_type.oid, enumlabel
+	FROM pg_enum
+	JOIN pg_type ON pg_type.oid=enumtypid
+	ORDER BY oid, enumsortorder;
+	
+2024-10-03 06:53:56.614 UTC [20407] LOG:  statement: SELECT version();
+	
+	SELECT ns.nspname, t.oid, t.typname, t.typtype, t.typnotnull, t.elemtypoid
+	FROM (
+	    -- Arrays have typtype=b - this subquery identifies them by their typreceive and converts their typtype to a
+	    -- We first do this for the type (innerest-most subquery), and then for its element type
+	    -- This also returns the array element, range subtype and domain base type as elemtypoid
+	    SELECT
+	        typ.oid, typ.typnamespace, typ.typname, typ.typtype, typ.typrelid, typ.typnotnull, typ.relkind,
+	        elemtyp.oid AS elemtypoid, elemtyp.typname AS elemtypname, elemcls.relkind AS elemrelkind,
+	        CASE WHEN elemproc.proname='array_recv' THEN 'a' ELSE elemtyp.typtype END AS elemtyptype
+	    FROM (
+	        SELECT typ.oid, typnamespace, typname, typrelid, typnotnull, relkind, typelem AS elemoid,
+	            CASE WHEN proc.proname='array_recv' THEN 'a' ELSE typ.typtype END AS typtype,
+	            CASE
+	                WHEN proc.proname='array_recv' THEN typ.typelem
+	                WHEN typ.typtype='r' THEN rngsubtype
+	                WHEN typ.typtype='m' THEN (SELECT rngtypid FROM pg_range WHERE rngmultitypid = typ.oid)
+	                WHEN typ.typtype='d' THEN typ.typbasetype
+	            END AS elemtypoid
+	        FROM pg_type AS typ
+	        LEFT JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	        LEFT JOIN pg_proc AS proc ON proc.oid = typ.typreceive
+	        LEFT JOIN pg_range ON (pg_range.rngtypid = typ.oid)
+	    ) AS typ
+	    LEFT JOIN pg_type AS elemtyp ON elemtyp.oid = elemtypoid
+	    LEFT JOIN pg_class AS elemcls ON (elemcls.oid = elemtyp.typrelid)
+	    LEFT JOIN pg_proc AS elemproc ON elemproc.oid = elemtyp.typreceive
+	) AS t
+	JOIN pg_namespace AS ns ON (ns.oid = typnamespace)
+	WHERE
+	    typtype IN ('b', 'r', 'm', 'e', 'd') OR -- Base, range, multirange, enum, domain
+	    (typtype = 'c' AND relkind='c') OR -- User-defined free-standing composites (not table composites) by default
+	    (typtype = 'p' AND typname IN ('record', 'void', 'unknown')) OR -- Some special supported pseudo-types
+	    (typtype = 'a' AND (  -- Array of...
+	        elemtyptype IN ('b', 'r', 'm', 'e', 'd') OR -- Array of base, range, multirange, enum, domain
+	        (elemtyptype = 'p' AND elemtypname IN ('record', 'void')) OR -- Arrays of special supported pseudo-types
+	        (elemtyptype = 'c' AND elemrelkind='c') -- Array of user-defined free-standing composites (not table composites) by default
+	    ))
+	ORDER BY CASE
+	       WHEN typtype IN ('b', 'e', 'p') THEN 0           -- First base types, enums, pseudo-types
+	       WHEN typtype = 'c' THEN 1                        -- Composites after (fields loaded later in 2nd pass)
+	       WHEN typtype = 'r' THEN 2                        -- Ranges after
+	       WHEN typtype = 'm' THEN 3                        -- Multiranges after
+	       WHEN typtype = 'd' AND elemtyptype <> 'a' THEN 4 -- Domains over non-arrays after
+	       WHEN typtype = 'a' THEN 5                        -- Arrays after
+	       WHEN typtype = 'd' AND elemtyptype = 'a' THEN 6  -- Domains over arrays last
+	END;
+	
+	-- Load field definitions for (free-standing) composite types
+	SELECT typ.oid, att.attname, att.atttypid
+	FROM pg_type AS typ
+	JOIN pg_namespace AS ns ON (ns.oid = typ.typnamespace)
+	JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	JOIN pg_attribute AS att ON (att.attrelid = typ.typrelid)
+	WHERE
+	  (typ.typtype = 'c' AND cls.relkind='c') AND
+	  attnum > 0 AND     -- Don't load system attributes
+	  NOT attisdropped
+	ORDER BY typ.oid, att.attnum;
+	
+	-- Load enum fields
+	SELECT pg_type.oid, enumlabel
+	FROM pg_enum
+	JOIN pg_type ON pg_type.oid=enumtypid
+	ORDER BY oid, enumsortorder;
+	
+2024-10-03 06:53:56.691 UTC [20407] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 06:53:56.803 UTC [20407] LOG:  statement: DISCARD ALL
+2024-10-03 06:53:56.808 UTC [20407] LOG:  execute <unnamed>: SELECT "MigrationId", "ProductVersion"
+	FROM "__EFMigrationsHistory"
+	ORDER BY "MigrationId"
+2024-10-03 06:53:56.883 UTC [20407] LOG:  statement: DISCARD ALL
+2024-10-03 06:53:56.883 UTC [20407] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 06:53:56.912 UTC [20407] LOG:  statement: DISCARD ALL
+2024-10-03 06:53:56.913 UTC [20407] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 06:53:56.915 UTC [20407] LOG:  statement: DISCARD ALL
+2024-10-03 06:53:56.915 UTC [20407] LOG:  execute <unnamed>: SELECT "MigrationId", "ProductVersion"
+	FROM "__EFMigrationsHistory"
+	ORDER BY "MigrationId"
+2024-10-03 06:54:06.075 UTC [20418] LOG:  invalid length of startup packet
+2024-10-03 06:54:21.075 UTC [20436] LOG:  invalid length of startup packet
+2024-10-03 06:54:36.075 UTC [20445] LOG:  invalid length of startup packet
+2024-10-03 06:54:51.074 UTC [20462] LOG:  invalid length of startup packet
+2024-10-03 06:55:06.073 UTC [20471] LOG:  invalid length of startup packet
+2024-10-03 06:55:21.072 UTC [20489] LOG:  invalid length of startup packet
+2024-10-03 06:55:36.072 UTC [20498] LOG:  invalid length of startup packet
+2024-10-03 06:55:51.072 UTC [20517] LOG:  invalid length of startup packet
+2024-10-03 06:56:06.075 UTC [20526] LOG:  invalid length of startup packet
+2024-10-03 06:56:11.706 UTC [50] LOG:  checkpoint starting: time
+2024-10-03 06:56:14.149 UTC [50] LOG:  checkpoint complete: wrote 23 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.280 s, sync=0.022 s, total=2.443 s; sync files=10, longest=0.006 s, average=0.003 s; distance=221 kB, estimate=253 kB; lsn=0/2BE0DD0, redo lsn=0/2BE0D98
+2024-10-03 06:56:18.401 UTC [20541] LOG:  statement: SELECT 1 FROM pg_roles WHERE rolname='vault'
+2024-10-03 06:56:18.874 UTC [20548] LOG:  statement: ALTER ROLE vault WITH PASSWORD 'your_actual_password' SUPERUSER CREATEROLE;
+2024-10-03 06:56:20.402 UTC [20567] LOG:  statement: SELECT pg_reload_conf();
+2024-10-03 06:56:20.403 UTC [44] LOG:  received SIGHUP, reloading configuration files
+2024-10-03 06:56:20.926 UTC [20574] LOG:  statement: GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "vault";
+2024-10-03 06:56:21.077 UTC [20575] LOG:  invalid length of startup packet
+2024-10-03 06:56:21.632 UTC [20590] LOG:  statement: GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO "vault";
+2024-10-03 06:56:22.275 UTC [20597] LOG:  statement: GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO "vault";
+2024-10-03 06:56:22.723 UTC [20604] LOG:  statement: GRANT USAGE ON SCHEMA public TO "vault";
+2024-10-03 06:56:23.636 UTC [20605] LOG:  statement: ;
+2024-10-03 06:56:25.512 UTC [20605] LOG:  statement: ;
+2024-10-03 06:56:25.513 UTC [20605] LOG:  statement: begin
+2024-10-03 06:56:25.513 UTC [20605] LOG:  statement: CREATE ROLE "v-root-vault-CRX5dBkQ8Ay1on0vadCz-1727938585" WITH LOGIN PASSWORD 'Nk6inOs7XcFLqIeMU-Ba' VALID UNTIL '2024-10-03 07:56:30+0000'
+2024-10-03 06:56:25.540 UTC [20605] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-CRX5dBkQ8Ay1on0vadCz-1727938585"
+2024-10-03 06:56:25.555 UTC [20605] LOG:  statement: commit
+2024-10-03 06:56:36.077 UTC [20614] LOG:  invalid length of startup packet
+2024-10-03 06:56:51.075 UTC [20624] LOG:  invalid length of startup packet
+2024-10-03 06:57:06.147 UTC [20641] LOG:  invalid length of startup packet
+2024-10-03 06:57:21.076 UTC [20650] LOG:  invalid length of startup packet
+2024-10-03 06:57:33.973 UTC [20605] LOG:  statement: ;
+2024-10-03 06:57:33.973 UTC [20605] LOG:  statement: begin
+2024-10-03 06:57:33.974 UTC [20605] LOG:  statement: CREATE ROLE "v-root-vault-R9NoqKGwTxJTcH6XwRTP-1727938653" WITH LOGIN PASSWORD 'TxY2CNkirkXa5ks-iECj' VALID UNTIL '2024-10-03 07:57:38+0000'
+2024-10-03 06:57:34.005 UTC [20605] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-R9NoqKGwTxJTcH6XwRTP-1727938653"
+2024-10-03 06:57:34.023 UTC [20605] LOG:  statement: commit
+2024-10-03 06:57:34.056 UTC [20605] LOG:  statement: ;
+2024-10-03 06:57:34.057 UTC [20605] LOG:  statement: begin
+2024-10-03 06:57:34.058 UTC [20605] LOG:  statement: CREATE ROLE "v-root-vault-21OJRQDHifn0v6KcrQjy-1727938654" WITH LOGIN PASSWORD '56D9CL-UnELqMFH5pJrZ' VALID UNTIL '2024-10-03 07:57:39+0000'
+2024-10-03 06:57:34.104 UTC [20605] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-21OJRQDHifn0v6KcrQjy-1727938654"
+2024-10-03 06:57:34.108 UTC [20605] LOG:  statement: commit
+2024-10-03 06:57:34.294 UTC [20605] LOG:  statement: ;
+2024-10-03 06:57:34.294 UTC [20605] LOG:  statement: begin
+2024-10-03 06:57:34.295 UTC [20605] LOG:  statement: CREATE ROLE "v-root-vault-G0GOcQ5VHkmT6h0TnacT-1727938654" WITH LOGIN PASSWORD 'YpIzM0ha-7aeigPfTBhz' VALID UNTIL '2024-10-03 07:57:39+0000'
+2024-10-03 06:57:34.332 UTC [20605] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-G0GOcQ5VHkmT6h0TnacT-1727938654"
+2024-10-03 06:57:34.339 UTC [20605] LOG:  statement: commit
+2024-10-03 06:57:36.075 UTC [20667] LOG:  invalid length of startup packet
+2024-10-03 06:57:51.073 UTC [20677] LOG:  invalid length of startup packet
+2024-10-03 06:58:04.503 UTC [20605] LOG:  statement: ;
+2024-10-03 06:58:04.503 UTC [20605] LOG:  statement: begin
+2024-10-03 06:58:04.504 UTC [20605] LOG:  statement: CREATE ROLE "v-root-vault-4kKivXFPM6tTz60iGakw-1727938684" WITH LOGIN PASSWORD 'L7-QKvQvjvHqQzSQSGkW' VALID UNTIL '2024-10-03 07:58:09+0000'
+2024-10-03 06:58:04.522 UTC [20605] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-4kKivXFPM6tTz60iGakw-1727938684"
+2024-10-03 06:58:04.527 UTC [20605] LOG:  statement: commit
+2024-10-03 06:58:06.073 UTC [20694] LOG:  invalid length of startup packet
+2024-10-03 06:58:08.421 UTC [20695] LOG:  statement: SELECT version();
+	
+	SELECT ns.nspname, t.oid, t.typname, t.typtype, t.typnotnull, t.elemtypoid
+	FROM (
+	    -- Arrays have typtype=b - this subquery identifies them by their typreceive and converts their typtype to a
+	    -- We first do this for the type (innerest-most subquery), and then for its element type
+	    -- This also returns the array element, range subtype and domain base type as elemtypoid
+	    SELECT
+	        typ.oid, typ.typnamespace, typ.typname, typ.typtype, typ.typrelid, typ.typnotnull, typ.relkind,
+	        elemtyp.oid AS elemtypoid, elemtyp.typname AS elemtypname, elemcls.relkind AS elemrelkind,
+	        CASE WHEN elemproc.proname='array_recv' THEN 'a' ELSE elemtyp.typtype END AS elemtyptype
+	    FROM (
+	        SELECT typ.oid, typnamespace, typname, typrelid, typnotnull, relkind, typelem AS elemoid,
+	            CASE WHEN proc.proname='array_recv' THEN 'a' ELSE typ.typtype END AS typtype,
+	            CASE
+	                WHEN proc.proname='array_recv' THEN typ.typelem
+	                WHEN typ.typtype='r' THEN rngsubtype
+	                WHEN typ.typtype='m' THEN (SELECT rngtypid FROM pg_range WHERE rngmultitypid = typ.oid)
+	                WHEN typ.typtype='d' THEN typ.typbasetype
+	            END AS elemtypoid
+	        FROM pg_type AS typ
+	        LEFT JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	        LEFT JOIN pg_proc AS proc ON proc.oid = typ.typreceive
+	        LEFT JOIN pg_range ON (pg_range.rngtypid = typ.oid)
+	    ) AS typ
+	    LEFT JOIN pg_type AS elemtyp ON elemtyp.oid = elemtypoid
+	    LEFT JOIN pg_class AS elemcls ON (elemcls.oid = elemtyp.typrelid)
+	    LEFT JOIN pg_proc AS elemproc ON elemproc.oid = elemtyp.typreceive
+	) AS t
+	JOIN pg_namespace AS ns ON (ns.oid = typnamespace)
+	WHERE
+	    typtype IN ('b', 'r', 'm', 'e', 'd') OR -- Base, range, multirange, enum, domain
+	    (typtype = 'c' AND relkind='c') OR -- User-defined free-standing composites (not table composites) by default
+	    (typtype = 'p' AND typname IN ('record', 'void', 'unknown')) OR -- Some special supported pseudo-types
+	    (typtype = 'a' AND (  -- Array of...
+	        elemtyptype IN ('b', 'r', 'm', 'e', 'd') OR -- Array of base, range, multirange, enum, domain
+	        (elemtyptype = 'p' AND elemtypname IN ('record', 'void')) OR -- Arrays of special supported pseudo-types
+	        (elemtyptype = 'c' AND elemrelkind='c') -- Array of user-defined free-standing composites (not table composites) by default
+	    ))
+	ORDER BY CASE
+	       WHEN typtype IN ('b', 'e', 'p') THEN 0           -- First base types, enums, pseudo-types
+	       WHEN typtype = 'c' THEN 1                        -- Composites after (fields loaded later in 2nd pass)
+	       WHEN typtype = 'r' THEN 2                        -- Ranges after
+	       WHEN typtype = 'm' THEN 3                        -- Multiranges after
+	       WHEN typtype = 'd' AND elemtyptype <> 'a' THEN 4 -- Domains over non-arrays after
+	       WHEN typtype = 'a' THEN 5                        -- Arrays after
+	       WHEN typtype = 'd' AND elemtyptype = 'a' THEN 6  -- Domains over arrays last
+	END;
+	
+	-- Load field definitions for (free-standing) composite types
+	SELECT typ.oid, att.attname, att.atttypid
+	FROM pg_type AS typ
+	JOIN pg_namespace AS ns ON (ns.oid = typ.typnamespace)
+	JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	JOIN pg_attribute AS att ON (att.attrelid = typ.typrelid)
+	WHERE
+	  (typ.typtype = 'c' AND cls.relkind='c') AND
+	  attnum > 0 AND     -- Don't load system attributes
+	  NOT attisdropped
+	ORDER BY typ.oid, att.attnum;
+	
+	-- Load enum fields
+	SELECT pg_type.oid, enumlabel
+	FROM pg_enum
+	JOIN pg_type ON pg_type.oid=enumtypid
+	ORDER BY oid, enumsortorder;
+	
+2024-10-03 06:58:08.603 UTC [20696] LOG:  statement: SELECT version();
+	
+	SELECT ns.nspname, t.oid, t.typname, t.typtype, t.typnotnull, t.elemtypoid
+	FROM (
+	    -- Arrays have typtype=b - this subquery identifies them by their typreceive and converts their typtype to a
+	    -- We first do this for the type (innerest-most subquery), and then for its element type
+	    -- This also returns the array element, range subtype and domain base type as elemtypoid
+	    SELECT
+	        typ.oid, typ.typnamespace, typ.typname, typ.typtype, typ.typrelid, typ.typnotnull, typ.relkind,
+	        elemtyp.oid AS elemtypoid, elemtyp.typname AS elemtypname, elemcls.relkind AS elemrelkind,
+	        CASE WHEN elemproc.proname='array_recv' THEN 'a' ELSE elemtyp.typtype END AS elemtyptype
+	    FROM (
+	        SELECT typ.oid, typnamespace, typname, typrelid, typnotnull, relkind, typelem AS elemoid,
+	            CASE WHEN proc.proname='array_recv' THEN 'a' ELSE typ.typtype END AS typtype,
+	            CASE
+	                WHEN proc.proname='array_recv' THEN typ.typelem
+	                WHEN typ.typtype='r' THEN rngsubtype
+	                WHEN typ.typtype='m' THEN (SELECT rngtypid FROM pg_range WHERE rngmultitypid = typ.oid)
+	                WHEN typ.typtype='d' THEN typ.typbasetype
+	            END AS elemtypoid
+	        FROM pg_type AS typ
+	        LEFT JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	        LEFT JOIN pg_proc AS proc ON proc.oid = typ.typreceive
+	        LEFT JOIN pg_range ON (pg_range.rngtypid = typ.oid)
+	    ) AS typ
+	    LEFT JOIN pg_type AS elemtyp ON elemtyp.oid = elemtypoid
+	    LEFT JOIN pg_class AS elemcls ON (elemcls.oid = elemtyp.typrelid)
+	    LEFT JOIN pg_proc AS elemproc ON elemproc.oid = elemtyp.typreceive
+	) AS t
+	JOIN pg_namespace AS ns ON (ns.oid = typnamespace)
+	WHERE
+	    typtype IN ('b', 'r', 'm', 'e', 'd') OR -- Base, range, multirange, enum, domain
+	    (typtype = 'c' AND relkind='c') OR -- User-defined free-standing composites (not table composites) by default
+	    (typtype = 'p' AND typname IN ('record', 'void', 'unknown')) OR -- Some special supported pseudo-types
+	    (typtype = 'a' AND (  -- Array of...
+	        elemtyptype IN ('b', 'r', 'm', 'e', 'd') OR -- Array of base, range, multirange, enum, domain
+	        (elemtyptype = 'p' AND elemtypname IN ('record', 'void')) OR -- Arrays of special supported pseudo-types
+	        (elemtyptype = 'c' AND elemrelkind='c') -- Array of user-defined free-standing composites (not table composites) by default
+	    ))
+	ORDER BY CASE
+	       WHEN typtype IN ('b', 'e', 'p') THEN 0           -- First base types, enums, pseudo-types
+	       WHEN typtype = 'c' THEN 1                        -- Composites after (fields loaded later in 2nd pass)
+	       WHEN typtype = 'r' THEN 2                        -- Ranges after
+	       WHEN typtype = 'm' THEN 3                        -- Multiranges after
+	       WHEN typtype = 'd' AND elemtyptype <> 'a' THEN 4 -- Domains over non-arrays after
+	       WHEN typtype = 'a' THEN 5                        -- Arrays after
+	       WHEN typtype = 'd' AND elemtyptype = 'a' THEN 6  -- Domains over arrays last
+	END;
+	
+	-- Load field definitions for (free-standing) composite types
+	SELECT typ.oid, att.attname, att.atttypid
+	FROM pg_type AS typ
+	JOIN pg_namespace AS ns ON (ns.oid = typ.typnamespace)
+	JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	JOIN pg_attribute AS att ON (att.attrelid = typ.typrelid)
+	WHERE
+	  (typ.typtype = 'c' AND cls.relkind='c') AND
+	  attnum > 0 AND     -- Don't load system attributes
+	  NOT attisdropped
+	ORDER BY typ.oid, att.attnum;
+	
+	-- Load enum fields
+	SELECT pg_type.oid, enumlabel
+	FROM pg_enum
+	JOIN pg_type ON pg_type.oid=enumtypid
+	ORDER BY oid, enumsortorder;
+	
+2024-10-03 06:58:08.736 UTC [20696] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 06:58:08.935 UTC [20696] LOG:  statement: DISCARD ALL
+2024-10-03 06:58:08.939 UTC [20696] LOG:  execute <unnamed>: SELECT "MigrationId", "ProductVersion"
+	FROM "__EFMigrationsHistory"
+	ORDER BY "MigrationId"
+2024-10-03 06:58:09.002 UTC [20696] LOG:  statement: DISCARD ALL
+2024-10-03 06:58:09.003 UTC [20696] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 06:58:09.043 UTC [20696] LOG:  statement: DISCARD ALL
+2024-10-03 06:58:09.045 UTC [20696] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 06:58:09.047 UTC [20696] LOG:  statement: DISCARD ALL
+2024-10-03 06:58:09.048 UTC [20696] LOG:  execute <unnamed>: SELECT "MigrationId", "ProductVersion"
+	FROM "__EFMigrationsHistory"
+	ORDER BY "MigrationId"
+2024-10-03 06:58:21.074 UTC [20708] LOG:  invalid length of startup packet
+2024-10-03 06:58:36.073 UTC [20717] LOG:  invalid length of startup packet
+2024-10-03 06:58:51.074 UTC [20736] LOG:  invalid length of startup packet
+2024-10-03 06:59:06.081 UTC [20744] LOG:  invalid length of startup packet
+2024-10-03 06:59:21.078 UTC [20762] LOG:  invalid length of startup packet
+2024-10-03 06:59:36.085 UTC [20771] LOG:  invalid length of startup packet
+2024-10-03 06:59:51.076 UTC [20788] LOG:  invalid length of startup packet
+2024-10-03 07:00:06.084 UTC [20797] LOG:  invalid length of startup packet
+2024-10-03 07:00:21.073 UTC [20807] LOG:  invalid length of startup packet
+2024-10-03 07:00:36.074 UTC [20824] LOG:  invalid length of startup packet
+2024-10-03 07:00:51.074 UTC [20834] LOG:  invalid length of startup packet
+2024-10-03 07:01:06.073 UTC [20850] LOG:  invalid length of startup packet
+2024-10-03 07:01:11.542 UTC [50] LOG:  checkpoint starting: time
+2024-10-03 07:01:15.539 UTC [50] LOG:  checkpoint complete: wrote 39 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.955 s, sync=0.016 s, total=3.997 s; sync files=17, longest=0.003 s, average=0.001 s; distance=290 kB, estimate=290 kB; lsn=0/2C29710, redo lsn=0/2C296D8
+2024-10-03 07:01:21.074 UTC [20860] LOG:  invalid length of startup packet
+2024-10-03 07:01:36.074 UTC [20877] LOG:  invalid length of startup packet
+2024-10-03 07:01:51.074 UTC [20887] LOG:  invalid length of startup packet
+2024-10-03 07:02:06.072 UTC [20904] LOG:  invalid length of startup packet
+2024-10-03 07:02:21.073 UTC [20914] LOG:  invalid length of startup packet
+2024-10-03 07:02:36.073 UTC [20931] LOG:  invalid length of startup packet
+2024-10-03 07:02:51.073 UTC [20941] LOG:  invalid length of startup packet
+2024-10-03 07:03:06.074 UTC [20958] LOG:  invalid length of startup packet
+2024-10-03 07:03:21.073 UTC [20968] LOG:  invalid length of startup packet
+2024-10-03 07:03:36.074 UTC [20985] LOG:  invalid length of startup packet
+2024-10-03 07:03:51.075 UTC [20995] LOG:  invalid length of startup packet
+2024-10-03 07:04:06.072 UTC [21012] LOG:  invalid length of startup packet
+2024-10-03 07:04:21.076 UTC [21022] LOG:  invalid length of startup packet
+2024-10-03 07:04:36.075 UTC [21038] LOG:  invalid length of startup packet
+2024-10-03 07:04:51.078 UTC [21049] LOG:  invalid length of startup packet
+2024-10-03 07:05:06.075 UTC [21067] LOG:  invalid length of startup packet
+2024-10-03 07:05:21.083 UTC [21077] LOG:  invalid length of startup packet
+2024-10-03 07:05:36.081 UTC [21086] LOG:  invalid length of startup packet
+2024-10-03 07:05:51.076 UTC [21104] LOG:  invalid length of startup packet
+2024-10-03 07:06:06.073 UTC [21113] LOG:  invalid length of startup packet
+2024-10-03 07:06:21.072 UTC [21131] LOG:  invalid length of startup packet
+2024-10-03 07:06:36.075 UTC [21140] LOG:  invalid length of startup packet
+2024-10-03 07:06:51.073 UTC [21158] LOG:  invalid length of startup packet
+2024-10-03 07:07:06.095 UTC [21168] LOG:  invalid length of startup packet
+2024-10-03 07:07:21.074 UTC [21186] LOG:  invalid length of startup packet
+2024-10-03 07:07:36.073 UTC [21195] LOG:  invalid length of startup packet
+2024-10-03 07:07:51.073 UTC [21213] LOG:  invalid length of startup packet
+2024-10-03 07:08:06.077 UTC [21222] LOG:  invalid length of startup packet
+2024-10-03 07:08:21.074 UTC [21240] LOG:  invalid length of startup packet
+2024-10-03 07:08:36.074 UTC [21249] LOG:  invalid length of startup packet
+2024-10-03 07:08:51.076 UTC [21268] LOG:  invalid length of startup packet
+2024-10-03 07:09:06.074 UTC [21277] LOG:  invalid length of startup packet
+2024-10-03 07:09:21.074 UTC [21295] LOG:  invalid length of startup packet
+2024-10-03 07:09:36.074 UTC [21304] LOG:  invalid length of startup packet
+2024-10-03 07:09:51.076 UTC [21323] LOG:  invalid length of startup packet
+2024-10-03 07:10:06.075 UTC [21332] LOG:  invalid length of startup packet
+2024-10-03 07:10:17.627 UTC [21347] LOG:  statement: SELECT 1 FROM pg_roles WHERE rolname='vault'
+2024-10-03 07:10:17.982 UTC [21354] LOG:  statement: ALTER ROLE vault WITH PASSWORD 'your_actual_password' SUPERUSER CREATEROLE;
+2024-10-03 07:10:18.960 UTC [21375] LOG:  statement: SELECT pg_reload_conf();
+2024-10-03 07:10:18.962 UTC [44] LOG:  received SIGHUP, reloading configuration files
+2024-10-03 07:10:19.303 UTC [21382] LOG:  statement: GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "vault";
+2024-10-03 07:10:19.602 UTC [21389] LOG:  statement: GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO "vault";
+2024-10-03 07:10:20.027 UTC [21396] LOG:  statement: GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO "vault";
+2024-10-03 07:10:20.530 UTC [21412] LOG:  statement: GRANT USAGE ON SCHEMA public TO "vault";
+2024-10-03 07:10:21.080 UTC [21413] LOG:  invalid length of startup packet
+2024-10-03 07:10:21.732 UTC [21414] LOG:  statement: ;
+2024-10-03 07:10:23.167 UTC [21414] LOG:  statement: ;
+2024-10-03 07:10:23.169 UTC [21414] LOG:  statement: begin
+2024-10-03 07:10:23.172 UTC [21414] LOG:  statement: CREATE ROLE "v-root-vault-clb67OEXiIOh3sQ27cyi-1727939423" WITH LOGIN PASSWORD 'TxxrowI-Ip6kE4i8sHpa' VALID UNTIL '2024-10-03 08:10:28+0000'
+2024-10-03 07:10:23.198 UTC [21414] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-clb67OEXiIOh3sQ27cyi-1727939423"
+2024-10-03 07:10:23.212 UTC [21414] LOG:  statement: commit
+2024-10-03 07:10:36.078 UTC [21423] LOG:  invalid length of startup packet
+2024-10-03 07:10:51.077 UTC [21433] LOG:  invalid length of startup packet
+2024-10-03 07:11:06.079 UTC [21450] LOG:  invalid length of startup packet
+2024-10-03 07:11:12.012 UTC [50] LOG:  checkpoint starting: time
+2024-10-03 07:11:13.882 UTC [50] LOG:  checkpoint complete: wrote 18 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.808 s, sync=0.019 s, total=1.870 s; sync files=10, longest=0.005 s, average=0.002 s; distance=108 kB, estimate=272 kB; lsn=0/2C44A08, redo lsn=0/2C449D0
+2024-10-03 07:11:21.077 UTC [21460] LOG:  invalid length of startup packet
+2024-10-03 07:11:36.077 UTC [21477] LOG:  invalid length of startup packet
+2024-10-03 07:11:51.074 UTC [21487] LOG:  invalid length of startup packet
+2024-10-03 07:12:06.073 UTC [21504] LOG:  invalid length of startup packet
+2024-10-03 07:12:11.681 UTC [21511] LOG:  statement: SELECT 1 FROM pg_roles WHERE rolname='vault'
+2024-10-03 07:12:11.949 UTC [21518] LOG:  statement: ALTER ROLE vault WITH PASSWORD 'your_actual_password' SUPERUSER CREATEROLE;
+2024-10-03 07:12:12.647 UTC [21537] LOG:  statement: SELECT pg_reload_conf();
+2024-10-03 07:12:12.647 UTC [44] LOG:  received SIGHUP, reloading configuration files
+2024-10-03 07:12:12.900 UTC [21544] LOG:  statement: GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "vault";
+2024-10-03 07:12:13.126 UTC [21551] LOG:  statement: GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO "vault";
+2024-10-03 07:12:13.347 UTC [21558] LOG:  statement: GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO "vault";
+2024-10-03 07:12:13.559 UTC [21565] LOG:  statement: GRANT USAGE ON SCHEMA public TO "vault";
+2024-10-03 07:12:14.005 UTC [21566] LOG:  statement: ;
+2024-10-03 07:12:15.111 UTC [21566] LOG:  statement: ;
+2024-10-03 07:12:15.112 UTC [21566] LOG:  statement: begin
+2024-10-03 07:12:15.112 UTC [21566] LOG:  statement: CREATE ROLE "v-root-vault-0CgIvdAD6cgrUJKDdZAL-1727939535" WITH LOGIN PASSWORD '2-7ak18GgRJxuoTYhzeR' VALID UNTIL '2024-10-03 08:12:20+0000'
+2024-10-03 07:12:15.127 UTC [21566] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-0CgIvdAD6cgrUJKDdZAL-1727939535"
+2024-10-03 07:12:15.137 UTC [21566] LOG:  statement: commit
+2024-10-03 07:12:21.074 UTC [21575] LOG:  invalid length of startup packet
+2024-10-03 07:12:36.085 UTC [21592] LOG:  invalid length of startup packet
+2024-10-03 07:12:51.073 UTC [21602] LOG:  invalid length of startup packet
+2024-10-03 07:13:05.248 UTC [21566] LOG:  statement: ;
+2024-10-03 07:13:05.249 UTC [21566] LOG:  statement: begin
+2024-10-03 07:13:05.249 UTC [21566] LOG:  statement: CREATE ROLE "v-root-vault-Q40OHPUpkYKuANNX1snw-1727939585" WITH LOGIN PASSWORD 'PULZ-jUNw3QIJgd7utCn' VALID UNTIL '2024-10-03 08:13:10+0000'
+2024-10-03 07:13:05.272 UTC [21566] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-Q40OHPUpkYKuANNX1snw-1727939585"
+2024-10-03 07:13:05.277 UTC [21566] LOG:  statement: commit
+2024-10-03 07:13:05.308 UTC [21566] LOG:  statement: ;
+2024-10-03 07:13:05.308 UTC [21566] LOG:  statement: begin
+2024-10-03 07:13:05.309 UTC [21566] LOG:  statement: CREATE ROLE "v-root-vault-O6GnZay7Hbc9ioVYjRZ1-1727939585" WITH LOGIN PASSWORD '6KDCT9GMc79SO05-BktH' VALID UNTIL '2024-10-03 08:13:10+0000'
+2024-10-03 07:13:05.323 UTC [21566] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-O6GnZay7Hbc9ioVYjRZ1-1727939585"
+2024-10-03 07:13:05.325 UTC [21566] LOG:  statement: commit
+2024-10-03 07:13:05.327 UTC [21566] LOG:  statement: ;
+2024-10-03 07:13:05.328 UTC [21566] LOG:  statement: begin
+2024-10-03 07:13:05.328 UTC [21566] LOG:  statement: CREATE ROLE "v-root-vault-8VYkYfIEE6XdNIV4sZcU-1727939585" WITH LOGIN PASSWORD '0Cv4oUnPnS5-FLN2sMAQ' VALID UNTIL '2024-10-03 08:13:10+0000'
+2024-10-03 07:13:05.358 UTC [21566] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-8VYkYfIEE6XdNIV4sZcU-1727939585"
+2024-10-03 07:13:05.377 UTC [21566] LOG:  statement: commit
+2024-10-03 07:13:06.075 UTC [21619] LOG:  invalid length of startup packet
+2024-10-03 07:13:21.077 UTC [21628] LOG:  invalid length of startup packet
+2024-10-03 07:13:32.943 UTC [21566] LOG:  statement: ;
+2024-10-03 07:13:32.944 UTC [21566] LOG:  statement: begin
+2024-10-03 07:13:32.946 UTC [21566] LOG:  statement: CREATE ROLE "v-root-vault-tDDLTkYVUshY9Qdv7p6Q-1727939612" WITH LOGIN PASSWORD 'OEBZoKxzrDd-BVbUC0Kw' VALID UNTIL '2024-10-03 08:13:37+0000'
+2024-10-03 07:13:32.973 UTC [21566] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-tDDLTkYVUshY9Qdv7p6Q-1727939612"
+2024-10-03 07:13:32.980 UTC [21566] LOG:  statement: commit
+2024-10-03 07:13:36.080 UTC [21638] LOG:  invalid length of startup packet
+2024-10-03 07:13:37.595 UTC [21647] LOG:  statement: SELECT version();
+	
+	SELECT ns.nspname, t.oid, t.typname, t.typtype, t.typnotnull, t.elemtypoid
+	FROM (
+	    -- Arrays have typtype=b - this subquery identifies them by their typreceive and converts their typtype to a
+	    -- We first do this for the type (innerest-most subquery), and then for its element type
+	    -- This also returns the array element, range subtype and domain base type as elemtypoid
+	    SELECT
+	        typ.oid, typ.typnamespace, typ.typname, typ.typtype, typ.typrelid, typ.typnotnull, typ.relkind,
+	        elemtyp.oid AS elemtypoid, elemtyp.typname AS elemtypname, elemcls.relkind AS elemrelkind,
+	        CASE WHEN elemproc.proname='array_recv' THEN 'a' ELSE elemtyp.typtype END AS elemtyptype
+	    FROM (
+	        SELECT typ.oid, typnamespace, typname, typrelid, typnotnull, relkind, typelem AS elemoid,
+	            CASE WHEN proc.proname='array_recv' THEN 'a' ELSE typ.typtype END AS typtype,
+	            CASE
+	                WHEN proc.proname='array_recv' THEN typ.typelem
+	                WHEN typ.typtype='r' THEN rngsubtype
+	                WHEN typ.typtype='m' THEN (SELECT rngtypid FROM pg_range WHERE rngmultitypid = typ.oid)
+	                WHEN typ.typtype='d' THEN typ.typbasetype
+	            END AS elemtypoid
+	        FROM pg_type AS typ
+	        LEFT JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	        LEFT JOIN pg_proc AS proc ON proc.oid = typ.typreceive
+	        LEFT JOIN pg_range ON (pg_range.rngtypid = typ.oid)
+	    ) AS typ
+	    LEFT JOIN pg_type AS elemtyp ON elemtyp.oid = elemtypoid
+	    LEFT JOIN pg_class AS elemcls ON (elemcls.oid = elemtyp.typrelid)
+	    LEFT JOIN pg_proc AS elemproc ON elemproc.oid = elemtyp.typreceive
+	) AS t
+	JOIN pg_namespace AS ns ON (ns.oid = typnamespace)
+	WHERE
+	    typtype IN ('b', 'r', 'm', 'e', 'd') OR -- Base, range, multirange, enum, domain
+	    (typtype = 'c' AND relkind='c') OR -- User-defined free-standing composites (not table composites) by default
+	    (typtype = 'p' AND typname IN ('record', 'void', 'unknown')) OR -- Some special supported pseudo-types
+	    (typtype = 'a' AND (  -- Array of...
+	        elemtyptype IN ('b', 'r', 'm', 'e', 'd') OR -- Array of base, range, multirange, enum, domain
+	        (elemtyptype = 'p' AND elemtypname IN ('record', 'void')) OR -- Arrays of special supported pseudo-types
+	        (elemtyptype = 'c' AND elemrelkind='c') -- Array of user-defined free-standing composites (not table composites) by default
+	    ))
+	ORDER BY CASE
+	       WHEN typtype IN ('b', 'e', 'p') THEN 0           -- First base types, enums, pseudo-types
+	       WHEN typtype = 'c' THEN 1                        -- Composites after (fields loaded later in 2nd pass)
+	       WHEN typtype = 'r' THEN 2                        -- Ranges after
+	       WHEN typtype = 'm' THEN 3                        -- Multiranges after
+	       WHEN typtype = 'd' AND elemtyptype <> 'a' THEN 4 -- Domains over non-arrays after
+	       WHEN typtype = 'a' THEN 5                        -- Arrays after
+	       WHEN typtype = 'd' AND elemtyptype = 'a' THEN 6  -- Domains over arrays last
+	END;
+	
+	-- Load field definitions for (free-standing) composite types
+	SELECT typ.oid, att.attname, att.atttypid
+	FROM pg_type AS typ
+	JOIN pg_namespace AS ns ON (ns.oid = typ.typnamespace)
+	JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	JOIN pg_attribute AS att ON (att.attrelid = typ.typrelid)
+	WHERE
+	  (typ.typtype = 'c' AND cls.relkind='c') AND
+	  attnum > 0 AND     -- Don't load system attributes
+	  NOT attisdropped
+	ORDER BY typ.oid, att.attnum;
+	
+	-- Load enum fields
+	SELECT pg_type.oid, enumlabel
+	FROM pg_enum
+	JOIN pg_type ON pg_type.oid=enumtypid
+	ORDER BY oid, enumsortorder;
+	
+2024-10-03 07:13:37.764 UTC [21648] LOG:  statement: SELECT version();
+	
+	SELECT ns.nspname, t.oid, t.typname, t.typtype, t.typnotnull, t.elemtypoid
+	FROM (
+	    -- Arrays have typtype=b - this subquery identifies them by their typreceive and converts their typtype to a
+	    -- We first do this for the type (innerest-most subquery), and then for its element type
+	    -- This also returns the array element, range subtype and domain base type as elemtypoid
+	    SELECT
+	        typ.oid, typ.typnamespace, typ.typname, typ.typtype, typ.typrelid, typ.typnotnull, typ.relkind,
+	        elemtyp.oid AS elemtypoid, elemtyp.typname AS elemtypname, elemcls.relkind AS elemrelkind,
+	        CASE WHEN elemproc.proname='array_recv' THEN 'a' ELSE elemtyp.typtype END AS elemtyptype
+	    FROM (
+	        SELECT typ.oid, typnamespace, typname, typrelid, typnotnull, relkind, typelem AS elemoid,
+	            CASE WHEN proc.proname='array_recv' THEN 'a' ELSE typ.typtype END AS typtype,
+	            CASE
+	                WHEN proc.proname='array_recv' THEN typ.typelem
+	                WHEN typ.typtype='r' THEN rngsubtype
+	                WHEN typ.typtype='m' THEN (SELECT rngtypid FROM pg_range WHERE rngmultitypid = typ.oid)
+	                WHEN typ.typtype='d' THEN typ.typbasetype
+	            END AS elemtypoid
+	        FROM pg_type AS typ
+	        LEFT JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	        LEFT JOIN pg_proc AS proc ON proc.oid = typ.typreceive
+	        LEFT JOIN pg_range ON (pg_range.rngtypid = typ.oid)
+	    ) AS typ
+	    LEFT JOIN pg_type AS elemtyp ON elemtyp.oid = elemtypoid
+	    LEFT JOIN pg_class AS elemcls ON (elemcls.oid = elemtyp.typrelid)
+	    LEFT JOIN pg_proc AS elemproc ON elemproc.oid = elemtyp.typreceive
+	) AS t
+	JOIN pg_namespace AS ns ON (ns.oid = typnamespace)
+	WHERE
+	    typtype IN ('b', 'r', 'm', 'e', 'd') OR -- Base, range, multirange, enum, domain
+	    (typtype = 'c' AND relkind='c') OR -- User-defined free-standing composites (not table composites) by default
+	    (typtype = 'p' AND typname IN ('record', 'void', 'unknown')) OR -- Some special supported pseudo-types
+	    (typtype = 'a' AND (  -- Array of...
+	        elemtyptype IN ('b', 'r', 'm', 'e', 'd') OR -- Array of base, range, multirange, enum, domain
+	        (elemtyptype = 'p' AND elemtypname IN ('record', 'void')) OR -- Arrays of special supported pseudo-types
+	        (elemtyptype = 'c' AND elemrelkind='c') -- Array of user-defined free-standing composites (not table composites) by default
+	    ))
+	ORDER BY CASE
+	       WHEN typtype IN ('b', 'e', 'p') THEN 0           -- First base types, enums, pseudo-types
+	       WHEN typtype = 'c' THEN 1                        -- Composites after (fields loaded later in 2nd pass)
+	       WHEN typtype = 'r' THEN 2                        -- Ranges after
+	       WHEN typtype = 'm' THEN 3                        -- Multiranges after
+	       WHEN typtype = 'd' AND elemtyptype <> 'a' THEN 4 -- Domains over non-arrays after
+	       WHEN typtype = 'a' THEN 5                        -- Arrays after
+	       WHEN typtype = 'd' AND elemtyptype = 'a' THEN 6  -- Domains over arrays last
+	END;
+	
+	-- Load field definitions for (free-standing) composite types
+	SELECT typ.oid, att.attname, att.atttypid
+	FROM pg_type AS typ
+	JOIN pg_namespace AS ns ON (ns.oid = typ.typnamespace)
+	JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	JOIN pg_attribute AS att ON (att.attrelid = typ.typrelid)
+	WHERE
+	  (typ.typtype = 'c' AND cls.relkind='c') AND
+	  attnum > 0 AND     -- Don't load system attributes
+	  NOT attisdropped
+	ORDER BY typ.oid, att.attnum;
+	
+	-- Load enum fields
+	SELECT pg_type.oid, enumlabel
+	FROM pg_enum
+	JOIN pg_type ON pg_type.oid=enumtypid
+	ORDER BY oid, enumsortorder;
+	
+2024-10-03 07:13:37.862 UTC [21648] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 07:13:37.997 UTC [21648] LOG:  statement: DISCARD ALL
+2024-10-03 07:13:38.001 UTC [21648] LOG:  execute <unnamed>: SELECT "MigrationId", "ProductVersion"
+	FROM "__EFMigrationsHistory"
+	ORDER BY "MigrationId"
+2024-10-03 07:13:38.061 UTC [21648] LOG:  statement: DISCARD ALL
+2024-10-03 07:13:38.062 UTC [21648] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 07:13:38.098 UTC [21648] LOG:  statement: DISCARD ALL
+2024-10-03 07:13:38.099 UTC [21648] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 07:13:38.101 UTC [21648] LOG:  statement: DISCARD ALL
+2024-10-03 07:13:38.102 UTC [21648] LOG:  execute <unnamed>: SELECT "MigrationId", "ProductVersion"
+	FROM "__EFMigrationsHistory"
+	ORDER BY "MigrationId"
+2024-10-03 07:13:51.077 UTC [21660] LOG:  invalid length of startup packet
+2024-10-03 07:14:06.074 UTC [21669] LOG:  invalid length of startup packet
+2024-10-03 07:14:21.075 UTC [21688] LOG:  invalid length of startup packet
+2024-10-03 07:14:36.076 UTC [21697] LOG:  invalid length of startup packet
+2024-10-03 07:14:51.075 UTC [21715] LOG:  invalid length of startup packet
+2024-10-03 07:15:06.075 UTC [21724] LOG:  invalid length of startup packet
+2024-10-03 07:15:21.075 UTC [21742] LOG:  invalid length of startup packet
+2024-10-03 07:15:36.075 UTC [21750] LOG:  invalid length of startup packet
+2024-10-03 07:15:51.081 UTC [21768] LOG:  invalid length of startup packet
+2024-10-03 07:16:06.073 UTC [21777] LOG:  invalid length of startup packet
+2024-10-03 07:16:12.712 UTC [50] LOG:  checkpoint starting: time
+2024-10-03 07:16:17.115 UTC [50] LOG:  checkpoint complete: wrote 44 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.380 s, sync=0.010 s, total=4.404 s; sync files=19, longest=0.002 s, average=0.001 s; distance=294 kB, estimate=294 kB; lsn=0/2C8E5F0, redo lsn=0/2C8E5B8
+2024-10-03 07:16:21.072 UTC [21795] LOG:  invalid length of startup packet
+2024-10-03 07:16:36.076 UTC [21804] LOG:  invalid length of startup packet
+2024-10-03 07:16:51.074 UTC [21822] LOG:  invalid length of startup packet
+2024-10-03 07:17:06.075 UTC [21831] LOG:  invalid length of startup packet
+2024-10-03 07:17:21.075 UTC [21849] LOG:  invalid length of startup packet
+2024-10-03 07:17:36.074 UTC [21858] LOG:  invalid length of startup packet
+2024-10-03 07:17:51.074 UTC [21876] LOG:  invalid length of startup packet
+2024-10-03 07:17:54.978 UTC [21883] LOG:  statement: SELECT 1 FROM pg_roles WHERE rolname='vault'
+2024-10-03 07:17:55.223 UTC [21890] LOG:  statement: ALTER ROLE vault WITH PASSWORD 'your_actual_password' SUPERUSER CREATEROLE;
+2024-10-03 07:17:55.875 UTC [21909] LOG:  statement: SELECT pg_reload_conf();
+2024-10-03 07:17:55.876 UTC [44] LOG:  received SIGHUP, reloading configuration files
+2024-10-03 07:17:56.109 UTC [21916] LOG:  statement: GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "vault";
+2024-10-03 07:17:56.308 UTC [21923] LOG:  statement: GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO "vault";
+2024-10-03 07:17:56.506 UTC [21931] LOG:  statement: GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO "vault";
+2024-10-03 07:17:56.698 UTC [21938] LOG:  statement: GRANT USAGE ON SCHEMA public TO "vault";
+2024-10-03 07:17:57.117 UTC [21939] LOG:  statement: ;
+2024-10-03 07:17:57.959 UTC [21939] LOG:  statement: ;
+2024-10-03 07:17:57.960 UTC [21939] LOG:  statement: begin
+2024-10-03 07:17:57.961 UTC [21939] LOG:  statement: CREATE ROLE "v-root-vault-RaZGbYWJn2tg9vFrsJXF-1727939877" WITH LOGIN PASSWORD 'F-PlwceA21J9oOrvb1pP' VALID UNTIL '2024-10-03 08:18:02+0000'
+2024-10-03 07:17:57.972 UTC [21939] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-RaZGbYWJn2tg9vFrsJXF-1727939877"
+2024-10-03 07:17:57.979 UTC [21939] LOG:  statement: commit
+2024-10-03 07:18:06.074 UTC [21948] LOG:  invalid length of startup packet
+2024-10-03 07:18:21.075 UTC [21965] LOG:  invalid length of startup packet
+2024-10-03 07:18:36.076 UTC [21975] LOG:  invalid length of startup packet
+2024-10-03 07:18:51.076 UTC [21993] LOG:  invalid length of startup packet
+2024-10-03 07:19:06.091 UTC [22003] LOG:  invalid length of startup packet
+2024-10-03 07:19:08.598 UTC [21939] LOG:  statement: ;
+2024-10-03 07:19:08.599 UTC [21939] LOG:  statement: begin
+2024-10-03 07:19:08.599 UTC [21939] LOG:  statement: CREATE ROLE "v-root-vault-gdEhcZG0YNlbsFYyDMDf-1727939948" WITH LOGIN PASSWORD 'AJ2LCGMAegIOUhAP-VFf' VALID UNTIL '2024-10-03 08:19:13+0000'
+2024-10-03 07:19:08.618 UTC [21939] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-gdEhcZG0YNlbsFYyDMDf-1727939948"
+2024-10-03 07:19:08.622 UTC [21939] LOG:  statement: commit
+2024-10-03 07:19:08.715 UTC [21939] LOG:  statement: ;
+2024-10-03 07:19:08.716 UTC [21939] LOG:  statement: begin
+2024-10-03 07:19:08.718 UTC [21939] LOG:  statement: CREATE ROLE "v-root-vault-9NqHSmqCs6hR7rxVKUGC-1727939948" WITH LOGIN PASSWORD '33xQlgquFzarq2X2i0k-' VALID UNTIL '2024-10-03 08:19:13+0000'
+2024-10-03 07:19:08.741 UTC [21939] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-9NqHSmqCs6hR7rxVKUGC-1727939948"
+2024-10-03 07:19:08.743 UTC [21939] LOG:  statement: commit
+2024-10-03 07:19:21.078 UTC [22020] LOG:  invalid length of startup packet
+2024-10-03 07:19:27.815 UTC [21939] LOG:  statement: ;
+2024-10-03 07:19:27.815 UTC [21939] LOG:  statement: begin
+2024-10-03 07:19:27.816 UTC [21939] LOG:  statement: CREATE ROLE "v-root-vault-8ht4iYRTp155InZvTkMO-1727939967" WITH LOGIN PASSWORD 'Dxvtw5QlF9MJGndxE-te' VALID UNTIL '2024-10-03 08:19:32+0000'
+2024-10-03 07:19:27.836 UTC [21939] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-8ht4iYRTp155InZvTkMO-1727939967"
+2024-10-03 07:19:27.840 UTC [21939] LOG:  statement: commit
+2024-10-03 07:19:30.108 UTC [22022] LOG:  statement: SELECT version();
+	
+	SELECT ns.nspname, t.oid, t.typname, t.typtype, t.typnotnull, t.elemtypoid
+	FROM (
+	    -- Arrays have typtype=b - this subquery identifies them by their typreceive and converts their typtype to a
+	    -- We first do this for the type (innerest-most subquery), and then for its element type
+	    -- This also returns the array element, range subtype and domain base type as elemtypoid
+	    SELECT
+	        typ.oid, typ.typnamespace, typ.typname, typ.typtype, typ.typrelid, typ.typnotnull, typ.relkind,
+	        elemtyp.oid AS elemtypoid, elemtyp.typname AS elemtypname, elemcls.relkind AS elemrelkind,
+	        CASE WHEN elemproc.proname='array_recv' THEN 'a' ELSE elemtyp.typtype END AS elemtyptype
+	    FROM (
+	        SELECT typ.oid, typnamespace, typname, typrelid, typnotnull, relkind, typelem AS elemoid,
+	            CASE WHEN proc.proname='array_recv' THEN 'a' ELSE typ.typtype END AS typtype,
+	            CASE
+	                WHEN proc.proname='array_recv' THEN typ.typelem
+	                WHEN typ.typtype='r' THEN rngsubtype
+	                WHEN typ.typtype='m' THEN (SELECT rngtypid FROM pg_range WHERE rngmultitypid = typ.oid)
+	                WHEN typ.typtype='d' THEN typ.typbasetype
+	            END AS elemtypoid
+	        FROM pg_type AS typ
+	        LEFT JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	        LEFT JOIN pg_proc AS proc ON proc.oid = typ.typreceive
+	        LEFT JOIN pg_range ON (pg_range.rngtypid = typ.oid)
+	    ) AS typ
+	    LEFT JOIN pg_type AS elemtyp ON elemtyp.oid = elemtypoid
+	    LEFT JOIN pg_class AS elemcls ON (elemcls.oid = elemtyp.typrelid)
+	    LEFT JOIN pg_proc AS elemproc ON elemproc.oid = elemtyp.typreceive
+	) AS t
+	JOIN pg_namespace AS ns ON (ns.oid = typnamespace)
+	WHERE
+	    typtype IN ('b', 'r', 'm', 'e', 'd') OR -- Base, range, multirange, enum, domain
+	    (typtype = 'c' AND relkind='c') OR -- User-defined free-standing composites (not table composites) by default
+	    (typtype = 'p' AND typname IN ('record', 'void', 'unknown')) OR -- Some special supported pseudo-types
+	    (typtype = 'a' AND (  -- Array of...
+	        elemtyptype IN ('b', 'r', 'm', 'e', 'd') OR -- Array of base, range, multirange, enum, domain
+	        (elemtyptype = 'p' AND elemtypname IN ('record', 'void')) OR -- Arrays of special supported pseudo-types
+	        (elemtyptype = 'c' AND elemrelkind='c') -- Array of user-defined free-standing composites (not table composites) by default
+	    ))
+	ORDER BY CASE
+	       WHEN typtype IN ('b', 'e', 'p') THEN 0           -- First base types, enums, pseudo-types
+	       WHEN typtype = 'c' THEN 1                        -- Composites after (fields loaded later in 2nd pass)
+	       WHEN typtype = 'r' THEN 2                        -- Ranges after
+	       WHEN typtype = 'm' THEN 3                        -- Multiranges after
+	       WHEN typtype = 'd' AND elemtyptype <> 'a' THEN 4 -- Domains over non-arrays after
+	       WHEN typtype = 'a' THEN 5                        -- Arrays after
+	       WHEN typtype = 'd' AND elemtyptype = 'a' THEN 6  -- Domains over arrays last
+	END;
+	
+	-- Load field definitions for (free-standing) composite types
+	SELECT typ.oid, att.attname, att.atttypid
+	FROM pg_type AS typ
+	JOIN pg_namespace AS ns ON (ns.oid = typ.typnamespace)
+	JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	JOIN pg_attribute AS att ON (att.attrelid = typ.typrelid)
+	WHERE
+	  (typ.typtype = 'c' AND cls.relkind='c') AND
+	  attnum > 0 AND     -- Don't load system attributes
+	  NOT attisdropped
+	ORDER BY typ.oid, att.attnum;
+	
+	-- Load enum fields
+	SELECT pg_type.oid, enumlabel
+	FROM pg_enum
+	JOIN pg_type ON pg_type.oid=enumtypid
+	ORDER BY oid, enumsortorder;
+	
+2024-10-03 07:19:30.213 UTC [22023] LOG:  statement: SELECT version();
+	
+	SELECT ns.nspname, t.oid, t.typname, t.typtype, t.typnotnull, t.elemtypoid
+	FROM (
+	    -- Arrays have typtype=b - this subquery identifies them by their typreceive and converts their typtype to a
+	    -- We first do this for the type (innerest-most subquery), and then for its element type
+	    -- This also returns the array element, range subtype and domain base type as elemtypoid
+	    SELECT
+	        typ.oid, typ.typnamespace, typ.typname, typ.typtype, typ.typrelid, typ.typnotnull, typ.relkind,
+	        elemtyp.oid AS elemtypoid, elemtyp.typname AS elemtypname, elemcls.relkind AS elemrelkind,
+	        CASE WHEN elemproc.proname='array_recv' THEN 'a' ELSE elemtyp.typtype END AS elemtyptype
+	    FROM (
+	        SELECT typ.oid, typnamespace, typname, typrelid, typnotnull, relkind, typelem AS elemoid,
+	            CASE WHEN proc.proname='array_recv' THEN 'a' ELSE typ.typtype END AS typtype,
+	            CASE
+	                WHEN proc.proname='array_recv' THEN typ.typelem
+	                WHEN typ.typtype='r' THEN rngsubtype
+	                WHEN typ.typtype='m' THEN (SELECT rngtypid FROM pg_range WHERE rngmultitypid = typ.oid)
+	                WHEN typ.typtype='d' THEN typ.typbasetype
+	            END AS elemtypoid
+	        FROM pg_type AS typ
+	        LEFT JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	        LEFT JOIN pg_proc AS proc ON proc.oid = typ.typreceive
+	        LEFT JOIN pg_range ON (pg_range.rngtypid = typ.oid)
+	    ) AS typ
+	    LEFT JOIN pg_type AS elemtyp ON elemtyp.oid = elemtypoid
+	    LEFT JOIN pg_class AS elemcls ON (elemcls.oid = elemtyp.typrelid)
+	    LEFT JOIN pg_proc AS elemproc ON elemproc.oid = elemtyp.typreceive
+	) AS t
+	JOIN pg_namespace AS ns ON (ns.oid = typnamespace)
+	WHERE
+	    typtype IN ('b', 'r', 'm', 'e', 'd') OR -- Base, range, multirange, enum, domain
+	    (typtype = 'c' AND relkind='c') OR -- User-defined free-standing composites (not table composites) by default
+	    (typtype = 'p' AND typname IN ('record', 'void', 'unknown')) OR -- Some special supported pseudo-types
+	    (typtype = 'a' AND (  -- Array of...
+	        elemtyptype IN ('b', 'r', 'm', 'e', 'd') OR -- Array of base, range, multirange, enum, domain
+	        (elemtyptype = 'p' AND elemtypname IN ('record', 'void')) OR -- Arrays of special supported pseudo-types
+	        (elemtyptype = 'c' AND elemrelkind='c') -- Array of user-defined free-standing composites (not table composites) by default
+	    ))
+	ORDER BY CASE
+	       WHEN typtype IN ('b', 'e', 'p') THEN 0           -- First base types, enums, pseudo-types
+	       WHEN typtype = 'c' THEN 1                        -- Composites after (fields loaded later in 2nd pass)
+	       WHEN typtype = 'r' THEN 2                        -- Ranges after
+	       WHEN typtype = 'm' THEN 3                        -- Multiranges after
+	       WHEN typtype = 'd' AND elemtyptype <> 'a' THEN 4 -- Domains over non-arrays after
+	       WHEN typtype = 'a' THEN 5                        -- Arrays after
+	       WHEN typtype = 'd' AND elemtyptype = 'a' THEN 6  -- Domains over arrays last
+	END;
+	
+	-- Load field definitions for (free-standing) composite types
+	SELECT typ.oid, att.attname, att.atttypid
+	FROM pg_type AS typ
+	JOIN pg_namespace AS ns ON (ns.oid = typ.typnamespace)
+	JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	JOIN pg_attribute AS att ON (att.attrelid = typ.typrelid)
+	WHERE
+	  (typ.typtype = 'c' AND cls.relkind='c') AND
+	  attnum > 0 AND     -- Don't load system attributes
+	  NOT attisdropped
+	ORDER BY typ.oid, att.attnum;
+	
+	-- Load enum fields
+	SELECT pg_type.oid, enumlabel
+	FROM pg_enum
+	JOIN pg_type ON pg_type.oid=enumtypid
+	ORDER BY oid, enumsortorder;
+	
+2024-10-03 07:19:30.288 UTC [22023] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 07:19:30.398 UTC [22023] LOG:  statement: DISCARD ALL
+2024-10-03 07:19:30.401 UTC [22023] LOG:  execute <unnamed>: SELECT "MigrationId", "ProductVersion"
+	FROM "__EFMigrationsHistory"
+	ORDER BY "MigrationId"
+2024-10-03 07:19:30.438 UTC [22023] LOG:  statement: DISCARD ALL
+2024-10-03 07:19:30.438 UTC [22023] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 07:19:30.462 UTC [22023] LOG:  statement: DISCARD ALL
+2024-10-03 07:19:30.463 UTC [22023] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 07:19:30.464 UTC [22023] LOG:  statement: DISCARD ALL
+2024-10-03 07:19:30.465 UTC [22023] LOG:  execute <unnamed>: SELECT "MigrationId", "ProductVersion"
+	FROM "__EFMigrationsHistory"
+	ORDER BY "MigrationId"
+2024-10-03 07:19:36.075 UTC [22034] LOG:  invalid length of startup packet
+2024-10-03 07:19:51.075 UTC [22051] LOG:  invalid length of startup packet
+2024-10-03 07:20:06.075 UTC [22061] LOG:  invalid length of startup packet
+2024-10-03 07:20:21.074 UTC [22070] LOG:  invalid length of startup packet
+2024-10-03 07:20:36.075 UTC [22088] LOG:  invalid length of startup packet
+2024-10-03 07:20:51.076 UTC [22097] LOG:  invalid length of startup packet
+2024-10-03 07:21:06.075 UTC [22115] LOG:  invalid length of startup packet
+2024-10-03 07:21:12.978 UTC [50] LOG:  checkpoint starting: time
+2024-10-03 07:21:16.059 UTC [50] LOG:  checkpoint complete: wrote 31 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.058 s, sync=0.012 s, total=3.082 s; sync files=14, longest=0.004 s, average=0.001 s; distance=231 kB, estimate=288 kB; lsn=0/2CC82B0, redo lsn=0/2CC8278
+2024-10-03 07:21:21.075 UTC [22124] LOG:  invalid length of startup packet
+2024-10-03 07:21:36.076 UTC [22143] LOG:  invalid length of startup packet
+2024-10-03 07:21:51.079 UTC [22152] LOG:  invalid length of startup packet
+2024-10-03 07:22:06.078 UTC [22170] LOG:  invalid length of startup packet
+2024-10-03 07:22:21.075 UTC [22179] LOG:  invalid length of startup packet
+2024-10-03 07:22:36.076 UTC [22196] LOG:  invalid length of startup packet
+2024-10-03 07:22:37.285 UTC [22203] LOG:  statement: SELECT 1 FROM pg_roles WHERE rolname='vault'
+2024-10-03 07:22:37.514 UTC [22210] LOG:  statement: ALTER ROLE vault WITH PASSWORD 'your_actual_password' SUPERUSER CREATEROLE;
+2024-10-03 07:22:38.188 UTC [22229] LOG:  statement: SELECT pg_reload_conf();
+2024-10-03 07:22:38.188 UTC [44] LOG:  received SIGHUP, reloading configuration files
+2024-10-03 07:22:38.424 UTC [22236] LOG:  statement: GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "vault";
+2024-10-03 07:22:38.657 UTC [22243] LOG:  statement: GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO "vault";
+2024-10-03 07:22:38.973 UTC [22250] LOG:  statement: GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO "vault";
+2024-10-03 07:22:39.253 UTC [22257] LOG:  statement: GRANT USAGE ON SCHEMA public TO "vault";
+2024-10-03 07:22:39.813 UTC [22258] LOG:  statement: ;
+2024-10-03 07:22:40.905 UTC [22258] LOG:  statement: ;
+2024-10-03 07:22:40.905 UTC [22258] LOG:  statement: begin
+2024-10-03 07:22:40.906 UTC [22258] LOG:  statement: CREATE ROLE "v-root-vault-ZikduKktYKDaPM1Wk4Se-1727940160" WITH LOGIN PASSWORD 'wIWAgiVNxq0omuCOkg-b' VALID UNTIL '2024-10-03 08:22:45+0000'
+2024-10-03 07:22:40.919 UTC [22258] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-ZikduKktYKDaPM1Wk4Se-1727940160"
+2024-10-03 07:22:40.925 UTC [22258] LOG:  statement: commit
+2024-10-03 07:22:51.076 UTC [22267] LOG:  invalid length of startup packet
+2024-10-03 07:23:06.076 UTC [22284] LOG:  invalid length of startup packet
+2024-10-03 07:23:21.076 UTC [22294] LOG:  invalid length of startup packet
+2024-10-03 07:23:29.002 UTC [22258] LOG:  statement: ;
+2024-10-03 07:23:29.002 UTC [22258] LOG:  statement: begin
+2024-10-03 07:23:29.003 UTC [22258] LOG:  statement: CREATE ROLE "v-root-vault-zF2a1gFwclRfJDkNv6PG-1727940208" WITH LOGIN PASSWORD 'KZ5G90ua-hUOCrthE40Y' VALID UNTIL '2024-10-03 08:23:33+0000'
+2024-10-03 07:23:29.024 UTC [22258] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-zF2a1gFwclRfJDkNv6PG-1727940208"
+2024-10-03 07:23:29.046 UTC [22258] LOG:  statement: commit
+2024-10-03 07:23:29.119 UTC [22258] LOG:  statement: ;
+2024-10-03 07:23:29.119 UTC [22258] LOG:  statement: begin
+2024-10-03 07:23:29.120 UTC [22258] LOG:  statement: CREATE ROLE "v-root-vault-TM1JET3voVbxg3UEhX4Q-1727940209" WITH LOGIN PASSWORD '2huOfcDACu0HjTYarz-p' VALID UNTIL '2024-10-03 08:23:34+0000'
+2024-10-03 07:23:29.163 UTC [22258] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-TM1JET3voVbxg3UEhX4Q-1727940209"
+2024-10-03 07:23:29.167 UTC [22258] LOG:  statement: commit
+2024-10-03 07:23:36.077 UTC [22311] LOG:  invalid length of startup packet
+2024-10-03 07:23:50.501 UTC [22258] LOG:  statement: ;
+2024-10-03 07:23:50.502 UTC [22258] LOG:  statement: begin
+2024-10-03 07:23:50.502 UTC [22258] LOG:  statement: CREATE ROLE "v-root-vault-fkxEADK4t4WpCbeP6Uov-1727940230" WITH LOGIN PASSWORD 'uPaKCfNzd8Wa2-3y35cg' VALID UNTIL '2024-10-03 08:23:55+0000'
+2024-10-03 07:23:50.517 UTC [22258] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-fkxEADK4t4WpCbeP6Uov-1727940230"
+2024-10-03 07:23:50.519 UTC [22258] LOG:  statement: commit
+2024-10-03 07:23:51.075 UTC [22320] LOG:  invalid length of startup packet
+2024-10-03 07:23:52.944 UTC [22321] LOG:  statement: SELECT version();
+	
+	SELECT ns.nspname, t.oid, t.typname, t.typtype, t.typnotnull, t.elemtypoid
+	FROM (
+	    -- Arrays have typtype=b - this subquery identifies them by their typreceive and converts their typtype to a
+	    -- We first do this for the type (innerest-most subquery), and then for its element type
+	    -- This also returns the array element, range subtype and domain base type as elemtypoid
+	    SELECT
+	        typ.oid, typ.typnamespace, typ.typname, typ.typtype, typ.typrelid, typ.typnotnull, typ.relkind,
+	        elemtyp.oid AS elemtypoid, elemtyp.typname AS elemtypname, elemcls.relkind AS elemrelkind,
+	        CASE WHEN elemproc.proname='array_recv' THEN 'a' ELSE elemtyp.typtype END AS elemtyptype
+	    FROM (
+	        SELECT typ.oid, typnamespace, typname, typrelid, typnotnull, relkind, typelem AS elemoid,
+	            CASE WHEN proc.proname='array_recv' THEN 'a' ELSE typ.typtype END AS typtype,
+	            CASE
+	                WHEN proc.proname='array_recv' THEN typ.typelem
+	                WHEN typ.typtype='r' THEN rngsubtype
+	                WHEN typ.typtype='m' THEN (SELECT rngtypid FROM pg_range WHERE rngmultitypid = typ.oid)
+	                WHEN typ.typtype='d' THEN typ.typbasetype
+	            END AS elemtypoid
+	        FROM pg_type AS typ
+	        LEFT JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	        LEFT JOIN pg_proc AS proc ON proc.oid = typ.typreceive
+	        LEFT JOIN pg_range ON (pg_range.rngtypid = typ.oid)
+	    ) AS typ
+	    LEFT JOIN pg_type AS elemtyp ON elemtyp.oid = elemtypoid
+	    LEFT JOIN pg_class AS elemcls ON (elemcls.oid = elemtyp.typrelid)
+	    LEFT JOIN pg_proc AS elemproc ON elemproc.oid = elemtyp.typreceive
+	) AS t
+	JOIN pg_namespace AS ns ON (ns.oid = typnamespace)
+	WHERE
+	    typtype IN ('b', 'r', 'm', 'e', 'd') OR -- Base, range, multirange, enum, domain
+	    (typtype = 'c' AND relkind='c') OR -- User-defined free-standing composites (not table composites) by default
+	    (typtype = 'p' AND typname IN ('record', 'void', 'unknown')) OR -- Some special supported pseudo-types
+	    (typtype = 'a' AND (  -- Array of...
+	        elemtyptype IN ('b', 'r', 'm', 'e', 'd') OR -- Array of base, range, multirange, enum, domain
+	        (elemtyptype = 'p' AND elemtypname IN ('record', 'void')) OR -- Arrays of special supported pseudo-types
+	        (elemtyptype = 'c' AND elemrelkind='c') -- Array of user-defined free-standing composites (not table composites) by default
+	    ))
+	ORDER BY CASE
+	       WHEN typtype IN ('b', 'e', 'p') THEN 0           -- First base types, enums, pseudo-types
+	       WHEN typtype = 'c' THEN 1                        -- Composites after (fields loaded later in 2nd pass)
+	       WHEN typtype = 'r' THEN 2                        -- Ranges after
+	       WHEN typtype = 'm' THEN 3                        -- Multiranges after
+	       WHEN typtype = 'd' AND elemtyptype <> 'a' THEN 4 -- Domains over non-arrays after
+	       WHEN typtype = 'a' THEN 5                        -- Arrays after
+	       WHEN typtype = 'd' AND elemtyptype = 'a' THEN 6  -- Domains over arrays last
+	END;
+	
+	-- Load field definitions for (free-standing) composite types
+	SELECT typ.oid, att.attname, att.atttypid
+	FROM pg_type AS typ
+	JOIN pg_namespace AS ns ON (ns.oid = typ.typnamespace)
+	JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	JOIN pg_attribute AS att ON (att.attrelid = typ.typrelid)
+	WHERE
+	  (typ.typtype = 'c' AND cls.relkind='c') AND
+	  attnum > 0 AND     -- Don't load system attributes
+	  NOT attisdropped
+	ORDER BY typ.oid, att.attnum;
+	
+	-- Load enum fields
+	SELECT pg_type.oid, enumlabel
+	FROM pg_enum
+	JOIN pg_type ON pg_type.oid=enumtypid
+	ORDER BY oid, enumsortorder;
+	
+2024-10-03 07:23:53.046 UTC [22322] LOG:  statement: SELECT version();
+	
+	SELECT ns.nspname, t.oid, t.typname, t.typtype, t.typnotnull, t.elemtypoid
+	FROM (
+	    -- Arrays have typtype=b - this subquery identifies them by their typreceive and converts their typtype to a
+	    -- We first do this for the type (innerest-most subquery), and then for its element type
+	    -- This also returns the array element, range subtype and domain base type as elemtypoid
+	    SELECT
+	        typ.oid, typ.typnamespace, typ.typname, typ.typtype, typ.typrelid, typ.typnotnull, typ.relkind,
+	        elemtyp.oid AS elemtypoid, elemtyp.typname AS elemtypname, elemcls.relkind AS elemrelkind,
+	        CASE WHEN elemproc.proname='array_recv' THEN 'a' ELSE elemtyp.typtype END AS elemtyptype
+	    FROM (
+	        SELECT typ.oid, typnamespace, typname, typrelid, typnotnull, relkind, typelem AS elemoid,
+	            CASE WHEN proc.proname='array_recv' THEN 'a' ELSE typ.typtype END AS typtype,
+	            CASE
+	                WHEN proc.proname='array_recv' THEN typ.typelem
+	                WHEN typ.typtype='r' THEN rngsubtype
+	                WHEN typ.typtype='m' THEN (SELECT rngtypid FROM pg_range WHERE rngmultitypid = typ.oid)
+	                WHEN typ.typtype='d' THEN typ.typbasetype
+	            END AS elemtypoid
+	        FROM pg_type AS typ
+	        LEFT JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	        LEFT JOIN pg_proc AS proc ON proc.oid = typ.typreceive
+	        LEFT JOIN pg_range ON (pg_range.rngtypid = typ.oid)
+	    ) AS typ
+	    LEFT JOIN pg_type AS elemtyp ON elemtyp.oid = elemtypoid
+	    LEFT JOIN pg_class AS elemcls ON (elemcls.oid = elemtyp.typrelid)
+	    LEFT JOIN pg_proc AS elemproc ON elemproc.oid = elemtyp.typreceive
+	) AS t
+	JOIN pg_namespace AS ns ON (ns.oid = typnamespace)
+	WHERE
+	    typtype IN ('b', 'r', 'm', 'e', 'd') OR -- Base, range, multirange, enum, domain
+	    (typtype = 'c' AND relkind='c') OR -- User-defined free-standing composites (not table composites) by default
+	    (typtype = 'p' AND typname IN ('record', 'void', 'unknown')) OR -- Some special supported pseudo-types
+	    (typtype = 'a' AND (  -- Array of...
+	        elemtyptype IN ('b', 'r', 'm', 'e', 'd') OR -- Array of base, range, multirange, enum, domain
+	        (elemtyptype = 'p' AND elemtypname IN ('record', 'void')) OR -- Arrays of special supported pseudo-types
+	        (elemtyptype = 'c' AND elemrelkind='c') -- Array of user-defined free-standing composites (not table composites) by default
+	    ))
+	ORDER BY CASE
+	       WHEN typtype IN ('b', 'e', 'p') THEN 0           -- First base types, enums, pseudo-types
+	       WHEN typtype = 'c' THEN 1                        -- Composites after (fields loaded later in 2nd pass)
+	       WHEN typtype = 'r' THEN 2                        -- Ranges after
+	       WHEN typtype = 'm' THEN 3                        -- Multiranges after
+	       WHEN typtype = 'd' AND elemtyptype <> 'a' THEN 4 -- Domains over non-arrays after
+	       WHEN typtype = 'a' THEN 5                        -- Arrays after
+	       WHEN typtype = 'd' AND elemtyptype = 'a' THEN 6  -- Domains over arrays last
+	END;
+	
+	-- Load field definitions for (free-standing) composite types
+	SELECT typ.oid, att.attname, att.atttypid
+	FROM pg_type AS typ
+	JOIN pg_namespace AS ns ON (ns.oid = typ.typnamespace)
+	JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	JOIN pg_attribute AS att ON (att.attrelid = typ.typrelid)
+	WHERE
+	  (typ.typtype = 'c' AND cls.relkind='c') AND
+	  attnum > 0 AND     -- Don't load system attributes
+	  NOT attisdropped
+	ORDER BY typ.oid, att.attnum;
+	
+	-- Load enum fields
+	SELECT pg_type.oid, enumlabel
+	FROM pg_enum
+	JOIN pg_type ON pg_type.oid=enumtypid
+	ORDER BY oid, enumsortorder;
+	
+2024-10-03 07:23:53.107 UTC [22322] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 07:23:53.200 UTC [22322] LOG:  statement: DISCARD ALL
+2024-10-03 07:23:53.203 UTC [22322] LOG:  execute <unnamed>: SELECT "MigrationId", "ProductVersion"
+	FROM "__EFMigrationsHistory"
+	ORDER BY "MigrationId"
+2024-10-03 07:23:53.240 UTC [22322] LOG:  statement: DISCARD ALL
+2024-10-03 07:23:53.241 UTC [22322] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 07:23:53.262 UTC [22322] LOG:  statement: DISCARD ALL
+2024-10-03 07:23:53.263 UTC [22322] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-03 07:23:53.264 UTC [22322] LOG:  statement: DISCARD ALL
+2024-10-03 07:23:53.265 UTC [22322] LOG:  execute <unnamed>: SELECT "MigrationId", "ProductVersion"
+	FROM "__EFMigrationsHistory"
+	ORDER BY "MigrationId"
+2024-10-03 07:24:06.074 UTC [22341] LOG:  invalid length of startup packet
+2024-10-03 07:24:21.074 UTC [22351] LOG:  invalid length of startup packet
+2024-10-03 07:24:36.075 UTC [22368] LOG:  invalid length of startup packet
+2024-10-03 07:24:51.076 UTC [22379] LOG:  invalid length of startup packet
+2024-10-03 07:25:06.076 UTC [22396] LOG:  invalid length of startup packet
+2024-10-03 07:25:21.075 UTC [22406] LOG:  invalid length of startup packet
+2024-10-03 07:25:36.076 UTC [22423] LOG:  invalid length of startup packet
+2024-10-03 07:25:51.076 UTC [22433] LOG:  invalid length of startup packet
+2024-10-03 07:26:06.079 UTC [22450] LOG:  invalid length of startup packet
+2024-10-03 07:26:12.303 UTC [50] LOG:  checkpoint starting: time
+2024-10-03 07:26:15.919 UTC [50] LOG:  checkpoint complete: wrote 36 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.587 s, sync=0.009 s, total=3.616 s; sync files=14, longest=0.003 s, average=0.001 s; distance=305 kB, estimate=305 kB; lsn=0/2D146C8, redo lsn=0/2D14690
+2024-10-03 07:26:21.100 UTC [22460] LOG:  invalid length of startup packet
+2024-10-03 07:26:36.075 UTC [22477] LOG:  invalid length of startup packet
+2024-10-03 07:26:51.076 UTC [22487] LOG:  invalid length of startup packet
+2024-10-03 07:27:06.076 UTC [22496] LOG:  invalid length of startup packet
+2024-10-03 07:27:21.075 UTC [22514] LOG:  invalid length of startup packet
+2024-10-03 07:27:36.077 UTC [22523] LOG:  invalid length of startup packet
+2024-10-03 07:27:51.076 UTC [22541] LOG:  invalid length of startup packet
+2024-10-03 07:28:06.076 UTC [22550] LOG:  invalid length of startup packet
+2024-10-03 07:28:21.076 UTC [22569] LOG:  invalid length of startup packet
+2024-10-03 07:28:36.075 UTC [22578] LOG:  invalid length of startup packet
+2024-10-03 07:28:51.076 UTC [22596] LOG:  invalid length of startup packet
+2024-10-03 07:29:06.175 UTC [22605] LOG:  invalid length of startup packet
+2024-10-03 07:29:21.174 UTC [22623] LOG:  invalid length of startup packet
+2024-10-03 07:29:36.176 UTC [22632] LOG:  invalid length of startup packet
+2024-10-03 07:29:51.175 UTC [22650] LOG:  invalid length of startup packet
+2024-10-03 07:30:06.177 UTC [22660] LOG:  invalid length of startup packet
+2024-10-03 07:30:21.178 UTC [22678] LOG:  invalid length of startup packet
+2024-10-03 07:30:36.178 UTC [22688] LOG:  invalid length of startup packet
+2024-10-03 07:30:51.176 UTC [22706] LOG:  invalid length of startup packet
+2024-10-03 07:31:06.178 UTC [22715] LOG:  invalid length of startup packet
+2024-10-03 07:31:21.179 UTC [22734] LOG:  invalid length of startup packet
+2024-10-03 07:31:36.179 UTC [22743] LOG:  invalid length of startup packet
+2024-10-03 07:31:51.179 UTC [22762] LOG:  invalid length of startup packet
+2024-10-03 07:32:06.180 UTC [22771] LOG:  invalid length of startup packet
+2024-10-03 07:32:21.178 UTC [22789] LOG:  invalid length of startup packet
+2024-10-03 07:32:36.180 UTC [22798] LOG:  invalid length of startup packet
+2024-10-03 07:32:51.179 UTC [22816] LOG:  invalid length of startup packet
+2024-10-03 07:33:06.181 UTC [22825] LOG:  invalid length of startup packet
+2024-10-03 07:33:21.180 UTC [22843] LOG:  invalid length of startup packet
+2024-10-03 07:33:36.181 UTC [22853] LOG:  invalid length of startup packet
+2024-10-03 07:33:51.183 UTC [22871] LOG:  invalid length of startup packet
+2024-10-03 07:34:06.182 UTC [22880] LOG:  invalid length of startup packet
+2024-10-03 07:34:21.182 UTC [22898] LOG:  invalid length of startup packet
+2024-10-03 07:34:36.183 UTC [22908] LOG:  invalid length of startup packet
+2024-10-03 07:34:51.182 UTC [22926] LOG:  invalid length of startup packet
+2024-10-03 07:35:06.183 UTC [22935] LOG:  invalid length of startup packet
+2024-10-03 07:35:21.185 UTC [22953] LOG:  invalid length of startup packet
+2024-10-03 07:35:36.184 UTC [22962] LOG:  invalid length of startup packet
+2024-10-03 07:35:51.183 UTC [22980] LOG:  invalid length of startup packet
+2024-10-03 07:36:06.186 UTC [22989] LOG:  invalid length of startup packet
+2024-10-03 07:36:21.186 UTC [22999] LOG:  invalid length of startup packet
+2024-10-03 07:36:36.185 UTC [23016] LOG:  invalid length of startup packet
+2024-10-03 07:36:51.186 UTC [23025] LOG:  invalid length of startup packet
+2024-10-03 07:37:06.186 UTC [23043] LOG:  invalid length of startup packet
+2024-10-03 07:37:21.186 UTC [23053] LOG:  invalid length of startup packet
+2024-10-03 07:37:36.187 UTC [23070] LOG:  invalid length of startup packet
+2024-10-03 07:37:51.187 UTC [23080] LOG:  invalid length of startup packet
+2024-10-03 07:38:06.188 UTC [23098] LOG:  invalid length of startup packet
+2024-10-03 07:38:21.188 UTC [23108] LOG:  invalid length of startup packet
+2024-10-03 07:38:36.189 UTC [23125] LOG:  invalid length of startup packet
+2024-10-03 07:38:51.188 UTC [23135] LOG:  invalid length of startup packet
+2024-10-03 07:39:06.189 UTC [23152] LOG:  invalid length of startup packet
+2024-10-03 07:39:21.189 UTC [23162] LOG:  invalid length of startup packet
+2024-10-03 07:39:36.189 UTC [23179] LOG:  invalid length of startup packet
+2024-10-03 07:39:51.189 UTC [23189] LOG:  invalid length of startup packet
+2024-10-03 07:40:06.190 UTC [23206] LOG:  invalid length of startup packet
+2024-10-03 07:40:21.191 UTC [23216] LOG:  invalid length of startup packet
+2024-10-03 07:40:36.192 UTC [23233] LOG:  invalid length of startup packet
+2024-10-03 07:40:51.193 UTC [23243] LOG:  invalid length of startup packet
+2024-10-03 07:41:06.193 UTC [23260] LOG:  invalid length of startup packet
+2024-10-03 07:41:21.192 UTC [23270] LOG:  invalid length of startup packet
+2024-10-03 07:41:36.192 UTC [23287] LOG:  invalid length of startup packet
+2024-10-03 07:41:51.193 UTC [23297] LOG:  invalid length of startup packet
+2024-10-03 07:42:06.194 UTC [23314] LOG:  invalid length of startup packet
+2024-10-03 07:42:21.194 UTC [23324] LOG:  invalid length of startup packet
+2024-10-03 07:42:36.194 UTC [23341] LOG:  invalid length of startup packet
+2024-10-03 07:42:51.194 UTC [23351] LOG:  invalid length of startup packet
+2024-10-03 07:43:06.194 UTC [23368] LOG:  invalid length of startup packet
+2024-10-03 07:43:21.194 UTC [23379] LOG:  invalid length of startup packet
+2024-10-03 07:43:36.194 UTC [23396] LOG:  invalid length of startup packet
+2024-10-03 07:43:51.195 UTC [23406] LOG:  invalid length of startup packet
+2024-10-03 07:44:06.197 UTC [23423] LOG:  invalid length of startup packet
+2024-10-03 07:44:21.201 UTC [23433] LOG:  invalid length of startup packet
+2024-10-03 07:44:36.176 UTC [23442] LOG:  invalid length of startup packet
+2024-10-03 07:44:51.176 UTC [23460] LOG:  invalid length of startup packet
+2024-10-03 07:45:06.172 UTC [23469] LOG:  invalid length of startup packet
+2024-10-03 07:45:21.172 UTC [23487] LOG:  invalid length of startup packet
+2024-10-03 07:45:36.171 UTC [23496] LOG:  invalid length of startup packet
+2024-10-03 07:45:51.171 UTC [23514] LOG:  invalid length of startup packet
+2024-10-03 07:46:06.175 UTC [23522] LOG:  invalid length of startup packet
+2024-10-03 07:46:21.174 UTC [23540] LOG:  invalid length of startup packet
+2024-10-03 07:46:36.173 UTC [23549] LOG:  invalid length of startup packet
+2024-10-03 07:46:51.172 UTC [23567] LOG:  invalid length of startup packet
+2024-10-03 07:47:06.174 UTC [23576] LOG:  invalid length of startup packet
+2024-10-03 07:47:21.174 UTC [23594] LOG:  invalid length of startup packet
+2024-10-03 07:47:30.734 UTC [22258] LOG:  statement: ;
+2024-10-03 07:47:30.766 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:47:30.766 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-OPRD29zbRnMYWgl6PgdW-1727938050'
+2024-10-03 07:47:30.798 UTC [22258] LOG:  execute pgx_0: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:47:30.798 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-OPRD29zbRnMYWgl6PgdW-1727938050'
+2024-10-03 07:47:30.892 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:47:30.893 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-OPRD29zbRnMYWgl6PgdW-1727938050";
+2024-10-03 07:47:30.910 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-OPRD29zbRnMYWgl6PgdW-1727938050";
+2024-10-03 07:47:30.911 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-OPRD29zbRnMYWgl6PgdW-1727938050";
+2024-10-03 07:47:30.914 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-OPRD29zbRnMYWgl6PgdW-1727938050";
+2024-10-03 07:47:30.916 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-OPRD29zbRnMYWgl6PgdW-1727938050";
+2024-10-03 07:47:30.917 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-OPRD29zbRnMYWgl6PgdW-1727938050";
+2024-10-03 07:47:30.919 UTC [22258] LOG:  execute pgx_1: DROP ROLE IF EXISTS "v-root-vault-OPRD29zbRnMYWgl6PgdW-1727938050";
+2024-10-03 07:47:30.926 UTC [22258] LOG:  statement: deallocate "pgx_1"
+2024-10-03 07:47:30.926 UTC [22258] LOG:  statement: deallocate "pgx_0"
+2024-10-03 07:47:36.180 UTC [23603] LOG:  invalid length of startup packet
+2024-10-03 07:47:51.173 UTC [23621] LOG:  invalid length of startup packet
+2024-10-03 07:48:06.175 UTC [23630] LOG:  invalid length of startup packet
+2024-10-03 07:48:21.176 UTC [23648] LOG:  invalid length of startup packet
+2024-10-03 07:48:36.176 UTC [23657] LOG:  invalid length of startup packet
+2024-10-03 07:48:36.920 UTC [22258] LOG:  statement: ;
+2024-10-03 07:48:36.921 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:48:36.921 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-GFjorPXWofaES6UERlhp-1727938116'
+2024-10-03 07:48:36.923 UTC [22258] LOG:  execute pgx_2: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:48:36.923 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-GFjorPXWofaES6UERlhp-1727938116'
+2024-10-03 07:48:37.007 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:48:37.008 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-GFjorPXWofaES6UERlhp-1727938116";
+2024-10-03 07:48:37.013 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-GFjorPXWofaES6UERlhp-1727938116";
+2024-10-03 07:48:37.014 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-GFjorPXWofaES6UERlhp-1727938116";
+2024-10-03 07:48:37.016 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-GFjorPXWofaES6UERlhp-1727938116";
+2024-10-03 07:48:37.018 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-GFjorPXWofaES6UERlhp-1727938116";
+2024-10-03 07:48:37.019 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-GFjorPXWofaES6UERlhp-1727938116";
+2024-10-03 07:48:37.021 UTC [22258] LOG:  execute pgx_3: DROP ROLE IF EXISTS "v-root-vault-GFjorPXWofaES6UERlhp-1727938116";
+2024-10-03 07:48:37.022 UTC [22258] LOG:  statement: deallocate "pgx_3"
+2024-10-03 07:48:37.022 UTC [22258] LOG:  statement: deallocate "pgx_2"
+2024-10-03 07:48:37.023 UTC [22258] LOG:  statement: ;
+2024-10-03 07:48:37.023 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:48:37.023 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-JrAJ9vWZON9ZusRbEJbf-1727938116'
+2024-10-03 07:48:37.026 UTC [22258] LOG:  execute pgx_4: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:48:37.026 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-JrAJ9vWZON9ZusRbEJbf-1727938116'
+2024-10-03 07:48:37.096 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:48:37.096 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-JrAJ9vWZON9ZusRbEJbf-1727938116";
+2024-10-03 07:48:37.099 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-JrAJ9vWZON9ZusRbEJbf-1727938116";
+2024-10-03 07:48:37.100 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-JrAJ9vWZON9ZusRbEJbf-1727938116";
+2024-10-03 07:48:37.103 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-JrAJ9vWZON9ZusRbEJbf-1727938116";
+2024-10-03 07:48:37.104 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-JrAJ9vWZON9ZusRbEJbf-1727938116";
+2024-10-03 07:48:37.105 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-JrAJ9vWZON9ZusRbEJbf-1727938116";
+2024-10-03 07:48:37.107 UTC [22258] LOG:  execute pgx_5: DROP ROLE IF EXISTS "v-root-vault-JrAJ9vWZON9ZusRbEJbf-1727938116";
+2024-10-03 07:48:37.108 UTC [22258] LOG:  statement: deallocate "pgx_5"
+2024-10-03 07:48:37.108 UTC [22258] LOG:  statement: deallocate "pgx_4"
+2024-10-03 07:48:37.109 UTC [22258] LOG:  statement: ;
+2024-10-03 07:48:37.109 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:48:37.109 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-xSEyu1CGr06Q53cdpwh0-1727938116'
+2024-10-03 07:48:37.111 UTC [22258] LOG:  execute pgx_6: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:48:37.111 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-xSEyu1CGr06Q53cdpwh0-1727938116'
+2024-10-03 07:48:37.169 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:48:37.170 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-xSEyu1CGr06Q53cdpwh0-1727938116";
+2024-10-03 07:48:37.172 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-xSEyu1CGr06Q53cdpwh0-1727938116";
+2024-10-03 07:48:37.174 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-xSEyu1CGr06Q53cdpwh0-1727938116";
+2024-10-03 07:48:37.176 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-xSEyu1CGr06Q53cdpwh0-1727938116";
+2024-10-03 07:48:37.177 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-xSEyu1CGr06Q53cdpwh0-1727938116";
+2024-10-03 07:48:37.178 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-xSEyu1CGr06Q53cdpwh0-1727938116";
+2024-10-03 07:48:37.179 UTC [22258] LOG:  execute pgx_7: DROP ROLE IF EXISTS "v-root-vault-xSEyu1CGr06Q53cdpwh0-1727938116";
+2024-10-03 07:48:37.180 UTC [22258] LOG:  statement: deallocate "pgx_7"
+2024-10-03 07:48:37.181 UTC [22258] LOG:  statement: deallocate "pgx_6"
+2024-10-03 07:48:51.176 UTC [23675] LOG:  invalid length of startup packet
+2024-10-03 07:49:06.177 UTC [23684] LOG:  invalid length of startup packet
+2024-10-03 07:49:08.309 UTC [22258] LOG:  statement: ;
+2024-10-03 07:49:08.310 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:49:08.310 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-EMQ6ognvwReqKOzJwsks-1727938148'
+2024-10-03 07:49:08.312 UTC [22258] LOG:  execute pgx_8: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:49:08.312 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-EMQ6ognvwReqKOzJwsks-1727938148'
+2024-10-03 07:49:08.375 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:49:08.376 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-EMQ6ognvwReqKOzJwsks-1727938148";
+2024-10-03 07:49:08.379 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-EMQ6ognvwReqKOzJwsks-1727938148";
+2024-10-03 07:49:08.379 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-EMQ6ognvwReqKOzJwsks-1727938148";
+2024-10-03 07:49:08.381 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-EMQ6ognvwReqKOzJwsks-1727938148";
+2024-10-03 07:49:08.382 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-EMQ6ognvwReqKOzJwsks-1727938148";
+2024-10-03 07:49:08.383 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-EMQ6ognvwReqKOzJwsks-1727938148";
+2024-10-03 07:49:08.384 UTC [22258] LOG:  execute pgx_9: DROP ROLE IF EXISTS "v-root-vault-EMQ6ognvwReqKOzJwsks-1727938148";
+2024-10-03 07:49:08.387 UTC [22258] LOG:  statement: deallocate "pgx_9"
+2024-10-03 07:49:08.387 UTC [22258] LOG:  statement: deallocate "pgx_8"
+2024-10-03 07:49:21.175 UTC [23702] LOG:  invalid length of startup packet
+2024-10-03 07:49:36.176 UTC [23711] LOG:  invalid length of startup packet
+2024-10-03 07:49:51.177 UTC [23729] LOG:  invalid length of startup packet
+2024-10-03 07:50:06.176 UTC [23738] LOG:  invalid length of startup packet
+2024-10-03 07:50:21.178 UTC [23756] LOG:  invalid length of startup packet
+2024-10-03 07:50:36.179 UTC [23765] LOG:  invalid length of startup packet
+2024-10-03 07:50:51.178 UTC [23783] LOG:  invalid length of startup packet
+2024-10-03 07:51:06.179 UTC [23793] LOG:  invalid length of startup packet
+2024-10-03 07:51:13.485 UTC [50] LOG:  checkpoint starting: time
+2024-10-03 07:51:19.914 UTC [50] LOG:  checkpoint complete: wrote 64 buffers (0.4%); 0 WAL file(s) added, 0 removed, 0 recycled; write=6.407 s, sync=0.008 s, total=6.430 s; sync files=18, longest=0.001 s, average=0.001 s; distance=344 kB, estimate=344 kB; lsn=0/2D6A768, redo lsn=0/2D6A730
+2024-10-03 07:51:21.178 UTC [23810] LOG:  invalid length of startup packet
+2024-10-03 07:51:36.180 UTC [23820] LOG:  invalid length of startup packet
+2024-10-03 07:51:49.298 UTC [22258] LOG:  statement: ;
+2024-10-03 07:51:49.301 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:51:49.301 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-3ZBezPYGcNr3U4EHqHQj-1727938309'
+2024-10-03 07:51:49.308 UTC [22258] LOG:  execute pgx_10: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:51:49.308 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-3ZBezPYGcNr3U4EHqHQj-1727938309'
+2024-10-03 07:51:49.380 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:51:49.380 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-3ZBezPYGcNr3U4EHqHQj-1727938309";
+2024-10-03 07:51:49.386 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-3ZBezPYGcNr3U4EHqHQj-1727938309";
+2024-10-03 07:51:49.389 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-3ZBezPYGcNr3U4EHqHQj-1727938309";
+2024-10-03 07:51:49.393 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-3ZBezPYGcNr3U4EHqHQj-1727938309";
+2024-10-03 07:51:49.396 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-3ZBezPYGcNr3U4EHqHQj-1727938309";
+2024-10-03 07:51:49.397 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-3ZBezPYGcNr3U4EHqHQj-1727938309";
+2024-10-03 07:51:49.399 UTC [22258] LOG:  execute pgx_11: DROP ROLE IF EXISTS "v-root-vault-3ZBezPYGcNr3U4EHqHQj-1727938309";
+2024-10-03 07:51:49.400 UTC [22258] LOG:  statement: deallocate "pgx_11"
+2024-10-03 07:51:49.401 UTC [22258] LOG:  statement: deallocate "pgx_10"
+2024-10-03 07:51:51.179 UTC [23838] LOG:  invalid length of startup packet
+2024-10-03 07:52:06.179 UTC [23847] LOG:  invalid length of startup packet
+2024-10-03 07:52:21.179 UTC [23866] LOG:  invalid length of startup packet
+2024-10-03 07:52:36.182 UTC [23875] LOG:  invalid length of startup packet
+2024-10-03 07:52:51.181 UTC [23893] LOG:  invalid length of startup packet
+2024-10-03 07:52:52.705 UTC [22258] LOG:  statement: ;
+2024-10-03 07:52:52.705 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:52:52.705 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-Fj4JvHvvakGGHjx6dFPM-1727938372'
+2024-10-03 07:52:52.708 UTC [22258] LOG:  execute pgx_12: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:52:52.708 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-Fj4JvHvvakGGHjx6dFPM-1727938372'
+2024-10-03 07:52:52.784 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:52:52.784 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-Fj4JvHvvakGGHjx6dFPM-1727938372";
+2024-10-03 07:52:52.868 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-Fj4JvHvvakGGHjx6dFPM-1727938372";
+2024-10-03 07:52:52.869 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-Fj4JvHvvakGGHjx6dFPM-1727938372";
+2024-10-03 07:52:52.870 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-Fj4JvHvvakGGHjx6dFPM-1727938372";
+2024-10-03 07:52:52.872 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-Fj4JvHvvakGGHjx6dFPM-1727938372";
+2024-10-03 07:52:52.873 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-Fj4JvHvvakGGHjx6dFPM-1727938372";
+2024-10-03 07:52:52.874 UTC [22258] LOG:  execute pgx_13: DROP ROLE IF EXISTS "v-root-vault-Fj4JvHvvakGGHjx6dFPM-1727938372";
+2024-10-03 07:52:52.875 UTC [22258] LOG:  statement: deallocate "pgx_13"
+2024-10-03 07:52:52.875 UTC [22258] LOG:  statement: deallocate "pgx_12"
+2024-10-03 07:52:52.985 UTC [22258] LOG:  statement: ;
+2024-10-03 07:52:52.986 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:52:52.986 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-JJid9EKYlAJKTbv23WpL-1727938372'
+2024-10-03 07:52:52.993 UTC [22258] LOG:  execute pgx_14: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:52:52.993 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-JJid9EKYlAJKTbv23WpL-1727938372'
+2024-10-03 07:52:53.064 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:52:53.064 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-JJid9EKYlAJKTbv23WpL-1727938372";
+2024-10-03 07:52:53.068 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-JJid9EKYlAJKTbv23WpL-1727938372";
+2024-10-03 07:52:53.069 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-JJid9EKYlAJKTbv23WpL-1727938372";
+2024-10-03 07:52:53.070 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-JJid9EKYlAJKTbv23WpL-1727938372";
+2024-10-03 07:52:53.072 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-JJid9EKYlAJKTbv23WpL-1727938372";
+2024-10-03 07:52:53.073 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-JJid9EKYlAJKTbv23WpL-1727938372";
+2024-10-03 07:52:53.074 UTC [22258] LOG:  execute pgx_15: DROP ROLE IF EXISTS "v-root-vault-JJid9EKYlAJKTbv23WpL-1727938372";
+2024-10-03 07:52:53.076 UTC [22258] LOG:  statement: deallocate "pgx_15"
+2024-10-03 07:52:53.076 UTC [22258] LOG:  statement: deallocate "pgx_14"
+2024-10-03 07:52:53.371 UTC [22258] LOG:  statement: ;
+2024-10-03 07:52:53.372 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:52:53.372 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-NHqa5rYXXNBONHQzSj6l-1727938373'
+2024-10-03 07:52:53.375 UTC [22258] LOG:  execute pgx_16: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:52:53.375 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-NHqa5rYXXNBONHQzSj6l-1727938373'
+2024-10-03 07:52:53.445 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:52:53.446 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-NHqa5rYXXNBONHQzSj6l-1727938373";
+2024-10-03 07:52:53.449 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-NHqa5rYXXNBONHQzSj6l-1727938373";
+2024-10-03 07:52:53.450 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-NHqa5rYXXNBONHQzSj6l-1727938373";
+2024-10-03 07:52:53.458 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-NHqa5rYXXNBONHQzSj6l-1727938373";
+2024-10-03 07:52:53.460 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-NHqa5rYXXNBONHQzSj6l-1727938373";
+2024-10-03 07:52:53.462 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-NHqa5rYXXNBONHQzSj6l-1727938373";
+2024-10-03 07:52:53.464 UTC [22258] LOG:  execute pgx_17: DROP ROLE IF EXISTS "v-root-vault-NHqa5rYXXNBONHQzSj6l-1727938373";
+2024-10-03 07:52:53.466 UTC [22258] LOG:  statement: deallocate "pgx_17"
+2024-10-03 07:52:53.466 UTC [22258] LOG:  statement: deallocate "pgx_16"
+2024-10-03 07:53:06.181 UTC [23902] LOG:  invalid length of startup packet
+2024-10-03 07:53:21.180 UTC [23920] LOG:  invalid length of startup packet
+2024-10-03 07:53:36.180 UTC [23929] LOG:  invalid length of startup packet
+2024-10-03 07:53:51.182 UTC [23939] LOG:  invalid length of startup packet
+2024-10-03 07:53:52.784 UTC [22258] LOG:  statement: ;
+2024-10-03 07:53:52.785 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:53:52.785 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-WfFjNaszupHZD6sEH7dG-1727938432'
+2024-10-03 07:53:52.789 UTC [22258] LOG:  execute pgx_18: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:53:52.789 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-WfFjNaszupHZD6sEH7dG-1727938432'
+2024-10-03 07:53:52.860 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:53:52.861 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-WfFjNaszupHZD6sEH7dG-1727938432";
+2024-10-03 07:53:52.866 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-WfFjNaszupHZD6sEH7dG-1727938432";
+2024-10-03 07:53:52.867 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-WfFjNaszupHZD6sEH7dG-1727938432";
+2024-10-03 07:53:52.871 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-WfFjNaszupHZD6sEH7dG-1727938432";
+2024-10-03 07:53:52.872 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-WfFjNaszupHZD6sEH7dG-1727938432";
+2024-10-03 07:53:52.874 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-WfFjNaszupHZD6sEH7dG-1727938432";
+2024-10-03 07:53:52.875 UTC [22258] LOG:  execute pgx_19: DROP ROLE IF EXISTS "v-root-vault-WfFjNaszupHZD6sEH7dG-1727938432";
+2024-10-03 07:53:52.878 UTC [22258] LOG:  statement: deallocate "pgx_19"
+2024-10-03 07:53:52.878 UTC [22258] LOG:  statement: deallocate "pgx_18"
+2024-10-03 07:54:06.183 UTC [23956] LOG:  invalid length of startup packet
+2024-10-03 07:54:21.183 UTC [23966] LOG:  invalid length of startup packet
+2024-10-03 07:54:36.183 UTC [23983] LOG:  invalid length of startup packet
+2024-10-03 07:54:51.184 UTC [23993] LOG:  invalid length of startup packet
+2024-10-03 07:55:06.184 UTC [24010] LOG:  invalid length of startup packet
+2024-10-03 07:55:21.184 UTC [24020] LOG:  invalid length of startup packet
+2024-10-03 07:55:36.185 UTC [24037] LOG:  invalid length of startup packet
+2024-10-03 07:55:51.186 UTC [24047] LOG:  invalid length of startup packet
+2024-10-03 07:56:06.187 UTC [24064] LOG:  invalid length of startup packet
+2024-10-03 07:56:14.019 UTC [50] LOG:  checkpoint starting: time
+2024-10-03 07:56:18.952 UTC [50] LOG:  checkpoint complete: wrote 49 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.900 s, sync=0.015 s, total=4.934 s; sync files=16, longest=0.003 s, average=0.001 s; distance=289 kB, estimate=338 kB; lsn=0/2DB2DA0, redo lsn=0/2DB2D68
+2024-10-03 07:56:21.185 UTC [24074] LOG:  invalid length of startup packet
+2024-10-03 07:56:25.727 UTC [22258] LOG:  statement: ;
+2024-10-03 07:56:25.728 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:56:25.728 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-CRX5dBkQ8Ay1on0vadCz-1727938585'
+2024-10-03 07:56:25.731 UTC [22258] LOG:  execute pgx_20: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:56:25.731 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-CRX5dBkQ8Ay1on0vadCz-1727938585'
+2024-10-03 07:56:25.777 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:56:25.778 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-CRX5dBkQ8Ay1on0vadCz-1727938585";
+2024-10-03 07:56:25.791 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-CRX5dBkQ8Ay1on0vadCz-1727938585";
+2024-10-03 07:56:25.792 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-CRX5dBkQ8Ay1on0vadCz-1727938585";
+2024-10-03 07:56:25.796 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-CRX5dBkQ8Ay1on0vadCz-1727938585";
+2024-10-03 07:56:25.797 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-CRX5dBkQ8Ay1on0vadCz-1727938585";
+2024-10-03 07:56:25.799 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-CRX5dBkQ8Ay1on0vadCz-1727938585";
+2024-10-03 07:56:25.803 UTC [22258] LOG:  execute pgx_21: DROP ROLE IF EXISTS "v-root-vault-CRX5dBkQ8Ay1on0vadCz-1727938585";
+2024-10-03 07:56:25.806 UTC [22258] LOG:  statement: deallocate "pgx_21"
+2024-10-03 07:56:25.806 UTC [22258] LOG:  statement: deallocate "pgx_20"
+2024-10-03 07:56:36.187 UTC [24091] LOG:  invalid length of startup packet
+2024-10-03 07:56:51.185 UTC [24101] LOG:  invalid length of startup packet
+2024-10-03 07:57:06.188 UTC [24118] LOG:  invalid length of startup packet
+2024-10-03 07:57:21.187 UTC [24128] LOG:  invalid length of startup packet
+2024-10-03 07:57:34.154 UTC [22258] LOG:  statement: ;
+2024-10-03 07:57:34.155 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:57:34.155 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-R9NoqKGwTxJTcH6XwRTP-1727938653'
+2024-10-03 07:57:34.157 UTC [22258] LOG:  execute pgx_22: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:57:34.157 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-R9NoqKGwTxJTcH6XwRTP-1727938653'
+2024-10-03 07:57:34.202 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:57:34.203 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-R9NoqKGwTxJTcH6XwRTP-1727938653";
+2024-10-03 07:57:34.207 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-R9NoqKGwTxJTcH6XwRTP-1727938653";
+2024-10-03 07:57:34.209 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-R9NoqKGwTxJTcH6XwRTP-1727938653";
+2024-10-03 07:57:34.210 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-R9NoqKGwTxJTcH6XwRTP-1727938653";
+2024-10-03 07:57:34.212 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-R9NoqKGwTxJTcH6XwRTP-1727938653";
+2024-10-03 07:57:34.213 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-R9NoqKGwTxJTcH6XwRTP-1727938653";
+2024-10-03 07:57:34.215 UTC [22258] LOG:  execute pgx_23: DROP ROLE IF EXISTS "v-root-vault-R9NoqKGwTxJTcH6XwRTP-1727938653";
+2024-10-03 07:57:34.216 UTC [22258] LOG:  statement: deallocate "pgx_23"
+2024-10-03 07:57:34.217 UTC [22258] LOG:  statement: deallocate "pgx_22"
+2024-10-03 07:57:34.230 UTC [22258] LOG:  statement: ;
+2024-10-03 07:57:34.231 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:57:34.231 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-21OJRQDHifn0v6KcrQjy-1727938654'
+2024-10-03 07:57:34.234 UTC [22258] LOG:  execute pgx_24: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:57:34.234 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-21OJRQDHifn0v6KcrQjy-1727938654'
+2024-10-03 07:57:34.276 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:57:34.277 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-21OJRQDHifn0v6KcrQjy-1727938654";
+2024-10-03 07:57:34.282 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-21OJRQDHifn0v6KcrQjy-1727938654";
+2024-10-03 07:57:34.283 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-21OJRQDHifn0v6KcrQjy-1727938654";
+2024-10-03 07:57:34.286 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-21OJRQDHifn0v6KcrQjy-1727938654";
+2024-10-03 07:57:34.287 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-21OJRQDHifn0v6KcrQjy-1727938654";
+2024-10-03 07:57:34.289 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-21OJRQDHifn0v6KcrQjy-1727938654";
+2024-10-03 07:57:34.290 UTC [22258] LOG:  execute pgx_25: DROP ROLE IF EXISTS "v-root-vault-21OJRQDHifn0v6KcrQjy-1727938654";
+2024-10-03 07:57:34.291 UTC [22258] LOG:  statement: deallocate "pgx_25"
+2024-10-03 07:57:34.292 UTC [22258] LOG:  statement: deallocate "pgx_24"
+2024-10-03 07:57:34.466 UTC [22258] LOG:  statement: ;
+2024-10-03 07:57:34.466 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:57:34.466 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-G0GOcQ5VHkmT6h0TnacT-1727938654'
+2024-10-03 07:57:34.469 UTC [22258] LOG:  execute pgx_26: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:57:34.469 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-G0GOcQ5VHkmT6h0TnacT-1727938654'
+2024-10-03 07:57:34.511 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:57:34.511 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-G0GOcQ5VHkmT6h0TnacT-1727938654";
+2024-10-03 07:57:34.516 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-G0GOcQ5VHkmT6h0TnacT-1727938654";
+2024-10-03 07:57:34.518 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-G0GOcQ5VHkmT6h0TnacT-1727938654";
+2024-10-03 07:57:34.522 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-G0GOcQ5VHkmT6h0TnacT-1727938654";
+2024-10-03 07:57:34.523 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-G0GOcQ5VHkmT6h0TnacT-1727938654";
+2024-10-03 07:57:34.524 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-G0GOcQ5VHkmT6h0TnacT-1727938654";
+2024-10-03 07:57:34.526 UTC [22258] LOG:  execute pgx_27: DROP ROLE IF EXISTS "v-root-vault-G0GOcQ5VHkmT6h0TnacT-1727938654";
+2024-10-03 07:57:34.527 UTC [22258] LOG:  statement: deallocate "pgx_27"
+2024-10-03 07:57:34.527 UTC [22258] LOG:  statement: deallocate "pgx_26"
+2024-10-03 07:57:36.188 UTC [24145] LOG:  invalid length of startup packet
+2024-10-03 07:57:51.187 UTC [24155] LOG:  invalid length of startup packet
+2024-10-03 07:58:04.658 UTC [22258] LOG:  statement: ;
+2024-10-03 07:58:04.659 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 07:58:04.659 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-4kKivXFPM6tTz60iGakw-1727938684'
+2024-10-03 07:58:04.661 UTC [22258] LOG:  execute pgx_28: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 07:58:04.661 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-4kKivXFPM6tTz60iGakw-1727938684'
+2024-10-03 07:58:04.707 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 07:58:04.707 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-4kKivXFPM6tTz60iGakw-1727938684";
+2024-10-03 07:58:04.711 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-4kKivXFPM6tTz60iGakw-1727938684";
+2024-10-03 07:58:04.712 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-4kKivXFPM6tTz60iGakw-1727938684";
+2024-10-03 07:58:04.716 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-4kKivXFPM6tTz60iGakw-1727938684";
+2024-10-03 07:58:04.719 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-4kKivXFPM6tTz60iGakw-1727938684";
+2024-10-03 07:58:04.720 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-4kKivXFPM6tTz60iGakw-1727938684";
+2024-10-03 07:58:04.722 UTC [22258] LOG:  execute pgx_29: DROP ROLE IF EXISTS "v-root-vault-4kKivXFPM6tTz60iGakw-1727938684";
+2024-10-03 07:58:04.723 UTC [22258] LOG:  statement: deallocate "pgx_29"
+2024-10-03 07:58:04.723 UTC [22258] LOG:  statement: deallocate "pgx_28"
+2024-10-03 07:58:06.190 UTC [24172] LOG:  invalid length of startup packet
+2024-10-03 07:58:21.189 UTC [24182] LOG:  invalid length of startup packet
+2024-10-03 07:58:36.188 UTC [24199] LOG:  invalid length of startup packet
+2024-10-03 07:58:51.188 UTC [24209] LOG:  invalid length of startup packet
+2024-10-03 07:59:06.189 UTC [24226] LOG:  invalid length of startup packet
+2024-10-03 07:59:21.190 UTC [24236] LOG:  invalid length of startup packet
+2024-10-03 07:59:36.204 UTC [24254] LOG:  invalid length of startup packet
+2024-10-03 07:59:51.205 UTC [24265] LOG:  invalid length of startup packet
+2024-10-03 08:00:06.209 UTC [24282] LOG:  invalid length of startup packet
+2024-10-03 08:00:21.212 UTC [24292] LOG:  invalid length of startup packet
+2024-10-03 08:00:36.210 UTC [24308] LOG:  invalid length of startup packet
+2024-10-03 08:00:51.212 UTC [24318] LOG:  invalid length of startup packet
+2024-10-03 08:01:06.213 UTC [24335] LOG:  invalid length of startup packet
+2024-10-03 08:01:15.080 UTC [50] LOG:  checkpoint starting: time
+2024-10-03 08:01:19.738 UTC [50] LOG:  checkpoint complete: wrote 46 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.586 s, sync=0.015 s, total=4.659 s; sync files=14, longest=0.005 s, average=0.002 s; distance=317 kB, estimate=336 kB; lsn=0/2E024C0, redo lsn=0/2E02488
+2024-10-03 08:01:21.212 UTC [24346] LOG:  invalid length of startup packet
+2024-10-03 08:01:36.215 UTC [24361] LOG:  invalid length of startup packet
+2024-10-03 08:01:51.214 UTC [24373] LOG:  invalid length of startup packet
+2024-10-03 08:02:06.214 UTC [24382] LOG:  invalid length of startup packet
+2024-10-03 08:02:21.212 UTC [24400] LOG:  invalid length of startup packet
+2024-10-03 08:02:36.216 UTC [24409] LOG:  invalid length of startup packet
+2024-10-03 08:02:51.214 UTC [24427] LOG:  invalid length of startup packet
+2024-10-03 08:03:06.216 UTC [24436] LOG:  invalid length of startup packet
+2024-10-03 08:03:21.216 UTC [24454] LOG:  invalid length of startup packet
+2024-10-03 08:03:36.220 UTC [24463] LOG:  invalid length of startup packet
+2024-10-03 08:03:51.221 UTC [24481] LOG:  invalid length of startup packet
+2024-10-03 08:04:06.217 UTC [24490] LOG:  invalid length of startup packet
+2024-10-03 08:04:21.217 UTC [24509] LOG:  invalid length of startup packet
+2024-10-03 08:04:36.217 UTC [24518] LOG:  invalid length of startup packet
+2024-10-03 08:04:51.218 UTC [24536] LOG:  invalid length of startup packet
+2024-10-03 08:05:06.218 UTC [24545] LOG:  invalid length of startup packet
+2024-10-03 08:05:21.219 UTC [24563] LOG:  invalid length of startup packet
+2024-10-03 08:05:36.219 UTC [24572] LOG:  invalid length of startup packet
+2024-10-03 08:05:51.220 UTC [24590] LOG:  invalid length of startup packet
+2024-10-03 08:06:06.222 UTC [24599] LOG:  invalid length of startup packet
+2024-10-03 08:06:21.219 UTC [24618] LOG:  invalid length of startup packet
+2024-10-03 08:06:36.221 UTC [24627] LOG:  invalid length of startup packet
+2024-10-03 08:06:51.220 UTC [24644] LOG:  invalid length of startup packet
+2024-10-03 08:07:06.222 UTC [24652] LOG:  invalid length of startup packet
+2024-10-03 08:07:21.224 UTC [24671] LOG:  invalid length of startup packet
+2024-10-03 08:07:36.223 UTC [24680] LOG:  invalid length of startup packet
+2024-10-03 08:07:51.222 UTC [24698] LOG:  invalid length of startup packet
+2024-10-03 08:08:06.226 UTC [24707] LOG:  invalid length of startup packet
+2024-10-03 08:08:21.224 UTC [24724] LOG:  invalid length of startup packet
+2024-10-03 08:08:36.224 UTC [24733] LOG:  invalid length of startup packet
+2024-10-03 08:08:51.224 UTC [24751] LOG:  invalid length of startup packet
+2024-10-03 08:09:06.226 UTC [24760] LOG:  invalid length of startup packet
+2024-10-03 08:09:21.226 UTC [24778] LOG:  invalid length of startup packet
+2024-10-03 08:09:36.225 UTC [24787] LOG:  invalid length of startup packet
+2024-10-03 08:09:51.224 UTC [24805] LOG:  invalid length of startup packet
+2024-10-03 08:10:06.226 UTC [24814] LOG:  invalid length of startup packet
+2024-10-03 08:10:21.227 UTC [24825] LOG:  invalid length of startup packet
+2024-10-03 08:10:23.407 UTC [22258] LOG:  statement: ;
+2024-10-03 08:10:23.408 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 08:10:23.408 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-clb67OEXiIOh3sQ27cyi-1727939423'
+2024-10-03 08:10:23.414 UTC [22258] LOG:  execute pgx_30: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 08:10:23.414 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-clb67OEXiIOh3sQ27cyi-1727939423'
+2024-10-03 08:10:23.456 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 08:10:23.457 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-clb67OEXiIOh3sQ27cyi-1727939423";
+2024-10-03 08:10:23.463 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-clb67OEXiIOh3sQ27cyi-1727939423";
+2024-10-03 08:10:23.464 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-clb67OEXiIOh3sQ27cyi-1727939423";
+2024-10-03 08:10:23.466 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-clb67OEXiIOh3sQ27cyi-1727939423";
+2024-10-03 08:10:23.469 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-clb67OEXiIOh3sQ27cyi-1727939423";
+2024-10-03 08:10:23.470 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-clb67OEXiIOh3sQ27cyi-1727939423";
+2024-10-03 08:10:23.473 UTC [22258] LOG:  execute pgx_31: DROP ROLE IF EXISTS "v-root-vault-clb67OEXiIOh3sQ27cyi-1727939423";
+2024-10-03 08:10:23.474 UTC [22258] LOG:  statement: deallocate "pgx_31"
+2024-10-03 08:10:23.475 UTC [22258] LOG:  statement: deallocate "pgx_30"
+2024-10-03 08:10:36.227 UTC [24841] LOG:  invalid length of startup packet
+2024-10-03 08:10:51.229 UTC [24851] LOG:  invalid length of startup packet
+2024-10-03 08:11:06.228 UTC [24868] LOG:  invalid length of startup packet
+2024-10-03 08:11:15.930 UTC [50] LOG:  checkpoint starting: time
+2024-10-03 08:11:19.058 UTC [50] LOG:  checkpoint complete: wrote 31 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.096 s, sync=0.011 s, total=3.129 s; sync files=9, longest=0.003 s, average=0.002 s; distance=117 kB, estimate=314 kB; lsn=0/2E1F938, redo lsn=0/2E1F900
+2024-10-03 08:11:21.228 UTC [24879] LOG:  invalid length of startup packet
+2024-10-03 08:11:36.229 UTC [24896] LOG:  invalid length of startup packet
+2024-10-03 08:11:51.230 UTC [24906] LOG:  invalid length of startup packet
+2024-10-03 08:12:06.231 UTC [24923] LOG:  invalid length of startup packet
+2024-10-03 08:12:15.326 UTC [22258] LOG:  statement: ;
+2024-10-03 08:12:15.326 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 08:12:15.326 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-0CgIvdAD6cgrUJKDdZAL-1727939535'
+2024-10-03 08:12:15.328 UTC [22258] LOG:  execute pgx_32: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 08:12:15.328 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-0CgIvdAD6cgrUJKDdZAL-1727939535'
+2024-10-03 08:12:15.369 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 08:12:15.369 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-0CgIvdAD6cgrUJKDdZAL-1727939535";
+2024-10-03 08:12:15.377 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-0CgIvdAD6cgrUJKDdZAL-1727939535";
+2024-10-03 08:12:15.379 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-0CgIvdAD6cgrUJKDdZAL-1727939535";
+2024-10-03 08:12:15.381 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-0CgIvdAD6cgrUJKDdZAL-1727939535";
+2024-10-03 08:12:15.383 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-0CgIvdAD6cgrUJKDdZAL-1727939535";
+2024-10-03 08:12:15.384 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-0CgIvdAD6cgrUJKDdZAL-1727939535";
+2024-10-03 08:12:15.386 UTC [22258] LOG:  execute pgx_33: DROP ROLE IF EXISTS "v-root-vault-0CgIvdAD6cgrUJKDdZAL-1727939535";
+2024-10-03 08:12:15.387 UTC [22258] LOG:  statement: deallocate "pgx_33"
+2024-10-03 08:12:15.388 UTC [22258] LOG:  statement: deallocate "pgx_32"
+2024-10-03 08:12:21.231 UTC [24933] LOG:  invalid length of startup packet
+2024-10-03 08:12:36.231 UTC [24950] LOG:  invalid length of startup packet
+2024-10-03 08:12:51.232 UTC [24960] LOG:  invalid length of startup packet
+2024-10-03 08:13:05.450 UTC [22258] LOG:  statement: ;
+2024-10-03 08:13:05.450 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 08:13:05.450 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-Q40OHPUpkYKuANNX1snw-1727939585'
+2024-10-03 08:13:05.453 UTC [22258] LOG:  execute pgx_34: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 08:13:05.453 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-Q40OHPUpkYKuANNX1snw-1727939585'
+2024-10-03 08:13:05.497 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 08:13:05.498 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-Q40OHPUpkYKuANNX1snw-1727939585";
+2024-10-03 08:13:05.500 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-Q40OHPUpkYKuANNX1snw-1727939585";
+2024-10-03 08:13:05.502 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-Q40OHPUpkYKuANNX1snw-1727939585";
+2024-10-03 08:13:05.506 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-Q40OHPUpkYKuANNX1snw-1727939585";
+2024-10-03 08:13:05.507 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-Q40OHPUpkYKuANNX1snw-1727939585";
+2024-10-03 08:13:05.509 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-Q40OHPUpkYKuANNX1snw-1727939585";
+2024-10-03 08:13:05.510 UTC [22258] LOG:  execute pgx_35: DROP ROLE IF EXISTS "v-root-vault-Q40OHPUpkYKuANNX1snw-1727939585";
+2024-10-03 08:13:05.512 UTC [22258] LOG:  statement: deallocate "pgx_35"
+2024-10-03 08:13:05.512 UTC [22258] LOG:  statement: deallocate "pgx_34"
+2024-10-03 08:13:05.512 UTC [22258] LOG:  statement: ;
+2024-10-03 08:13:05.513 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 08:13:05.513 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-O6GnZay7Hbc9ioVYjRZ1-1727939585'
+2024-10-03 08:13:05.515 UTC [22258] LOG:  execute pgx_36: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 08:13:05.515 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-O6GnZay7Hbc9ioVYjRZ1-1727939585'
+2024-10-03 08:13:05.559 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 08:13:05.559 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-O6GnZay7Hbc9ioVYjRZ1-1727939585";
+2024-10-03 08:13:05.562 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-O6GnZay7Hbc9ioVYjRZ1-1727939585";
+2024-10-03 08:13:05.564 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-O6GnZay7Hbc9ioVYjRZ1-1727939585";
+2024-10-03 08:13:05.567 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-O6GnZay7Hbc9ioVYjRZ1-1727939585";
+2024-10-03 08:13:05.570 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-O6GnZay7Hbc9ioVYjRZ1-1727939585";
+2024-10-03 08:13:05.571 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-O6GnZay7Hbc9ioVYjRZ1-1727939585";
+2024-10-03 08:13:05.572 UTC [22258] LOG:  execute pgx_37: DROP ROLE IF EXISTS "v-root-vault-O6GnZay7Hbc9ioVYjRZ1-1727939585";
+2024-10-03 08:13:05.574 UTC [22258] LOG:  statement: deallocate "pgx_37"
+2024-10-03 08:13:05.574 UTC [22258] LOG:  statement: deallocate "pgx_36"
+2024-10-03 08:13:05.575 UTC [22258] LOG:  statement: ;
+2024-10-03 08:13:05.576 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 08:13:05.576 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-8VYkYfIEE6XdNIV4sZcU-1727939585'
+2024-10-03 08:13:05.578 UTC [22258] LOG:  execute pgx_38: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 08:13:05.578 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-8VYkYfIEE6XdNIV4sZcU-1727939585'
+2024-10-03 08:13:05.616 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 08:13:05.617 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-8VYkYfIEE6XdNIV4sZcU-1727939585";
+2024-10-03 08:13:05.620 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-8VYkYfIEE6XdNIV4sZcU-1727939585";
+2024-10-03 08:13:05.622 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-8VYkYfIEE6XdNIV4sZcU-1727939585";
+2024-10-03 08:13:05.627 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-8VYkYfIEE6XdNIV4sZcU-1727939585";
+2024-10-03 08:13:05.628 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-8VYkYfIEE6XdNIV4sZcU-1727939585";
+2024-10-03 08:13:05.630 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-8VYkYfIEE6XdNIV4sZcU-1727939585";
+2024-10-03 08:13:05.631 UTC [22258] LOG:  execute pgx_39: DROP ROLE IF EXISTS "v-root-vault-8VYkYfIEE6XdNIV4sZcU-1727939585";
+2024-10-03 08:13:05.632 UTC [22258] LOG:  statement: deallocate "pgx_39"
+2024-10-03 08:13:05.633 UTC [22258] LOG:  statement: deallocate "pgx_38"
+2024-10-03 08:13:06.232 UTC [24978] LOG:  invalid length of startup packet
+2024-10-03 08:13:21.232 UTC [24988] LOG:  invalid length of startup packet
+2024-10-03 08:13:33.211 UTC [22258] LOG:  statement: ;
+2024-10-03 08:13:33.212 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 08:13:33.212 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-tDDLTkYVUshY9Qdv7p6Q-1727939612'
+2024-10-03 08:13:33.217 UTC [22258] LOG:  execute pgx_40: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 08:13:33.217 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-tDDLTkYVUshY9Qdv7p6Q-1727939612'
+2024-10-03 08:13:33.248 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 08:13:33.249 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-tDDLTkYVUshY9Qdv7p6Q-1727939612";
+2024-10-03 08:13:33.253 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-tDDLTkYVUshY9Qdv7p6Q-1727939612";
+2024-10-03 08:13:33.254 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-tDDLTkYVUshY9Qdv7p6Q-1727939612";
+2024-10-03 08:13:33.256 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-tDDLTkYVUshY9Qdv7p6Q-1727939612";
+2024-10-03 08:13:33.257 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-tDDLTkYVUshY9Qdv7p6Q-1727939612";
+2024-10-03 08:13:33.258 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-tDDLTkYVUshY9Qdv7p6Q-1727939612";
+2024-10-03 08:13:33.261 UTC [22258] LOG:  execute pgx_41: DROP ROLE IF EXISTS "v-root-vault-tDDLTkYVUshY9Qdv7p6Q-1727939612";
+2024-10-03 08:13:33.263 UTC [22258] LOG:  statement: deallocate "pgx_41"
+2024-10-03 08:13:33.264 UTC [22258] LOG:  statement: deallocate "pgx_40"
+2024-10-03 08:13:36.234 UTC [25005] LOG:  invalid length of startup packet
+2024-10-03 08:13:51.234 UTC [25015] LOG:  invalid length of startup packet
+2024-10-03 08:14:06.234 UTC [25032] LOG:  invalid length of startup packet
+2024-10-03 08:14:21.233 UTC [25042] LOG:  invalid length of startup packet
+2024-10-03 08:14:36.234 UTC [25059] LOG:  invalid length of startup packet
+2024-10-03 08:14:51.234 UTC [25069] LOG:  invalid length of startup packet
+2024-10-03 08:15:06.273 UTC [25086] LOG:  invalid length of startup packet
+2024-10-03 08:15:21.275 UTC [25096] LOG:  invalid length of startup packet
+2024-10-03 08:15:36.279 UTC [25113] LOG:  invalid length of startup packet
+2024-10-03 08:15:51.281 UTC [25123] LOG:  invalid length of startup packet
+2024-10-03 08:16:06.283 UTC [25140] LOG:  invalid length of startup packet
+2024-10-03 08:16:15.214 UTC [50] LOG:  checkpoint starting: time
+2024-10-03 08:16:19.217 UTC [50] LOG:  checkpoint complete: wrote 40 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.975 s, sync=0.011 s, total=4.004 s; sync files=13, longest=0.003 s, average=0.001 s; distance=263 kB, estimate=309 kB; lsn=0/2E615A8, redo lsn=0/2E61570
+2024-10-03 08:16:21.283 UTC [25150] LOG:  invalid length of startup packet
+2024-10-03 08:16:36.284 UTC [25168] LOG:  invalid length of startup packet
+2024-10-03 08:16:51.283 UTC [25178] LOG:  invalid length of startup packet
+2024-10-03 08:17:06.285 UTC [25196] LOG:  invalid length of startup packet
+2024-10-03 08:17:21.284 UTC [25206] LOG:  invalid length of startup packet
+2024-10-03 08:17:36.286 UTC [25222] LOG:  invalid length of startup packet
+2024-10-03 08:17:51.286 UTC [25231] LOG:  invalid length of startup packet
+2024-10-03 08:17:58.223 UTC [22258] LOG:  statement: ;
+2024-10-03 08:17:58.224 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 08:17:58.224 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-RaZGbYWJn2tg9vFrsJXF-1727939877'
+2024-10-03 08:17:58.227 UTC [22258] LOG:  execute pgx_42: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 08:17:58.227 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-RaZGbYWJn2tg9vFrsJXF-1727939877'
+2024-10-03 08:17:58.268 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 08:17:58.269 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-RaZGbYWJn2tg9vFrsJXF-1727939877";
+2024-10-03 08:17:58.279 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-RaZGbYWJn2tg9vFrsJXF-1727939877";
+2024-10-03 08:17:58.280 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-RaZGbYWJn2tg9vFrsJXF-1727939877";
+2024-10-03 08:17:58.283 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-RaZGbYWJn2tg9vFrsJXF-1727939877";
+2024-10-03 08:17:58.284 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-RaZGbYWJn2tg9vFrsJXF-1727939877";
+2024-10-03 08:17:58.285 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-RaZGbYWJn2tg9vFrsJXF-1727939877";
+2024-10-03 08:17:58.287 UTC [22258] LOG:  execute pgx_43: DROP ROLE IF EXISTS "v-root-vault-RaZGbYWJn2tg9vFrsJXF-1727939877";
+2024-10-03 08:17:58.288 UTC [22258] LOG:  statement: deallocate "pgx_43"
+2024-10-03 08:17:58.288 UTC [22258] LOG:  statement: deallocate "pgx_42"
+2024-10-03 08:18:06.287 UTC [25248] LOG:  invalid length of startup packet
+2024-10-03 08:18:21.286 UTC [25259] LOG:  invalid length of startup packet
+2024-10-03 08:18:36.288 UTC [25268] LOG:  invalid length of startup packet
+2024-10-03 08:18:51.287 UTC [25286] LOG:  invalid length of startup packet
+2024-10-03 08:19:06.289 UTC [25295] LOG:  invalid length of startup packet
+2024-10-03 08:19:08.845 UTC [22258] LOG:  statement: ;
+2024-10-03 08:19:08.846 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 08:19:08.846 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-gdEhcZG0YNlbsFYyDMDf-1727939948'
+2024-10-03 08:19:08.849 UTC [22258] LOG:  execute pgx_44: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 08:19:08.849 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-gdEhcZG0YNlbsFYyDMDf-1727939948'
+2024-10-03 08:19:08.889 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 08:19:08.889 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-gdEhcZG0YNlbsFYyDMDf-1727939948";
+2024-10-03 08:19:08.893 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-gdEhcZG0YNlbsFYyDMDf-1727939948";
+2024-10-03 08:19:08.894 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-gdEhcZG0YNlbsFYyDMDf-1727939948";
+2024-10-03 08:19:08.896 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-gdEhcZG0YNlbsFYyDMDf-1727939948";
+2024-10-03 08:19:08.898 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-gdEhcZG0YNlbsFYyDMDf-1727939948";
+2024-10-03 08:19:08.899 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-gdEhcZG0YNlbsFYyDMDf-1727939948";
+2024-10-03 08:19:08.901 UTC [22258] LOG:  execute pgx_45: DROP ROLE IF EXISTS "v-root-vault-gdEhcZG0YNlbsFYyDMDf-1727939948";
+2024-10-03 08:19:08.902 UTC [22258] LOG:  statement: deallocate "pgx_45"
+2024-10-03 08:19:08.902 UTC [22258] LOG:  statement: deallocate "pgx_44"
+2024-10-03 08:19:08.973 UTC [22258] LOG:  statement: ;
+2024-10-03 08:19:08.974 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 08:19:08.974 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-9NqHSmqCs6hR7rxVKUGC-1727939948'
+2024-10-03 08:19:08.977 UTC [22258] LOG:  execute pgx_46: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 08:19:08.977 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-9NqHSmqCs6hR7rxVKUGC-1727939948'
+2024-10-03 08:19:09.017 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 08:19:09.017 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-9NqHSmqCs6hR7rxVKUGC-1727939948";
+2024-10-03 08:19:09.021 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-9NqHSmqCs6hR7rxVKUGC-1727939948";
+2024-10-03 08:19:09.022 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-9NqHSmqCs6hR7rxVKUGC-1727939948";
+2024-10-03 08:19:09.025 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-9NqHSmqCs6hR7rxVKUGC-1727939948";
+2024-10-03 08:19:09.026 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-9NqHSmqCs6hR7rxVKUGC-1727939948";
+2024-10-03 08:19:09.028 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-9NqHSmqCs6hR7rxVKUGC-1727939948";
+2024-10-03 08:19:09.029 UTC [22258] LOG:  execute pgx_47: DROP ROLE IF EXISTS "v-root-vault-9NqHSmqCs6hR7rxVKUGC-1727939948";
+2024-10-03 08:19:09.030 UTC [22258] LOG:  statement: deallocate "pgx_47"
+2024-10-03 08:19:09.031 UTC [22258] LOG:  statement: deallocate "pgx_46"
+2024-10-03 08:19:21.288 UTC [25313] LOG:  invalid length of startup packet
+2024-10-03 08:19:28.064 UTC [22258] LOG:  statement: ;
+2024-10-03 08:19:28.065 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 08:19:28.065 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-8ht4iYRTp155InZvTkMO-1727939967'
+2024-10-03 08:19:28.067 UTC [22258] LOG:  execute pgx_48: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 08:19:28.067 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-8ht4iYRTp155InZvTkMO-1727939967'
+2024-10-03 08:19:28.106 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 08:19:28.106 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-8ht4iYRTp155InZvTkMO-1727939967";
+2024-10-03 08:19:28.111 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-8ht4iYRTp155InZvTkMO-1727939967";
+2024-10-03 08:19:28.112 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-8ht4iYRTp155InZvTkMO-1727939967";
+2024-10-03 08:19:28.114 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-8ht4iYRTp155InZvTkMO-1727939967";
+2024-10-03 08:19:28.116 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-8ht4iYRTp155InZvTkMO-1727939967";
+2024-10-03 08:19:28.117 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-8ht4iYRTp155InZvTkMO-1727939967";
+2024-10-03 08:19:28.118 UTC [22258] LOG:  execute pgx_49: DROP ROLE IF EXISTS "v-root-vault-8ht4iYRTp155InZvTkMO-1727939967";
+2024-10-03 08:19:28.120 UTC [22258] LOG:  statement: deallocate "pgx_49"
+2024-10-03 08:19:28.120 UTC [22258] LOG:  statement: deallocate "pgx_48"
+2024-10-03 08:19:36.290 UTC [25322] LOG:  invalid length of startup packet
+2024-10-03 08:19:51.290 UTC [25341] LOG:  invalid length of startup packet
+2024-10-03 08:20:06.289 UTC [25350] LOG:  invalid length of startup packet
+2024-10-03 08:20:21.290 UTC [25368] LOG:  invalid length of startup packet
+2024-10-03 08:20:36.291 UTC [25377] LOG:  invalid length of startup packet
+2024-10-03 08:20:51.292 UTC [25395] LOG:  invalid length of startup packet
+2024-10-03 08:21:06.292 UTC [25404] LOG:  invalid length of startup packet
+2024-10-03 08:21:15.324 UTC [50] LOG:  checkpoint starting: time
+2024-10-03 08:21:20.675 UTC [50] LOG:  checkpoint complete: wrote 53 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=5.318 s, sync=0.013 s, total=5.351 s; sync files=16, longest=0.003 s, average=0.001 s; distance=305 kB, estimate=309 kB; lsn=0/2EADCD8, redo lsn=0/2EADCA0
+2024-10-03 08:21:21.291 UTC [25422] LOG:  invalid length of startup packet
+2024-10-03 08:21:36.293 UTC [25431] LOG:  invalid length of startup packet
+2024-10-03 08:21:51.292 UTC [25449] LOG:  invalid length of startup packet
+2024-10-03 08:22:06.294 UTC [25458] LOG:  invalid length of startup packet
+2024-10-03 08:22:21.294 UTC [25477] LOG:  invalid length of startup packet
+2024-10-03 08:22:36.295 UTC [25486] LOG:  invalid length of startup packet
+2024-10-03 08:22:41.184 UTC [22258] LOG:  statement: ;
+2024-10-03 08:22:41.187 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 08:22:41.187 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-ZikduKktYKDaPM1Wk4Se-1727940160'
+2024-10-03 08:22:41.191 UTC [22258] LOG:  execute pgx_50: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 08:22:41.191 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-ZikduKktYKDaPM1Wk4Se-1727940160'
+2024-10-03 08:22:41.237 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 08:22:41.238 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-ZikduKktYKDaPM1Wk4Se-1727940160";
+2024-10-03 08:22:41.249 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-ZikduKktYKDaPM1Wk4Se-1727940160";
+2024-10-03 08:22:41.251 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-ZikduKktYKDaPM1Wk4Se-1727940160";
+2024-10-03 08:22:41.253 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-ZikduKktYKDaPM1Wk4Se-1727940160";
+2024-10-03 08:22:41.255 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-ZikduKktYKDaPM1Wk4Se-1727940160";
+2024-10-03 08:22:41.256 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-ZikduKktYKDaPM1Wk4Se-1727940160";
+2024-10-03 08:22:41.258 UTC [22258] LOG:  execute pgx_51: DROP ROLE IF EXISTS "v-root-vault-ZikduKktYKDaPM1Wk4Se-1727940160";
+2024-10-03 08:22:41.261 UTC [22258] LOG:  statement: deallocate "pgx_51"
+2024-10-03 08:22:41.262 UTC [22258] LOG:  statement: deallocate "pgx_50"
+2024-10-03 08:22:51.295 UTC [25505] LOG:  invalid length of startup packet
+2024-10-03 08:23:06.296 UTC [25514] LOG:  invalid length of startup packet
+2024-10-03 08:23:21.297 UTC [25532] LOG:  invalid length of startup packet
+2024-10-03 08:23:29.276 UTC [22258] LOG:  statement: ;
+2024-10-03 08:23:29.277 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 08:23:29.277 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-zF2a1gFwclRfJDkNv6PG-1727940208'
+2024-10-03 08:23:29.279 UTC [22258] LOG:  execute pgx_52: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 08:23:29.279 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-zF2a1gFwclRfJDkNv6PG-1727940208'
+2024-10-03 08:23:29.315 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 08:23:29.315 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-zF2a1gFwclRfJDkNv6PG-1727940208";
+2024-10-03 08:23:29.319 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-zF2a1gFwclRfJDkNv6PG-1727940208";
+2024-10-03 08:23:29.320 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-zF2a1gFwclRfJDkNv6PG-1727940208";
+2024-10-03 08:23:29.323 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-zF2a1gFwclRfJDkNv6PG-1727940208";
+2024-10-03 08:23:29.324 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-zF2a1gFwclRfJDkNv6PG-1727940208";
+2024-10-03 08:23:29.326 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-zF2a1gFwclRfJDkNv6PG-1727940208";
+2024-10-03 08:23:29.327 UTC [22258] LOG:  execute pgx_53: DROP ROLE IF EXISTS "v-root-vault-zF2a1gFwclRfJDkNv6PG-1727940208";
+2024-10-03 08:23:29.328 UTC [22258] LOG:  statement: deallocate "pgx_53"
+2024-10-03 08:23:29.329 UTC [22258] LOG:  statement: deallocate "pgx_52"
+2024-10-03 08:23:29.395 UTC [22258] LOG:  statement: ;
+2024-10-03 08:23:29.396 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 08:23:29.396 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-TM1JET3voVbxg3UEhX4Q-1727940209'
+2024-10-03 08:23:29.398 UTC [22258] LOG:  execute pgx_54: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 08:23:29.398 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-TM1JET3voVbxg3UEhX4Q-1727940209'
+2024-10-03 08:23:29.436 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 08:23:29.436 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-TM1JET3voVbxg3UEhX4Q-1727940209";
+2024-10-03 08:23:29.439 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-TM1JET3voVbxg3UEhX4Q-1727940209";
+2024-10-03 08:23:29.441 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-TM1JET3voVbxg3UEhX4Q-1727940209";
+2024-10-03 08:23:29.444 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-TM1JET3voVbxg3UEhX4Q-1727940209";
+2024-10-03 08:23:29.445 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-TM1JET3voVbxg3UEhX4Q-1727940209";
+2024-10-03 08:23:29.447 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-TM1JET3voVbxg3UEhX4Q-1727940209";
+2024-10-03 08:23:29.448 UTC [22258] LOG:  execute pgx_55: DROP ROLE IF EXISTS "v-root-vault-TM1JET3voVbxg3UEhX4Q-1727940209";
+2024-10-03 08:23:29.450 UTC [22258] LOG:  statement: deallocate "pgx_55"
+2024-10-03 08:23:29.450 UTC [22258] LOG:  statement: deallocate "pgx_54"
+2024-10-03 08:23:36.296 UTC [25542] LOG:  invalid length of startup packet
+2024-10-03 08:23:50.749 UTC [22258] LOG:  statement: ;
+2024-10-03 08:23:50.749 UTC [22258] LOG:  execute lrupsc_9_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-03 08:23:50.749 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-fkxEADK4t4WpCbeP6Uov-1727940230'
+2024-10-03 08:23:50.752 UTC [22258] LOG:  execute pgx_56: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-03 08:23:50.752 UTC [22258] DETAIL:  parameters: $1 = 'v-root-vault-fkxEADK4t4WpCbeP6Uov-1727940230'
+2024-10-03 08:23:50.790 UTC [22258] LOG:  execute lrupsc_9_1: SELECT current_database();
+2024-10-03 08:23:50.790 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-fkxEADK4t4WpCbeP6Uov-1727940230";
+2024-10-03 08:23:50.794 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-fkxEADK4t4WpCbeP6Uov-1727940230";
+2024-10-03 08:23:50.796 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-fkxEADK4t4WpCbeP6Uov-1727940230";
+2024-10-03 08:23:50.798 UTC [22258] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-fkxEADK4t4WpCbeP6Uov-1727940230";
+2024-10-03 08:23:50.799 UTC [22258] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-fkxEADK4t4WpCbeP6Uov-1727940230";
+2024-10-03 08:23:50.801 UTC [22258] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-fkxEADK4t4WpCbeP6Uov-1727940230";
+2024-10-03 08:23:50.803 UTC [22258] LOG:  execute pgx_57: DROP ROLE IF EXISTS "v-root-vault-fkxEADK4t4WpCbeP6Uov-1727940230";
+2024-10-03 08:23:50.805 UTC [22258] LOG:  statement: deallocate "pgx_57"
+2024-10-03 08:23:50.805 UTC [22258] LOG:  statement: deallocate "pgx_56"
+2024-10-03 08:23:51.297 UTC [25560] LOG:  invalid length of startup packet
+2024-10-03 08:24:06.296 UTC [25569] LOG:  invalid length of startup packet
+2024-10-03 08:24:21.296 UTC [25587] LOG:  invalid length of startup packet
+2024-10-03 08:24:36.298 UTC [25595] LOG:  invalid length of startup packet
+2024-10-03 08:24:51.298 UTC [25613] LOG:  invalid length of startup packet
+2024-10-03 08:25:06.299 UTC [25622] LOG:  invalid length of startup packet
+2024-10-03 08:25:21.298 UTC [25640] LOG:  invalid length of startup packet
+2024-10-03 08:25:36.300 UTC [25649] LOG:  invalid length of startup packet
+2024-10-03 08:25:51.302 UTC [25667] LOG:  invalid length of startup packet
+2024-10-03 08:26:06.300 UTC [25676] LOG:  invalid length of startup packet
+2024-10-03 08:26:15.780 UTC [50] LOG:  checkpoint starting: time
+2024-10-03 08:26:19.582 UTC [50] LOG:  checkpoint complete: wrote 36 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.593 s, sync=0.012 s, total=3.803 s; sync files=10, longest=0.005 s, average=0.002 s; distance=223 kB, estimate=300 kB; lsn=0/2EE59A0, redo lsn=0/2EE5968
+2024-10-03 08:26:21.299 UTC [25694] LOG:  invalid length of startup packet
+2024-10-03 08:26:36.301 UTC [25703] LOG:  invalid length of startup packet
+2024-10-03 08:26:51.301 UTC [25713] LOG:  invalid length of startup packet
+2024-10-03 08:27:06.306 UTC [25730] LOG:  invalid length of startup packet
+2024-10-03 08:27:21.303 UTC [25740] LOG:  invalid length of startup packet
+2024-10-03 08:27:36.306 UTC [25757] LOG:  invalid length of startup packet
+2024-10-03 08:27:51.306 UTC [25767] LOG:  invalid length of startup packet
+2024-10-03 08:28:06.304 UTC [25784] LOG:  invalid length of startup packet
+2024-10-03 08:28:21.306 UTC [25793] LOG:  invalid length of startup packet
+2024-10-03 08:28:36.304 UTC [25810] LOG:  invalid length of startup packet
+2024-10-03 08:28:51.306 UTC [25820] LOG:  invalid length of startup packet
+2024-10-03 08:29:06.307 UTC [25837] LOG:  invalid length of startup packet
+2024-10-03 08:29:21.307 UTC [25847] LOG:  invalid length of startup packet
+2024-10-03 08:29:36.308 UTC [25865] LOG:  invalid length of startup packet
+2024-10-03 08:29:51.307 UTC [25875] LOG:  invalid length of startup packet
+2024-10-03 08:30:06.328 UTC [25892] LOG:  invalid length of startup packet
+2024-10-03 08:30:21.327 UTC [25902] LOG:  invalid length of startup packet
+2024-10-03 08:30:36.336 UTC [25919] LOG:  invalid length of startup packet
+2024-10-03 08:30:51.461 UTC [25929] LOG:  invalid length of startup packet
+2024-10-03 08:31:06.337 UTC [25946] LOG:  invalid length of startup packet
+2024-10-03 08:31:21.338 UTC [25956] LOG:  invalid length of startup packet
+2024-10-03 08:31:36.339 UTC [25974] LOG:  invalid length of startup packet
+2024-10-03 08:31:51.339 UTC [25984] LOG:  invalid length of startup packet
+2024-10-03 08:32:06.337 UTC [26001] LOG:  invalid length of startup packet
+2024-10-03 08:32:21.337 UTC [26011] LOG:  invalid length of startup packet
+2024-10-03 09:02:31.674 UTC [26029] LOG:  invalid length of startup packet
+2024-10-03 09:02:46.666 UTC [26039] LOG:  invalid length of startup packet
+2024-10-03 09:03:01.734 UTC [26048] LOG:  invalid length of startup packet
+2024-10-03 09:03:16.743 UTC [26066] LOG:  invalid length of startup packet
+2024-10-03 09:03:31.735 UTC [26075] LOG:  invalid length of startup packet
+2024-10-03 09:03:46.732 UTC [26094] LOG:  invalid length of startup packet
+2024-10-03 09:04:01.734 UTC [26103] LOG:  invalid length of startup packet
+2024-10-03 09:04:16.731 UTC [26122] LOG:  invalid length of startup packet
+2024-10-03 09:04:31.730 UTC [26131] LOG:  invalid length of startup packet
+2024-10-03 09:04:46.728 UTC [26141] LOG:  invalid length of startup packet
+2024-10-03 09:05:01.735 UTC [26157] LOG:  invalid length of startup packet
+2024-10-03 09:05:16.729 UTC [26167] LOG:  invalid length of startup packet
+2024-10-03 09:05:31.727 UTC [26184] LOG:  invalid length of startup packet
+2024-10-03 09:05:46.732 UTC [26194] LOG:  invalid length of startup packet
+2024-10-03 09:21:40.175 UTC [26211] LOG:  invalid length of startup packet
+2024-10-03 09:21:55.175 UTC [26221] LOG:  invalid length of startup packet
+2024-10-03 09:22:10.196 UTC [26238] LOG:  invalid length of startup packet
+2024-10-03 09:22:25.198 UTC [26248] LOG:  invalid length of startup packet
+2024-10-03 09:22:40.206 UTC [26265] LOG:  invalid length of startup packet
+2024-10-03 09:22:55.201 UTC [26275] LOG:  invalid length of startup packet
+2024-10-03 09:23:10.209 UTC [26284] LOG:  invalid length of startup packet
+2024-10-03 09:23:25.217 UTC [26302] LOG:  invalid length of startup packet
+2024-10-03 09:23:40.203 UTC [26311] LOG:  invalid length of startup packet
+2024-10-03 09:23:55.202 UTC [26329] LOG:  invalid length of startup packet
+2024-10-03 09:24:10.200 UTC [26339] LOG:  invalid length of startup packet
+2024-10-03 09:24:25.501 UTC [26351] LOG:  invalid length of startup packet
+2024-10-03 09:38:14.796 UTC [26356] LOG:  could not receive data from client: Connection reset by peer
+2024-10-03 09:38:16.298 UTC [26358] LOG:  invalid length of startup packet
+2024-10-03 09:38:29.988 UTC [26369] LOG:  invalid length of startup packet
+2024-10-03 09:38:44.942 UTC [26378] LOG:  invalid length of startup packet
+2024-10-03 09:38:59.941 UTC [26389] LOG:  invalid length of startup packet
+2024-10-03 09:39:14.939 UTC [26407] LOG:  invalid length of startup packet
+2024-10-03 09:39:29.939 UTC [26416] LOG:  invalid length of startup packet
+2024-10-03 09:39:44.941 UTC [26433] LOG:  invalid length of startup packet
+2024-10-03 09:39:59.938 UTC [26443] LOG:  invalid length of startup packet
+2024-10-03 09:55:22.918 UTC [26452] LOG:  invalid length of startup packet
+2024-10-03 09:55:37.912 UTC [26470] LOG:  invalid length of startup packet
+2024-10-03 09:55:52.902 UTC [26479] LOG:  invalid length of startup packet
+2024-10-03 09:56:07.905 UTC [26497] LOG:  invalid length of startup packet
+2024-10-03 09:56:22.906 UTC [26506] LOG:  invalid length of startup packet
+2024-10-03 09:56:37.908 UTC [26524] LOG:  invalid length of startup packet
+2024-10-03 09:56:52.911 UTC [26533] LOG:  invalid length of startup packet
+2024-10-03 09:57:07.906 UTC [26543] LOG:  invalid length of startup packet
+2024-10-03 09:57:22.909 UTC [26560] LOG:  invalid length of startup packet
+2024-10-03 09:57:37.914 UTC [26570] LOG:  invalid length of startup packet
+2024-10-03 09:57:52.907 UTC [26587] LOG:  invalid length of startup packet
+2024-10-03 09:58:07.904 UTC [26598] LOG:  invalid length of startup packet
+2024-10-03 09:58:22.905 UTC [26615] LOG:  invalid length of startup packet
+2024-10-03 09:58:37.905 UTC [26625] LOG:  invalid length of startup packet
+2024-10-03 09:58:52.905 UTC [26642] LOG:  invalid length of startup packet
+2024-10-03 09:59:07.905 UTC [26652] LOG:  invalid length of startup packet
+2024-10-03 09:59:22.906 UTC [26661] LOG:  invalid length of startup packet
+2024-10-03 09:59:37.905 UTC [26679] LOG:  invalid length of startup packet
+2024-10-03 09:59:52.905 UTC [26688] LOG:  invalid length of startup packet
+2024-10-03 10:00:07.906 UTC [26706] LOG:  invalid length of startup packet
+2024-10-03 10:00:22.906 UTC [26714] LOG:  invalid length of startup packet
+2024-10-03 10:00:37.908 UTC [26734] LOG:  invalid length of startup packet
+2024-10-03 10:00:52.907 UTC [26743] LOG:  invalid length of startup packet
+2024-10-03 10:01:07.907 UTC [26761] LOG:  invalid length of startup packet
+2024-10-03 10:01:22.908 UTC [26770] LOG:  invalid length of startup packet
+2024-10-03 10:01:37.907 UTC [26789] LOG:  invalid length of startup packet
+2024-10-03 10:01:52.908 UTC [26798] LOG:  invalid length of startup packet
+2024-10-03 10:02:07.908 UTC [26814] LOG:  invalid length of startup packet
+2024-10-03 10:02:22.908 UTC [26825] LOG:  invalid length of startup packet
+2024-10-03 10:02:37.909 UTC [26835] LOG:  invalid length of startup packet
+2024-10-03 10:02:52.908 UTC [26852] LOG:  invalid length of startup packet
+2024-10-03 10:03:07.919 UTC [26862] LOG:  invalid length of startup packet
+2024-10-03 10:21:16.170 UTC [26879] LOG:  invalid length of startup packet
+2024-10-03 10:21:31.168 UTC [26889] LOG:  invalid length of startup packet
+2024-10-03 10:21:46.189 UTC [26898] LOG:  invalid length of startup packet
+2024-10-03 10:22:01.190 UTC [26915] LOG:  invalid length of startup packet
+2024-10-03 10:22:16.191 UTC [26925] LOG:  invalid length of startup packet
+2024-10-03 10:22:31.191 UTC [26943] LOG:  invalid length of startup packet
+2024-10-03 10:22:46.189 UTC [26952] LOG:  invalid length of startup packet
+2024-10-03 10:23:01.187 UTC [26970] LOG:  invalid length of startup packet
+2024-10-03 10:23:16.187 UTC [26979] LOG:  invalid length of startup packet
+2024-10-03 10:23:31.185 UTC [26997] LOG:  invalid length of startup packet
+2024-10-03 10:23:46.185 UTC [27006] LOG:  invalid length of startup packet
+2024-10-03 10:24:01.187 UTC [27025] LOG:  invalid length of startup packet
+2024-10-03 10:24:16.187 UTC [27034] LOG:  invalid length of startup packet
+2024-10-03 10:24:31.193 UTC [27045] LOG:  invalid length of startup packet
+2024-10-03 10:24:46.187 UTC [27063] LOG:  invalid length of startup packet
+2024-10-03 10:25:01.187 UTC [27073] LOG:  invalid length of startup packet
+2024-10-03 10:25:16.186 UTC [27089] LOG:  invalid length of startup packet
+2024-10-03 10:25:31.187 UTC [27099] LOG:  invalid length of startup packet
+2024-10-03 10:25:46.187 UTC [27115] LOG:  invalid length of startup packet
+2024-10-03 10:26:01.189 UTC [27125] LOG:  invalid length of startup packet
+2024-10-03 10:26:16.190 UTC [27142] LOG:  invalid length of startup packet
+2024-10-03 10:26:31.188 UTC [27153] LOG:  invalid length of startup packet
+2024-10-03 10:26:46.188 UTC [27171] LOG:  invalid length of startup packet
+2024-10-03 10:27:01.188 UTC [27181] LOG:  invalid length of startup packet
+2024-10-03 10:27:16.189 UTC [27198] LOG:  invalid length of startup packet
+2024-10-03 10:27:31.189 UTC [27208] LOG:  invalid length of startup packet
+2024-10-03 10:27:46.189 UTC [27225] LOG:  invalid length of startup packet
+2024-10-03 10:28:01.189 UTC [27235] LOG:  invalid length of startup packet
+2024-10-03 10:28:16.193 UTC [27252] LOG:  invalid length of startup packet
+2024-10-03 10:28:31.190 UTC [27262] LOG:  invalid length of startup packet
+2024-10-03 10:28:46.191 UTC [27271] LOG:  invalid length of startup packet
+2024-10-03 10:29:01.190 UTC [27289] LOG:  invalid length of startup packet
+2024-10-03 10:29:16.193 UTC [27298] LOG:  invalid length of startup packet
+2024-10-03 10:29:31.192 UTC [27316] LOG:  invalid length of startup packet
+2024-10-03 10:29:46.191 UTC [27325] LOG:  invalid length of startup packet
+2024-10-03 10:30:01.190 UTC [27343] LOG:  invalid length of startup packet
+2024-10-03 10:39:01.261 UTC [27352] LOG:  invalid length of startup packet
+2024-10-03 10:39:16.262 UTC [27371] LOG:  invalid length of startup packet
+2024-10-03 10:39:31.210 UTC [27380] LOG:  invalid length of startup packet
+2024-10-03 10:39:46.210 UTC [27399] LOG:  invalid length of startup packet
+2024-10-03 10:40:01.212 UTC [27408] LOG:  invalid length of startup packet
+2024-10-03 10:40:16.209 UTC [27418] LOG:  invalid length of startup packet
+2024-10-03 10:40:31.208 UTC [27435] LOG:  invalid length of startup packet
+2024-10-03 10:40:46.209 UTC [27445] LOG:  invalid length of startup packet
+2024-10-03 10:41:01.206 UTC [27462] LOG:  invalid length of startup packet
+2024-10-03 10:41:16.206 UTC [27472] LOG:  invalid length of startup packet
+2024-10-03 10:57:30.350 UTC [27489] LOG:  invalid length of startup packet
+2024-10-03 10:57:45.349 UTC [27499] LOG:  invalid length of startup packet
+2024-10-03 10:58:00.360 UTC [27516] LOG:  invalid length of startup packet
+2024-10-03 10:58:15.357 UTC [27526] LOG:  invalid length of startup packet
+2024-10-03 10:58:30.371 UTC [27542] LOG:  invalid length of startup packet
+2024-10-03 10:58:45.364 UTC [27554] LOG:  invalid length of startup packet
+2024-10-03 10:59:00.366 UTC [27563] LOG:  invalid length of startup packet
+2024-10-03 10:59:15.360 UTC [27581] LOG:  invalid length of startup packet
+2024-10-03 10:59:30.358 UTC [27591] LOG:  invalid length of startup packet
+2024-10-03 10:59:45.356 UTC [27609] LOG:  invalid length of startup packet
+2024-10-03 11:00:00.356 UTC [27618] LOG:  invalid length of startup packet
+2024-10-03 11:00:15.357 UTC [27636] LOG:  invalid length of startup packet
+2024-10-03 11:00:30.355 UTC [27645] LOG:  invalid length of startup packet
+2024-10-03 11:00:45.355 UTC [27663] LOG:  invalid length of startup packet
+2024-10-03 11:01:00.355 UTC [27672] LOG:  invalid length of startup packet
+2024-10-03 11:01:15.355 UTC [27690] LOG:  invalid length of startup packet
+2024-10-03 11:01:30.356 UTC [27698] LOG:  invalid length of startup packet
+2024-10-03 11:01:45.371 UTC [27716] LOG:  invalid length of startup packet
+2024-10-03 11:19:24.515 UTC [27725] LOG:  invalid length of startup packet
+2024-10-03 11:19:39.499 UTC [27735] LOG:  invalid length of startup packet
+2024-10-03 11:19:54.502 UTC [27753] LOG:  invalid length of startup packet
+2024-10-03 11:20:09.498 UTC [27763] LOG:  invalid length of startup packet
+2024-10-03 11:20:24.497 UTC [27779] LOG:  invalid length of startup packet
+2024-10-03 11:20:39.493 UTC [27789] LOG:  invalid length of startup packet
+2024-10-03 11:20:54.492 UTC [27806] LOG:  invalid length of startup packet
+2024-10-03 11:21:09.487 UTC [27816] LOG:  invalid length of startup packet
+2024-10-03 11:21:35.413 UTC [27834] LOG:  invalid length of startup packet
+2024-10-03 11:21:50.414 UTC [27844] LOG:  invalid length of startup packet
+2024-10-03 11:22:05.417 UTC [27854] LOG:  invalid length of startup packet
+2024-10-03 11:22:20.416 UTC [27871] LOG:  invalid length of startup packet
+2024-10-03 11:22:35.414 UTC [27880] LOG:  invalid length of startup packet
+2024-10-03 11:22:50.415 UTC [27898] LOG:  invalid length of startup packet
+2024-10-03 11:23:05.415 UTC [27908] LOG:  invalid length of startup packet
+2024-10-03 11:23:20.416 UTC [27924] LOG:  invalid length of startup packet
+2024-10-03 11:49:09.147 UTC [27933] LOG:  invalid length of startup packet
+2024-10-03 11:49:24.135 UTC [27951] LOG:  invalid length of startup packet
+2024-10-03 11:49:39.192 UTC [27960] LOG:  invalid length of startup packet

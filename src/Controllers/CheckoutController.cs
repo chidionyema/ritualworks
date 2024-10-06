@@ -28,6 +28,16 @@ namespace RitualWorks.Controllers
             _logger = logger;
             _orderRepository = orderRepository;
             _productRepository = productRepository;
+              // Ensure the key is properly set
+                var stripeApiKey = Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY");
+
+                if (string.IsNullOrEmpty(stripeApiKey))
+                {
+                    throw new InvalidOperationException("Stripe API key not configured.");
+                }
+
+            // Set Stripe API key globally
+            StripeConfiguration.ApiKey = stripeApiKey;
         }
 
         [HttpPost("create-session")]
@@ -91,7 +101,7 @@ namespace RitualWorks.Controllers
                     CancelUrl = $"{domain}/cancel"
                 };
 
-                var service = new SessionService(new Stripe.StripeClient("sk_test_rFKcXHBjjcSRkHER52H5zclL")); // Ensure correct Stripe API key
+                var service = new SessionService();
                 var session = await service.CreateAsync(options);
 
                 // Create order

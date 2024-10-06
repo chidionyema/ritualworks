@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -12,7 +11,16 @@ using Minio.Exceptions;
 using RitualWorks.Contracts;
 
 namespace RitualWorks.Services
-{
+{ 
+    public class MinioConfiguration
+    {
+        public string Endpoint { get; set; } = string.Empty;
+        public string AccessKey { get; set; } = string.Empty;
+        public string SecretKey { get; set; } = string.Empty;
+        public string BucketName { get; set; } = string.Empty;
+        public bool Secure { get; set; }
+    }
+
     public class MinioService : IFileStorageService
     {
         private readonly IMinioClient _minioClient; // Changed to IMinioClient

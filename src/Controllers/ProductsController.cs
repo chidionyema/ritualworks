@@ -56,20 +56,20 @@ namespace RitualWorks.Controllers
 
 
         [HttpPost]
-        [Authorize]
         public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] ProductDto productDto)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            /*
 
             var category = await _categoryRepository.GetCategoryByIdAsync(productDto.CategoryId);
             if (category == null)
             {
                 return BadRequest("Invalid category ID.");
             }
-
+*/
             var product = _mapper.Map<Product>(productDto);
             product.Id = Guid.NewGuid();
 
@@ -80,7 +80,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+    
         public async Task<ActionResult<ProductDto>> UpdateProduct(Guid id, [FromBody] ProductDto productDto)
         {
             if (!ModelState.IsValid)
@@ -117,7 +117,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpPost("categories")]
-        [Authorize]
+     
         public async Task<ActionResult<CategoryDto>> CreateCategory([FromBody] CategoryDto categoryDto)
         {
             if (!ModelState.IsValid)

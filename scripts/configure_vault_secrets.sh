@@ -146,6 +146,24 @@ create_or_update_vault_user() {
     # Return the created/updated username and password for further use
     echo "$db_user:$db_password"
 }
+# Fetch a static secret from Vault by field
+fetch_static_secret() {
+    local secret_path=$1
+    local field=$2
+
+    log "Fetching static secret '$field' from '$secret_path'..."
+
+    # Fetch the secret and parse the required field using grep and sed
+    local value
+    value=$(docker exec "$VAULT_CONTAINER_NAME" vault kv get -format=json "$secret_path" | grep -o "\"$field\":\s*\"[^\"]*\"" | sed 's/.*: "\(.*\)".*/\1/')
+
+    if [[ -z "$value" ]]; then
+        error_exit "Failed to retrieve '$field' from '$secret_path'."
+    fi
+
+    log "Static secret fetched: $field=$value"
+    echo "$value"
+}
 # Fetch dynamic PostgreSQL credentials from Vault
 fetch_dynamic_postgres_credentials() {
     local role=$1
@@ -167,8 +185,24 @@ fetch_dynamic_postgres_credentials() {
     password=$(echo "$creds_json" | jq -r '.data.password')
 
     log "Dynamic credentials fetched: username=$username, password=$password"
+      # Write the dynamic credentials to db-creds.json directly if necessary
+    echo "{\"username\":\"$username\", \"password\":\"$password\"}" > /vault/secrets/db-creds.json
 
     echo "$username:$password"
+}
+
+create_policy() {
+    local policy_name="$1"
+    local policy_content="$2"
+
+    log "Creating policy $policy_name..."
+
+    docker exec "$VAULT_CONTAINER_NAME" /bin/sh -c "
+        echo '$policy_content' > /tmp/$policy_name.hcl
+        vault policy write $policy_name /tmp/$policy_name.hcl || exit 1
+    " || error_exit "Failed to create policy $policy_name"
+
+    log "Policy $policy_name created successfully."
 }
 
 # Configure the PostgreSQL database secrets engine and roles in Vault
@@ -200,6 +234,85 @@ configure_vault_postgresql_roles() {
             default_ttl=\"1h\" \
             max_ttl=\"24h\"
     " || error_exit "Failed to configure Vault PostgreSQL roles."
+}
+
+# Function to create a policy in Vault
+create_policy() {
+    local policy_name="$1"
+    local policy_content="$2"
+
+    log "Creating policy $policy_name..."
+
+    docker exec "$VAULT_CONTAINER_NAME" /bin/sh -c "
+        echo '$policy_content' > /tmp/$policy_name.hcl
+        vault policy write $policy_name /tmp/$policy_name.hcl || exit 1
+    " || error_exit "Failed to create policy $policy_name"
+
+    log "Policy $policy_name created successfully."
+}
+
+
+create_approle_and_store_credentials() {
+    local role_name="$1"
+    local policies="$2"
+    local role_id_file="$3"
+    local secret_id_file="$4"
+
+    log "Creating AppRole $role_name with policies: $policies..."
+
+    # Create the AppRole
+    docker exec "$VAULT_CONTAINER_NAME" vault write auth/approle/role/$role_name policies=$policies || error_exit "Failed to create AppRole $role_name"
+
+    log "AppRole $role_name created successfully."
+
+    # Check if the role_id_file directory exists and is writable
+    if [[ ! -d "$(dirname "$role_id_file")" || ! -w "$(dirname "$role_id_file")" ]]; then
+        error_exit "Directory $(dirname "$role_id_file") does not exist or is not writable"
+    fi
+
+    # Check if the secret_id_file directory exists and is writable
+    if [[ ! -d "$(dirname "$secret_id_file")" || ! -w "$(dirname "$secret_id_file")" ]]; then
+        error_exit "Directory $(dirname "$secret_id_file") does not exist or is not writable"
+    fi
+
+    # Retrieve and store the role_id
+    log "Retrieving role_id for AppRole $role_name..."
+    local role_id
+    role_id=$(docker exec "$VAULT_CONTAINER_NAME" vault read -format=json auth/approle/role/$role_name/role-id | jq -r '.data.role_id')
+
+    if [[ -z "$role_id" ]]; then
+        error_exit "Failed to retrieve role_id for AppRole $role_name"
+    fi
+
+    echo "$role_id" > "$role_id_file"
+    log "role_id saved to $role_id_file"
+
+    # Generate and store the secret_id
+    log "Generating secret_id for AppRole $role_name..."
+    local secret_id
+    secret_id=$(docker exec "$VAULT_CONTAINER_NAME" vault write -f -format=json auth/approle/role/$role_name/secret-id | jq -r '.data.secret_id')
+
+    if [[ -z "$secret_id" ]]; then
+        error_exit "Failed to generate secret_id for AppRole $role_name"
+    fi
+
+    echo "$secret_id" > "$secret_id_file"
+    log "secret_id saved to $secret_id_file"
+
+    # Check if the files are created successfully and have appropriate permissions
+    if [[ ! -f "$role_id_file" ]]; then
+        error_exit "role_id_file $role_id_file was not created"
+    fi
+
+    if [[ ! -f "$secret_id_file" ]]; then
+        error_exit "secret_id_file $secret_id_file was not created"
+    fi
+
+    # Set permissions to ensure files are secure (readable only by the owner)
+    chmod 600 "$role_id_file" || error_exit "Failed to set permissions for $role_id_file"
+    chmod 600 "$secret_id_file" || error_exit "Failed to set permissions for $secret_id_file"
+    
+    log "Permissions set to 600 for both role_id_file and secret_id_file"
 }
 
 # Main Vault secret configuration
@@ -260,6 +373,12 @@ main() {
 
     # Step 3: Configure Vault database secrets engine roles and static secrets
     configure_vault_postgresql_roles
+  
+   create_policy "vault-read-secrets-policy" 'path "database/creds/vault" { capabilities = ["read"] }'
+
+    create_approle_and_store_credentials "vault" "vault-read-secrets-policy" "../vault/config/role_id" "../vault/secrets/secret_id"
+
+
     configure_vault_secrets
 
     # Step 4: Fetch dynamic credentials from Vault

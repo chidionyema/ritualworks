@@ -17,7 +17,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT} 
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USERNAME};Password=${POSTGRES_PASSWORD}
       - Elasticsearch__Uri=http://elasticsearch:9200
-      - Stripe__ApiKey=${STRIPE_API_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - SocialMedia__Facebook__AppId=${FACEBOOK_APP_ID}
       - SocialMedia__Facebook__AppSecret=${FACEBOOK_APP_SECRET}
       - SocialMedia__Twitter__ApiKey=${TWITTER_API_KEY}
@@ -29,7 +29,8 @@ services:
       - VAULT_TOKEN=${VAULT_TOKEN}
     volumes:
       - uploads:/app/uploads
-      - postgres-creds:/vault/secrets  # Shared volume for credentials
+      - ../../vault/secrets:/vault/secrets
+      - ./app_logs:/logs
     networks:
       - internal_network
       - external_network
@@ -50,7 +51,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT} 
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USERNAME};Password=${POSTGRES_PASSWORD}
       - Elasticsearch__Uri=http://elasticsearch:9200
-      - Stripe__ApiKey=${STRIPE_API_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - SocialMedia__Facebook__AppId=${FACEBOOK_APP_ID}
       - SocialMedia__Facebook__AppSecret=${FACEBOOK_APP_SECRET}
       - SocialMedia__Twitter__ApiKey=${TWITTER_API_KEY}
@@ -62,7 +63,8 @@ services:
       - VAULT_TOKEN=${VAULT_TOKEN}
     volumes:
       - uploads:/app/uploads
-      - postgres-creds:/vault/secrets  # Shared volume for credentials
+      - ../../vault/secrets:/vault/secrets
+      - ./app_logs:/logs
     networks:
       - internal_network
       - external_network
@@ -83,7 +85,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USERNAME};Password=${POSTGRES_PASSWORD}
       - Elasticsearch__Uri=http://elasticsearch:9200
-      - Stripe__ApiKey=${STRIPE_API_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - SocialMedia__Facebook__AppId=${FACEBOOK_APP_ID}
       - SocialMedia__Facebook__AppSecret=${FACEBOOK_APP_SECRET}
       - SocialMedia__Twitter__ApiKey=${TWITTER_API_KEY}
@@ -93,7 +95,10 @@ services:
       - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
       - RABBITMQ_PASSWORD =${RABBITMQ_PASSWORD}
       - VAULT_TOKEN=${VAULT_TOKEN}
-  
+    volumes:
+      - uploads:/app/uploads
+      - ../../vault/secrets:/vault/secrets
+      - ./app_logs:/logs
     networks:
       - internal_network
       - external_network

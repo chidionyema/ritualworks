@@ -32,6 +32,7 @@ services:
       - "8200:8200"
     volumes:
       - ../../vault/data:/vault/data
+      - ../../vault/secrets:/vault/secrets
       - ../../vault/config:/vault/config
       - ../../scripts:/vault/scripts
       - vault-data:/vault/file             # Persistent data directory for Vault

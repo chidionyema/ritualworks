@@ -1,3 +1,4 @@
+// Program.cs
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -17,7 +18,6 @@ using RitualWorks.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using Microsoft.Extensions.Http;
 using System.Net.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -25,6 +25,8 @@ using Stripe;
 using RitualWorks.Repositories.RitualWorks.Repositories;
 using MassTransit;
 using Amazon.S3;
+using Minio;
+using RitualWorks.Models;
 
 public partial class Program
 {
@@ -49,9 +51,6 @@ public partial class Program
 
     public static async Task ConfigureServicesAsync(WebApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<DbCredentialsService>();
-    builder.Services.AddHostedService<DbCredentialsService>(sp => sp.GetRequiredService<DbCredentialsService>());
-
         // Configure BlobSettings
         builder.Services.Configure<BlobSettings>(builder.Configuration.GetSection("AzureBlobStorage"));
         // Configure VaultSettings
@@ -65,7 +64,7 @@ public partial class Program
         });
 
         // Register VaultService
-        builder.Services.AddSingleton(sp =>
+        builder.Services.AddSingleton<VaultService>(sp =>
         {
             var httpClientFactory = sp.GetRequiredService<IHttpClientFactory>();
             var httpClient = httpClientFactory.CreateClient(nameof(VaultService));
@@ -79,14 +78,21 @@ public partial class Program
             return new VaultService(httpClient, sp.GetRequiredService<ILogger<VaultService>>(), vaultToken);
         });
 
+        // Configure DatabaseCredentials
+        builder.Services.Configure<DatabaseCredentials>(builder.Configuration.GetSection("DatabaseCredentials"));
+
         // Build a temporary service provider to fetch secrets
         var tempProvider = builder.Services.BuildServiceProvider();
         var vaultService = tempProvider.GetRequiredService<VaultService>();
 
         // Fetch PostgreSQL vault user credentials dynamically
-        (string vaultUsername, string vaultPassword) = await vaultService.FetchPostgresCredentialsAsync("vault");
+        DatabaseCredentials dbCredentials = await vaultService.FetchPostgresCredentialsAsync("vault");
 
-        // Fetch other secrets from Vault
+        // Inject database credentials into configuration
+        builder.Configuration["DatabaseCredentials:Username"] = dbCredentials.Username;
+        builder.Configuration["DatabaseCredentials:Password"] = dbCredentials.Password;
+
+        // Fetch other secrets from Vault (static credentials)
         try
         {
             var secrets = await vaultService.FetchSecretsAsync(
@@ -94,7 +100,7 @@ public partial class Program
                 "jwt_key", "minio_access_key", "minio_secret_key", "rabbitmq_password"
             );
 
-            // Inject PostgreSQL vault credentials and other secrets into configuration
+            // Inject static secrets into configuration
             builder.Configuration.AddInMemoryCollection(new Dictionary<string, string>
             {
                 ["Jwt:Key"] = secrets["jwt_key"],
@@ -103,21 +109,16 @@ public partial class Program
                 ["MinIO:SecretKey"] = secrets["minio_secret_key"]
             });
 
-            // Set up the connection string using the vault-provided username and password
-            var postgresConnectionString = $"Host=postgres_primary;Port=5432;Database=your_postgres_db;Username={vaultUsername};Password={vaultPassword}";
-            builder.Configuration["ConnectionStrings:DefaultConnection"] = postgresConnectionString;
-
-            // Logging the configuration values
+            // Log the configuration values
             var loggerFactory = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>();
             var logger = loggerFactory.CreateLogger<Program>();
 
             logger.LogInformation("Secrets from Vault:");
             logger.LogInformation("Jwt Key: {JwtKey}", builder.Configuration["Jwt:Key"]);
-            logger.LogInformation("Postgres Vault Username: {VaultUsername}", vaultUsername);
+            logger.LogInformation("Postgres Vault Username: {VaultUsername}", dbCredentials.Username);
             logger.LogInformation("RabbitMQ Password: {RabbitMqPassword}", builder.Configuration["MassTransit:RabbitMq:Password"]);
             logger.LogInformation("MinIO Access Key: {MinioAccessKey}", builder.Configuration["MinIO:AccessKey"]);
             logger.LogInformation("MinIO Secret Key: {MinioSecretKey}", builder.Configuration["MinIO:SecretKey"]);
-
         }
         catch (HttpRequestException ex)
         {
@@ -126,17 +127,29 @@ public partial class Program
             throw;
         }
 
-        // Add PostgreSQL DbContext using dynamically configured Vault user credentials
-         builder.Services.AddDbContext<RitualWorksContext>(options =>
-    {
-        var dbCredentialsService = builder.Services.BuildServiceProvider().GetRequiredService<DbCredentialsService>();
-        var connectionString = $"Host=postgres_primary;Port=5432;Database=your_postgres_db;Username={dbCredentialsService.Username};Password={dbCredentialsService.Password}";
+        // Add DbContext using IOptionsMonitor<DatabaseCredentials>
+        builder.Services.AddDbContext<RitualWorksContext>((serviceProvider, options) =>
+        {
+            var dbCredsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<DatabaseCredentials>>();
+            var dbCreds = dbCredsMonitor.CurrentValue;
 
-        var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
-        logger.LogInformation("Connecting to PostgreSQL with connection string: {ConnectionString}", connectionString);
+            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
 
-        options.UseNpgsql(connectionString);
-    });
+            void ConfigureDbContext(DatabaseCredentials creds)
+            {
+                var postgresConnectionString = $"Host=postgres_primary;Port=5432;Database=your_postgres_db;Username={creds.Username};Password={creds.Password}";
+                logger.LogInformation("Connecting to PostgreSQL with connection string: {ConnectionString}", postgresConnectionString);
+                options.UseNpgsql(postgresConnectionString);
+            }
+
+            ConfigureDbContext(dbCreds);
+
+            dbCredsMonitor.OnChange(creds =>
+            {
+                ConfigureDbContext(creds);
+                logger.LogInformation("Database credentials changed. DbContext reconfigured.");
+            });
+        });
 
         // Add MassTransit with RabbitMQ and log connection details
         builder.Services.AddMassTransit(x =>
@@ -167,6 +180,17 @@ public partial class Program
 
                 cfg.ConfigureEndpoints(context);
             });
+        });
+
+        // Register MinioClient as a singleton
+        var minioConfig = builder.Configuration.GetSection("MinIO").Get<MinioConfiguration>();
+        builder.Services.AddSingleton<MinioClient>(sp =>
+        {
+            return (MinioClient)new MinioClient()
+                .WithEndpoint(minioConfig.Endpoint)
+                .WithCredentials(minioConfig.AccessKey, minioConfig.SecretKey)
+                .WithSSL(minioConfig.Secure) // Use SSL if 'Secure' is true
+                .Build();
         });
 
         // Add other services to the container
@@ -273,6 +297,9 @@ public partial class Program
                 }
             });
         });
+
+        // Add the CredentialRefreshService
+        builder.Services.AddHostedService<CredentialRefreshService>();
     }
 
     public static async Task ConfigurePipeline(WebApplication app)

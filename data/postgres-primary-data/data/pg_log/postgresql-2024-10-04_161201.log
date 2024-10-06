@@ -1,0 +1,649 @@
+2024-10-04 16:12:01.768 UTC [43] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-10-04 16:12:01.769 UTC [43] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-10-04 16:12:01.769 UTC [43] LOG:  listening on IPv6 address "::", port 5432
+2024-10-04 16:12:01.779 UTC [43] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-10-04 16:12:01.853 UTC [51] LOG:  database system was interrupted; last known up at 2024-10-04 09:56:48 UTC
+2024-10-04 16:12:03.526 UTC [53] FATAL:  the database system is starting up
+2024-10-04 16:12:05.566 UTC [57] FATAL:  the database system is starting up
+2024-10-04 16:12:07.606 UTC [61] FATAL:  the database system is starting up
+2024-10-04 16:12:07.727 UTC [71] FATAL:  the database system is starting up
+2024-10-04 16:12:09.625 UTC [73] FATAL:  the database system is starting up
+2024-10-04 16:12:10.471 UTC [51] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-10-04 16:12:10.519 UTC [51] LOG:  redo starts at 0/361CEF0
+2024-10-04 16:12:10.520 UTC [51] LOG:  invalid record length at 0/361D010: expected at least 24, got 0
+2024-10-04 16:12:10.520 UTC [51] LOG:  redo done at 0/361CFD8 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-10-04 16:12:10.567 UTC [49] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-10-04 16:12:10.802 UTC [49] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.025 s, sync=0.003 s, total=0.239 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB; lsn=0/361D010, redo lsn=0/361D010
+2024-10-04 16:12:10.807 UTC [43] LOG:  database system is ready to accept connections
+2024-10-04 16:12:11.766 UTC [87] LOG:  statement: DO $$
+	BEGIN
+	   IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'myuser') THEN
+	      CREATE ROLE myuser LOGIN PASSWORD 'your_actual_password';
+	      ALTER ROLE myuser CREATEDB;  -- Grant CREATEDB privilege
+	   ELSE
+	      ALTER ROLE myuser CREATEDB;  -- Ensure CREATEDB privilege is granted if the role exists
+	   END IF;
+	END
+	$$;
+2024-10-04 16:12:11.842 UTC [90] LOG:  statement: SELECT 1 FROM pg_database WHERE datname='your_postgres_db'
+2024-10-04 16:12:11.882 UTC [94] LOG:  statement: SELECT 1 FROM pg_roles WHERE rolname='myuser'
+2024-10-04 16:12:11.907 UTC [43] LOG:  received SIGHUP, reloading configuration files
+2024-10-04 16:12:17.051 UTC [106] LOG:  statement: SELECT 1 FROM pg_roles WHERE rolname='vault'
+2024-10-04 16:12:17.248 UTC [113] LOG:  statement: ALTER ROLE vault WITH PASSWORD 'your_actual_password' SUPERUSER CREATEROLE;
+2024-10-04 16:12:17.936 UTC [140] LOG:  statement: SELECT pg_reload_conf();
+2024-10-04 16:12:17.940 UTC [43] LOG:  received SIGHUP, reloading configuration files
+2024-10-04 16:12:18.165 UTC [147] LOG:  statement: GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "vault";
+2024-10-04 16:12:18.372 UTC [154] LOG:  statement: GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO "vault";
+2024-10-04 16:12:18.565 UTC [161] LOG:  statement: GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO "vault";
+2024-10-04 16:12:19.199 UTC [168] LOG:  statement: GRANT USAGE ON SCHEMA public TO "vault";
+2024-10-04 16:12:19.749 UTC [169] LOG:  statement: ;
+2024-10-04 16:12:22.220 UTC [169] LOG:  statement: ;
+2024-10-04 16:12:22.220 UTC [169] LOG:  statement: begin
+2024-10-04 16:12:22.221 UTC [169] LOG:  statement: CREATE ROLE "v-root-vault-Q66TVfT7zwsGT7tKkX5o-1728058342" WITH LOGIN PASSWORD 'ECRv-PBhOujsWXF3Y2gg' VALID UNTIL '2024-10-04 17:12:27+0000'
+2024-10-04 16:12:22.237 UTC [169] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-Q66TVfT7zwsGT7tKkX5o-1728058342"
+2024-10-04 16:12:22.259 UTC [169] LOG:  statement: commit
+2024-10-04 16:17:10.989 UTC [49] LOG:  checkpoint starting: time
+2024-10-04 16:17:14.098 UTC [49] LOG:  checkpoint complete: wrote 31 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=3.082 s, sync=0.013 s, total=3.110 s; sync files=13, longest=0.003 s, average=0.001 s; distance=154 kB, estimate=154 kB; lsn=0/3643B48, redo lsn=0/3643B10
+2024-10-04 16:24:48.077 UTC [169] LOG:  statement: ;
+2024-10-04 16:24:48.082 UTC [169] LOG:  statement: begin
+2024-10-04 16:24:48.084 UTC [169] LOG:  statement: CREATE ROLE "v-approle-vault-W21MOE4hlJhH1eRV0teH-1728059088" WITH LOGIN PASSWORD 'UxhcxwhtzWNK2h-aOnHL' VALID UNTIL '2024-10-04 17:24:53+0000'
+2024-10-04 16:24:48.123 UTC [169] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-approle-vault-W21MOE4hlJhH1eRV0teH-1728059088"
+2024-10-04 16:24:48.128 UTC [169] LOG:  statement: commit
+2024-10-04 16:24:48.424 UTC [169] LOG:  statement: ;
+2024-10-04 16:24:48.425 UTC [169] LOG:  statement: begin
+2024-10-04 16:24:48.426 UTC [169] LOG:  statement: ALTER ROLE "v-approle-vault-W21MOE4hlJhH1eRV0teH-1728059088" VALID UNTIL '2024-10-04 17:24:53+0000'
+2024-10-04 16:24:48.429 UTC [169] LOG:  statement: commit
+2024-10-04 16:24:49.371 UTC [169] LOG:  statement: ;
+2024-10-04 16:24:49.372 UTC [169] LOG:  statement: begin
+2024-10-04 16:24:49.372 UTC [169] LOG:  statement: ALTER ROLE "v-approle-vault-W21MOE4hlJhH1eRV0teH-1728059088" VALID UNTIL '2024-10-04 17:24:54+0000'
+2024-10-04 16:24:49.372 UTC [169] LOG:  statement: commit
+2024-10-04 16:24:49.396 UTC [169] LOG:  statement: ;
+2024-10-04 16:24:49.396 UTC [169] LOG:  statement: begin
+2024-10-04 16:24:49.396 UTC [169] LOG:  statement: ALTER ROLE "v-approle-vault-W21MOE4hlJhH1eRV0teH-1728059088" VALID UNTIL '2024-10-04 17:24:54+0000'
+2024-10-04 16:24:49.397 UTC [169] LOG:  statement: commit
+2024-10-04 16:24:56.819 UTC [800] LOG:  invalid length of startup packet
+2024-10-04 16:25:11.834 UTC [809] LOG:  invalid length of startup packet
+2024-10-04 16:25:26.864 UTC [819] LOG:  invalid length of startup packet
+2024-10-04 16:25:41.976 UTC [834] LOG:  invalid length of startup packet
+2024-10-04 16:25:56.820 UTC [846] LOG:  invalid length of startup packet
+2024-10-04 16:26:11.818 UTC [855] LOG:  invalid length of startup packet
+2024-10-04 16:26:26.884 UTC [873] LOG:  invalid length of startup packet
+2024-10-04 16:26:41.821 UTC [882] LOG:  invalid length of startup packet
+2024-10-04 16:26:56.817 UTC [901] LOG:  invalid length of startup packet
+2024-10-04 16:27:10.225 UTC [49] LOG:  checkpoint starting: time
+2024-10-04 16:27:11.824 UTC [910] LOG:  invalid length of startup packet
+2024-10-04 16:27:12.843 UTC [49] LOG:  checkpoint complete: wrote 25 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.576 s, sync=0.008 s, total=2.619 s; sync files=11, longest=0.003 s, average=0.001 s; distance=125 kB, estimate=151 kB; lsn=0/3663290, redo lsn=0/3663258
+2024-10-04 16:27:26.820 UTC [928] LOG:  invalid length of startup packet
+2024-10-04 16:27:27.119 UTC [169] LOG:  statement: ;
+2024-10-04 16:27:27.126 UTC [169] LOG:  statement: begin
+2024-10-04 16:27:27.146 UTC [169] LOG:  statement: CREATE ROLE "v-root-vault-9zddtTUiiLlp7XUkcD4w-1728059247" WITH LOGIN PASSWORD '-ZZlXyj6Q1ieDlUdT09l' VALID UNTIL '2024-10-04 17:27:32+0000'
+2024-10-04 16:27:27.209 UTC [169] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-9zddtTUiiLlp7XUkcD4w-1728059247"
+2024-10-04 16:27:27.223 UTC [169] LOG:  statement: commit
+2024-10-04 16:27:27.236 UTC [169] LOG:  statement: ;
+2024-10-04 16:27:27.237 UTC [169] LOG:  statement: begin
+2024-10-04 16:27:27.238 UTC [169] LOG:  statement: CREATE ROLE "v-root-vault-o2fpGf2r3hjUOp9LMeIL-1728059247" WITH LOGIN PASSWORD '6E1ZXl6nt5ZrAlRO6b-9' VALID UNTIL '2024-10-04 17:27:32+0000'
+2024-10-04 16:27:27.289 UTC [169] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-o2fpGf2r3hjUOp9LMeIL-1728059247"
+2024-10-04 16:27:27.459 UTC [169] LOG:  statement: commit
+2024-10-04 16:27:27.754 UTC [169] LOG:  statement: ;
+2024-10-04 16:27:27.768 UTC [169] LOG:  statement: begin
+2024-10-04 16:27:27.782 UTC [169] LOG:  statement: CREATE ROLE "v-root-vault-llA717QDVcgvICrUZWZS-1728059247" WITH LOGIN PASSWORD 'as5WltNW4tXhQn3KwD-6' VALID UNTIL '2024-10-04 17:27:32+0000'
+2024-10-04 16:27:27.928 UTC [169] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-llA717QDVcgvICrUZWZS-1728059247"
+2024-10-04 16:27:28.118 UTC [169] LOG:  statement: commit
+2024-10-04 16:27:34.602 UTC [169] LOG:  statement: ;
+2024-10-04 16:27:34.782 UTC [169] LOG:  execute lrupsc_1_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-04 16:27:34.782 UTC [169] DETAIL:  parameters: $1 = 'v-root-vault-9zddtTUiiLlp7XUkcD4w-1728059247'
+2024-10-04 16:27:34.919 UTC [169] LOG:  execute pgx_0: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-04 16:27:34.919 UTC [169] DETAIL:  parameters: $1 = 'v-root-vault-9zddtTUiiLlp7XUkcD4w-1728059247'
+2024-10-04 16:27:35.249 UTC [169] LOG:  execute lrupsc_1_1: SELECT current_database();
+2024-10-04 16:27:35.254 UTC [169] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-9zddtTUiiLlp7XUkcD4w-1728059247";
+2024-10-04 16:27:35.286 UTC [169] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-9zddtTUiiLlp7XUkcD4w-1728059247";
+2024-10-04 16:27:35.290 UTC [169] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-9zddtTUiiLlp7XUkcD4w-1728059247";
+2024-10-04 16:27:35.307 UTC [169] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-9zddtTUiiLlp7XUkcD4w-1728059247";
+2024-10-04 16:27:35.314 UTC [169] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-9zddtTUiiLlp7XUkcD4w-1728059247";
+2024-10-04 16:27:35.319 UTC [169] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-9zddtTUiiLlp7XUkcD4w-1728059247";
+2024-10-04 16:27:35.331 UTC [169] LOG:  execute pgx_1: DROP ROLE IF EXISTS "v-root-vault-9zddtTUiiLlp7XUkcD4w-1728059247";
+2024-10-04 16:27:35.361 UTC [169] LOG:  statement: deallocate "pgx_1"
+2024-10-04 16:27:35.362 UTC [169] LOG:  statement: deallocate "pgx_0"
+2024-10-04 16:27:35.363 UTC [169] LOG:  statement: ;
+2024-10-04 16:27:35.365 UTC [169] LOG:  execute lrupsc_1_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-04 16:27:35.365 UTC [169] DETAIL:  parameters: $1 = 'v-root-vault-o2fpGf2r3hjUOp9LMeIL-1728059247'
+2024-10-04 16:27:35.371 UTC [169] LOG:  execute pgx_2: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-04 16:27:35.371 UTC [169] DETAIL:  parameters: $1 = 'v-root-vault-o2fpGf2r3hjUOp9LMeIL-1728059247'
+2024-10-04 16:27:35.694 UTC [169] LOG:  execute lrupsc_1_1: SELECT current_database();
+2024-10-04 16:27:35.695 UTC [169] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-o2fpGf2r3hjUOp9LMeIL-1728059247";
+2024-10-04 16:27:35.704 UTC [169] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-o2fpGf2r3hjUOp9LMeIL-1728059247";
+2024-10-04 16:27:35.708 UTC [169] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-o2fpGf2r3hjUOp9LMeIL-1728059247";
+2024-10-04 16:27:35.714 UTC [169] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-o2fpGf2r3hjUOp9LMeIL-1728059247";
+2024-10-04 16:27:35.718 UTC [169] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-o2fpGf2r3hjUOp9LMeIL-1728059247";
+2024-10-04 16:27:35.721 UTC [169] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-o2fpGf2r3hjUOp9LMeIL-1728059247";
+2024-10-04 16:27:35.726 UTC [169] LOG:  execute pgx_3: DROP ROLE IF EXISTS "v-root-vault-o2fpGf2r3hjUOp9LMeIL-1728059247";
+2024-10-04 16:27:35.730 UTC [169] LOG:  statement: deallocate "pgx_3"
+2024-10-04 16:27:35.732 UTC [169] LOG:  statement: deallocate "pgx_2"
+2024-10-04 16:27:35.811 UTC [169] LOG:  statement: ;
+2024-10-04 16:27:35.812 UTC [169] LOG:  execute lrupsc_1_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-04 16:27:35.812 UTC [169] DETAIL:  parameters: $1 = 'v-root-vault-llA717QDVcgvICrUZWZS-1728059247'
+2024-10-04 16:27:35.818 UTC [169] LOG:  execute pgx_4: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-04 16:27:35.818 UTC [169] DETAIL:  parameters: $1 = 'v-root-vault-llA717QDVcgvICrUZWZS-1728059247'
+2024-10-04 16:27:36.066 UTC [169] LOG:  execute lrupsc_1_1: SELECT current_database();
+2024-10-04 16:27:36.067 UTC [169] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-llA717QDVcgvICrUZWZS-1728059247";
+2024-10-04 16:27:36.072 UTC [169] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-llA717QDVcgvICrUZWZS-1728059247";
+2024-10-04 16:27:36.078 UTC [169] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-llA717QDVcgvICrUZWZS-1728059247";
+2024-10-04 16:27:36.084 UTC [169] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-llA717QDVcgvICrUZWZS-1728059247";
+2024-10-04 16:27:36.086 UTC [169] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-llA717QDVcgvICrUZWZS-1728059247";
+2024-10-04 16:27:36.088 UTC [169] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-llA717QDVcgvICrUZWZS-1728059247";
+2024-10-04 16:27:36.092 UTC [169] LOG:  execute pgx_5: DROP ROLE IF EXISTS "v-root-vault-llA717QDVcgvICrUZWZS-1728059247";
+2024-10-04 16:27:36.095 UTC [169] LOG:  statement: deallocate "pgx_5"
+2024-10-04 16:27:36.095 UTC [169] LOG:  statement: deallocate "pgx_4"
+2024-10-04 16:27:41.822 UTC [936] LOG:  invalid length of startup packet
+2024-10-04 16:27:56.823 UTC [946] LOG:  invalid length of startup packet
+2024-10-04 16:28:11.821 UTC [964] LOG:  invalid length of startup packet
+2024-10-04 16:28:14.110 UTC [965] LOG:  statement: SELECT version();
+	
+	SELECT ns.nspname, t.oid, t.typname, t.typtype, t.typnotnull, t.elemtypoid
+	FROM (
+	    -- Arrays have typtype=b - this subquery identifies them by their typreceive and converts their typtype to a
+	    -- We first do this for the type (innerest-most subquery), and then for its element type
+	    -- This also returns the array element, range subtype and domain base type as elemtypoid
+	    SELECT
+	        typ.oid, typ.typnamespace, typ.typname, typ.typtype, typ.typrelid, typ.typnotnull, typ.relkind,
+	        elemtyp.oid AS elemtypoid, elemtyp.typname AS elemtypname, elemcls.relkind AS elemrelkind,
+	        CASE WHEN elemproc.proname='array_recv' THEN 'a' ELSE elemtyp.typtype END AS elemtyptype
+	    FROM (
+	        SELECT typ.oid, typnamespace, typname, typrelid, typnotnull, relkind, typelem AS elemoid,
+	            CASE WHEN proc.proname='array_recv' THEN 'a' ELSE typ.typtype END AS typtype,
+	            CASE
+	                WHEN proc.proname='array_recv' THEN typ.typelem
+	                WHEN typ.typtype='r' THEN rngsubtype
+	                WHEN typ.typtype='m' THEN (SELECT rngtypid FROM pg_range WHERE rngmultitypid = typ.oid)
+	                WHEN typ.typtype='d' THEN typ.typbasetype
+	            END AS elemtypoid
+	        FROM pg_type AS typ
+	        LEFT JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	        LEFT JOIN pg_proc AS proc ON proc.oid = typ.typreceive
+	        LEFT JOIN pg_range ON (pg_range.rngtypid = typ.oid)
+	    ) AS typ
+	    LEFT JOIN pg_type AS elemtyp ON elemtyp.oid = elemtypoid
+	    LEFT JOIN pg_class AS elemcls ON (elemcls.oid = elemtyp.typrelid)
+	    LEFT JOIN pg_proc AS elemproc ON elemproc.oid = elemtyp.typreceive
+	) AS t
+	JOIN pg_namespace AS ns ON (ns.oid = typnamespace)
+	WHERE
+	    typtype IN ('b', 'r', 'm', 'e', 'd') OR -- Base, range, multirange, enum, domain
+	    (typtype = 'c' AND relkind='c') OR -- User-defined free-standing composites (not table composites) by default
+	    (typtype = 'p' AND typname IN ('record', 'void', 'unknown')) OR -- Some special supported pseudo-types
+	    (typtype = 'a' AND (  -- Array of...
+	        elemtyptype IN ('b', 'r', 'm', 'e', 'd') OR -- Array of base, range, multirange, enum, domain
+	        (elemtyptype = 'p' AND elemtypname IN ('record', 'void')) OR -- Arrays of special supported pseudo-types
+	        (elemtyptype = 'c' AND elemrelkind='c') -- Array of user-defined free-standing composites (not table composites) by default
+	    ))
+	ORDER BY CASE
+	       WHEN typtype IN ('b', 'e', 'p') THEN 0           -- First base types, enums, pseudo-types
+	       WHEN typtype = 'c' THEN 1                        -- Composites after (fields loaded later in 2nd pass)
+	       WHEN typtype = 'r' THEN 2                        -- Ranges after
+	       WHEN typtype = 'm' THEN 3                        -- Multiranges after
+	       WHEN typtype = 'd' AND elemtyptype <> 'a' THEN 4 -- Domains over non-arrays after
+	       WHEN typtype = 'a' THEN 5                        -- Arrays after
+	       WHEN typtype = 'd' AND elemtyptype = 'a' THEN 6  -- Domains over arrays last
+	END;
+	
+	-- Load field definitions for (free-standing) composite types
+	SELECT typ.oid, att.attname, att.atttypid
+	FROM pg_type AS typ
+	JOIN pg_namespace AS ns ON (ns.oid = typ.typnamespace)
+	JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	JOIN pg_attribute AS att ON (att.attrelid = typ.typrelid)
+	WHERE
+	  (typ.typtype = 'c' AND cls.relkind='c') AND
+	  attnum > 0 AND     -- Don't load system attributes
+	  NOT attisdropped
+	ORDER BY typ.oid, att.attnum;
+	
+	-- Load enum fields
+	SELECT pg_type.oid, enumlabel
+	FROM pg_enum
+	JOIN pg_type ON pg_type.oid=enumtypid
+	ORDER BY oid, enumsortorder;
+	
+2024-10-04 16:28:14.306 UTC [966] LOG:  statement: SELECT version();
+	
+	SELECT ns.nspname, t.oid, t.typname, t.typtype, t.typnotnull, t.elemtypoid
+	FROM (
+	    -- Arrays have typtype=b - this subquery identifies them by their typreceive and converts their typtype to a
+	    -- We first do this for the type (innerest-most subquery), and then for its element type
+	    -- This also returns the array element, range subtype and domain base type as elemtypoid
+	    SELECT
+	        typ.oid, typ.typnamespace, typ.typname, typ.typtype, typ.typrelid, typ.typnotnull, typ.relkind,
+	        elemtyp.oid AS elemtypoid, elemtyp.typname AS elemtypname, elemcls.relkind AS elemrelkind,
+	        CASE WHEN elemproc.proname='array_recv' THEN 'a' ELSE elemtyp.typtype END AS elemtyptype
+	    FROM (
+	        SELECT typ.oid, typnamespace, typname, typrelid, typnotnull, relkind, typelem AS elemoid,
+	            CASE WHEN proc.proname='array_recv' THEN 'a' ELSE typ.typtype END AS typtype,
+	            CASE
+	                WHEN proc.proname='array_recv' THEN typ.typelem
+	                WHEN typ.typtype='r' THEN rngsubtype
+	                WHEN typ.typtype='m' THEN (SELECT rngtypid FROM pg_range WHERE rngmultitypid = typ.oid)
+	                WHEN typ.typtype='d' THEN typ.typbasetype
+	            END AS elemtypoid
+	        FROM pg_type AS typ
+	        LEFT JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	        LEFT JOIN pg_proc AS proc ON proc.oid = typ.typreceive
+	        LEFT JOIN pg_range ON (pg_range.rngtypid = typ.oid)
+	    ) AS typ
+	    LEFT JOIN pg_type AS elemtyp ON elemtyp.oid = elemtypoid
+	    LEFT JOIN pg_class AS elemcls ON (elemcls.oid = elemtyp.typrelid)
+	    LEFT JOIN pg_proc AS elemproc ON elemproc.oid = elemtyp.typreceive
+	) AS t
+	JOIN pg_namespace AS ns ON (ns.oid = typnamespace)
+	WHERE
+	    typtype IN ('b', 'r', 'm', 'e', 'd') OR -- Base, range, multirange, enum, domain
+	    (typtype = 'c' AND relkind='c') OR -- User-defined free-standing composites (not table composites) by default
+	    (typtype = 'p' AND typname IN ('record', 'void', 'unknown')) OR -- Some special supported pseudo-types
+	    (typtype = 'a' AND (  -- Array of...
+	        elemtyptype IN ('b', 'r', 'm', 'e', 'd') OR -- Array of base, range, multirange, enum, domain
+	        (elemtyptype = 'p' AND elemtypname IN ('record', 'void')) OR -- Arrays of special supported pseudo-types
+	        (elemtyptype = 'c' AND elemrelkind='c') -- Array of user-defined free-standing composites (not table composites) by default
+	    ))
+	ORDER BY CASE
+	       WHEN typtype IN ('b', 'e', 'p') THEN 0           -- First base types, enums, pseudo-types
+	       WHEN typtype = 'c' THEN 1                        -- Composites after (fields loaded later in 2nd pass)
+	       WHEN typtype = 'r' THEN 2                        -- Ranges after
+	       WHEN typtype = 'm' THEN 3                        -- Multiranges after
+	       WHEN typtype = 'd' AND elemtyptype <> 'a' THEN 4 -- Domains over non-arrays after
+	       WHEN typtype = 'a' THEN 5                        -- Arrays after
+	       WHEN typtype = 'd' AND elemtyptype = 'a' THEN 6  -- Domains over arrays last
+	END;
+	
+	-- Load field definitions for (free-standing) composite types
+	SELECT typ.oid, att.attname, att.atttypid
+	FROM pg_type AS typ
+	JOIN pg_namespace AS ns ON (ns.oid = typ.typnamespace)
+	JOIN pg_class AS cls ON (cls.oid = typ.typrelid)
+	JOIN pg_attribute AS att ON (att.attrelid = typ.typrelid)
+	WHERE
+	  (typ.typtype = 'c' AND cls.relkind='c') AND
+	  attnum > 0 AND     -- Don't load system attributes
+	  NOT attisdropped
+	ORDER BY typ.oid, att.attnum;
+	
+	-- Load enum fields
+	SELECT pg_type.oid, enumlabel
+	FROM pg_enum
+	JOIN pg_type ON pg_type.oid=enumtypid
+	ORDER BY oid, enumsortorder;
+	
+2024-10-04 16:28:14.376 UTC [966] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-04 16:28:14.475 UTC [966] LOG:  statement: DISCARD ALL
+2024-10-04 16:28:14.481 UTC [966] LOG:  execute <unnamed>: SELECT "MigrationId", "ProductVersion"
+	FROM "__EFMigrationsHistory"
+	ORDER BY "MigrationId"
+2024-10-04 16:28:14.529 UTC [966] LOG:  statement: DISCARD ALL
+2024-10-04 16:28:14.529 UTC [966] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-04 16:28:14.559 UTC [966] LOG:  statement: DISCARD ALL
+2024-10-04 16:28:14.560 UTC [966] LOG:  execute <unnamed>: SELECT EXISTS (
+	    SELECT 1 FROM pg_catalog.pg_class c
+	    JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+	    WHERE n.nspname='public' AND
+	          c.relname='__EFMigrationsHistory'
+	)
+2024-10-04 16:28:14.561 UTC [966] LOG:  statement: DISCARD ALL
+2024-10-04 16:28:14.565 UTC [966] LOG:  execute <unnamed>: SELECT "MigrationId", "ProductVersion"
+	FROM "__EFMigrationsHistory"
+	ORDER BY "MigrationId"
+2024-10-04 16:28:26.828 UTC [978] LOG:  invalid length of startup packet
+2024-10-04 16:28:41.820 UTC [995] LOG:  invalid length of startup packet
+2024-10-04 16:28:56.822 UTC [1005] LOG:  invalid length of startup packet
+2024-10-04 16:29:11.818 UTC [1022] LOG:  invalid length of startup packet
+2024-10-04 16:29:26.819 UTC [1032] LOG:  invalid length of startup packet
+2024-10-04 16:29:41.818 UTC [1049] LOG:  invalid length of startup packet
+2024-10-04 16:29:56.820 UTC [1059] LOG:  invalid length of startup packet
+2024-10-04 16:30:11.818 UTC [1076] LOG:  invalid length of startup packet
+2024-10-04 16:30:26.818 UTC [1086] LOG:  invalid length of startup packet
+2024-10-04 16:30:41.818 UTC [1103] LOG:  invalid length of startup packet
+2024-10-04 16:30:56.819 UTC [1113] LOG:  invalid length of startup packet
+2024-10-04 16:31:11.820 UTC [1130] LOG:  invalid length of startup packet
+2024-10-04 16:31:26.819 UTC [1140] LOG:  invalid length of startup packet
+2024-10-04 16:31:41.819 UTC [1157] LOG:  invalid length of startup packet
+2024-10-04 16:31:56.820 UTC [1166] LOG:  invalid length of startup packet
+2024-10-04 16:32:10.937 UTC [49] LOG:  checkpoint starting: time
+2024-10-04 16:32:11.820 UTC [1183] LOG:  invalid length of startup packet
+2024-10-04 16:32:16.216 UTC [49] LOG:  checkpoint complete: wrote 52 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=5.248 s, sync=0.011 s, total=5.280 s; sync files=18, longest=0.003 s, average=0.001 s; distance=401 kB, estimate=401 kB; lsn=0/36C7708, redo lsn=0/36C76D0
+2024-10-04 16:32:26.818 UTC [1193] LOG:  invalid length of startup packet
+2024-10-04 16:32:41.818 UTC [1210] LOG:  invalid length of startup packet
+2024-10-04 16:32:56.821 UTC [1220] LOG:  invalid length of startup packet
+2024-10-04 16:33:11.821 UTC [1237] LOG:  invalid length of startup packet
+2024-10-04 16:33:26.821 UTC [1247] LOG:  invalid length of startup packet
+2024-10-04 16:33:41.821 UTC [1264] LOG:  invalid length of startup packet
+2024-10-04 16:33:56.821 UTC [1274] LOG:  invalid length of startup packet
+2024-10-04 16:34:11.819 UTC [1291] LOG:  invalid length of startup packet
+2024-10-04 16:34:26.820 UTC [1301] LOG:  invalid length of startup packet
+2024-10-04 16:34:41.821 UTC [1318] LOG:  invalid length of startup packet
+2024-10-04 16:34:56.823 UTC [1328] LOG:  invalid length of startup packet
+2024-10-04 16:35:11.822 UTC [1337] LOG:  invalid length of startup packet
+2024-10-04 16:35:26.821 UTC [1355] LOG:  invalid length of startup packet
+2024-10-04 16:35:41.822 UTC [1364] LOG:  invalid length of startup packet
+2024-10-04 16:35:56.821 UTC [1382] LOG:  invalid length of startup packet
+2024-10-04 16:36:11.821 UTC [1391] LOG:  invalid length of startup packet
+2024-10-04 16:36:26.822 UTC [1409] LOG:  invalid length of startup packet
+2024-10-04 16:36:41.822 UTC [1418] LOG:  invalid length of startup packet
+2024-10-04 16:36:56.822 UTC [1436] LOG:  invalid length of startup packet
+2024-10-04 16:37:11.822 UTC [1445] LOG:  invalid length of startup packet
+2024-10-04 16:37:26.823 UTC [1463] LOG:  invalid length of startup packet
+2024-10-04 16:37:41.822 UTC [1472] LOG:  invalid length of startup packet
+2024-10-04 16:37:56.824 UTC [1490] LOG:  invalid length of startup packet
+2024-10-04 16:38:11.823 UTC [1499] LOG:  invalid length of startup packet
+2024-10-04 16:38:26.822 UTC [1518] LOG:  invalid length of startup packet
+2024-10-04 16:38:41.822 UTC [1527] LOG:  invalid length of startup packet
+2024-10-04 16:38:56.822 UTC [1544] LOG:  invalid length of startup packet
+2024-10-04 16:39:11.824 UTC [1553] LOG:  invalid length of startup packet
+2024-10-04 16:39:26.823 UTC [1571] LOG:  invalid length of startup packet
+2024-10-04 16:39:41.847 UTC [1580] LOG:  invalid length of startup packet
+2024-10-04 16:39:56.848 UTC [1597] LOG:  invalid length of startup packet
+2024-10-04 16:40:11.861 UTC [1606] LOG:  invalid length of startup packet
+2024-10-04 16:40:26.859 UTC [1624] LOG:  invalid length of startup packet
+2024-10-04 16:40:41.861 UTC [1634] LOG:  invalid length of startup packet
+2024-10-04 16:40:56.861 UTC [1652] LOG:  invalid length of startup packet
+2024-10-04 16:41:11.862 UTC [1661] LOG:  invalid length of startup packet
+2024-10-04 16:41:26.863 UTC [1679] LOG:  invalid length of startup packet
+2024-10-04 16:41:41.864 UTC [1688] LOG:  invalid length of startup packet
+2024-10-04 16:41:56.863 UTC [1706] LOG:  invalid length of startup packet
+2024-10-04 16:42:11.864 UTC [1715] LOG:  invalid length of startup packet
+2024-10-04 16:42:26.863 UTC [1734] LOG:  invalid length of startup packet
+2024-10-04 16:42:41.864 UTC [1743] LOG:  invalid length of startup packet
+2024-10-04 16:42:56.863 UTC [1761] LOG:  invalid length of startup packet
+2024-10-04 16:43:11.864 UTC [1770] LOG:  invalid length of startup packet
+2024-10-04 16:43:26.863 UTC [1788] LOG:  invalid length of startup packet
+2024-10-04 16:43:41.865 UTC [1797] LOG:  invalid length of startup packet
+2024-10-04 16:43:56.866 UTC [1815] LOG:  invalid length of startup packet
+2024-10-04 16:44:11.866 UTC [1824] LOG:  invalid length of startup packet
+2024-10-04 16:44:26.866 UTC [1842] LOG:  invalid length of startup packet
+2024-10-04 16:44:41.867 UTC [1851] LOG:  invalid length of startup packet
+2024-10-04 16:44:56.865 UTC [1867] LOG:  invalid length of startup packet
+2024-10-04 16:45:11.869 UTC [1878] LOG:  invalid length of startup packet
+2024-10-04 16:45:26.867 UTC [1888] LOG:  invalid length of startup packet
+2024-10-04 16:45:41.867 UTC [1905] LOG:  invalid length of startup packet
+2024-10-04 16:45:56.866 UTC [1915] LOG:  invalid length of startup packet
+2024-10-04 16:46:11.868 UTC [1932] LOG:  invalid length of startup packet
+2024-10-04 16:46:26.868 UTC [1942] LOG:  invalid length of startup packet
+2024-10-04 16:46:41.869 UTC [1959] LOG:  invalid length of startup packet
+2024-10-04 16:46:56.868 UTC [1969] LOG:  invalid length of startup packet
+2024-10-04 16:47:11.868 UTC [1986] LOG:  invalid length of startup packet
+2024-10-04 16:47:26.871 UTC [1996] LOG:  invalid length of startup packet
+2024-10-04 16:47:41.870 UTC [2013] LOG:  invalid length of startup packet
+2024-10-04 16:47:56.873 UTC [2023] LOG:  invalid length of startup packet
+2024-10-04 16:48:11.870 UTC [2041] LOG:  invalid length of startup packet
+2024-10-04 16:48:26.870 UTC [2051] LOG:  invalid length of startup packet
+2024-10-04 16:48:41.872 UTC [2068] LOG:  invalid length of startup packet
+2024-10-04 16:48:56.871 UTC [2078] LOG:  invalid length of startup packet
+2024-10-04 16:49:11.872 UTC [2095] LOG:  invalid length of startup packet
+2024-10-04 16:49:26.871 UTC [2105] LOG:  invalid length of startup packet
+2024-10-04 16:49:41.874 UTC [2122] LOG:  invalid length of startup packet
+2024-10-04 16:49:56.872 UTC [2132] LOG:  invalid length of startup packet
+2024-10-04 16:50:11.871 UTC [2149] LOG:  invalid length of startup packet
+2024-10-04 16:50:26.876 UTC [2159] LOG:  invalid length of startup packet
+2024-10-04 16:50:41.876 UTC [2176] LOG:  invalid length of startup packet
+2024-10-04 16:50:56.873 UTC [2187] LOG:  invalid length of startup packet
+2024-10-04 16:51:11.874 UTC [2205] LOG:  invalid length of startup packet
+2024-10-04 16:51:26.874 UTC [2215] LOG:  invalid length of startup packet
+2024-10-04 16:51:41.874 UTC [2232] LOG:  invalid length of startup packet
+2024-10-04 16:51:56.876 UTC [2242] LOG:  invalid length of startup packet
+2024-10-04 16:52:11.875 UTC [2259] LOG:  invalid length of startup packet
+2024-10-04 16:52:26.876 UTC [2269] LOG:  invalid length of startup packet
+2024-10-04 16:52:41.876 UTC [2286] LOG:  invalid length of startup packet
+2024-10-04 16:52:56.876 UTC [2297] LOG:  invalid length of startup packet
+2024-10-04 16:53:11.875 UTC [2314] LOG:  invalid length of startup packet
+2024-10-04 16:53:26.876 UTC [2325] LOG:  invalid length of startup packet
+2024-10-04 16:53:41.878 UTC [2335] LOG:  invalid length of startup packet
+2024-10-04 16:53:56.876 UTC [2352] LOG:  invalid length of startup packet
+2024-10-04 16:54:11.879 UTC [2361] LOG:  invalid length of startup packet
+2024-10-04 16:54:26.877 UTC [2379] LOG:  invalid length of startup packet
+2024-10-04 16:54:41.877 UTC [2389] LOG:  invalid length of startup packet
+2024-10-04 16:54:56.877 UTC [2407] LOG:  invalid length of startup packet
+2024-10-04 16:55:11.879 UTC [2416] LOG:  invalid length of startup packet
+2024-10-04 16:55:26.878 UTC [2434] LOG:  invalid length of startup packet
+2024-10-04 16:55:41.880 UTC [2443] LOG:  invalid length of startup packet
+2024-10-04 16:55:56.879 UTC [2460] LOG:  invalid length of startup packet
+2024-10-04 16:56:11.877 UTC [2469] LOG:  invalid length of startup packet
+2024-10-04 16:56:26.875 UTC [2488] LOG:  invalid length of startup packet
+2024-10-04 16:56:41.871 UTC [2498] LOG:  invalid length of startup packet
+2024-10-04 16:56:56.873 UTC [2516] LOG:  invalid length of startup packet
+2024-10-04 16:57:11.873 UTC [2525] LOG:  invalid length of startup packet
+2024-10-04 16:57:26.872 UTC [2542] LOG:  invalid length of startup packet
+2024-10-04 16:57:41.873 UTC [2550] LOG:  invalid length of startup packet
+2024-10-04 16:57:56.874 UTC [2568] LOG:  invalid length of startup packet
+2024-10-04 16:58:11.874 UTC [2577] LOG:  invalid length of startup packet
+2024-10-04 16:58:26.874 UTC [2595] LOG:  invalid length of startup packet
+2024-10-04 16:58:41.874 UTC [2604] LOG:  invalid length of startup packet
+2024-10-04 16:58:56.875 UTC [2622] LOG:  invalid length of startup packet
+2024-10-04 16:59:11.874 UTC [2631] LOG:  invalid length of startup packet
+2024-10-04 16:59:26.874 UTC [2649] LOG:  invalid length of startup packet
+2024-10-04 16:59:41.875 UTC [2658] LOG:  invalid length of startup packet
+2024-10-04 16:59:56.876 UTC [2675] LOG:  invalid length of startup packet
+2024-10-04 17:00:11.876 UTC [2684] LOG:  invalid length of startup packet
+2024-10-04 17:00:26.876 UTC [2702] LOG:  invalid length of startup packet
+2024-10-04 17:00:41.879 UTC [2710] LOG:  invalid length of startup packet
+2024-10-04 17:00:56.876 UTC [2730] LOG:  invalid length of startup packet
+2024-10-04 17:01:11.878 UTC [2739] LOG:  invalid length of startup packet
+2024-10-04 17:01:26.877 UTC [2757] LOG:  invalid length of startup packet
+2024-10-04 17:01:41.880 UTC [2766] LOG:  invalid length of startup packet
+2024-10-04 17:01:56.877 UTC [2776] LOG:  invalid length of startup packet
+2024-10-04 17:02:11.880 UTC [2793] LOG:  invalid length of startup packet
+2024-10-04 17:02:26.879 UTC [2803] LOG:  invalid length of startup packet
+2024-10-04 17:02:41.880 UTC [2820] LOG:  invalid length of startup packet
+2024-10-04 17:02:56.880 UTC [2830] LOG:  invalid length of startup packet
+2024-10-04 17:03:11.881 UTC [2847] LOG:  invalid length of startup packet
+2024-10-04 17:03:26.879 UTC [2857] LOG:  invalid length of startup packet
+2024-10-04 17:03:41.881 UTC [2874] LOG:  invalid length of startup packet
+2024-10-04 17:03:56.880 UTC [2884] LOG:  invalid length of startup packet
+2024-10-04 17:04:11.881 UTC [2902] LOG:  invalid length of startup packet
+2024-10-04 17:04:26.880 UTC [2912] LOG:  invalid length of startup packet
+2024-10-04 17:04:41.881 UTC [2929] LOG:  invalid length of startup packet
+2024-10-04 17:04:56.879 UTC [2940] LOG:  invalid length of startup packet
+2024-10-04 17:05:11.883 UTC [2957] LOG:  invalid length of startup packet
+2024-10-04 17:05:26.882 UTC [2968] LOG:  invalid length of startup packet
+2024-10-04 17:05:41.884 UTC [2985] LOG:  invalid length of startup packet
+2024-10-04 17:05:56.883 UTC [2995] LOG:  invalid length of startup packet
+2024-10-04 17:06:11.884 UTC [3012] LOG:  invalid length of startup packet
+2024-10-04 17:06:26.881 UTC [3023] LOG:  invalid length of startup packet
+2024-10-04 17:06:41.883 UTC [3040] LOG:  invalid length of startup packet
+2024-10-04 17:06:56.883 UTC [3050] LOG:  invalid length of startup packet
+2024-10-04 17:07:11.885 UTC [3067] LOG:  invalid length of startup packet
+2024-10-04 17:07:26.885 UTC [3077] LOG:  invalid length of startup packet
+2024-10-04 17:07:41.885 UTC [3094] LOG:  invalid length of startup packet
+2024-10-04 17:07:56.885 UTC [3104] LOG:  invalid length of startup packet
+2024-10-04 17:08:11.885 UTC [3123] LOG:  invalid length of startup packet
+2024-10-04 17:08:26.886 UTC [3133] LOG:  invalid length of startup packet
+2024-10-04 17:08:41.887 UTC [3150] LOG:  invalid length of startup packet
+2024-10-04 17:08:56.885 UTC [3160] LOG:  invalid length of startup packet
+2024-10-04 17:09:11.887 UTC [3177] LOG:  invalid length of startup packet
+2024-10-04 17:09:26.885 UTC [3187] LOG:  invalid length of startup packet
+2024-10-04 17:09:41.888 UTC [3204] LOG:  invalid length of startup packet
+2024-10-04 17:09:56.888 UTC [3214] LOG:  invalid length of startup packet
+2024-10-04 17:10:11.890 UTC [3223] LOG:  invalid length of startup packet
+2024-10-04 17:10:26.889 UTC [3241] LOG:  invalid length of startup packet
+2024-10-04 17:10:41.888 UTC [3250] LOG:  invalid length of startup packet
+2024-10-04 17:10:56.890 UTC [3268] LOG:  invalid length of startup packet
+2024-10-04 17:11:11.891 UTC [3277] LOG:  invalid length of startup packet
+2024-10-04 17:11:26.890 UTC [3295] LOG:  invalid length of startup packet
+2024-10-04 17:11:41.891 UTC [3304] LOG:  invalid length of startup packet
+2024-10-04 17:11:56.891 UTC [3322] LOG:  invalid length of startup packet
+2024-10-04 17:12:11.891 UTC [3331] LOG:  invalid length of startup packet
+2024-10-04 17:12:26.892 UTC [3349] LOG:  invalid length of startup packet
+2024-10-04 17:12:41.890 UTC [3358] LOG:  invalid length of startup packet
+2024-10-04 17:12:56.891 UTC [3376] LOG:  invalid length of startup packet
+2024-10-04 17:13:11.893 UTC [3386] LOG:  invalid length of startup packet
+2024-10-04 17:13:26.893 UTC [3404] LOG:  invalid length of startup packet
+2024-10-04 17:13:41.902 UTC [3413] LOG:  invalid length of startup packet
+2024-10-04 17:13:56.900 UTC [3431] LOG:  invalid length of startup packet
+2024-10-04 17:14:11.904 UTC [3440] LOG:  invalid length of startup packet
+2024-10-04 17:14:26.903 UTC [3458] LOG:  invalid length of startup packet
+2024-10-04 17:14:41.904 UTC [3467] LOG:  invalid length of startup packet
+2024-10-04 17:14:56.904 UTC [3486] LOG:  invalid length of startup packet
+2024-10-04 17:15:11.905 UTC [3495] LOG:  invalid length of startup packet
+2024-10-04 17:15:26.906 UTC [3514] LOG:  invalid length of startup packet
+2024-10-04 17:15:41.906 UTC [3523] LOG:  invalid length of startup packet
+2024-10-04 17:15:56.906 UTC [3540] LOG:  invalid length of startup packet
+2024-10-04 17:16:11.907 UTC [3549] LOG:  invalid length of startup packet
+2024-10-04 17:16:26.906 UTC [3569] LOG:  invalid length of startup packet
+2024-10-04 17:16:41.906 UTC [3578] LOG:  invalid length of startup packet
+2024-10-04 17:16:56.908 UTC [3596] LOG:  invalid length of startup packet
+2024-10-04 17:17:11.909 UTC [3606] LOG:  invalid length of startup packet
+2024-10-04 17:17:26.909 UTC [3623] LOG:  invalid length of startup packet
+2024-10-04 17:17:41.909 UTC [3632] LOG:  invalid length of startup packet
+2024-10-04 17:17:56.907 UTC [3650] LOG:  invalid length of startup packet
+2024-10-04 17:18:11.908 UTC [3659] LOG:  invalid length of startup packet
+2024-10-04 17:18:26.920 UTC [3677] LOG:  invalid length of startup packet
+2024-10-04 17:18:41.909 UTC [3686] LOG:  invalid length of startup packet
+2024-10-04 17:18:56.910 UTC [3696] LOG:  invalid length of startup packet
+2024-10-04 17:19:11.913 UTC [3713] LOG:  invalid length of startup packet
+2024-10-04 17:19:26.912 UTC [3722] LOG:  invalid length of startup packet
+2024-10-04 17:19:41.914 UTC [3739] LOG:  invalid length of startup packet
+2024-10-04 17:19:56.911 UTC [3749] LOG:  invalid length of startup packet
+2024-10-04 17:20:11.913 UTC [3766] LOG:  invalid length of startup packet
+2024-10-04 17:20:26.917 UTC [3776] LOG:  invalid length of startup packet
+2024-10-04 17:20:41.915 UTC [3793] LOG:  invalid length of startup packet
+2024-10-04 17:20:56.915 UTC [3803] LOG:  invalid length of startup packet
+2024-10-04 17:21:11.914 UTC [3821] LOG:  invalid length of startup packet
+2024-10-04 17:21:26.913 UTC [3831] LOG:  invalid length of startup packet
+2024-10-04 17:21:41.915 UTC [3847] LOG:  invalid length of startup packet
+2024-10-04 17:21:56.920 UTC [3857] LOG:  invalid length of startup packet
+2024-10-04 17:22:11.915 UTC [3874] LOG:  invalid length of startup packet
+2024-10-04 17:22:26.915 UTC [3884] LOG:  invalid length of startup packet
+2024-10-04 17:22:41.916 UTC [3901] LOG:  invalid length of startup packet
+2024-10-04 17:22:56.917 UTC [3911] LOG:  invalid length of startup packet
+2024-10-04 17:23:11.917 UTC [3929] LOG:  invalid length of startup packet
+2024-10-04 17:23:26.917 UTC [3939] LOG:  invalid length of startup packet
+2024-10-04 17:23:41.916 UTC [3956] LOG:  invalid length of startup packet
+2024-10-04 17:23:56.917 UTC [3966] LOG:  invalid length of startup packet
+2024-10-04 17:24:11.918 UTC [3983] LOG:  invalid length of startup packet
+2024-10-04 17:24:26.919 UTC [3993] LOG:  invalid length of startup packet
+2024-10-04 17:24:41.920 UTC [4011] LOG:  invalid length of startup packet
+2024-10-04 17:24:56.919 UTC [4021] LOG:  invalid length of startup packet
+2024-10-04 17:25:11.921 UTC [4038] LOG:  invalid length of startup packet
+2024-10-04 17:25:26.919 UTC [4048] LOG:  invalid length of startup packet
+2024-10-04 17:25:41.921 UTC [4065] LOG:  invalid length of startup packet
+2024-10-04 17:25:56.922 UTC [4075] LOG:  invalid length of startup packet
+2024-10-04 17:26:11.922 UTC [4093] LOG:  invalid length of startup packet
+2024-10-04 17:26:26.924 UTC [4103] LOG:  invalid length of startup packet
+2024-10-04 17:26:41.922 UTC [4120] LOG:  invalid length of startup packet
+2024-10-04 17:26:56.922 UTC [4130] LOG:  invalid length of startup packet
+2024-10-04 17:27:11.922 UTC [4146] LOG:  invalid length of startup packet
+2024-10-04 17:27:26.925 UTC [4157] LOG:  invalid length of startup packet
+2024-10-04 17:27:41.926 UTC [4166] LOG:  invalid length of startup packet
+2024-10-04 17:27:56.924 UTC [4185] LOG:  invalid length of startup packet
+2024-10-04 17:28:11.925 UTC [4194] LOG:  invalid length of startup packet
+2024-10-04 17:28:26.925 UTC [4212] LOG:  invalid length of startup packet
+2024-10-04 17:28:41.928 UTC [4221] LOG:  invalid length of startup packet
+2024-10-04 17:28:56.925 UTC [4239] LOG:  invalid length of startup packet
+2024-10-04 17:29:11.928 UTC [4248] LOG:  invalid length of startup packet
+2024-10-04 17:29:26.925 UTC [4266] LOG:  invalid length of startup packet
+2024-10-04 17:29:41.919 UTC [4275] LOG:  invalid length of startup packet
+2024-10-04 17:29:56.919 UTC [4293] LOG:  invalid length of startup packet
+2024-10-04 17:30:11.916 UTC [4302] LOG:  invalid length of startup packet
+2024-10-04 17:30:26.914 UTC [4320] LOG:  invalid length of startup packet
+2024-10-04 17:30:41.915 UTC [4329] LOG:  invalid length of startup packet
+2024-10-04 17:30:56.917 UTC [4347] LOG:  invalid length of startup packet
+2024-10-04 17:31:11.915 UTC [4356] LOG:  invalid length of startup packet
+2024-10-04 17:31:26.916 UTC [4374] LOG:  invalid length of startup packet
+2024-10-04 17:31:41.917 UTC [4383] LOG:  invalid length of startup packet
+2024-10-04 17:31:56.918 UTC [4401] LOG:  invalid length of startup packet
+2024-10-04 17:32:11.918 UTC [4410] LOG:  invalid length of startup packet
+2024-10-04 17:32:26.919 UTC [4428] LOG:  invalid length of startup packet
+2024-10-04 17:32:41.918 UTC [4437] LOG:  invalid length of startup packet
+2024-10-04 17:32:56.919 UTC [4456] LOG:  invalid length of startup packet
+2024-10-04 17:33:11.918 UTC [4466] LOG:  invalid length of startup packet
+2024-10-04 17:33:26.919 UTC [4483] LOG:  invalid length of startup packet
+2024-10-04 17:33:41.920 UTC [4492] LOG:  invalid length of startup packet
+2024-10-04 17:33:56.922 UTC [4509] LOG:  invalid length of startup packet
+2024-10-04 17:34:11.922 UTC [4518] LOG:  invalid length of startup packet
+2024-10-04 17:34:26.921 UTC [4536] LOG:  invalid length of startup packet
+2024-10-04 17:34:41.923 UTC [4545] LOG:  invalid length of startup packet
+2024-10-04 17:34:56.920 UTC [4555] LOG:  invalid length of startup packet
+2024-10-04 17:35:11.922 UTC [4572] LOG:  invalid length of startup packet
+2024-10-04 17:35:26.924 UTC [4582] LOG:  invalid length of startup packet
+2024-10-04 17:35:41.923 UTC [4599] LOG:  invalid length of startup packet
+2024-10-04 17:35:56.925 UTC [4609] LOG:  invalid length of startup packet
+2024-10-04 17:36:11.924 UTC [4626] LOG:  invalid length of startup packet
+2024-10-04 17:36:26.925 UTC [4637] LOG:  invalid length of startup packet
+2024-10-04 17:36:41.924 UTC [4654] LOG:  invalid length of startup packet
+2024-10-04 17:36:56.924 UTC [4664] LOG:  invalid length of startup packet
+2024-10-04 17:37:11.926 UTC [4681] LOG:  invalid length of startup packet
+2024-10-04 17:37:26.925 UTC [4691] LOG:  invalid length of startup packet
+2024-10-04 17:37:41.926 UTC [4708] LOG:  invalid length of startup packet
+2024-10-04 17:37:56.927 UTC [4718] LOG:  invalid length of startup packet
+2024-10-04 17:38:11.938 UTC [4735] LOG:  invalid length of startup packet
+2024-10-04 17:38:26.926 UTC [4746] LOG:  invalid length of startup packet
+2024-10-04 17:38:41.927 UTC [4763] LOG:  invalid length of startup packet
+2024-10-04 17:38:56.927 UTC [4774] LOG:  invalid length of startup packet
+2024-10-04 17:39:11.929 UTC [4791] LOG:  invalid length of startup packet
+2024-10-04 17:39:26.927 UTC [4801] LOG:  invalid length of startup packet
+2024-10-04 17:39:41.929 UTC [4818] LOG:  invalid length of startup packet
+2024-10-04 17:39:56.928 UTC [4829] LOG:  invalid length of startup packet
+2024-10-04 17:40:11.930 UTC [4846] LOG:  invalid length of startup packet
+2024-10-04 17:40:26.929 UTC [4855] LOG:  invalid length of startup packet
+2024-10-04 17:40:41.930 UTC [4872] LOG:  invalid length of startup packet
+2024-10-04 17:40:56.931 UTC [4882] LOG:  invalid length of startup packet
+2024-10-04 17:41:11.932 UTC [4899] LOG:  invalid length of startup packet
+2024-10-04 17:41:26.931 UTC [4909] LOG:  invalid length of startup packet
+2024-10-04 17:41:41.932 UTC [4927] LOG:  invalid length of startup packet
+2024-10-04 17:41:56.932 UTC [4937] LOG:  invalid length of startup packet
+2024-10-04 17:42:11.933 UTC [4954] LOG:  invalid length of startup packet
+2024-10-04 17:42:26.932 UTC [4964] LOG:  invalid length of startup packet
+2024-10-04 17:42:41.934 UTC [4981] LOG:  invalid length of startup packet
+2024-10-04 17:42:56.935 UTC [4991] LOG:  invalid length of startup packet
+2024-10-04 17:43:11.935 UTC [5008] LOG:  invalid length of startup packet
+2024-10-04 17:43:26.934 UTC [5018] LOG:  invalid length of startup packet
+2024-10-04 17:43:41.941 UTC [5027] LOG:  invalid length of startup packet
+2024-10-04 17:43:56.935 UTC [5045] LOG:  invalid length of startup packet
+2024-10-04 17:44:11.938 UTC [5054] LOG:  invalid length of startup packet
+2024-10-04 17:44:26.937 UTC [5071] LOG:  invalid length of startup packet
+2024-10-04 17:44:41.938 UTC [5080] LOG:  invalid length of startup packet
+2024-10-04 17:44:56.937 UTC [5097] LOG:  invalid length of startup packet
+2024-10-04 17:45:11.947 UTC [5106] LOG:  invalid length of startup packet
+2024-10-04 17:45:26.946 UTC [5124] LOG:  invalid length of startup packet
+2024-10-04 17:45:41.951 UTC [5133] LOG:  invalid length of startup packet
+2024-10-04 17:45:56.950 UTC [5152] LOG:  invalid length of startup packet
+2024-10-04 17:46:11.952 UTC [5161] LOG:  invalid length of startup packet
+2024-10-04 17:46:26.952 UTC [5178] LOG:  invalid length of startup packet
+2024-10-04 17:46:41.953 UTC [5187] LOG:  invalid length of startup packet
+2024-10-04 17:46:56.953 UTC [5206] LOG:  invalid length of startup packet
+2024-10-04 17:47:11.952 UTC [5215] LOG:  invalid length of startup packet
+2024-10-04 17:47:26.956 UTC [5233] LOG:  invalid length of startup packet
+2024-10-04 17:47:41.956 UTC [5242] LOG:  invalid length of startup packet
+2024-10-04 17:47:56.955 UTC [5260] LOG:  invalid length of startup packet
+2024-10-04 17:48:11.955 UTC [5269] LOG:  invalid length of startup packet
+2024-10-04 17:48:26.955 UTC [5287] LOG:  invalid length of startup packet
+2024-10-04 17:48:41.957 UTC [5296] LOG:  invalid length of startup packet
+2024-10-04 17:48:56.957 UTC [5314] LOG:  invalid length of startup packet
+2024-10-04 17:49:11.958 UTC [5323] LOG:  invalid length of startup packet
+2024-10-04 17:49:26.959 UTC [5340] LOG:  invalid length of startup packet
+2024-10-04 17:49:41.959 UTC [5349] LOG:  invalid length of startup packet
+2024-10-04 17:49:56.960 UTC [5366] LOG:  invalid length of startup packet
+2024-10-04 17:50:11.959 UTC [5375] LOG:  invalid length of startup packet
+2024-10-04 17:50:26.960 UTC [5393] LOG:  invalid length of startup packet
+2024-10-04 17:50:42.626 UTC [5402] LOG:  could not receive data from client: Connection reset by peer
+2024-10-04 17:50:42.821 UTC [5403] LOG:  invalid length of startup packet
+2024-10-04 17:50:57.098 UTC [5421] LOG:  invalid length of startup packet
+2024-10-04 17:51:11.963 UTC [5430] LOG:  invalid length of startup packet
+2024-10-04 17:51:26.967 UTC [5440] LOG:  invalid length of startup packet
+2024-10-04 17:51:41.963 UTC [5456] LOG:  invalid length of startup packet
+2024-10-04 17:51:56.963 UTC [5466] LOG:  invalid length of startup packet
+2024-10-04 17:52:11.962 UTC [5483] LOG:  invalid length of startup packet
+2024-10-04 17:52:26.963 UTC [5493] LOG:  invalid length of startup packet
+2024-10-04 17:52:41.965 UTC [5510] LOG:  invalid length of startup packet
+2024-10-04 17:52:56.965 UTC [5520] LOG:  invalid length of startup packet
+2024-10-04 17:53:11.965 UTC [5537] LOG:  invalid length of startup packet
+2024-10-04 17:53:26.965 UTC [5547] LOG:  invalid length of startup packet
+2024-10-04 17:53:41.964 UTC [5564] LOG:  invalid length of startup packet
+2024-10-04 17:53:56.966 UTC [5574] LOG:  invalid length of startup packet
+2024-10-04 17:54:11.966 UTC [5591] LOG:  invalid length of startup packet
+2024-10-04 17:54:26.967 UTC [5601] LOG:  invalid length of startup packet

@@ -1,0 +1,64 @@
+2024-10-01 14:56:32.509 UTC [44] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-10-01 14:56:32.514 UTC [44] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-10-01 14:56:32.514 UTC [44] LOG:  listening on IPv6 address "::", port 5432
+2024-10-01 14:56:32.529 UTC [44] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-10-01 14:56:32.601 UTC [52] LOG:  database system was interrupted; last known up at 2024-10-01 14:52:38 UTC
+2024-10-01 14:56:33.066 UTC [54] FATAL:  the database system is starting up
+2024-10-01 14:56:35.084 UTC [58] FATAL:  the database system is starting up
+2024-10-01 14:56:36.124 UTC [52] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-10-01 14:56:36.197 UTC [52] LOG:  redo starts at 0/2A7C260
+2024-10-01 14:56:36.208 UTC [52] LOG:  invalid record length at 0/2A8ADA8: expected at least 24, got 0
+2024-10-01 14:56:36.208 UTC [52] LOG:  redo done at 0/2A8AD70 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.01 s
+2024-10-01 14:56:36.251 UTC [50] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-10-01 14:56:36.411 UTC [50] LOG:  checkpoint complete: wrote 12 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.021 s, sync=0.006 s, total=0.162 s; sync files=5, longest=0.004 s, average=0.002 s; distance=58 kB, estimate=58 kB; lsn=0/2A8ADA8, redo lsn=0/2A8ADA8
+2024-10-01 14:56:36.521 UTC [44] LOG:  database system is ready to accept connections
+2024-10-01 14:56:38.589 UTC [80] LOG:  statement: DO $$
+	BEGIN
+	   IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'myuser') THEN
+	      CREATE ROLE myuser LOGIN PASSWORD 'your_actual_password';
+	      ALTER ROLE myuser CREATEDB;  -- Grant CREATEDB privilege
+	   ELSE
+	      ALTER ROLE myuser CREATEDB;  -- Ensure CREATEDB privilege is granted if the role exists
+	   END IF;
+	END
+	$$;
+2024-10-01 14:56:39.606 UTC [83] LOG:  statement: SELECT 1 FROM pg_database WHERE datname='your_postgres_db'
+2024-10-01 14:56:39.827 UTC [87] LOG:  statement: SELECT 1 FROM pg_roles WHERE rolname='myuser'
+2024-10-01 14:56:40.156 UTC [44] LOG:  received SIGHUP, reloading configuration files
+2024-10-01 15:01:36.390 UTC [50] LOG:  checkpoint starting: time
+2024-10-01 15:01:36.595 UTC [50] LOG:  checkpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.107 s, sync=0.002 s, total=0.206 s; sync files=2, longest=0.001 s, average=0.001 s; distance=6 kB, estimate=53 kB; lsn=0/2A8C858, redo lsn=0/2A8C820
+2024-10-01 15:43:18.869 UTC [2424] LOG:  statement: SELECT 1 FROM pg_roles WHERE rolname='vault'
+2024-10-01 15:43:19.112 UTC [2431] LOG:  statement: ALTER ROLE vault WITH PASSWORD 'your_actual_password' SUPERUSER CREATEROLE;
+2024-10-01 15:43:19.681 UTC [2450] LOG:  statement: SELECT pg_reload_conf();
+2024-10-01 15:43:19.841 UTC [44] LOG:  received SIGHUP, reloading configuration files
+2024-10-01 15:43:20.039 UTC [2457] LOG:  statement: GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "vault";
+2024-10-01 15:43:20.238 UTC [2464] LOG:  statement: GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO "vault";
+2024-10-01 15:43:20.648 UTC [2471] LOG:  statement: GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO "vault";
+2024-10-01 15:43:20.849 UTC [2478] LOG:  statement: GRANT USAGE ON SCHEMA public TO "vault";
+2024-10-01 15:43:21.669 UTC [2479] LOG:  statement: ;
+2024-10-01 15:43:23.040 UTC [2479] LOG:  statement: ;
+2024-10-01 15:43:23.041 UTC [2479] LOG:  statement: begin
+2024-10-01 15:43:23.043 UTC [2479] LOG:  statement: CREATE ROLE "v-root-vault-D8aZkxJvhLpitTC5g6U9-1727797403" WITH LOGIN PASSWORD 'MG5na-ReBFUr5R3IIXH4' VALID UNTIL '2024-10-01 16:43:28+0000'
+2024-10-01 15:43:23.056 UTC [2479] LOG:  statement: GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO "v-root-vault-D8aZkxJvhLpitTC5g6U9-1727797403"
+2024-10-01 15:43:23.067 UTC [2479] LOG:  statement: commit
+2024-10-01 15:46:37.841 UTC [50] LOG:  checkpoint starting: time
+2024-10-01 15:46:39.347 UTC [50] LOG:  checkpoint complete: wrote 15 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.474 s, sync=0.016 s, total=1.506 s; sync files=9, longest=0.009 s, average=0.002 s; distance=102 kB, estimate=102 kB; lsn=0/2AA6228, redo lsn=0/2AA61F0
+2024-10-01 16:43:23.156 UTC [5475] LOG:  statement: ;
+2024-10-01 16:43:23.157 UTC [5475] LOG:  statement: ;
+2024-10-01 16:43:23.199 UTC [5475] LOG:  execute lrupsc_1_0: SELECT exists (SELECT rolname FROM pg_roles WHERE rolname=$1);
+2024-10-01 16:43:23.199 UTC [5475] DETAIL:  parameters: $1 = 'v-root-vault-D8aZkxJvhLpitTC5g6U9-1727797403'
+2024-10-01 16:43:23.251 UTC [5475] LOG:  execute pgx_0: SELECT DISTINCT table_schema FROM information_schema.role_column_grants WHERE grantee=$1;
+2024-10-01 16:43:23.251 UTC [5475] DETAIL:  parameters: $1 = 'v-root-vault-D8aZkxJvhLpitTC5g6U9-1727797403'
+2024-10-01 16:43:23.445 UTC [5475] LOG:  execute lrupsc_1_1: SELECT current_database();
+2024-10-01 16:43:23.446 UTC [5475] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-D8aZkxJvhLpitTC5g6U9-1727797403";
+2024-10-01 16:43:23.452 UTC [5475] LOG:  statement: REVOKE USAGE ON SCHEMA "public" FROM "v-root-vault-D8aZkxJvhLpitTC5g6U9-1727797403";
+2024-10-01 16:43:23.452 UTC [5475] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM "v-root-vault-D8aZkxJvhLpitTC5g6U9-1727797403";
+2024-10-01 16:43:23.453 UTC [5475] LOG:  statement: REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM "v-root-vault-D8aZkxJvhLpitTC5g6U9-1727797403";
+2024-10-01 16:43:23.454 UTC [5475] LOG:  statement: REVOKE USAGE ON SCHEMA public FROM "v-root-vault-D8aZkxJvhLpitTC5g6U9-1727797403";
+2024-10-01 16:43:23.455 UTC [5475] LOG:  statement: REVOKE CONNECT ON DATABASE "your_postgres_db" FROM "v-root-vault-D8aZkxJvhLpitTC5g6U9-1727797403";
+2024-10-01 16:43:23.458 UTC [5475] LOG:  execute pgx_1: DROP ROLE IF EXISTS "v-root-vault-D8aZkxJvhLpitTC5g6U9-1727797403";
+2024-10-01 16:43:23.466 UTC [5475] LOG:  statement: deallocate "pgx_1"
+2024-10-01 16:43:23.467 UTC [5475] LOG:  statement: deallocate "pgx_0"
+2024-10-01 16:46:38.008 UTC [50] LOG:  checkpoint starting: time
+2024-10-01 16:46:39.979 UTC [50] LOG:  checkpoint complete: wrote 20 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.946 s, sync=0.008 s, total=1.972 s; sync files=8, longest=0.002 s, average=0.001 s; distance=98 kB, estimate=102 kB; lsn=0/2ABEA98, redo lsn=0/2ABEA60
+2024-10-02 10:40:50.313 UTC [14444] LOG:  statement: SELECT 1 FROM pg_roles WHERE rolname='vault'

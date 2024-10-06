@@ -19,7 +19,7 @@ namespace RitualWorks.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AssetsController2 : ControllerBase
+    public class Assets2Controller : ControllerBase
     {
         private readonly MinioClient _minioClient;
         private readonly IProductRepository _productRepository;
@@ -30,7 +30,7 @@ namespace RitualWorks.Controllers
         private const long _maxFileSize = 100 * 1024 * 1024; // 100 MB
         private readonly string _bucketName = "ritualworks-bucket"; // Replace with your bucket name
 
-        public AssetsController2(MinioClient minioClient, IProductRepository productRepository, ILogger<AssetsController> logger)
+        public Assets2Controller(MinioClient minioClient, IProductRepository productRepository, ILogger<AssetsController> logger)
         {
             _minioClient = minioClient ?? throw new ArgumentNullException(nameof(minioClient));
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
@@ -214,32 +214,30 @@ private async Task InitializeBucketAsync()
 
             // Upload file to MinIO
          var objectName = $"{username}/{type}/{fileName}";
-await using (var stream = new FileStream(tempFilePath, FileMode.Open, FileAccess.Read))
-{
-    try
-    {
-        _logger.LogInformation("Uploading file to MinIO: {ObjectName}", objectName);
+            await using (var stream = new FileStream(tempFilePath, FileMode.Open, FileAccess.Read))
+            {
+                try
+                {
+                    _logger.LogInformation("Uploading file to MinIO: {ObjectName}", objectName);
 
-        // Create PutObjectArgs with the required parameters
-        var putObjectArgs = new PutObjectArgs()
-            .WithBucket(_bucketName)         // Specify the bucket name
-            .WithObject(objectName)          // Specify the object name
-            .WithStreamData(stream)          // Set the stream data
-            .WithObjectSize(stream.Length)   // Specify the length of the stream
-            .WithContentType("application/octet-stream"); // Set content type
+                    // Create PutObjectArgs with the required parameters
+                    var putObjectArgs = new PutObjectArgs()
+                        .WithBucket(_bucketName)         // Specify the bucket name
+                        .WithObject(objectName)          // Specify the object name
+                        .WithStreamData(stream)          // Set the stream data
+                        .WithObjectSize(stream.Length)   // Specify the length of the stream
+                        .WithContentType("application/octet-stream"); // Set content type
 
-        await _minioClient.PutObjectAsync(putObjectArgs);
-        
-        _logger.LogInformation("File uploaded to MinIO successfully: {ObjectName}", objectName);
-    }
-    catch (MinioException ex)
-    {
-        _logger.LogError(ex, "Error occurred while uploading to MinIO: {Message}", ex.Message);
-        throw new Exception("Failed to upload to MinIO.", ex);
-    }
-}
-
-
+                    await _minioClient.PutObjectAsync(putObjectArgs);
+                    
+                    _logger.LogInformation("File uploaded to MinIO successfully: {ObjectName}", objectName);
+                }
+                catch (MinioException ex)
+                {
+                    _logger.LogError(ex, "Error occurred while uploading to MinIO: {Message}", ex.Message);
+                    throw new Exception("Failed to upload to MinIO.", ex);
+                }
+            }
             // Save file details to the database (like ProductImage or ProductAsset)
             var resultUrl = $"https://{_bucketName}/{objectName}"; // This is just an example URL, adjust as needed
 

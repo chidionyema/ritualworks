@@ -4,26 +4,25 @@ services:
 
   
   vault-agent:
-    image: vault:1.9.3 
-    environment:
-      VAULT_ADDR: http://vault:8200
-    volumes:
-      - ../../vault/config:/vault/config  # Path to the Vault Agent configuration
-      - postgres-creds:/vault/secrets  # Shared volume for credentials
-    networks:
-      - internal_network
-      
-    user: root  # Run as root to set permissions
+      image: hashicorp/vault:latest
 
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-    
-    user: "vault"  # Ensure the container is run as the Vault user
-    command: sh -c "chown -R vault:vault /vault/secrets && chmod -R 770 /vault/secrets && agent -config=/vault/config/vault-agent-config.hcl"
+      environment:
+        VAULT_ADDR: http://vault:8200
+      volumes:
+        - ../../vault/data:/vault/data
+        - ../../vault/secrets:/vault/secrets
+        - ../../vault/config:/vault/config
+        - ../../scripts:/vault/scripts
+      networks:
+        - internal_network
+      deploy:
+        restart_policy:
+          condition: on-failure
+          delay: 10s
+          max_attempts: 3
+          window: 120s
+      privileged: true # Ensure the container is run as the Vault user
+      command: sh -c "chown -R vault:vault /vault/secrets && chmod -R 770 /vault/secrets && vault agent -config=/vault/config/vault-agent-config.hcl"
 
 
   haproxy:
@@ -251,8 +250,8 @@ services:
   minio1:
     image: minio/minio:latest
     environment:
-      - MINIO_ROOT_USER=your_minio_user
-      - MINIO_ROOT_PASSWORD=your_minio_password
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
       - MINIO_SERVER_CERT=/etc/ssl/certs/public.crt
       - MINIO_SERVER_KEY=/etc/ssl/certs/private.key
     volumes:
@@ -276,8 +275,8 @@ services:
   minio2:
     image: minio/minio:latest
     environment:
-      - MINIO_ROOT_USER=your_minio_user
-      - MINIO_ROOT_PASSWORD=your_minio_password
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
       - MINIO_SERVER_CERT=/etc/ssl/certs/public.crt
       - MINIO_SERVER_KEY=/etc/ssl/certs/private.key
     volumes:

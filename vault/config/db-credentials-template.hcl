@@ -1,4 +1,4 @@
-{{ with secret "database/creds/vault-role" }}
+{{ with secret "database/creds/vault" }}
 {
   "username": "{{ .Data.username }}",
   "password": "{{ .Data.password }}"

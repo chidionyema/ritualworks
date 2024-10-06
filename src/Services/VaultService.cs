@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using Newtonsoft.Json;
+using RitualWorks.Models;
+using Newtonsoft.Json.Linq;
 
 namespace RitualWorks.Services
 {
@@ -73,57 +75,29 @@ namespace RitualWorks.Services
                 throw;
             }
         }
-      public async Task<(string, string)> FetchPostgresCredentialsAsync(string role)
-{
-    try
-    {
-        var path = $"database/creds/{role}";
-        var fullUrl = $"v1/{path}";
-
-        _logger.LogInformation("Requesting Vault endpoint: {Url}", fullUrl);
-
-        var request = new HttpRequestMessage(HttpMethod.Get, fullUrl);
-        request.Headers.Add("X-Vault-Token", _vaultToken);
-
-        _logger.LogInformation("Using Vault token: {VaultToken}", _vaultToken);
-
-        var response = await _httpClient.SendAsync(request);
-
-        if (!response.IsSuccessStatusCode)
+    public async Task<DatabaseCredentials> FetchPostgresCredentialsAsync(string role)
         {
-            var errorResponseBody = await response.Content.ReadAsStringAsync(); // Rename responseBody to errorResponseBody here
-            _logger.LogError("Failed to fetch PostgreSQL credentials from Vault. Status Code: {StatusCode}. Reason: {Reason}. Response Body: {ResponseBody}", 
-                            response.StatusCode, response.ReasonPhrase, errorResponseBody);
-            throw new HttpRequestException($"Error fetching PostgreSQL credentials from Vault: {response.ReasonPhrase}");
+            _httpClient.DefaultRequestHeaders.Remove("X-Vault-Token");
+            _httpClient.DefaultRequestHeaders.Add("X-Vault-Token", _vaultToken);
+
+            var response = await _httpClient.GetAsync($"/v1/database/creds/{role}");
+            response.EnsureSuccessStatusCode();
+
+            var content = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(content);
+
+            var username = json["data"]?["username"]?.ToString();
+            var password = json["data"]?["password"]?.ToString();
+            var ttl = json["lease_duration"]?.ToObject<int>() ?? 0;
+
+            return new DatabaseCredentials
+            {
+                Username = username,
+                Password = password
+            };
         }
 
-        var successResponseBody = await response.Content.ReadAsStringAsync(); // Rename responseBody to successResponseBody here
-        _logger.LogInformation("Vault Response Body: {ResponseBody}", successResponseBody);
-
-        var data = JsonConvert.DeserializeObject<VaultSecretResponse>(successResponseBody);
-
-        if (data?.Data == null || !data.Data.ContainsKey("username") || !data.Data.ContainsKey("password"))
-        {
-            throw new HttpRequestException("Vault response does not contain the expected 'username' or 'password' fields.");
-        }
-
-        var username = data.Data["username"];
-        var password = data.Data["password"];
-
-        _logger.LogInformation("Successfully fetched PostgreSQL credentials: Username: {Username}", username);
-
-        return (username, password);
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "An error occurred while fetching PostgreSQL credentials from Vault.");
-        throw;
-    }
-}
-
-
-
-    }
+ }
 
 public class VaultSecretResponse
 {

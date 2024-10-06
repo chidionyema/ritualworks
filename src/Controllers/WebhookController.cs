@@ -10,6 +10,7 @@ using RitualWorks.Settings;
 using RitualWorks.Db;
 using System;
 using Microsoft.AspNetCore.Authorization;
+using RitualWorks.Models;
 namespace RitualWorks.Controllers
 {
     [Route("api/[controller]")]
