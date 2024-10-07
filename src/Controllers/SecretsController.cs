@@ -26,7 +26,7 @@ namespace RitualWorks.Controllers
             string fullSecretPath = $"secret/data/{environment}/{secretPath}";
 
             // Pass an empty array instead of null
-            var secret = await _vaultService.FetchSecretsAsync(fullSecretPath, new string[] {});
+            var secret = await _vaultService.FetchSecretsAsync(fullSecretPath, []);
 
             if (secret == null)
             {
@@ -34,7 +34,7 @@ namespace RitualWorks.Controllers
             }
 
             // Extract the data safely
-            var secretData = secret.ContainsKey("data") ? secret["data"] : null;
+            var secretData = secret.TryGetValue("data", out string? value) ? value : null;
             if (secretData == null)
             {
                 return NotFound("No data found in the specified secret path.");

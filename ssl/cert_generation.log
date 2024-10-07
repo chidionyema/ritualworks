@@ -47603,3 +47603,885 @@ drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
 -rw-------@ 1 chidionyema  staff   887  6 Oct 18:52 redis.csr
 -rw-------@ 1 chidionyema  staff  1704  6 Oct 18:52 redis.key
 -rw-------  1 chidionyema  staff  2819 17 Sep 15:58 redis.pem
+2024-10-07 08:44:38 - Generating CA certificate...
+2024-10-07 08:44:38 - CA private key generated successfully.
+2024-10-07 08:44:38 - CA certificate generated successfully.
+2024-10-07 08:44:38 - Certificate ../ssl/certs/postgres.crt is about to expire in -20003 days.
+2024-10-07 08:44:38 - Generating self-signed certificate for postgres...
+2024-10-07 08:44:38 - Self-signed certificate for postgres generated successfully.
+2024-10-07 08:44:38 - Certificate ../ssl/certs/redis.crt is about to expire in -20003 days.
+2024-10-07 08:44:38 - Generating self-signed certificate for redis...
+2024-10-07 08:44:38 - Self-signed certificate for redis generated successfully.
+2024-10-07 08:44:39 - Certificate ../ssl/certs/rabbitmq-node1.crt is about to expire in -20003 days.
+2024-10-07 08:44:39 - Generating self-signed certificate for rabbitmq-node1...
+2024-10-07 08:44:39 - Self-signed certificate for rabbitmq-node1 generated successfully.
+2024-10-07 08:44:39 - Certificate ../ssl/certs/rabbitmq-node2.crt is about to expire in -20003 days.
+2024-10-07 08:44:39 - Generating self-signed certificate for rabbitmq-node2...
+2024-10-07 08:44:39 - Self-signed certificate for rabbitmq-node2 generated successfully.
+2024-10-07 08:44:39 - Certificate ../ssl/certs/es-node-1.crt is about to expire in -20003 days.
+2024-10-07 08:44:39 - Generating self-signed certificate for es-node-1...
+2024-10-07 08:44:39 - Self-signed certificate for es-node-1 generated successfully.
+2024-10-07 08:44:39 - Certificate ../ssl/certs/es-node-2.crt is about to expire in -20003 days.
+2024-10-07 08:44:39 - Generating self-signed certificate for es-node-2...
+2024-10-07 08:44:39 - Self-signed certificate for es-node-2 generated successfully.
+2024-10-07 08:44:39 - Certificate ../ssl/certs/minio1.crt is about to expire in -20003 days.
+2024-10-07 08:44:39 - Generating self-signed certificate for minio1...
+2024-10-07 08:44:39 - Self-signed certificate for minio1 generated successfully.
+2024-10-07 08:44:39 - Certificate ../ssl/certs/minio2.crt is about to expire in -20003 days.
+2024-10-07 08:44:39 - Generating self-signed certificate for minio2...
+2024-10-07 08:44:39 - Self-signed certificate for minio2 generated successfully.
+2024-10-07 08:44:40 - Certificate ../ssl/certs/minio3.crt is about to expire in -20003 days.
+2024-10-07 08:44:40 - Generating self-signed certificate for minio3...
+2024-10-07 08:44:40 - Self-signed certificate for minio3 generated successfully.
+2024-10-07 08:44:40 - Certificate ../ssl/certs/minio4.crt is about to expire in -20003 days.
+2024-10-07 08:44:40 - Generating self-signed certificate for minio4...
+2024-10-07 08:44:40 - Self-signed certificate for minio4 generated successfully.
+2024-10-07 08:44:40 - Certificate ../ssl/certs/haproxy.crt is about to expire in -20003 days.
+2024-10-07 08:44:40 - Generating self-signed certificate for haproxy...
+2024-10-07 08:44:40 - Self-signed certificate for haproxy generated successfully.
+2024-10-07 08:44:40 - Certificate generation completed.
+2024-10-07 08:44:40 - Generated certificates:
+total 464
+drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
+-rw-------  1 chidionyema  staff  1249 17 Sep 15:58 api.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 api.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2953 17 Sep 15:58 api.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1127  7 Oct 08:44 ca.crt
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 08:44 ca.key
+-rw-------@ 1 chidionyema  staff    41  7 Oct 08:44 ca.srl
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 08:44 es-node-1.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 08:44 es-node-1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 08:44 es-node-1.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-1.pem
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 08:44 es-node-2.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 08:44 es-node-2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 08:44 es-node-2.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-2.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 08:44 haproxy.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 08:44 haproxy.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 08:44 haproxy.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 haproxy.pem
+-rw-------  1 chidionyema  staff  1237 17 Sep 15:58 local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2941 17 Sep 15:58 local.ritualswork.com.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 08:44 minio1.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 08:44 minio1.csr
+-rw-r--r--  1 root         staff  1704  7 Oct 08:44 minio1.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio1.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 08:44 minio2.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 08:44 minio2.csr
+-rw-r--r--@ 1 chidionyema  staff  1704  7 Oct 08:44 minio2.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio2.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 08:44 minio3.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 08:44 minio3.csr
+-rw-------  1 root         staff  1704  7 Oct 08:44 minio3.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio3.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 08:44 minio4.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 08:44 minio4.csr
+-rw-------  1 root         staff  1704  7 Oct 08:44 minio4.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio4.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 08:44 postgres.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 08:44 postgres.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 08:44 postgres.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 postgres.pem
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 private.key
+-rw-------  1 chidionyema  staff  1119 17 Sep 15:58 public.crt
+-rw-------  1 chidionyema  staff  1261 17 Sep 15:58 qtrader.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 qtrader.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2965 17 Sep 15:58 qtrader.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 08:44 rabbitmq-node1.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 08:44 rabbitmq-node1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 08:44 rabbitmq-node1.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node1.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 08:44 rabbitmq-node2.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 08:44 rabbitmq-node2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 08:44 rabbitmq-node2.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node2.pem
+-rw-------@ 1 chidionyema  staff  1090  7 Oct 08:44 redis.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 08:44 redis.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 08:44 redis.key
+-rw-------  1 chidionyema  staff  2819 17 Sep 15:58 redis.pem
+2024-10-07 08:45:30 - Generating CA certificate...
+2024-10-07 08:45:30 - CA private key generated successfully.
+2024-10-07 08:45:30 - CA certificate generated successfully.
+2024-10-07 08:45:30 - Certificate ../ssl/certs/postgres.crt is about to expire in -20003 days.
+2024-10-07 08:45:30 - Generating self-signed certificate for postgres...
+2024-10-07 08:45:30 - Self-signed certificate for postgres generated successfully.
+2024-10-07 08:45:30 - Certificate ../ssl/certs/redis.crt is about to expire in -20003 days.
+2024-10-07 08:45:30 - Generating self-signed certificate for redis...
+2024-10-07 08:45:30 - Self-signed certificate for redis generated successfully.
+2024-10-07 08:45:30 - Certificate ../ssl/certs/rabbitmq-node1.crt is about to expire in -20003 days.
+2024-10-07 08:45:30 - Generating self-signed certificate for rabbitmq-node1...
+2024-10-07 08:45:31 - Self-signed certificate for rabbitmq-node1 generated successfully.
+2024-10-07 08:45:31 - Certificate ../ssl/certs/rabbitmq-node2.crt is about to expire in -20003 days.
+2024-10-07 08:45:31 - Generating self-signed certificate for rabbitmq-node2...
+2024-10-07 08:45:31 - Self-signed certificate for rabbitmq-node2 generated successfully.
+2024-10-07 08:45:31 - Certificate ../ssl/certs/es-node-1.crt is about to expire in -20003 days.
+2024-10-07 08:45:31 - Generating self-signed certificate for es-node-1...
+2024-10-07 08:45:31 - Self-signed certificate for es-node-1 generated successfully.
+2024-10-07 08:45:31 - Certificate ../ssl/certs/es-node-2.crt is about to expire in -20003 days.
+2024-10-07 08:45:31 - Generating self-signed certificate for es-node-2...
+2024-10-07 08:45:31 - Self-signed certificate for es-node-2 generated successfully.
+2024-10-07 08:45:31 - Certificate ../ssl/certs/minio1.crt is about to expire in -20003 days.
+2024-10-07 08:45:31 - Generating self-signed certificate for minio1...
+2024-10-07 08:45:32 - Self-signed certificate for minio1 generated successfully.
+2024-10-07 08:45:32 - Certificate ../ssl/certs/minio2.crt is about to expire in -20003 days.
+2024-10-07 08:45:32 - Generating self-signed certificate for minio2...
+2024-10-07 08:45:32 - Self-signed certificate for minio2 generated successfully.
+2024-10-07 08:45:32 - Certificate ../ssl/certs/minio3.crt is about to expire in -20003 days.
+2024-10-07 08:45:32 - Generating self-signed certificate for minio3...
+2024-10-07 08:45:32 - Self-signed certificate for minio3 generated successfully.
+2024-10-07 08:45:32 - Certificate ../ssl/certs/minio4.crt is about to expire in -20003 days.
+2024-10-07 08:45:32 - Generating self-signed certificate for minio4...
+2024-10-07 08:45:32 - Self-signed certificate for minio4 generated successfully.
+2024-10-07 08:45:32 - Certificate ../ssl/certs/haproxy.crt is about to expire in -20003 days.
+2024-10-07 08:45:32 - Generating self-signed certificate for haproxy...
+2024-10-07 08:45:32 - Self-signed certificate for haproxy generated successfully.
+2024-10-07 08:45:32 - Certificate generation completed.
+2024-10-07 08:45:32 - Generated certificates:
+total 464
+drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
+-rw-------  1 chidionyema  staff  1249 17 Sep 15:58 api.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 api.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2953 17 Sep 15:58 api.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1127  7 Oct 08:45 ca.crt
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 08:45 ca.key
+-rw-------@ 1 chidionyema  staff    41  7 Oct 08:45 ca.srl
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 08:45 es-node-1.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 08:45 es-node-1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 08:45 es-node-1.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-1.pem
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 08:45 es-node-2.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 08:45 es-node-2.csr
+-rw-------@ 1 chidionyema  staff  1708  7 Oct 08:45 es-node-2.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-2.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 08:45 haproxy.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 08:45 haproxy.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 08:45 haproxy.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 haproxy.pem
+-rw-------  1 chidionyema  staff  1237 17 Sep 15:58 local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2941 17 Sep 15:58 local.ritualswork.com.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 08:45 minio1.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 08:45 minio1.csr
+-rw-r--r--  1 root         staff  1704  7 Oct 08:45 minio1.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio1.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 08:45 minio2.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 08:45 minio2.csr
+-rw-r--r--@ 1 chidionyema  staff  1704  7 Oct 08:45 minio2.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio2.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 08:45 minio3.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 08:45 minio3.csr
+-rw-------  1 root         staff  1704  7 Oct 08:45 minio3.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio3.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 08:45 minio4.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 08:45 minio4.csr
+-rw-------  1 root         staff  1704  7 Oct 08:45 minio4.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio4.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 08:45 postgres.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 08:45 postgres.csr
+-rw-------@ 1 chidionyema  staff  1700  7 Oct 08:45 postgres.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 postgres.pem
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 private.key
+-rw-------  1 chidionyema  staff  1119 17 Sep 15:58 public.crt
+-rw-------  1 chidionyema  staff  1261 17 Sep 15:58 qtrader.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 qtrader.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2965 17 Sep 15:58 qtrader.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 08:45 rabbitmq-node1.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 08:45 rabbitmq-node1.csr
+-rw-------@ 1 chidionyema  staff  1708  7 Oct 08:45 rabbitmq-node1.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node1.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 08:45 rabbitmq-node2.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 08:45 rabbitmq-node2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 08:45 rabbitmq-node2.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node2.pem
+-rw-------@ 1 chidionyema  staff  1090  7 Oct 08:45 redis.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 08:45 redis.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 08:45 redis.key
+-rw-------  1 chidionyema  staff  2819 17 Sep 15:58 redis.pem
+2024-10-07 09:24:07 - Generating CA certificate...
+2024-10-07 09:24:07 - CA private key generated successfully.
+2024-10-07 09:24:07 - CA certificate generated successfully.
+2024-10-07 09:24:07 - Certificate ../ssl/certs/postgres.crt is about to expire in -20003 days.
+2024-10-07 09:24:07 - Generating self-signed certificate for postgres...
+2024-10-07 09:24:07 - Self-signed certificate for postgres generated successfully.
+2024-10-07 09:24:07 - Certificate ../ssl/certs/redis.crt is about to expire in -20003 days.
+2024-10-07 09:24:07 - Generating self-signed certificate for redis...
+2024-10-07 09:24:07 - Self-signed certificate for redis generated successfully.
+2024-10-07 09:24:07 - Certificate ../ssl/certs/rabbitmq-node1.crt is about to expire in -20003 days.
+2024-10-07 09:24:07 - Generating self-signed certificate for rabbitmq-node1...
+2024-10-07 09:24:08 - Self-signed certificate for rabbitmq-node1 generated successfully.
+2024-10-07 09:24:08 - Certificate ../ssl/certs/rabbitmq-node2.crt is about to expire in -20003 days.
+2024-10-07 09:24:08 - Generating self-signed certificate for rabbitmq-node2...
+2024-10-07 09:24:08 - Self-signed certificate for rabbitmq-node2 generated successfully.
+2024-10-07 09:24:08 - Certificate ../ssl/certs/es-node-1.crt is about to expire in -20003 days.
+2024-10-07 09:24:08 - Generating self-signed certificate for es-node-1...
+2024-10-07 09:24:08 - Self-signed certificate for es-node-1 generated successfully.
+2024-10-07 09:24:08 - Certificate ../ssl/certs/es-node-2.crt is about to expire in -20003 days.
+2024-10-07 09:24:08 - Generating self-signed certificate for es-node-2...
+2024-10-07 09:24:08 - Self-signed certificate for es-node-2 generated successfully.
+2024-10-07 09:24:08 - Certificate ../ssl/certs/minio1.crt is about to expire in -20003 days.
+2024-10-07 09:24:08 - Generating self-signed certificate for minio1...
+2024-10-07 09:24:08 - Self-signed certificate for minio1 generated successfully.
+2024-10-07 09:24:08 - Certificate ../ssl/certs/minio2.crt is about to expire in -20003 days.
+2024-10-07 09:24:08 - Generating self-signed certificate for minio2...
+2024-10-07 09:24:08 - Self-signed certificate for minio2 generated successfully.
+2024-10-07 09:24:08 - Certificate ../ssl/certs/minio3.crt is about to expire in -20003 days.
+2024-10-07 09:24:08 - Generating self-signed certificate for minio3...
+2024-10-07 09:24:08 - Self-signed certificate for minio3 generated successfully.
+2024-10-07 09:24:09 - Certificate ../ssl/certs/minio4.crt is about to expire in -20003 days.
+2024-10-07 09:24:09 - Generating self-signed certificate for minio4...
+2024-10-07 09:24:09 - Self-signed certificate for minio4 generated successfully.
+2024-10-07 09:24:09 - Certificate ../ssl/certs/haproxy.crt is about to expire in -20003 days.
+2024-10-07 09:24:09 - Generating self-signed certificate for haproxy...
+2024-10-07 09:24:09 - Self-signed certificate for haproxy generated successfully.
+2024-10-07 09:24:09 - Certificate generation completed.
+2024-10-07 09:24:09 - Generated certificates:
+total 464
+drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
+-rw-------  1 chidionyema  staff  1249 17 Sep 15:58 api.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 api.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2953 17 Sep 15:58 api.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1127  7 Oct 09:24 ca.crt
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:24 ca.key
+-rw-------@ 1 chidionyema  staff    41  7 Oct 09:24 ca.srl
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 09:24 es-node-1.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 09:24 es-node-1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:24 es-node-1.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-1.pem
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 09:24 es-node-2.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 09:24 es-node-2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:24 es-node-2.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-2.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 09:24 haproxy.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 09:24 haproxy.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:24 haproxy.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 haproxy.pem
+-rw-------  1 chidionyema  staff  1237 17 Sep 15:58 local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2941 17 Sep 15:58 local.ritualswork.com.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 09:24 minio1.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 09:24 minio1.csr
+-rw-r--r--  1 root         staff  1704  7 Oct 09:24 minio1.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio1.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 09:24 minio2.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 09:24 minio2.csr
+-rw-r--r--@ 1 chidionyema  staff  1704  7 Oct 09:24 minio2.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio2.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 09:24 minio3.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 09:24 minio3.csr
+-rw-------  1 root         staff  1704  7 Oct 09:24 minio3.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio3.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 09:24 minio4.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 09:24 minio4.csr
+-rw-------  1 root         staff  1704  7 Oct 09:24 minio4.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio4.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 09:24 postgres.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 09:24 postgres.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:24 postgres.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 postgres.pem
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 private.key
+-rw-------  1 chidionyema  staff  1119 17 Sep 15:58 public.crt
+-rw-------  1 chidionyema  staff  1261 17 Sep 15:58 qtrader.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 qtrader.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2965 17 Sep 15:58 qtrader.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 09:24 rabbitmq-node1.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 09:24 rabbitmq-node1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:24 rabbitmq-node1.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node1.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 09:24 rabbitmq-node2.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 09:24 rabbitmq-node2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:24 rabbitmq-node2.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node2.pem
+-rw-------@ 1 chidionyema  staff  1090  7 Oct 09:24 redis.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 09:24 redis.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:24 redis.key
+-rw-------  1 chidionyema  staff  2819 17 Sep 15:58 redis.pem
+2024-10-07 09:32:02 - Generating CA certificate...
+2024-10-07 09:32:03 - CA private key generated successfully.
+2024-10-07 09:32:03 - CA certificate generated successfully.
+2024-10-07 09:32:03 - Certificate ../ssl/certs/postgres.crt is about to expire in -20003 days.
+2024-10-07 09:32:03 - Generating self-signed certificate for postgres...
+2024-10-07 09:32:03 - Self-signed certificate for postgres generated successfully.
+2024-10-07 09:32:03 - Certificate ../ssl/certs/redis.crt is about to expire in -20003 days.
+2024-10-07 09:32:03 - Generating self-signed certificate for redis...
+2024-10-07 09:32:03 - Self-signed certificate for redis generated successfully.
+2024-10-07 09:32:03 - Certificate ../ssl/certs/rabbitmq-node1.crt is about to expire in -20003 days.
+2024-10-07 09:32:03 - Generating self-signed certificate for rabbitmq-node1...
+2024-10-07 09:32:03 - Self-signed certificate for rabbitmq-node1 generated successfully.
+2024-10-07 09:32:03 - Certificate ../ssl/certs/rabbitmq-node2.crt is about to expire in -20003 days.
+2024-10-07 09:32:03 - Generating self-signed certificate for rabbitmq-node2...
+2024-10-07 09:32:03 - Self-signed certificate for rabbitmq-node2 generated successfully.
+2024-10-07 09:32:03 - Certificate ../ssl/certs/es-node-1.crt is about to expire in -20003 days.
+2024-10-07 09:32:03 - Generating self-signed certificate for es-node-1...
+2024-10-07 09:32:04 - Self-signed certificate for es-node-1 generated successfully.
+2024-10-07 09:32:04 - Certificate ../ssl/certs/es-node-2.crt is about to expire in -20003 days.
+2024-10-07 09:32:04 - Generating self-signed certificate for es-node-2...
+2024-10-07 09:32:04 - Self-signed certificate for es-node-2 generated successfully.
+2024-10-07 09:32:04 - Certificate ../ssl/certs/minio1.crt is about to expire in -20003 days.
+2024-10-07 09:32:04 - Generating self-signed certificate for minio1...
+2024-10-07 09:32:04 - Self-signed certificate for minio1 generated successfully.
+2024-10-07 09:32:04 - Certificate ../ssl/certs/minio2.crt is about to expire in -20003 days.
+2024-10-07 09:32:04 - Generating self-signed certificate for minio2...
+2024-10-07 09:32:04 - Self-signed certificate for minio2 generated successfully.
+2024-10-07 09:32:04 - Certificate ../ssl/certs/minio3.crt is about to expire in -20003 days.
+2024-10-07 09:32:04 - Generating self-signed certificate for minio3...
+2024-10-07 09:32:04 - Self-signed certificate for minio3 generated successfully.
+2024-10-07 09:32:04 - Certificate ../ssl/certs/minio4.crt is about to expire in -20003 days.
+2024-10-07 09:32:04 - Generating self-signed certificate for minio4...
+2024-10-07 09:32:04 - Self-signed certificate for minio4 generated successfully.
+2024-10-07 09:32:04 - Certificate ../ssl/certs/haproxy.crt is about to expire in -20003 days.
+2024-10-07 09:32:05 - Generating self-signed certificate for haproxy...
+2024-10-07 09:32:05 - Self-signed certificate for haproxy generated successfully.
+2024-10-07 09:32:05 - Certificate generation completed.
+2024-10-07 09:32:05 - Generated certificates:
+total 464
+drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
+-rw-------  1 chidionyema  staff  1249 17 Sep 15:58 api.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 api.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2953 17 Sep 15:58 api.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1127  7 Oct 09:32 ca.crt
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:32 ca.key
+-rw-------@ 1 chidionyema  staff    41  7 Oct 09:32 ca.srl
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 09:32 es-node-1.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 09:32 es-node-1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:32 es-node-1.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-1.pem
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 09:32 es-node-2.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 09:32 es-node-2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:32 es-node-2.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-2.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 09:32 haproxy.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 09:32 haproxy.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:32 haproxy.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 haproxy.pem
+-rw-------  1 chidionyema  staff  1237 17 Sep 15:58 local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2941 17 Sep 15:58 local.ritualswork.com.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 09:32 minio1.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 09:32 minio1.csr
+-rw-r--r--  1 root         staff  1704  7 Oct 09:32 minio1.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio1.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 09:32 minio2.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 09:32 minio2.csr
+-rw-r--r--@ 1 chidionyema  staff  1704  7 Oct 09:32 minio2.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio2.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 09:32 minio3.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 09:32 minio3.csr
+-rw-------  1 root         staff  1704  7 Oct 09:32 minio3.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio3.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 09:32 minio4.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 09:32 minio4.csr
+-rw-------  1 root         staff  1704  7 Oct 09:32 minio4.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio4.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 09:32 postgres.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 09:32 postgres.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:32 postgres.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 postgres.pem
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 private.key
+-rw-------  1 chidionyema  staff  1119 17 Sep 15:58 public.crt
+-rw-------  1 chidionyema  staff  1261 17 Sep 15:58 qtrader.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 qtrader.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2965 17 Sep 15:58 qtrader.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 09:32 rabbitmq-node1.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 09:32 rabbitmq-node1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:32 rabbitmq-node1.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node1.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 09:32 rabbitmq-node2.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 09:32 rabbitmq-node2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:32 rabbitmq-node2.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node2.pem
+-rw-------@ 1 chidionyema  staff  1090  7 Oct 09:32 redis.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 09:32 redis.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 09:32 redis.key
+-rw-------  1 chidionyema  staff  2819 17 Sep 15:58 redis.pem
+2024-10-07 10:41:04 - Generating CA certificate...
+2024-10-07 10:41:04 - CA private key generated successfully.
+2024-10-07 10:41:04 - CA certificate generated successfully.
+2024-10-07 10:41:04 - Certificate ../ssl/certs/postgres.crt is about to expire in -20003 days.
+2024-10-07 10:41:04 - Generating self-signed certificate for postgres...
+2024-10-07 10:41:05 - Self-signed certificate for postgres generated successfully.
+2024-10-07 10:41:05 - Certificate ../ssl/certs/redis.crt is about to expire in -20003 days.
+2024-10-07 10:41:05 - Generating self-signed certificate for redis...
+2024-10-07 10:41:05 - Self-signed certificate for redis generated successfully.
+2024-10-07 10:41:05 - Certificate ../ssl/certs/rabbitmq-node1.crt is about to expire in -20003 days.
+2024-10-07 10:41:05 - Generating self-signed certificate for rabbitmq-node1...
+2024-10-07 10:41:05 - Self-signed certificate for rabbitmq-node1 generated successfully.
+2024-10-07 10:41:05 - Certificate ../ssl/certs/rabbitmq-node2.crt is about to expire in -20003 days.
+2024-10-07 10:41:05 - Generating self-signed certificate for rabbitmq-node2...
+2024-10-07 10:41:06 - Self-signed certificate for rabbitmq-node2 generated successfully.
+2024-10-07 10:41:06 - Certificate ../ssl/certs/es-node-1.crt is about to expire in -20003 days.
+2024-10-07 10:41:06 - Generating self-signed certificate for es-node-1...
+2024-10-07 10:41:06 - Self-signed certificate for es-node-1 generated successfully.
+2024-10-07 10:41:06 - Certificate ../ssl/certs/es-node-2.crt is about to expire in -20003 days.
+2024-10-07 10:41:06 - Generating self-signed certificate for es-node-2...
+2024-10-07 10:41:06 - Self-signed certificate for es-node-2 generated successfully.
+2024-10-07 10:41:06 - Certificate ../ssl/certs/minio1.crt is about to expire in -20003 days.
+2024-10-07 10:41:06 - Generating self-signed certificate for minio1...
+2024-10-07 10:41:07 - Self-signed certificate for minio1 generated successfully.
+2024-10-07 10:41:07 - Certificate ../ssl/certs/minio2.crt is about to expire in -20003 days.
+2024-10-07 10:41:07 - Generating self-signed certificate for minio2...
+2024-10-07 10:41:07 - Self-signed certificate for minio2 generated successfully.
+2024-10-07 10:41:07 - Certificate ../ssl/certs/minio3.crt is about to expire in -20003 days.
+2024-10-07 10:41:07 - Generating self-signed certificate for minio3...
+2024-10-07 10:41:08 - Self-signed certificate for minio3 generated successfully.
+2024-10-07 10:41:08 - Certificate ../ssl/certs/minio4.crt is about to expire in -20003 days.
+2024-10-07 10:41:08 - Generating self-signed certificate for minio4...
+2024-10-07 10:41:08 - Self-signed certificate for minio4 generated successfully.
+2024-10-07 10:41:08 - Certificate ../ssl/certs/haproxy.crt is about to expire in -20003 days.
+2024-10-07 10:41:08 - Generating self-signed certificate for haproxy...
+2024-10-07 10:41:08 - Self-signed certificate for haproxy generated successfully.
+2024-10-07 10:41:08 - Certificate generation completed.
+2024-10-07 10:41:08 - Generated certificates:
+total 464
+drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
+-rw-------  1 chidionyema  staff  1249 17 Sep 15:58 api.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 api.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2953 17 Sep 15:58 api.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1127  7 Oct 10:41 ca.crt
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 10:41 ca.key
+-rw-------@ 1 chidionyema  staff    41  7 Oct 10:41 ca.srl
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 10:41 es-node-1.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 10:41 es-node-1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 10:41 es-node-1.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-1.pem
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 10:41 es-node-2.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 10:41 es-node-2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 10:41 es-node-2.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-2.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 10:41 haproxy.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 10:41 haproxy.csr
+-rw-------@ 1 chidionyema  staff  1708  7 Oct 10:41 haproxy.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 haproxy.pem
+-rw-------  1 chidionyema  staff  1237 17 Sep 15:58 local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2941 17 Sep 15:58 local.ritualswork.com.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 10:41 minio1.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 10:41 minio1.csr
+-rw-r--r--  1 root         staff  1704  7 Oct 10:41 minio1.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio1.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 10:41 minio2.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 10:41 minio2.csr
+-rw-r--r--@ 1 chidionyema  staff  1704  7 Oct 10:41 minio2.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio2.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 10:41 minio3.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 10:41 minio3.csr
+-rw-------  1 root         staff  1708  7 Oct 10:41 minio3.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio3.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 10:41 minio4.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 10:41 minio4.csr
+-rw-------  1 root         staff  1704  7 Oct 10:41 minio4.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio4.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 10:41 postgres.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 10:41 postgres.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 10:41 postgres.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 postgres.pem
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 private.key
+-rw-------  1 chidionyema  staff  1119 17 Sep 15:58 public.crt
+-rw-------  1 chidionyema  staff  1261 17 Sep 15:58 qtrader.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 qtrader.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2965 17 Sep 15:58 qtrader.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 10:41 rabbitmq-node1.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 10:41 rabbitmq-node1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 10:41 rabbitmq-node1.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node1.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 10:41 rabbitmq-node2.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 10:41 rabbitmq-node2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 10:41 rabbitmq-node2.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node2.pem
+-rw-------@ 1 chidionyema  staff  1090  7 Oct 10:41 redis.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 10:41 redis.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 10:41 redis.key
+-rw-------  1 chidionyema  staff  2819 17 Sep 15:58 redis.pem
+2024-10-07 12:15:26 - Generating CA certificate...
+2024-10-07 12:15:26 - CA private key generated successfully.
+2024-10-07 12:15:26 - CA certificate generated successfully.
+2024-10-07 12:15:26 - Certificate ../ssl/certs/postgres.crt is about to expire in -20003 days.
+2024-10-07 12:15:26 - Generating self-signed certificate for postgres...
+2024-10-07 12:15:26 - Self-signed certificate for postgres generated successfully.
+2024-10-07 12:15:26 - Certificate ../ssl/certs/redis.crt is about to expire in -20003 days.
+2024-10-07 12:15:26 - Generating self-signed certificate for redis...
+2024-10-07 12:15:26 - Self-signed certificate for redis generated successfully.
+2024-10-07 12:15:26 - Certificate ../ssl/certs/rabbitmq-node1.crt is about to expire in -20003 days.
+2024-10-07 12:15:26 - Generating self-signed certificate for rabbitmq-node1...
+2024-10-07 12:15:27 - Self-signed certificate for rabbitmq-node1 generated successfully.
+2024-10-07 12:15:27 - Certificate ../ssl/certs/rabbitmq-node2.crt is about to expire in -20003 days.
+2024-10-07 12:15:27 - Generating self-signed certificate for rabbitmq-node2...
+2024-10-07 12:15:27 - Self-signed certificate for rabbitmq-node2 generated successfully.
+2024-10-07 12:15:27 - Certificate ../ssl/certs/es-node-1.crt is about to expire in -20003 days.
+2024-10-07 12:15:27 - Generating self-signed certificate for es-node-1...
+2024-10-07 12:15:27 - Self-signed certificate for es-node-1 generated successfully.
+2024-10-07 12:15:27 - Certificate ../ssl/certs/es-node-2.crt is about to expire in -20003 days.
+2024-10-07 12:15:27 - Generating self-signed certificate for es-node-2...
+2024-10-07 12:15:27 - Self-signed certificate for es-node-2 generated successfully.
+2024-10-07 12:15:27 - Certificate ../ssl/certs/minio1.crt is about to expire in -20003 days.
+2024-10-07 12:15:27 - Generating self-signed certificate for minio1...
+2024-10-07 12:15:27 - Self-signed certificate for minio1 generated successfully.
+2024-10-07 12:15:27 - Certificate ../ssl/certs/minio2.crt is about to expire in -20003 days.
+2024-10-07 12:15:27 - Generating self-signed certificate for minio2...
+2024-10-07 12:15:28 - Self-signed certificate for minio2 generated successfully.
+2024-10-07 12:15:28 - Certificate ../ssl/certs/minio3.crt is about to expire in -20003 days.
+2024-10-07 12:15:28 - Generating self-signed certificate for minio3...
+2024-10-07 12:15:28 - Self-signed certificate for minio3 generated successfully.
+2024-10-07 12:15:28 - Certificate ../ssl/certs/minio4.crt is about to expire in -20003 days.
+2024-10-07 12:15:28 - Generating self-signed certificate for minio4...
+2024-10-07 12:15:28 - Self-signed certificate for minio4 generated successfully.
+2024-10-07 12:15:28 - Certificate ../ssl/certs/haproxy.crt is about to expire in -20003 days.
+2024-10-07 12:15:28 - Generating self-signed certificate for haproxy...
+2024-10-07 12:15:28 - Self-signed certificate for haproxy generated successfully.
+2024-10-07 12:15:28 - Certificate generation completed.
+2024-10-07 12:15:28 - Generated certificates:
+total 464
+drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
+-rw-------  1 chidionyema  staff  1249 17 Sep 15:58 api.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 api.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2953 17 Sep 15:58 api.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1127  7 Oct 12:15 ca.crt
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 12:15 ca.key
+-rw-------@ 1 chidionyema  staff    41  7 Oct 12:15 ca.srl
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 12:15 es-node-1.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 12:15 es-node-1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 12:15 es-node-1.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-1.pem
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 12:15 es-node-2.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 12:15 es-node-2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 12:15 es-node-2.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-2.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 12:15 haproxy.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 12:15 haproxy.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 12:15 haproxy.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 haproxy.pem
+-rw-------  1 chidionyema  staff  1237 17 Sep 15:58 local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2941 17 Sep 15:58 local.ritualswork.com.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 12:15 minio1.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 12:15 minio1.csr
+-rw-r--r--  1 root         staff  1704  7 Oct 12:15 minio1.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio1.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 12:15 minio2.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 12:15 minio2.csr
+-rw-r--r--@ 1 chidionyema  staff  1704  7 Oct 12:15 minio2.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio2.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 12:15 minio3.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 12:15 minio3.csr
+-rw-------  1 root         staff  1704  7 Oct 12:15 minio3.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio3.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 12:15 minio4.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 12:15 minio4.csr
+-rw-------  1 root         staff  1704  7 Oct 12:15 minio4.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio4.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 12:15 postgres.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 12:15 postgres.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 12:15 postgres.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 postgres.pem
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 private.key
+-rw-------  1 chidionyema  staff  1119 17 Sep 15:58 public.crt
+-rw-------  1 chidionyema  staff  1261 17 Sep 15:58 qtrader.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 qtrader.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2965 17 Sep 15:58 qtrader.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 12:15 rabbitmq-node1.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 12:15 rabbitmq-node1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 12:15 rabbitmq-node1.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node1.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 12:15 rabbitmq-node2.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 12:15 rabbitmq-node2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 12:15 rabbitmq-node2.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node2.pem
+-rw-------@ 1 chidionyema  staff  1090  7 Oct 12:15 redis.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 12:15 redis.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 12:15 redis.key
+-rw-------  1 chidionyema  staff  2819 17 Sep 15:58 redis.pem
+2024-10-07 12:29:28 - Generating CA certificate...
+2024-10-07 12:29:29 - CA private key generated successfully.
+2024-10-07 12:29:29 - CA certificate generated successfully.
+2024-10-07 12:29:29 - Certificate ../ssl/certs/postgres.crt is about to expire in -20003 days.
+2024-10-07 12:29:29 - Generating self-signed certificate for postgres...
+2024-10-07 12:29:29 - Self-signed certificate for postgres generated successfully.
+2024-10-07 12:29:29 - Certificate ../ssl/certs/redis.crt is about to expire in -20003 days.
+2024-10-07 12:29:29 - Generating self-signed certificate for redis...
+2024-10-07 12:29:29 - Self-signed certificate for redis generated successfully.
+2024-10-07 12:29:29 - Certificate ../ssl/certs/rabbitmq-node1.crt is about to expire in -20003 days.
+2024-10-07 12:29:29 - Generating self-signed certificate for rabbitmq-node1...
+2024-10-07 12:29:29 - Self-signed certificate for rabbitmq-node1 generated successfully.
+2024-10-07 12:29:29 - Certificate ../ssl/certs/rabbitmq-node2.crt is about to expire in -20003 days.
+2024-10-07 12:29:29 - Generating self-signed certificate for rabbitmq-node2...
+2024-10-07 12:29:29 - Self-signed certificate for rabbitmq-node2 generated successfully.
+2024-10-07 12:29:29 - Certificate ../ssl/certs/es-node-1.crt is about to expire in -20003 days.
+2024-10-07 12:29:29 - Generating self-signed certificate for es-node-1...
+2024-10-07 12:29:29 - Self-signed certificate for es-node-1 generated successfully.
+2024-10-07 12:29:30 - Certificate ../ssl/certs/es-node-2.crt is about to expire in -20003 days.
+2024-10-07 12:29:30 - Generating self-signed certificate for es-node-2...
+2024-10-07 12:29:30 - Self-signed certificate for es-node-2 generated successfully.
+2024-10-07 12:29:30 - Certificate ../ssl/certs/minio1.crt is about to expire in -20003 days.
+2024-10-07 12:29:30 - Generating self-signed certificate for minio1...
+2024-10-07 12:29:30 - Self-signed certificate for minio1 generated successfully.
+2024-10-07 12:29:30 - Certificate ../ssl/certs/minio2.crt is about to expire in -20003 days.
+2024-10-07 12:29:30 - Generating self-signed certificate for minio2...
+2024-10-07 12:29:30 - Self-signed certificate for minio2 generated successfully.
+2024-10-07 12:29:30 - Certificate ../ssl/certs/minio3.crt is about to expire in -20003 days.
+2024-10-07 12:29:30 - Generating self-signed certificate for minio3...
+2024-10-07 12:29:31 - Self-signed certificate for minio3 generated successfully.
+2024-10-07 12:29:31 - Certificate ../ssl/certs/minio4.crt is about to expire in -20003 days.
+2024-10-07 12:29:31 - Generating self-signed certificate for minio4...
+2024-10-07 12:29:31 - Self-signed certificate for minio4 generated successfully.
+2024-10-07 12:29:31 - Certificate ../ssl/certs/haproxy.crt is about to expire in -20003 days.
+2024-10-07 12:29:31 - Generating self-signed certificate for haproxy...
+2024-10-07 12:29:31 - Self-signed certificate for haproxy generated successfully.
+2024-10-07 12:29:31 - Certificate generation completed.
+2024-10-07 12:29:31 - Generated certificates:
+total 464
+drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
+-rw-------  1 chidionyema  staff  1249 17 Sep 15:58 api.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 api.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2953 17 Sep 15:58 api.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1127  7 Oct 12:29 ca.crt
+-rw-------@ 1 chidionyema  staff  1700  7 Oct 12:29 ca.key
+-rw-------@ 1 chidionyema  staff    41  7 Oct 12:29 ca.srl
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 12:29 es-node-1.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 12:29 es-node-1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 12:29 es-node-1.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-1.pem
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 12:29 es-node-2.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 12:29 es-node-2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 12:29 es-node-2.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-2.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 12:29 haproxy.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 12:29 haproxy.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 12:29 haproxy.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 haproxy.pem
+-rw-------  1 chidionyema  staff  1237 17 Sep 15:58 local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2941 17 Sep 15:58 local.ritualswork.com.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 12:29 minio1.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 12:29 minio1.csr
+-rw-r--r--  1 root         staff  1704  7 Oct 12:29 minio1.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio1.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 12:29 minio2.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 12:29 minio2.csr
+-rw-r--r--@ 1 chidionyema  staff  1704  7 Oct 12:29 minio2.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio2.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 12:29 minio3.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 12:29 minio3.csr
+-rw-------  1 root         staff  1708  7 Oct 12:29 minio3.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio3.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 12:29 minio4.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 12:29 minio4.csr
+-rw-------  1 root         staff  1704  7 Oct 12:29 minio4.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio4.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 12:29 postgres.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 12:29 postgres.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 12:29 postgres.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 postgres.pem
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 private.key
+-rw-------  1 chidionyema  staff  1119 17 Sep 15:58 public.crt
+-rw-------  1 chidionyema  staff  1261 17 Sep 15:58 qtrader.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 qtrader.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2965 17 Sep 15:58 qtrader.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 12:29 rabbitmq-node1.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 12:29 rabbitmq-node1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 12:29 rabbitmq-node1.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node1.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 12:29 rabbitmq-node2.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 12:29 rabbitmq-node2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 12:29 rabbitmq-node2.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node2.pem
+-rw-------@ 1 chidionyema  staff  1090  7 Oct 12:29 redis.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 12:29 redis.csr
+-rw-------@ 1 chidionyema  staff  1708  7 Oct 12:29 redis.key
+-rw-------  1 chidionyema  staff  2819 17 Sep 15:58 redis.pem
+2024-10-07 18:33:01 - Generating CA certificate...
+2024-10-07 18:33:01 - CA private key generated successfully.
+2024-10-07 18:33:02 - CA certificate generated successfully.
+2024-10-07 18:33:02 - Certificate ../ssl/certs/postgres.crt is about to expire in -20003 days.
+2024-10-07 18:33:02 - Generating self-signed certificate for postgres...
+2024-10-07 18:33:02 - Self-signed certificate for postgres generated successfully.
+2024-10-07 18:33:02 - Certificate ../ssl/certs/redis.crt is about to expire in -20003 days.
+2024-10-07 18:33:02 - Generating self-signed certificate for redis...
+2024-10-07 18:33:02 - Self-signed certificate for redis generated successfully.
+2024-10-07 18:33:02 - Certificate ../ssl/certs/rabbitmq-node1.crt is about to expire in -20003 days.
+2024-10-07 18:33:02 - Generating self-signed certificate for rabbitmq-node1...
+2024-10-07 18:33:02 - Self-signed certificate for rabbitmq-node1 generated successfully.
+2024-10-07 18:33:02 - Certificate ../ssl/certs/rabbitmq-node2.crt is about to expire in -20003 days.
+2024-10-07 18:33:02 - Generating self-signed certificate for rabbitmq-node2...
+2024-10-07 18:33:02 - Self-signed certificate for rabbitmq-node2 generated successfully.
+2024-10-07 18:33:02 - Certificate ../ssl/certs/es-node-1.crt is about to expire in -20003 days.
+2024-10-07 18:33:02 - Generating self-signed certificate for es-node-1...
+2024-10-07 18:33:02 - Self-signed certificate for es-node-1 generated successfully.
+2024-10-07 18:33:02 - Certificate ../ssl/certs/es-node-2.crt is about to expire in -20003 days.
+2024-10-07 18:33:02 - Generating self-signed certificate for es-node-2...
+2024-10-07 18:33:02 - Self-signed certificate for es-node-2 generated successfully.
+2024-10-07 18:33:03 - Certificate ../ssl/certs/minio1.crt is about to expire in -20003 days.
+2024-10-07 18:33:03 - Generating self-signed certificate for minio1...
+2024-10-07 18:33:03 - Self-signed certificate for minio1 generated successfully.
+2024-10-07 18:33:03 - Certificate ../ssl/certs/minio2.crt is about to expire in -20003 days.
+2024-10-07 18:33:03 - Generating self-signed certificate for minio2...
+2024-10-07 18:33:03 - Self-signed certificate for minio2 generated successfully.
+2024-10-07 18:33:03 - Certificate ../ssl/certs/minio3.crt is about to expire in -20003 days.
+2024-10-07 18:33:03 - Generating self-signed certificate for minio3...
+2024-10-07 18:33:03 - Self-signed certificate for minio3 generated successfully.
+2024-10-07 18:33:03 - Certificate ../ssl/certs/minio4.crt is about to expire in -20003 days.
+2024-10-07 18:33:03 - Generating self-signed certificate for minio4...
+2024-10-07 18:33:04 - Self-signed certificate for minio4 generated successfully.
+2024-10-07 18:33:04 - Certificate ../ssl/certs/haproxy.crt is about to expire in -20003 days.
+2024-10-07 18:33:04 - Generating self-signed certificate for haproxy...
+2024-10-07 18:33:04 - Self-signed certificate for haproxy generated successfully.
+2024-10-07 18:33:04 - Certificate generation completed.
+2024-10-07 18:33:04 - Generated certificates:
+total 464
+drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
+-rw-------  1 chidionyema  staff  1249 17 Sep 15:58 api.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 api.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2953 17 Sep 15:58 api.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1127  7 Oct 18:33 ca.crt
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 18:33 ca.key
+-rw-------@ 1 chidionyema  staff    41  7 Oct 18:33 ca.srl
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 18:33 es-node-1.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 18:33 es-node-1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 18:33 es-node-1.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-1.pem
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 18:33 es-node-2.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 18:33 es-node-2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 18:33 es-node-2.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-2.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 18:33 haproxy.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 18:33 haproxy.csr
+-rw-------@ 1 chidionyema  staff  1700  7 Oct 18:33 haproxy.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 haproxy.pem
+-rw-------  1 chidionyema  staff  1237 17 Sep 15:58 local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2941 17 Sep 15:58 local.ritualswork.com.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 18:33 minio1.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 18:33 minio1.csr
+-rw-r--r--  1 root         staff  1704  7 Oct 18:33 minio1.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio1.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 18:33 minio2.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 18:33 minio2.csr
+-rw-r--r--@ 1 chidionyema  staff  1708  7 Oct 18:33 minio2.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio2.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 18:33 minio3.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 18:33 minio3.csr
+-rw-------  1 root         staff  1708  7 Oct 18:33 minio3.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio3.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 18:33 minio4.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 18:33 minio4.csr
+-rw-------  1 root         staff  1704  7 Oct 18:33 minio4.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio4.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 18:33 postgres.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 18:33 postgres.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 18:33 postgres.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 postgres.pem
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 private.key
+-rw-------  1 chidionyema  staff  1119 17 Sep 15:58 public.crt
+-rw-------  1 chidionyema  staff  1261 17 Sep 15:58 qtrader.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 qtrader.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2965 17 Sep 15:58 qtrader.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 18:33 rabbitmq-node1.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 18:33 rabbitmq-node1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 18:33 rabbitmq-node1.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node1.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 18:33 rabbitmq-node2.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 18:33 rabbitmq-node2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 18:33 rabbitmq-node2.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node2.pem
+-rw-------@ 1 chidionyema  staff  1090  7 Oct 18:33 redis.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 18:33 redis.csr
+-rw-------@ 1 chidionyema  staff  1708  7 Oct 18:33 redis.key
+-rw-------  1 chidionyema  staff  2819 17 Sep 15:58 redis.pem
+2024-10-07 18:49:37 - Generating CA certificate...
+2024-10-07 18:49:38 - CA private key generated successfully.
+2024-10-07 18:49:38 - CA certificate generated successfully.
+2024-10-07 18:49:38 - Certificate ../ssl/certs/postgres.crt is about to expire in -20003 days.
+2024-10-07 18:49:38 - Generating self-signed certificate for postgres...
+2024-10-07 18:49:38 - Self-signed certificate for postgres generated successfully.
+2024-10-07 18:49:38 - Certificate ../ssl/certs/redis.crt is about to expire in -20003 days.
+2024-10-07 18:49:38 - Generating self-signed certificate for redis...
+2024-10-07 18:49:38 - Self-signed certificate for redis generated successfully.
+2024-10-07 18:49:38 - Certificate ../ssl/certs/rabbitmq-node1.crt is about to expire in -20003 days.
+2024-10-07 18:49:38 - Generating self-signed certificate for rabbitmq-node1...
+2024-10-07 18:49:38 - Self-signed certificate for rabbitmq-node1 generated successfully.
+2024-10-07 18:49:38 - Certificate ../ssl/certs/rabbitmq-node2.crt is about to expire in -20003 days.
+2024-10-07 18:49:38 - Generating self-signed certificate for rabbitmq-node2...
+2024-10-07 18:49:38 - Self-signed certificate for rabbitmq-node2 generated successfully.
+2024-10-07 18:49:38 - Certificate ../ssl/certs/es-node-1.crt is about to expire in -20003 days.
+2024-10-07 18:49:38 - Generating self-signed certificate for es-node-1...
+2024-10-07 18:49:39 - Self-signed certificate for es-node-1 generated successfully.
+2024-10-07 18:49:39 - Certificate ../ssl/certs/es-node-2.crt is about to expire in -20003 days.
+2024-10-07 18:49:39 - Generating self-signed certificate for es-node-2...
+2024-10-07 18:49:39 - Self-signed certificate for es-node-2 generated successfully.
+2024-10-07 18:49:39 - Certificate ../ssl/certs/minio1.crt is about to expire in -20003 days.
+2024-10-07 18:49:39 - Generating self-signed certificate for minio1...
+2024-10-07 18:49:39 - Self-signed certificate for minio1 generated successfully.
+2024-10-07 18:49:39 - Certificate ../ssl/certs/minio2.crt is about to expire in -20003 days.
+2024-10-07 18:49:39 - Generating self-signed certificate for minio2...
+2024-10-07 18:49:39 - Self-signed certificate for minio2 generated successfully.
+2024-10-07 18:49:39 - Certificate ../ssl/certs/minio3.crt is about to expire in -20003 days.
+2024-10-07 18:49:39 - Generating self-signed certificate for minio3...
+2024-10-07 18:49:39 - Self-signed certificate for minio3 generated successfully.
+2024-10-07 18:49:39 - Certificate ../ssl/certs/minio4.crt is about to expire in -20003 days.
+2024-10-07 18:49:39 - Generating self-signed certificate for minio4...
+2024-10-07 18:49:39 - Self-signed certificate for minio4 generated successfully.
+2024-10-07 18:49:39 - Certificate ../ssl/certs/haproxy.crt is about to expire in -20003 days.
+2024-10-07 18:49:39 - Generating self-signed certificate for haproxy...
+2024-10-07 18:49:39 - Self-signed certificate for haproxy generated successfully.
+2024-10-07 18:49:39 - Certificate generation completed.
+2024-10-07 18:49:39 - Generated certificates:
+total 464
+drwx------  2 chidionyema  staff    64  6 Sep 18:16 CAs
+-rw-------  1 chidionyema  staff  1249 17 Sep 15:58 api.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 api.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2953 17 Sep 15:58 api.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1127  7 Oct 18:49 ca.crt
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 18:49 ca.key
+-rw-------@ 1 chidionyema  staff    41  7 Oct 18:49 ca.srl
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 18:49 es-node-1.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 18:49 es-node-1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 18:49 es-node-1.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-1.pem
+-rw-------@ 1 chidionyema  staff  1099  7 Oct 18:49 es-node-2.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 18:49 es-node-2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 18:49 es-node-2.key
+-rw-------  1 chidionyema  staff  2831 17 Sep 15:58 es-node-2.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 18:49 haproxy.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 18:49 haproxy.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 18:49 haproxy.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 haproxy.pem
+-rw-------  1 chidionyema  staff  1237 17 Sep 15:58 local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2941 17 Sep 15:58 local.ritualswork.com.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 18:49 minio1.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 18:49 minio1.csr
+-rw-r--r--  1 root         staff  1704  7 Oct 18:49 minio1.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio1.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 18:49 minio2.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 18:49 minio2.csr
+-rw-r--r--@ 1 chidionyema  staff  1704  7 Oct 18:49 minio2.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio2.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 18:49 minio3.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 18:49 minio3.csr
+-rw-------  1 root         staff  1704  7 Oct 18:49 minio3.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio3.pem
+-rw-r--r--  1 root         staff  1094  7 Oct 18:49 minio4.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 18:49 minio4.csr
+-rw-------  1 root         staff  1704  7 Oct 18:49 minio4.key
+-rw-------  1 chidionyema  staff  2823 17 Sep 15:58 minio4.pem
+-rw-------@ 1 chidionyema  staff  1094  7 Oct 18:49 postgres.crt
+-rw-------@ 1 chidionyema  staff   891  7 Oct 18:49 postgres.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 18:49 postgres.key
+-rw-------  1 chidionyema  staff  2827 17 Sep 15:58 postgres.pem
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 private.key
+-rw-------  1 chidionyema  staff  1119 17 Sep 15:58 public.crt
+-rw-------  1 chidionyema  staff  1261 17 Sep 15:58 qtrader.local.ritualswork.com.crt
+-rw-------  1 chidionyema  staff  1704 17 Sep 15:58 qtrader.local.ritualswork.com.key
+-rw-------  1 chidionyema  staff  2965 17 Sep 15:58 qtrader.local.ritualswork.com.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 18:49 rabbitmq-node1.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 18:49 rabbitmq-node1.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 18:49 rabbitmq-node1.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node1.pem
+-rw-------@ 1 chidionyema  staff  1103  7 Oct 18:49 rabbitmq-node2.crt
+-rw-------@ 1 chidionyema  staff   899  7 Oct 18:49 rabbitmq-node2.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 18:49 rabbitmq-node2.key
+-rw-------  1 chidionyema  staff  2843 17 Sep 15:58 rabbitmq-node2.pem
+-rw-------@ 1 chidionyema  staff  1090  7 Oct 18:49 redis.crt
+-rw-------@ 1 chidionyema  staff   887  7 Oct 18:49 redis.csr
+-rw-------@ 1 chidionyema  staff  1704  7 Oct 18:49 redis.key
+-rw-------  1 chidionyema  staff  2819 17 Sep 15:58 redis.pem

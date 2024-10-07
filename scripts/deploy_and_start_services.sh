@@ -22,8 +22,6 @@ deploy_vault() {
     ./install_vault_server.sh || error_exit "Failed to deploy Vault."
     log "Configuring Vault..."
     ./configure_vault.sh
-    log "Configuring Vault secrets..."
-    ./configure_vault_secrets.sh || error_exit "Failed to configure Vault secrets."
 
 }
 

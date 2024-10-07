@@ -27,13 +27,19 @@ using MassTransit;
 using Amazon.S3;
 using Minio;
 using RitualWorks.Models;
+using Serilog;
 
 public partial class Program
 {
     public static async Task Main(string[] args)
-    {
+    {  // Configure Serilog to write to a specific file path inside the container
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console() // Write to console for standard output
+            .WriteTo.File("/logs/app-log-.txt", rollingInterval: RollingInterval.Day) // Write to file with daily rolling
+            .CreateLogger();
         var builder = WebApplication.CreateBuilder(args);
-
+     builder.Host.UseSerilog();
         // Add environment variables before appsettings.json
         builder.Configuration
             .AddEnvironmentVariables()

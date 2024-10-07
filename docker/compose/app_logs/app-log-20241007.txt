@@ -1,0 +1,1649 @@
+2024-10-07 17:38:46.265 +00:00 [INF] VaultService initialized with Vault token.
+2024-10-07 17:38:46.563 +00:00 [INF] Start processing HTTP request GET http://vault:8200/v1/database/creds/vault
+2024-10-07 17:38:46.574 +00:00 [INF] Sending HTTP request GET http://vault:8200/v1/database/creds/vault
+2024-10-07 17:38:47.538 +00:00 [INF] Received HTTP response headers after 969.0735ms - 200
+2024-10-07 17:38:47.561 +00:00 [INF] End processing HTTP request after 1039.5856ms - 2002024-10-07 17:38:47.800 +00:00 [INF] Fetching secrets from Vault at path: secret/Development
+2024-10-07 17:38:47.809 +00:00 [INF] Start processing HTTP request GET http://vault:8200/v1/secret/Development
+2024-10-07 17:38:47.811 +00:00 [INF] Sending HTTP request GET http://vault:8200/v1/secret/Development
+2024-10-07 17:38:47.914 +00:00 [INF] Received HTTP response headers after 102.6004ms - 200
+2024-10-07 17:38:47.931 +00:00 [INF] End processing HTTP request after 121.5607ms - 200
+2024-10-07 17:38:47.971 +00:00 [INF] Secrets from Vault:
+2024-10-07 17:38:47.972 +00:00 [INF] Jwt Key: UNTvpYzmvXR2nGDSIFpiRfnBvW/0w+eLylG74yt6uLk=
+2024-10-07 17:38:47.976 +00:00 [INF] Postgres Vault Username: v-root-vault-EmfdYb3mOLTgaokwUNGv-1728322727
+2024-10-07 17:38:47.977 +00:00 [INF] RabbitMQ Password: gnKj/DM1RONkl1+qNHEvfg==
+2024-10-07 17:38:47.978 +00:00 [INF] MinIO Access Key: 26ab777ca08147955d83f56b
+2024-10-07 17:38:47.979 +00:00 [INF] MinIO Secret Key: ue4QXZ7FlpbFED/CrkIH9KL6mWhVUpkP2024-10-07 17:38:49.804 +00:00 [DBG] Registered model binder providers, in the following order: ["Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BinderTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ServicesModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.HeaderModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FloatingPointTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.EnumTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.DateTimeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.SimpleTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.TryParseModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.CancellationTokenModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ByteArrayModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FormFileModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FormCollectionModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.KeyValuePairModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.DictionaryModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ArrayModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.CollectionModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexObjectModelBinderProvider"]
+22024-10-07 17:38:51.150 +00:00 [DBG] Hosting starting22024-10-07 17:38:51.865 +00:00 [INF] Connecting to RabbitMQ Host: rabbitmq://rabbitmq-node1:5672, Username: rabbit_user2024-10-07 17:38:52.145 +00:00 [INF] Configured endpoint my, Consumer: Program+MyConsumer
+2024-10-07 17:38:52.377 +00:00 [WRN] Storing keys in a directory '/root/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+2024-10-07 17:38:52.380 +00:00 [INF] User profile is available. Using '/root/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2024-10-07 17:38:52.394 +00:00 [INF] VaultService initialized with Vault token.
+2024-10-07 17:38:52.415 +00:00 [DBG] Starting bus instances: IBus
+2024-10-07 17:38:52.434 +00:00 [DBG] Starting bus: "rabbitmq://rabbitmq-node1/"
+2024-10-07 17:38:52.736 +00:00 [DBG] Repository contains no viable default key. Caller should generate a key with immediate activation.
+2024-10-07 17:38:52.742 +00:00 [DBG] Connect: rabbit_user@rabbitmq-node1:5672/
+2024-10-07 17:38:52.748 +00:00 [DBG] Policy resolution states that a new key should be added to the key ring.
+2024-10-07 17:38:52.781 +00:00 [INF] Creating key {cc143628-c294-4796-a7f2-8de0ad632596} with creation date 2024-10-07 17:38:52Z, activation date 2024-10-07 17:38:52Z, and expiration date 2025-01-05 17:38:52Z.
+2024-10-07 17:38:52.899 +00:00 [DBG] Descriptor deserializer type for key {cc143628-c294-4796-a7f2-8de0ad632596} is 'Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60'.
+2024-10-07 17:38:52.914 +00:00 [DBG] No key escrow sink found. Not writing key {cc143628-c294-4796-a7f2-8de0ad632596} to escrow.
+2024-10-07 17:38:52.919 +00:00 [WRN] No XML encryptor configured. Key {cc143628-c294-4796-a7f2-8de0ad632596} may be persisted to storage in unencrypted form.
+2024-10-07 17:38:52.983 +00:00 [INF] Writing data to file '/root/.aspnet/DataProtection-Keys/key-cc143628-c294-4796-a7f2-8de0ad632596.xml'.
+2024-10-07 17:38:52.985 +00:00 [DBG] Key cache expiration token triggered by 'CreateNewKey' operation.
+2024-10-07 17:38:53.012 +00:00 [DBG] Reading data from file '/root/.aspnet/DataProtection-Keys/key-cc143628-c294-4796-a7f2-8de0ad632596.xml'.
+2024-10-07 17:38:53.043 +00:00 [DBG] Found key {cc143628-c294-4796-a7f2-8de0ad632596}.
+2024-10-07 17:38:53.111 +00:00 [DBG] Considering key {cc143628-c294-4796-a7f2-8de0ad632596} with expiration date 2025-01-05 17:38:52Z as default key.
+2024-10-07 17:38:53.128 +00:00 [DBG] Forwarded activator type request from Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60 to Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Culture=neutral, PublicKeyToken=adb9793829ddae60
+2024-10-07 17:38:53.179 +00:00 [DBG] Using managed symmetric algorithm 'System.Security.Cryptography.Aes'.
+2024-10-07 17:38:53.195 +00:00 [DBG] Using managed keyed hash algorithm 'System.Security.Cryptography.HMACSHA256'.
+2024-10-07 17:38:53.190 +00:00 [DBG] Connected: rabbit_user@rabbitmq-node1:5672/ (address: amqp://rabbitmq-node1:5672, local: 46976)
+2024-10-07 17:38:53.207 +00:00 [DBG] Using key {cc143628-c294-4796-a7f2-8de0ad632596} as the default key.
+2024-10-07 17:38:53.210 +00:00 [DBG] Key ring with default key {cc143628-c294-4796-a7f2-8de0ad632596} was loaded during application startup.
+2024-10-07 17:38:53.216 +00:00 [INF] Refreshing database credentials from Vault.
+2024-10-07 17:38:53.219 +00:00 [INF] Start processing HTTP request GET http://vault:8200/v1/database/creds/vault
+2024-10-07 17:38:53.222 +00:00 [INF] Sending HTTP request GET http://vault:8200/v1/database/creds/vault
+2024-10-07 17:38:53.370 +00:00 [INF] Received HTTP response headers after 143.0565ms - 200
+2024-10-07 17:38:53.374 +00:00 [INF] End processing HTTP request after 155.7308ms - 200
+2024-10-07 17:38:53.379 +00:00 [INF] Database credentials refreshed.
+2024-10-07 17:38:53.548 +00:00 [DBG] Endpoint Ready: "rabbitmq://rabbitmq-node1/02542dd7af79_RitualWorks_bus_yryyyyfcnwbrr98hbdqqp7zedr?temporary=true"
+2024-10-07 17:38:53.736 +00:00 [WRN] The WebRootPath was not found: /app/wwwroot. Static files may be unavailable.
+2024-10-07 17:38:53.734 +00:00 [DBG] Declare queue: name: my, durable, consumer-count: 0 message-count: 0
+2024-10-07 17:38:53.795 +00:00 [DBG] Declare exchange: name: my, type: fanout, durable
+2024-10-07 17:38:53.858 +00:00 [DBG] Bind queue: source: my, destination: my
+2024-10-07 17:38:53.988 +00:00 [INF] Now listening on: http://[::]:8080
+2024-10-07 17:38:53.990 +00:00 [DBG] Loaded hosting startup assembly RitualWorks
+2024-10-07 17:38:53.993 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-10-07 17:38:53.996 +00:00 [INF] Hosting environment: Development
+2024-10-07 17:38:53.998 +00:00 [INF] Content root path: /app
+2024-10-07 17:38:54.001 +00:00 [DBG] Hosting started
+2024-10-07 17:38:54.021 +00:00 [DBG] Consumer Ok: "rabbitmq://rabbitmq-node1/my" - amq.ctag-tle4NVGU88lrF11XmbNUag
+2024-10-07 17:38:54.031 +00:00 [DBG] Endpoint Ready: "rabbitmq://rabbitmq-node1/my"
+2024-10-07 17:38:54.067 +00:00 [INF] Bus started: "rabbitmq://rabbitmq-node1/"
+2024-10-07 17:39:06.252 +00:00 [DBG] Connection id "0HN76UROIUGQQ" accepted.
+2024-10-07 17:39:06.648 +00:00 [DBG] Connection id "0HN76UROIUGQQ" started.
+2024-10-07 17:39:06.863 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:39:06.873 +00:00 [DBG] Wildcard detected, all requests with hosts will be allowed.
+2024-10-07 17:39:06.888 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-10-07 17:39:06.891 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:39:07.028 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:39:07.748 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:39:07.823 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:39:07.883 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:39:07.896 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:39:07.906 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 1054.091ms
+2024-10-07 17:39:07.915 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2024-10-07 17:39:21.259 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:39:21.294 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:39:21.296 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:39:21.297 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:39:21.310 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:39:21.321 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:39:21.328 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:39:21.332 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 77.8557ms
+2024-10-07 17:39:21.334 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2024-10-07 17:39:36.504 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:39:36.885 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:39:36.898 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:39:36.900 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:39:37.028 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:39:37.054 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:39:37.060 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:39:37.090 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 703.8787ms
+2024-10-07 17:39:37.114 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 42022024-10-07 17:39:51.235 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:39:51.237 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:39:51.240 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:39:51.243 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:39:51.246 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:39:51.247 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:39:51.249 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:39:51.252 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 16.7015ms
+2024-10-07 17:39:51.254 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2024-10-07 17:40:06.241 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:40:06.242 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:40:06.243 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:40:06.245 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:40:06.247 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:40:06.251 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:40:06.254 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:40:06.256 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 16.4629ms
+2024-10-07 17:40:06.258 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2024-10-07 17:40:21.235 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:40:21.238 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:40:21.239 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:40:21.240 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:40:21.242 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:40:21.244 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:40:21.245 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:40:21.246 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 11.5352ms
+2024-10-07 17:40:21.249 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2024-10-07 17:40:36.240 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:40:36.245 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:40:36.246 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:40:36.248 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:40:36.249 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:40:36.252 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:40:36.253 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:40:36.255 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 14.4827ms
+2024-10-07 17:40:36.257 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2024-10-07 17:40:46.217 +00:00 [DBG] HttpMessageHandler expired after 120000ms for client 'VaultService'
+2024-10-07 17:40:51.237 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:40:51.252 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:40:51.272 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:40:51.281 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:40:51.285 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:40:51.307 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:40:51.317 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:40:51.364 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 126.6507ms
+2024-10-07 17:40:51.368 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 4042024-10-07 17:40:52.400 +00:00 [DBG] HttpMessageHandler expired after 120000ms for client 'VaultService'
+2024-10-07 17:40:56.304 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:40:56.367 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.1981ms - processed: 0 items - remaining: 1 items
+22024-10-07 17:41:02.279 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:41:02.283 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.9985ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:41:06.241 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:41:06.243 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:41:06.244 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:41:06.250 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:41:06.261 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:41:06.263 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:41:06.265 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:41:06.271 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 29.6139ms
+2024-10-07 17:41:06.274 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 40422024-10-07 17:41:06.374 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items2024-10-07 17:41:06.435 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0352ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:41:12.429 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:41:12.438 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.7379ms - processed: 0 items - remaining: 1 items
+22024-10-07 17:41:16.439 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:41:16.440 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0092ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:41:21.239 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:41:21.242 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:41:21.246 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:41:21.247 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:41:21.251 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:41:21.253 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:41:21.256 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:41:21.258 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 18.9284ms
+2024-10-07 17:41:21.261 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2024-10-07 17:41:22.441 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:41:23.384 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0111ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:41:26.448 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:41:27.229 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0142ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:41:33.381 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:41:33.389 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0088ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:41:36.260 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:41:36.273 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:41:36.275 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:41:36.277 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:41:36.278 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:41:36.280 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:41:36.282 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:41:36.286 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 25.5109ms
+2024-10-07 17:41:36.288 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2024-10-07 17:41:37.261 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:41:39.537 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0106ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:41:43.395 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:41:43.396 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0057ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:41:49.704 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:41:49.707 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0077ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:41:51.241 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:41:51.355 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:41:51.360 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:41:51.361 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:41:51.363 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:41:51.367 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:41:51.369 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:41:51.371 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 130.8001ms
+2024-10-07 17:41:51.373 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 402024-10-07 17:41:53.403 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:41:53.405 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0071ms - processed: 0 items - remaining: 1 items
+202024-10-07 17:41:59.715 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-072024-10-07 17:41:59.712 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:42:01.118 +00:00 [2024-10-07 17:42:03.403 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:42:03.406 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0101ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:42:06.240 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:42:06.244 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:42:06.247 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:42:06.248 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:42:06.250 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:42:06.251 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:42:06.255 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:42:06.256 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 16.0409ms
+2024-10-07 17:42:06.264 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2024-10-07 17:42:11.126 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:42:12.249 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0093ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:42:13.409 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:42:13.411 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0094ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:42:21.240 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:42:21.242 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:42:21.245 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:42:21.246 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:42:21.248 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:42:21.251 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:42:21.254 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:42:21.257 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 16.4124ms
+2024-10-07 17:42:21.259 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2024-10-07 17:42:22.257 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:42:22.260 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0084ms - processed: 0 items - remaining: 1 items22024-10-07 17:42:23.433 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:42:23.438 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0104ms - processed: 0 items - remaining: 1 items2024-10-07 17:42:32.260 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:42:32.262 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0165ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:42:33.514 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:42:33.527 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0104ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:42:36.240 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:42:36.242 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:42:36.244 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:42:36.246 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:42:36.248 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:42:36.254 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:42:36.258 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:42:36.264 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 23.5324ms
+2024-10-07 17:42:36.267 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+22024-10-07 17:42:42.273 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:42:42.343 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0083ms - processed: 0 items - remaining: 1 items2024-10-07 17:42:43.532 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:42:43.538 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0312ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:42:51.249 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:42:51.255 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:42:51.258 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:42:51.260 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:42:51.263 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:42:51.265 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:42:51.268 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:42:51.271 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 21.8269ms
+2024-10-07 17:42:51.274 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+22024-10-07 17:42:52.345 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items22024-10-07 17:42:52.347 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0099ms - processed: 0 items - remaining: 1 item202024-10-07 17:42:53.546 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 item202024-10-07 17:42:53.550 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0171ms - processed: 0 items - remaining: 1 item2024-10-07 17:43:02.353 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:43:02.357 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0155ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:43:03.553 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:43:03.555 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0058ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:43:06.242 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:43:06.243 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:43:06.245 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:43:06.246 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:43:06.247 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:43:06.248 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:43:06.251 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:43:06.252 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 9.3514ms
+2024-10-07 17:43:06.253 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+202024-10-07 17:43:12.362 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 item202024-10-07 17:43:12.367 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0088ms - processed: 0 items - remaining: 1 item2024-10-07 17:43:13.557 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:43:13.558 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0245ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:43:21.245 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:43:21.248 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:43:21.253 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:43:21.255 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:43:21.259 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:43:21.264 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:43:21.267 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:43:21.271 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 25.7642ms
+2024-10-07 17:43:21.275 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+202024-10-07 17:43:22.374 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 item202024-10-07 17:43:22.378 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0115ms - processed: 0 items - remaining: 1 item202024-10-07 17:43:23.566 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:43:23.567 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0057ms - processed: 0 items - remaining: 1 item2024-10-07 17:43:32.367 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:43:32.368 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0091ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:43:33.548 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:43:33.549 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0061ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:43:36.227 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:43:36.230 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:43:36.234 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:43:36.235 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:43:36.240 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:43:36.242 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:43:36.246 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:43:36.252 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 25.2716ms
+2024-10-07 17:43:36.255 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+22024-10-07 17:43:42.374 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:43:42.375 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.003ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:43:43.552 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:43:43.553 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0027ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:43:51.226 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:43:51.228 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:43:51.229 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:43:51.229 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:43:51.231 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:43:51.232 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:43:51.233 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:43:51.234 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 7.7689ms
+2024-10-07 17:43:51.235 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+22024-10-07 17:43:52.377 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:43:52.378 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0042ms - processed: 0 items - remaining: 1 items22024-10-07 17:43:53.388 +00:00 [INF] Refreshing database credentials from Vault.
+2024-10-07 17:43:53.393 +00:00 [INF] Start processing HTTP request GET http://vault:8200/v1/database/creds/vault
+2024-10-07 17:43:53.395 +00:00 [INF] Sending HTTP request GET http://vault:8200/v1/database/creds/vault
+2024-10-07 17:43:53.427 +00:00 [INF] Received HTTP response headers after 30.7578ms - 200
+2024-10-07 17:43:53.427 +00:00 [INF] End processing HTTP request after 34.7837ms - 200
+2024-10-07 17:43:53.429 +00:00 [INF] Database credentials refreshed.
+2024-10-07 17:43:53.561 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:43:53.562 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0037ms - processed: 0 items - remaining: 1 items
+22024-10-07 17:44:02.392 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:44:02.393 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0035ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:44:03.572 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:44:03.573 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0085ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:44:06.242 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:44:06.243 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:44:06.244 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:44:06.244 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:44:06.245 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:44:06.246 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:44:06.246 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:44:06.247 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 4.8434ms
+2024-10-07 17:44:06.248 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2024-10-07 17:44:12.401 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:44:12.402 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.003ms - processed: 0 items - remaining: 1 items
+22024-10-07 17:44:13.575 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:44:13.576 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0152ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:44:21.240 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:44:21.241 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:44:21.242 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:44:21.243 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:44:21.244 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:44:21.244 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:44:21.245 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:44:21.246 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 5.3818ms
+2024-10-07 17:44:21.246 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 402024-10-07 17:44:22.415 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:44:22.430 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.4731ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:44:23.588 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:44:23.593 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 1.4144ms - processed: 0 items - remaining: 1 items
+202024-10-07 17:44:32.409 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:44:32.410 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0025ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:44:33.594 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:44:33.595 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0025ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:44:36.244 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:44:36.246 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:44:36.246 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:44:36.248 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:44:36.250 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:44:36.251 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:44:36.253 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:44:36.254 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 9.3774ms
+2024-10-07 17:44:36.255 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 4042024-10-07 17:44:42.435 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:44:42.436 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0028ms - processed: 0 items - remaining: 1 items
+22024-10-07 17:44:43.597 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:44:43.598 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0029ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:44:51.242 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:44:51.242 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:44:51.243 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:44:51.244 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:44:51.245 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:44:51.246 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:44:51.247 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:44:51.248 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 6.8419ms
+2024-10-07 17:44:51.251 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 4042024-10-07 17:44:52.437 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:44:52.437 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0028ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:44:53.600 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:44:53.601 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0026ms - processed: 0 items - remaining: 1 items
+22024-10-07 17:45:02.415 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:45:02.416 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.003ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:45:03.601 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:45:03.602 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0064ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:45:06.243 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:45:06.245 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:45:06.246 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:45:06.247 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:45:06.248 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:45:06.248 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:45:06.249 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:45:06.250 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 6.6ms
+2024-10-07 17:45:06.251 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2022024-10-07 17:45:12.441 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:45:12.442 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0026ms - processed: 0 items - remaining: 1 ite2024-10-07 17:45:13.604 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:45:13.605 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0025ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:45:21.242 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:45:21.243 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:45:21.244 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:45:21.245 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:45:21.246 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:45:21.246 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:45:21.247 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:45:21.248 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 5.2507ms
+2024-10-07 17:45:21.249 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2022024-10-07 17:45:22.445 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:45:22.446 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0035ms - processed: 0 items - remaining: 1 ite2022024-10-07 17:45:23.611 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:45:23.611 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0026ms - processed: 0 items - remaining: 1 ite2024-10-07 17:45:32.423 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:45:32.427 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0073ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:45:33.607 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:45:33.609 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.4849ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:45:36.244 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:45:36.245 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:45:36.246 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:45:36.247 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:45:36.248 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:45:36.248 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:45:36.249 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:45:36.251 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 6.2147ms
+2024-10-07 17:45:36.251 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2024-10-07 17:45:42.453 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:45:42.453 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0048ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:45:43.609 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:45:43.611 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0045ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:45:51.246 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:45:51.247 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:45:51.250 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:45:51.253 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:45:51.262 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:45:51.266 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:45:51.271 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:45:51.273 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 26.9533ms
+2024-10-07 17:45:51.274 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 4042024-10-07 17:45:52.456 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:45:52.457 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0025ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:45:53.618 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:45:53.619 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0027ms - processed: 0 items - remaining: 1 items
+22024-10-07 17:46:02.443 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:02.444 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0078ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:46:03.615 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:03.616 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0052ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:46:06.246 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:46:06.251 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:46:06.252 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:46:06.253 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:46:06.254 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:46:06.256 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:46:06.257 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:46:06.258 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 11.7174ms
+2024-10-07 17:46:06.259 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 402024-10-07 17:46:12.462 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:12.463 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0011ms - processed: 0 items - remaining: 1 items
+202024-10-07 17:46:13.617 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:13.910 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.004ms - processed2024-10-07 17:46:13.911 +00:00 2024-10-07 17:46:21.243 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:46:21.244 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:46:21.245 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:46:21.245 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:46:21.246 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:46:21.247 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:46:21.249 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:46:21.250 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 6.676ms
+2024-10-07 17:46:21.251 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+202024-10-07 17:46:22.463 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:22.464 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0012ms - processed: 0 items - remaining: 1 item202024-10-07 17:46:23.915 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 item202024-10-07 17:46:23.916 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0025ms - processed: 0 items - remaining: 1 item2024-10-07 17:46:32.449 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:32.449 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0151ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:46:33.917 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:33.917 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0016ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:46:36.246 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:46:36.247 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:46:36.248 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:46:36.248 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:46:36.249 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:46:36.250 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:46:36.252 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:46:36.252 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 6.6905ms
+2024-10-07 17:46:36.253 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+202024-10-07 17:46:42.467 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:42.468 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0012ms - processed: 0 items - remaining: 1 item2024-10-07 17:46:43.919 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:43.920 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0038ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:46:51.245 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:46:51.245 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:46:51.246 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:46:51.247 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:46:51.250 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:46:51.251 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:46:51.252 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:46:51.253 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 8.8518ms
+2024-10-07 17:46:51.254 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+22024-10-07 17:46:52.470 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:52.472 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0039ms - processed: 0 items - remaining: 1 items22024-10-07 17:46:53.925 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:53.928 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0038ms - processed: 0 items - remaining: 1 items2024-10-07 17:47:02.457 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:02.458 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0036ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:03.925 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:03.926 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0012ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:06.245 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:47:06.246 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:47:06.247 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:47:06.248 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:47:06.249 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:47:06.250 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:47:06.251 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:47:06.252 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 6.2414ms
+2024-10-07 17:47:06.253 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+22024-10-07 17:47:12.479 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:12.483 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.003ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:13.928 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:13.929 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0012ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:21.244 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:47:21.246 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:47:21.247 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:47:21.248 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:47:21.250 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:47:21.252 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:47:21.255 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:47:21.258 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 13.2378ms
+2024-10-07 17:47:21.261 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 402024-10-07 17:47:22.485 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:22.491 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0033ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:23.933 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:23.934 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0023ms - processed: 0 items - remaining: 1 items
+202024-10-07 17:47:32.472 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:32.474 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0171ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:33.933 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:33.983 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0034ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:36.277 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:47:36.286 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:47:36.292 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:47:36.319 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:47:36.355 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:47:36.366 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:47:36.382 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:47:36.388 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 111.8448ms
+2024-10-07 17:47:36.464 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 2024-10-07 17:47:42.500 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:42.502 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0803ms - processed: 0 items - remaining: 1 items
+20242024-10-07 17:47:44.010 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:44.010 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0012ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:51.245 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:47:51.246 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:47:51.247 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:47:51.249 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:47:51.250 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:47:51.252 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:47:51.253 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:47:51.254 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 9.1906ms
+2024-10-07 17:47:51.255 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 2024-10-07 17:47:52.504 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:52.505 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0038ms - processed: 0 items - remaining: 1 items
+20242024-10-07 17:47:54.012 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:54.014 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0088ms - processed: 0 items - remaining: 1 it20242024-10-07 17:48:02.491 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:48:02.492 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0014ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:48:04.017 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:48:04.018 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0013ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:48:06.245 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 17:48:06.247 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:48:06.248 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:48:06.249 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:48:06.250 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:48:06.251 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:48:06.255 +00:00 [DBG] Connection id "0HN76UROIUGQQ" completed keep alive response.
+2024-10-07 17:48:06.256 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 10.756ms
+2024-10-07 17:48:06.257 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 2024-10-07 17:48:11.678 +00:00 [DBG] Connection id "0HN76URM7I5TS" received FIN.
+20242024-10-07 17:48:11.822 +00:00 [DBG] Connection id "0HN76UROIUGQQ" sending FIN because: "The Socket transport's send loop completed gracefully."
+2024-10-07 17:48:11.825 +00:00 [DBG] Connection id "0HN76UROIUGQQ" disconnecting.
+2024-10-07 17:48:11.830 +00:00 [DBG] Connection id "0HN76UROIUGQQ" stopp2024-10-07 17:48:12.508 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:48:12.509 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0582ms - processed: 0 items - remaining: 1 items
+20242024-10-07 17:48:14.020 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:48:14.021 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0022ms - processed: 0 items - remaining: 1 it20242024-10-07 17:48:14.779 +00:00 [INF] Application is shutting down...
+2024-10-07 17:48:14.793 +00:00 [DBG] Hosting stopp2024-10-07 17:48:14.982 +00:00 [DBG] Stopping bus instances: IBus
+2024-10-07 17:48:15.017 +00:00 [DBG] Stopping bus: "rabbitmq://rabbitmq-node1/"
+2024-10-07 17:48:15.105 +00:00 [DBG] Endpoint Stopping: "rabbitmq://rabbitmq-node1/my"
+20242024-10-07 17:48:15.156 +00:00 [DBG] Consumer Stopping: "rabbitmq://rabbitmq-node1/my" (Stop Receive Transpo20242024-10-07 17:48:15.181 +00:00 [DBG] Consumer Cancel Ok: "rabbitmq://rabbitmq-node1/my" - amq.ctag-_H1ubSYYfgbUTzbmq3B2024-10-07 17:48:15.211 +00:00 [DBG] Endpoint Completed: "rabbitmq://rabbitmq-node1/my"
+2024-10-07 17:48:15.266 +00:00 [DBG] Consumer Completed: "rabbitmq://rabbitmq-node1/my": 0 received, 0 concurrent, amq.ctag-tle4NVGU88lrF11XmbNUag
+2024-10-07 17:48:15.602 +00:00 [DBG] Endpoint Stopping: "rabbitmq://rabbitmq-node1/02542dd7af79_RitualWorks_bus_yryyyyfcnwbrr98hbdqqp7zedr?temporary=true"
+2024-10-07 17:48:15.613 +00:00 [DBG] Endpoint Completed: "rabbitmq://rabbitmq-node1/02542dd7af79_RitualWorks_bus_yryyyyfcnwbrr98hbdqqp7zedr?temporary=true"
+2024-10-07 17:48:15.619 +00:00 [DBG] Disconnect: rabbit_user@rabbitmq-node1:5672/
+2024-10-07 17:48:15.636 +00:00 [DBG] Disconnected: rabbit_user@rabbitmq-node1:5672/
+2024-10-07 17:48:15.641 +00:00 [INF] Bus stopped: "rabbitmq://rabbitmq-node1/"
+2024-10-07 17:48:15.647 +00:00 [DBG] Hosting stopped
+ped
+ng: 1 items
+2024-10-07 17:46:31.570 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 17:46:31.571 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:46:31.573 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:46:31.573 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:46:31.574 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:46:31.576 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:46:31.577 +00:00 [DBG] Connection id "0HN76URN6BQUC" completed keep alive response.
+2024-10-07 17:46:31.578 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 7.8829ms
+2024-10-07 17:46:31.579 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 17:46:32.475 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:32.476 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0013ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:46:33.920 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:33.921 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0017ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:46:42.477 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:42.478 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0021ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:46:43.923 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:43.924 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0041ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:46:46.568 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 17:46:46.569 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:46:46.569 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:46:46.570 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:46:46.571 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:46:46.572 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:46:46.572 +00:00 [DBG] Connection id "0HN76URN6BQUC" completed keep alive response.
+2024-10-07 17:46:46.573 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 5.1968ms
+2024-10-07 17:46:46.574 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 17:46:52.480 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:52.483 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0062ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:46:53.929 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:46:53.931 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0052ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:01.568 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 17:47:01.570 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:47:01.570 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:47:01.572 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:47:01.573 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:47:01.574 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:47:01.575 +00:00 [DBG] Connection id "0HN76URN6BQUC" completed keep alive response.
+2024-10-07 17:47:01.576 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 7.5954ms
+2024-10-07 17:47:01.576 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 17:47:02.488 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:02.489 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0041ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:03.934 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:03.934 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.001ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:12.490 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:12.495 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0032ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:13.935 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:13.935 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0011ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:16.568 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 17:47:16.568 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:47:16.569 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:47:16.571 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:47:16.572 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:47:16.573 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:47:16.575 +00:00 [DBG] Connection id "0HN76URN6BQUC" completed keep alive response.
+2024-10-07 17:47:16.576 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 8.1954ms
+2024-10-07 17:47:16.577 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 17:47:22.504 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:22.508 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0054ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:23.936 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:23.937 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0016ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:31.568 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 17:47:31.570 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:47:31.570 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:47:31.571 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:47:31.572 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:47:31.572 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:47:31.573 +00:00 [DBG] Connection id "0HN76URN6BQUC" completed keep alive response.
+2024-10-07 17:47:31.574 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 5.5951ms
+2024-10-07 17:47:31.575 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 17:47:32.510 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:32.512 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0054ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:33.945 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:33.953 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0042ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:42.514 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:42.515 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0059ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:44.001 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:44.001 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0014ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:46.572 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 17:47:46.579 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:47:46.585 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:47:46.588 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:47:46.595 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:47:46.597 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:47:46.599 +00:00 [DBG] Connection id "0HN76URN6BQUC" completed keep alive response.
+2024-10-07 17:47:46.601 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 29.7929ms
+2024-10-07 17:47:46.604 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 17:47:52.517 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:52.520 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0181ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:47:54.004 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:47:54.005 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0044ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:48:01.568 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 17:48:01.569 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:48:01.570 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:48:01.571 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:48:01.571 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:48:01.572 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:48:01.573 +00:00 [DBG] Connection id "0HN76URN6BQUC" completed keep alive response.
+2024-10-07 17:48:01.574 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 5.5533ms
+2024-10-07 17:48:01.576 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 17:48:02.524 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:48:02.524 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0016ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:48:04.008 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:48:04.008 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.003ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:48:11.668 +00:00 [DBG] Connection id "0HN76URN6BQUC" received FIN.
+2024-10-07 17:48:11.676 +00:00 [DBG] Connection id "0HN76URN6BQUC" disconnecting.
+2024-10-07 17:48:11.695 +00:00 [DBG] Connection id "0HN76URN6BQUC" sending FIN because: "The Socket transport's send loop completed gracefully."
+2024-10-07 17:48:11.710 +00:00 [DBG] Connection id "0HN76URN6BQUC" stopped.
+2024-10-07 17:48:12.542 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:48:12.545 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0039ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:48:14.010 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 17:48:14.015 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0446ms - processed: 0 items - remaining: 1 items
+2024-10-07 17:48:14.829 +00:00 [INF] Application is shutting down...
+2024-10-07 17:48:14.839 +00:00 [DBG] Hosting stopping
+2024-10-07 17:48:14.964 +00:00 [DBG] Stopping bus instances: IBus
+2024-10-07 17:48:14.999 +00:00 [DBG] Stopping bus: "rabbitmq://rabbitmq-node1/"
+2024-10-07 17:48:15.044 +00:00 [DBG] Endpoint Stopping: "rabbitmq://rabbitmq-node1/my"
+2024-10-07 17:48:15.111 +00:00 [DBG] Consumer Stopping: "rabbitmq://rabbitmq-node1/my" (Stop Receive Transport)
+2024-10-07 17:48:15.147 +00:00 [DBG] Consumer Cancel Ok: "rabbitmq://rabbitmq-node1/my" - amq.ctag-gwLRYRqqW6jTZUrmkQqJZw
+2024-10-07 17:48:15.166 +00:00 [DBG] Endpoint Completed: "rabbitmq://rabbitmq-node1/my"
+2024-10-07 17:48:15.229 +00:00 [DBG] Consumer Completed: "rabbitmq://rabbitmq-node1/my": 0 received, 0 concurrent, amq.ctag-gwLRYRqqW6jTZUrmkQqJZw
+2024-10-07 17:48:15.590 +00:00 [DBG] Endpoint Stopping: "rabbitmq://rabbitmq-node1/3a937a286493_RitualWorks_bus_yryyyyfcnwbrrdi4bdqqp7zerk?temporary=true"
+2024-10-07 17:48:15.601 +00:00 [DBG] Endpoint Completed: "rabbitmq://rabbitmq-node1/3a937a286493_RitualWorks_bus_yryyyyfcnwbrrdi4bdqqp7zerk?temporary=true"
+2024-10-07 17:48:15.614 +00:00 [DBG] Disconnect: rabbit_user@rabbitmq-node1:5672/
+2024-10-07 17:48:15.629 +00:00 [DBG] Disconnected: rabbit_user@rabbitmq-node1:5672/
+2024-10-07 17:48:15.634 +00:00 [INF] Bus stopped: "rabbitmq://rabbitmq-node1/"
+2024-10-07 17:48:15.641 +00:00 [DBG] Hosting stopped
+2024-10-07 17:58:14.840 +00:00 [INF] VaultService initialized with Vault token.
+2024-10-07 17:58:15.193 +00:00 [INF] Start processing HTTP request GET http://va2024-10-07 17:58:15.345 +00:00 [INF] Start processing HTTP request GET http://vault:8200/v1/database/creds/vault
+2024-10-07 17:58:15.361 +00:00 [INF] Sending HTTP request GET http://vault:8200/v1/database/creds/vault
+2024-10-07 17:58:17.512 +00:00 [INF] Received HTTP response headers after 2126.8835ms - 200
+2024-10-07 17:58:17.557 +00:00 [INF] End processing HTTP request after 2269.6182ms - 200
+2024-10-07 17:58:17.805 +00:00 [INF] Fetching secrets from Vault at path: secret/Development
+2024-10-07 17:58:17.816 +00:00 [INF] Start processing HTTP request GET http://vault:8200/v1/secret/Development
+2024-10-07 17:58:17.820 +00:00 [INF] Sending HTTP request GET http://vault:8200/v1/secret/Development
+2024-10-07 17:58:17.838 +00:00 [INF] Received HTTP response headers after 15.6682ms - 200
+2024-10-07 17:58:17.846 +00:00 [INF] End processing HTTP request after 31.03ms - 200
+2024-10-07 17:58:17.857 +00:00 [INF] Secrets from Vault:
+2024-10-07 17:58:17.866 +00:00 [INF] Jwt Key: 6R5pfM0YoMEbf10J5xm+bMvVWcHt35q+ImTVOmCYU3Y=
+2024-10-07 17:58:17.870 +00:00 [INF] Postgres Vault Username: v-root-vault-TfWz4rpcvz5RFqktWg5n-1728323896
+2024-10-07 17:58:17.879 +00:00 [INF] RabbitMQ Password: sYEz2EufRiAnm8pA7d6vYQ==
+2024-10-07 17:58:17.912 +00:00 [INF] MinIO Access Key: fb68bc5cd7f0c134075f0a67
+2024-10-07 17:58:17.917 +00:00 [INF] MinIO Secret Key: WwhlyZ1YIUnrec3+l9JF21/8Oeg6RQV/
+2024-10-07 17:58:19.268 +00:00 [DBG] Registered model binder providers, in the following order: ["Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BinderTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ServicesModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.HeaderModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FloatingPointTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.EnumTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.DateTimeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.SimpleTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.TryParseModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.CancellationTokenModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ByteArrayModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FormFileModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FormCollectionModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.KeyValuePairModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.DictionaryModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ArrayModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.CollectionModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexObjectModelBinderProvider"]
+202024-10-07 17:58:19.664 +00:00 [DBG] Hosting startin202024-10-07 17:58:19.800 +00:00 [INF] Connecting to RabbitMQ Host: rabbitmq://rabbitmq-node1:5672, Username: rabbit_use202024-10-07 17:58:20.162 +00:00 [INF] Configured endpoint my, Consumer: Program+MyConsume2024-10-07 17:58:20.552 +00:00 [WRN] Storing keys in a directory '/root/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed. For more information go to https://aka.ms/aspnet/dataprotectionwarning
+2024-10-07 17:58:20.556 +00:00 [INF] User profile is available. Using '/root/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2024-10-07 17:58:20.574 +00:00 [INF] VaultService initialized with Vault token.
+2024-10-07 17:58:20.611 +00:00 [DBG] Starting bus instances: IBus
+2024-10-07 17:58:20.627 +00:00 [DBG] Starting bus: "rabbitmq://rabbitmq-node1/"
+202024-10-07 17:58:20.860 +00:00 [DBG] Repository contains no viable default key. Caller should generate a key with immediate activation.
+2024-10-07 17:58:20.863 +00:00 [DBG] Policy resolution states that a new key should be added to the key ring.
+2024-10-07 17:58:20.883 +00:00 [DBG] Connect: rabbit_user@rabbitmq-node1:5672/
+2024-10-07 17:58:20.878 +00:00 [INF] Creating key {d6945e49-09d4-426e-a30f-4ec527c6723a} with creation date 2024-10-07 17:58:20Z, activation date 2024-10-07 17:58:20Z, and expiration date 2025-01-05 17:58:20Z2024-10-07 17:58:20.946 +00:00 [DBG] Descriptor deserializer type for key {48efe192-1d06-4f2b-b763-36bc2f2b2a55} is 'Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60'.
+202024-10-07 17:58:20.967 +00:00 [DBG] No key escrow sink found. Not writing key {d6945e49-09d4-426e-a30f-4ec527c6723a} to escrow202024-10-07 17:58:20.970 +00:00 [WRN] No XML encryptor configured. Key {d6945e49-09d4-426e-a30f-4ec527c6723a} may be persisted to storage in unencrypted form2024-10-07 17:58:21.030 +00:00 [INF] Writing data to file '/root/.aspnet/DataProtection-Keys/key-48efe192-1d06-4f2b-b763-36bc2f2b2a55.xml'.
+2024-10-07 17:58:21.044 +00:00 [DBG] Key cache expiration token triggered by 'CreateNewKey' operation.
+2024-10-07 17:58:21.058 +00:00 [DBG] Reading data from file '/root/.aspnet/DataProtection-Keys/key-48efe192-1d06-4f2b-b763-36bc2f2b2a55.xml'.
+2024-10-07 17:58:21.106 +00:00 [DBG] Found key {48efe192-1d06-4f2b-b763-36bc2f2b2a55}.
+2024-10-07 17:58:21.133 +00:00 [DBG] Considering key {48efe192-1d06-4f2b-b763-36bc2f2b2a55} with expiration date 2025-01-05 17:58:20Z as default key.
+2024-10-07 17:58:21.145 +00:00 [DBG] Forwarded activator type request from Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60 to Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Culture=neutral, PublicKeyToken=adb9793829ddae60
+2024-10-07 17:58:21.160 +00:00 [DBG] Using managed symmetric algorithm 'System.Security.Cryptography.Aes'.
+2024-10-07 17:58:21.162 +00:00 [DBG] Using managed keyed hash algorithm 'System.Security.Cryptography.HMACSHA256'.
+202024-10-07 17:58:21.170 +00:00 [DBG] Using key {d6945e49-09d4-426e-a30f-4ec527c6723a} as the default key.
+2024-10-07 17:58:21.188 +00:00 [DBG] Key ring with default key {d6945e49-09d4-426e-a30f-4ec527c6723a} was loaded during application startup202024-10-07 17:58:21.195 +00:00 [INF] Refreshing database credentials from Vault.
+2024-10-07 17:58:21.198 +00:00 [INF] Start processing HTTP request GET http://vault:8200/v1/database/creds/vault
+2024-10-07 17:58:21.204 +00:00 [INF] Sending HTTP request GET http://vault:8200/v1/database/creds/vaul202024-10-07 17:58:21.298 +00:00 [DBG] Connected: rabbit_user@rabbitmq-node1:5672/ (address: amqp://rabbitmq-node1:5672, local: 43648202024-10-07 17:58:21.419 +00:00 [INF] Received HTTP response headers after 211.4449ms - 200
+2024-10-07 17:58:21.422 +00:00 [INF] End processing HTTP request after 224.0474ms - 200
+2024-10-07 17:58:21.457 +00:00 [INF] Database credentials refreshed202024-10-07 17:58:21.593 +00:00 [DBG] Endpoint Ready: "rabbitmq://rabbitmq-node1/8dd182395e45_RitualWorks_bus_yryyyyfcnobrrqx7bdqqp6pyfa?temporary=true2024-10-07 17:58:21.695 +00:00 [WRN] The WebRootPath was not found: /app/wwwroot. Static files may be unavailable.
+2024-10-07 17:58:21.822 +00:00 [INF] Now listening on: http://[::]:8080
+2024-10-07 17:58:21.825 +00:00 [DBG] Loaded hosting startup assembly RitualWorks
+2024-10-07 17:58:21.828 +00:00 [INF] Application started. Press Ctrl+C to shut down.
+2024-10-07 17:58:21.829 +00:00 [INF] Hosting environment: Development
+2024-10-07 17:58:21.832 +00:00 [INF] Content root path: /app
+2024-10-07 17:58:21.834 +00:00 [DBG] Hosting started
+202024-10-07 17:58:21.895 +00:00 [DBG] Declare queue: name: my, durable, consumer-count: 0 message-count: 202024-10-07 17:58:21.925 +00:00 [DBG] Declare exchange: name: my, type: fanout, durabl2024-10-07 17:58:21.985 +00:00 [DBG] Bind queue: source: my, destination: my
+202024-10-07 17:58:22.244 +00:00 [DBG] Consumer Ok: "rabbitmq://rabbitmq-node1/my" - amq.ctag-8XofyMr3RpRhxq181kVxD202024-10-07 17:58:22.292 +00:00 [DBG] Endpoint Ready: "rabbitmq://rabbitmq-node1/my202024-10-07 17:58:22.319 +00:00 [INF] Bus started: "rabbitmq://rabbitmq-node1/2024-10-07 17:58:33.199 +00:00 [DBG] Connection id "0HN76V6KBOSF5" accepted.
+2024-10-07 17:58:33.208 +00:00 [DBG] Connection id "0HN76V6KBOSF5" started.
+2024-10-07 17:58:33.471 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 17:58:33.485 +00:00 [DBG] Wildcard detected, all requests with hosts will be allowed.
+2024-10-07 17:58:33.502 +00:00 [WRN] Failed to determine the https port for redirect.
+2024-10-07 17:58:33.508 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:58:33.835 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:58:33.842 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:58:34.178 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:58:34.539 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:58:34.570 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 17:58:34.610 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 1147.9012ms
+2024-10-07 17:58:34.628 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 17:58:48.290 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 17:58:48.308 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:58:48.323 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:58:48.357 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:58:48.574 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:58:48.743 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:58:48.794 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 17:58:48.826 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 536.2125ms
+2024-10-07 17:58:48.841 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 17:59:03.243 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 17:59:03.393 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:59:03.559 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:59:03.774 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:59:04.379 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:59:04.827 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:59:04.931 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 17:59:05.029 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 1785.4768ms
+2024-10-07 17:59:05.277 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 17:59:18.109 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 17:59:18.142 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:59:18.159 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:59:18.208 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:59:18.409 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:59:18.842 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:59:19.728 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 17:59:19.832 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 1723.2645ms
+2024-10-07 17:59:19.846 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 17:59:33.153 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 17:59:33.273 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:59:33.438 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:59:33.723 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:59:33.940 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:59:34.275 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:59:35.307 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 17:59:35.508 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 2354.5456ms
+2024-10-07 17:59:35.528 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 17:59:48.256 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 17:59:48.275 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 17:59:48.289 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 17:59:48.624 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 17:59:49.060 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 17:59:49.609 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 17:59:49.879 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 17:59:50.801 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 2544.6098ms
+2024-10-07 17:59:51.134 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 40422024-10-07 18:00:03.129 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:00:03.131 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:00:03.133 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:00:03.135 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:00:03.137 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:00:03.156 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:00:03.222 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:00:03.225 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 95.2926ms
+2024-10-07 18:00:03.297 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:00:14.680 +00:00 [DBG] HttpMessageHandler expired after 120000ms for client 'VaultService'
+2024-10-07 18:00:18.041 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:00:18.043 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:00:18.044 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:00:18.044 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:00:18.045 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:00:18.046 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:00:18.047 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:00:18.049 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 7.3164ms
+2024-10-07 18:00:18.049 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:00:20.508 +00:00 [DBG] HttpMessageHandler expired after 120000ms for client 'VaultService'
+2024-10-07 18:00:24.726 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:00:24.743 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.1492ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:00:30.576 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:00:30.579 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.2704ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:00:33.109 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:00:33.111 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:00:33.113 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:00:33.114 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:00:33.116 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:00:33.121 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:00:33.124 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:00:33.126 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 16.5704ms
+2024-10-07 18:00:33.128 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:00:34.808 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:00:34.809 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0081ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:00:40.582 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:00:40.584 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.5388ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:00:44.780 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:00:44.781 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0078ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:00:48.105 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:00:48.106 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:00:48.108 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:00:48.109 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:00:48.111 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:00:48.113 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:00:48.116 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:00:48.118 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 13.3977ms
+2024-10-07 18:00:48.120 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:00:50.586 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:00:50.588 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0085ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:00:54.816 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:00:54.818 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0087ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:01:00.591 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:01:00.594 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0146ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:01:03.113 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:01:03.116 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:01:03.118 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:01:03.120 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:01:03.123 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:01:03.125 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:01:03.127 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:01:03.129 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 16.5649ms
+2024-10-07 18:01:03.132 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:01:04.821 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:01:04.829 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0104ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:01:10.607 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:01:10.618 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0069ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:01:14.795 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:01:14.796 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0074ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:01:18.105 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:01:18.106 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:01:18.107 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:01:18.108 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:01:18.110 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:01:18.111 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:01:18.112 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:01:18.113 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 8.0638ms
+2024-10-07 18:01:18.114 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:01:20.624 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:01:20.625 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0071ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:01:24.840 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:01:24.845 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 1.5755ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:01:30.562 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:01:30.563 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0047ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:01:33.041 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:01:33.041 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:01:33.043 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:01:33.044 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:01:33.045 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:01:33.046 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:01:33.047 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:01:33.048 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 7.3809ms
+2024-10-07 18:01:33.049 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 4042024-10-07 18:01:34.786 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:01:34.788 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0063ms - processed: 0 items - remaining: 1 items
+22024-10-07 18:01:40.565 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:01:40.566 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0127ms - processed: 0 items - remaining: 1 items22024-10-07 18:01:44.745 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:01:44.746 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0072ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:01:48.041 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:01:48.042 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:01:48.043 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:01:48.044 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:01:48.044 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:01:48.045 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:01:48.046 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:01:48.048 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 6.5159ms
+2024-10-07 18:01:48.049 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 40202024-10-07 18:01:50.569 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:01:50.570 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0055ms - processed: 0 items - remaining: 1 item2024-10-07 18:01:54.795 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:01:54.797 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.8668ms - processed: 0 items - remaining: 1 items
+202024-10-07 18:02:00.637 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:02:00.639 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0112ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:02:03.107 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:02:03.111 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:02:03.115 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:02:03.119 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:02:03.122 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:02:03.124 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:02:03.126 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:02:03.128 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 20.6939ms
+2024-10-07 18:02:03.130 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 402024-10-07 18:02:04.886 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:02:04.890 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0104ms - processed: 0 items - remaining: 1 items
+202024-10-07 18:02:10.646 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:02:10.649 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0116ms - processed: 0 items - remaining: 1 item202024-10-07 18:02:14.825 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:02:14.830 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0144ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:02:18.125 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:02:18.128 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:02:18.147 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:02:18.150 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:02:18.153 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:02:18.156 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:02:18.170 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:02:18.181 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 55.7468ms
+2024-10-07 18:02:18.195 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 40202024-10-07 18:02:20.660 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:02:20.927 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0162ms - processed: 0 items - remaining: 1 item202024-10-07 18:03:01.844 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:03:01.995 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0951ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:03:02.455 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:03:02.640 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0137ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:03:02.779 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:03:02.940 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:03:03.002 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:03:03.009 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:03:03.222 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:03:03.278 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:03:03.376 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:03:03.420 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 640.7473ms
+2024-10-07 18:03:03.428 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:03:03.448 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:03:03.487 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:03:03.503 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:03:03.604 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:03:03.627 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:03:03.634 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:03:03.667 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:03:03.615 +00:00 [DBG] Disconnect: rabbit_user@rabbitmq-node1:5672/
+2024-10-07 18:03:03.729 +00:00 [DBG] Disconnected: rabbit_user@rabbitmq-node1:5672/
+2024-10-07 18:03:03.717 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 267.7351ms
+2024-10-07 18:03:03.773 +00:00 [INF] 2024-10-07 18:03:03.193 +00:00 [WRN] As of ""2024-10-07T18:02:51.1571307+00:00"", the heartbeat has been running for ""00:00:02.0558559"" which is longer than ""00:2024-10-07 18:03:06.731 +00:00 [DBG] Consumer Model Shutdown: "rabbitmq://rabbitmq-node1/my" - amq.ctag-0W-G5_WT7ofvahGQi2sIow, Concurrent Peak: 0, 541-Unexpected Exception: Connection timed out
+2024-10-07 18:03:07.118 +00:00 [DBG] Consumer Stopping: "rabbitmq://rabbitmq-node1/my" (Consume Loop Exited)
+2024-10-07 18:03:07.461 +00:00 [DBG] Endpoint Completed: "rabbitmq://rabbitmq-node1/my"
+2024-10-07 18:03:07.890 +00:00 [DBG] Consumer Completed: "rabbitmq://rabbitmq-node1/my": 0 received, 0 concurrent, amq.ctag-0W-G5_WT7of2024-10-07 12024-10-07 18:03:08.964 +00:00 [DBG] Connect: rabbit_user@rabbitmq-node1:5672/
+2024-10-07 18:03:09.151 +00:00 [DBG] Connected: rabbit_user@rabbitmq-node1:5672/ (address: amqp://rabbitmq-node1:5672, local: 46516)
+2024-10-07 2024-10-07 18:03:09.420 +00:00 [DBG] Connect: rabbit_user@rabbitmq-node1:5672/
+2024-10-07 18:03:09.508 +00:00 [DBG] Connected: rabbit_user@rabbitmq-node1:5672/ (address: amqp://rabbitmq-node1:5672, local: 35502)
+2024-10-07 18:03:09.590 +00:00 [DBG] Declare queue: name: my, durable, consumer-count: 1 message-count: 0
+2024-10-07 18:03:09.606 +00:00 [DBG] Declare exchange: name: my, type: fanout, durable
+2024-10-07 18:03:09.616 +00:00 [DBG] Bind queue: sour2024-10-07 18:03:12.585 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:03:12.597 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.146ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:03:12.668 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:03:12.670 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.009ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:03:18.174 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:03:18.176 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:03:18.177 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:03:18.179 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:03:18.184 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:03:18.186 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:03:18.188 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:03:18.190 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 16.0107ms
+2024-10-07 18:03:18.192 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:03:21.448 +00:00 [INF] Refreshing database credentials from Vault.
+2024-10-07 18:03:21.456 +00:00 [INF] Start processing HTTP request GET http://vault:8200/v1/database/creds/vault
+2024-10-07 18:03:21.459 +00:00 2024-10-07 18:03:21.532 +00:00 [INF] Refreshing database credentials from2024-10-07 18:03:22.605 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:03:22.673 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:03:22.878 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0105ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:03:22.882 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.3661ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:03:22.991 +00:00 [INF] Received HTTP response headers after 1530.7437ms - 200
+2024-10-07 18:03:22.993 +00:00 [INF] End processing HTTP request after 1538.0905ms - 200
+2024-10-07 18:03:22.997 +00:00 [INF] Database credentials refreshed.
+2024-10-07 18:03:32.824 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:03:32.825 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:03:32.826 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0111ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:03:32.829 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0077ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:03:33.105 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:03:33.106 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:03:33.107 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:03:33.109 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:03:33.111 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:03:33.112 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:03:33.113 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:03:33.114 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 9.3251ms
+2024-10-07 18:03:33.115 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:03:42.830 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:03:42.831 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0029ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:03:42.832 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:03:42.833 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0027ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:03:48.105 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:03:48.106 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:03:48.107 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:03:48.107 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:03:48.108 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:03:48.109 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:03:48.109 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:03:48.111 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 6.1751ms
+2024-10-07 18:03:48.113 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:03:52.833 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:03:52.833 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0023ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:03:52.834 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:03:52.835 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.002ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:04:12.113 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:04:12.342 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0053ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:04:12.130 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:04:12.395 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0886ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:04:12.791 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:04:12.843 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:04:12.867 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:04:12.984 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:04:13.042 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:04:13.087 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:04:13.150 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:04:13.190 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 399.8263ms
+2024-10-07 18:04:13.235 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:04:13.088 +00:00 [WRN] As of ""2024-10-07T18:04:09.2232366+00:00"", the heartbeat has been running for ""00:00:07.0799846"" which is longer than ""00:00:01"". This could be caused by thread pool starvation.
+2024-10-07 18:04:18.086 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:04:18.089 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:04:18.090 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:04:18.091 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:04:18.093 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:04:18.094 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:04:18.095 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:04:18.097 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 10.161ms
+2024-10-07 18:04:18.099 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:04:22.371 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:04:22.371 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0029ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:04:22.401 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:04:22.401 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0028ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:04:32.399 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:04:32.400 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0029ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:04:32.431 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:04:32.432 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0028ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:04:33.108 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:04:33.108 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:04:33.109 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:04:33.110 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:04:33.114 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:04:33.115 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:04:33.115 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:04:33.116 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 8.466ms
+2024-10-07 18:04:33.117 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:04:42.401 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:04:42.402 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0054ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:04:42.433 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:04:42.435 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0689ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:04:48.108 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:04:48.109 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:04:48.110 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:04:48.111 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:04:48.112 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:04:48.113 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:04:48.114 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:04:48.115 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 6.9239ms
+2024-10-07 18:04:48.116 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:04:52.404 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:04:52.405 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0042ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:04:52.436 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:04:52.437 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0042ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:05:02.408 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:05:02.409 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0044ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:05:02.440 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:05:02.441 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0033ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:05:03.108 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:05:03.109 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:05:03.110 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:05:03.111 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:05:03.113 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:05:03.114 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:05:03.116 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:05:03.116 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 7.938ms
+2024-10-07 18:05:03.118 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:05:12.410 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:05:12.411 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0023ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:05:12.442 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:05:12.443 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0033ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:05:18.121 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:05:18.122 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:05:18.123 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:05:18.124 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:05:18.125 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:05:18.126 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:05:18.127 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:05:18.128 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 6.5627ms
+2024-10-07 18:05:18.128 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:05:22.411 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:05:22.412 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0028ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:05:22.446 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:05:22.447 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0062ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:05:32.413 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:05:32.414 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0025ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:05:32.448 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:05:32.449 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0026ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:05:33.109 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:05:33.111 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:05:33.111 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:05:33.112 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:05:33.113 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:05:33.114 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:05:33.114 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:05:33.115 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 5.5927ms
+2024-10-07 18:05:33.116 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:05:42.415 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:05:42.416 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0029ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:05:42.450 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:05:42.451 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0029ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:05:48.109 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:05:48.111 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:05:48.112 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:05:48.113 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:05:48.114 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:05:48.116 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:05:48.117 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:05:48.118 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 9.2007ms
+2024-10-07 18:05:48.119 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:05:52.417 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:05:52.418 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0036ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:05:52.454 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:05:52.455 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0606ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:06:02.421 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:06:02.422 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0122ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:06:02.457 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:06:02.458 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0028ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:06:03.110 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:06:03.111 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:06:03.112 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:06:03.113 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:06:03.114 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:06:03.116 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:06:03.117 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:06:03.118 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 8.1844ms
+2024-10-07 18:06:03.119 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:06:12.423 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:06:12.424 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0049ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:06:12.461 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:06:12.463 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0111ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:06:18.112 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:06:18.113 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:06:18.114 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:06:18.116 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:06:18.117 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:06:18.119 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:06:18.120 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:06:18.121 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 9.4219ms
+2024-10-07 18:06:18.122 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:06:22.425 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:06:22.427 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0025ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:06:22.465 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:06:22.466 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0028ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:06:32.427 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:06:32.428 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0017ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:06:32.467 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:06:32.468 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0016ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:06:33.124 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:06:33.126 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:06:33.128 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:06:33.130 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:06:33.132 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:06:33.135 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:06:33.136 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:06:33.138 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 12.8852ms
+2024-10-07 18:06:33.138 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:06:42.429 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:06:42.429 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0013ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:06:42.469 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:06:42.469 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0013ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:06:48.109 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:06:48.109 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:06:48.110 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:06:48.111 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:06:48.112 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:06:48.112 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:06:48.113 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:06:48.113 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 4.625ms
+2024-10-07 18:06:48.114 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:06:52.433 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:06:52.433 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0017ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:06:52.471 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:06:52.472 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0014ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:07:02.435 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:07:02.435 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0019ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:07:02.474 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:07:02.475 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0014ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:07:03.110 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:07:03.111 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:07:03.111 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:07:03.112 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:07:03.112 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:07:03.113 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:07:03.113 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:07:03.114 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 3.8675ms
+2024-10-07 18:07:03.114 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:07:12.436 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:07:12.437 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0019ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:07:12.476 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:07:12.477 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0017ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:07:18.110 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:07:18.128 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:07:18.151 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:07:18.153 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:07:18.191 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:07:18.192 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:07:18.194 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:07:18.195 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 85.0425ms
+2024-10-07 18:07:18.197 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:07:22.439 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:07:22.440 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0016ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:07:22.478 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:07:22.479 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0022ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:07:32.441 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:07:32.442 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0017ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:07:32.481 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:07:32.482 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0017ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:07:33.111 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:07:33.112 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:07:33.112 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:07:33.113 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:07:33.113 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:07:33.114 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:07:33.114 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:07:33.115 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 3.6407ms
+2024-10-07 18:07:33.116 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:07:42.443 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:07:42.444 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0013ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:07:42.483 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:07:42.484 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0014ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:07:48.111 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:07:48.112 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:07:48.112 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:07:48.113 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:07:48.113 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:07:48.114 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:07:48.114 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:07:48.115 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 4.2431ms
+2024-10-07 18:07:48.116 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:07:52.445 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:07:52.446 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0015ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:07:52.485 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:07:52.486 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0022ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:08:02.449 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:08:02.450 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0021ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:08:02.488 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:08:02.512 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0032ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:08:03.112 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:08:03.113 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:08:03.114 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:08:03.114 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:08:03.115 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:08:03.115 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:08:03.116 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:08:03.117 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 4.7177ms
+2024-10-07 18:08:03.117 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:08:12.451 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:08:12.452 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0032ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:08:12.514 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:08:12.515 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0035ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:08:18.112 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:08:18.112 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:08:18.113 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:08:18.113 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:08:18.114 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:08:18.114 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:08:18.115 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:08:18.116 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 3.8894ms
+2024-10-07 18:08:18.116 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:08:22.453 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:08:22.454 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0032ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:08:22.517 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:08:22.517 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0014ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:08:22.939 +00:00 [INF] Refreshing database credentials from Vault.
+2024-10-07 18:08:22.946 +00:00 [INF] Start processing HTTP request GET http://vault:8200/v1/database/creds/vault
+2024-10-07 18:08:22.947 +00:00 [INF] Sending HTTP request GET http://vault:8200/v1/database/creds/vault
+2024-10-07 18:08:22.987 +00:00 [INF] Received HTTP response headers after 39.6034ms - 200
+2024-10-07 18:08:22.987 +00:00 [INF] End processing HTTP request after 42.5065ms - 200
+2024-10-07 18:08:22.989 +00:00 [INF] Database credentials refreshed.
+2024-10-07 18:08:32.455 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:08:32.456 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.001ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:08:32.518 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:08:32.519 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0012ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:08:33.112 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:08:33.113 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:08:33.114 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:08:33.115 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:08:33.116 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:08:33.116 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:08:33.117 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:08:33.118 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 6.0441ms
+2024-10-07 18:08:33.119 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:08:42.456 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:08:42.457 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0018ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:08:42.520 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:08:42.521 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0017ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:08:48.112 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:08:48.112 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:08:48.113 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:08:48.113 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:08:48.114 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:08:48.115 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:08:48.116 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:08:48.116 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 4.6147ms
+2024-10-07 18:08:48.117 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:08:52.458 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:08:52.458 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0012ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:08:52.521 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:08:52.522 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0015ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:09:02.460 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:09:02.461 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0015ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:09:02.523 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:09:02.523 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0024ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:09:03.113 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:09:03.113 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:09:03.114 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:09:03.114 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:09:03.115 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:09:03.115 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:09:03.116 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:09:03.116 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 3.6919ms
+2024-10-07 18:09:03.117 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:09:12.462 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:09:12.463 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0018ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:09:12.526 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:09:12.526 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0016ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:09:18.113 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:09:18.114 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:09:18.114 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:09:18.115 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:09:18.116 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:09:18.116 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:09:18.117 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:09:18.118 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 5.0247ms
+2024-10-07 18:09:18.119 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:09:22.464 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:09:22.464 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.002ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:09:22.528 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:09:22.529 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0024ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:09:32.466 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:09:32.467 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0035ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:09:32.531 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:09:32.532 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0016ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:09:33.114 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:09:33.115 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:09:33.116 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:09:33.117 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:09:33.118 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:09:33.118 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:09:33.120 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:09:33.121 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 6.8424ms
+2024-10-07 18:09:33.122 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:09:42.470 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:09:42.471 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0035ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:09:42.538 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:09:42.573 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0064ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:09:48.114 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:09:48.115 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:09:48.116 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:09:48.117 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:09:48.119 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:09:48.120 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:09:48.121 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:09:48.122 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 8.6135ms
+2024-10-07 18:09:48.124 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:09:52.476 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:09:52.477 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.005ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:09:52.597 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:09:52.598 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0035ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:10:02.480 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:10:02.482 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0038ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:10:02.602 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:10:02.603 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0039ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:10:03.115 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:10:03.117 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:10:03.118 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:10:03.121 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:10:03.125 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:10:03.127 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:10:03.129 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:10:03.131 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 16.7108ms
+2024-10-07 18:10:03.133 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:10:12.484 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:10:12.486 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0032ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:10:12.606 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:10:12.608 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0037ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:10:18.114 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:10:18.131 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:10:18.153 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:10:18.156 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:10:18.183 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:10:18.185 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:10:18.187 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:10:18.190 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 75.641ms
+2024-10-07 18:10:18.192 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:10:22.489 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:10:22.490 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0028ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:10:22.610 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:10:22.610 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0022ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:10:32.492 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:10:32.493 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0017ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:10:32.612 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:10:32.613 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0019ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:10:33.114 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:10:33.114 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:10:33.115 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:10:33.116 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:10:33.117 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:10:33.117 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:10:33.118 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:10:33.118 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 4.7834ms
+2024-10-07 18:10:33.119 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:10:42.494 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:10:42.495 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0018ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:10:42.614 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:10:42.615 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0043ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:10:48.114 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:10:48.114 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:10:48.115 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:10:48.115 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:10:48.116 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:10:48.116 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:10:48.117 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:10:48.117 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 3.63ms
+2024-10-07 18:10:48.118 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:10:52.497 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:10:52.498 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0023ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:10:52.616 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:10:52.617 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0021ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:11:02.500 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:11:02.500 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0013ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:11:02.618 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:11:02.619 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0012ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:11:03.114 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:11:03.115 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:11:03.116 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:11:03.117 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:11:03.117 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:11:03.118 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:11:03.118 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:11:03.119 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 4.688ms
+2024-10-07 18:11:03.120 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:11:05.490 +00:00 [DBG] Connection id "0HN76V6KBOSF6" accepted.
+2024-10-07 18:11:05.491 +00:00 [DBG] Connection id "0HN76V6KBOSF6" started.
+2024-10-07 18:11:05.499 +00:00 [INF] Request starting HTTP/1.0 GET ht2024-10-07 18:11:12.264 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:11:12.264 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:11:12.266 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0037ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:11:12.267 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0025ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:11:12.326 +00:00 [INF] Request starting HTTP/1.1 GET http://app3:8080/metrics - null null
+2024-10-07 18:11:12.327 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:11:12.327 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:11:12.328 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:11:12.330 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:11:12.331 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:11:12.331 +00:00 [DBG] Connection id "0HN76V6ILKA7F" completed keep alive response.
+2024-10-07 18:11:12.332 +00:00 [INF] Request finished HTTP/1.1 GET http://app3:8080/metrics - 404 0 null 6.4618ms
+2024-10-07 18:11:12.333 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app3:8080/metrics, Response status code: 404
+2024-10-07 18:11:17.457 +00:00 [DBG] Connection id "0HN76V6ILKA7G" accepted.
+2024-10-07 18:11:17.458 +00:00 [DBG] Connection id "0HN76V6ILKA7G" started.
+2024-10-07 18:11:17.460 +00:00 [INF] Request starting HTTP/1.0 GET http://api.local.ritualworks.com/api/products - null null
+2024-10-07 18:11:17.460 +00:00 [DBG] The request path /api/products does not match a supported file type
+2024-10-07 18:11:17.469 +00:00 [DBG] 1 candidate(s) found for the request path '/api/products'
+2024-10-07 18:11:17.472 +00:00 [DBG] Endpoint 'RitualWorks.Controllers.ProductsController.GetProducts (RitualWorks)' with route pattern 'api/Products' is valid for the request path '/api/products'
+2024-10-07 18:11:17.474 +00:00 [DBG] Request matched endpoint 'RitualWorks.Controllers.ProductsController.GetProducts (RitualWorks)'
+2024-10-07 18:11:17.475 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:11:17.476 +00:00 [DBG] Static files was skipped as the request already matched an endpoint.
+2024-10-07 18:11:17.478 +00:00 [INF] Executing endpoint 'RitualWorks.Controllers.ProductsController.GetProducts (RitualWorks)'
+2024-10-07 18:11:17.533 +00:00 [INF] Route matched with {action = "GetProducts", controller = "Products"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.IEnumerable`1[RitualWorks.Controllers.ProductDto]]] GetProducts(Int32, Int32) on controller RitualWorks.Controllers.ProductsController (RitualWorks).
+2024-10-07 18:11:17.535 +00:00 [DBG] Execution plan of authorization filters (in the following order): ["None"]
+2024-10-07 18:11:17.536 +00:00 [DBG] Execution plan of resource filters (in the following order): ["None"]
+2024-10-07 18:11:17.537 +00:00 [DBG] Execution plan of action filters (in the following order): ["Microsoft.AspNetCore.Mvc.ModelBinding.UnsupportedContentTypeFilter (Order: -3000)","Microsoft.AspNetCore.Mvc.Infrastructure.ModelStateInvalidFilter (Order: -2000)"]
+2024-10-07 18:11:17.538 +00:00 [DBG] Execution plan of exception filters (in the following order): ["None"]
+2024-10-07 18:11:17.538 +00:00 [DBG] Execution plan of result filters (in the following order): ["Microsoft.AspNetCore.Mvc.Infrastructure.ClientErrorResultFilter (Order: -2000)"]
+2024-10-07 18:11:17.541 +00:00 [DBG] Executing controller factory for controller RitualWorks.Controllers.ProductsController (RitualWorks)
+2024-10-07 18:11:17.578 +00:00 [INF] Connecting to PostgreSQL with connection string: Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=v-root-vault-RfoihxsuIXo5BgqWP0Ai-1728324502;Password=Ll7y-crRKJipnK5Hrlhg
+2024-10-07 18:11:17.650 +00:00 [DBG] An 'IServiceProvider' was created for internal use by Entity Framework.
+2024-10-07 18:11:18.722 +00:00 [DBG] Executed controller factory for controller RitualWorks.Controllers.ProductsController (RitualWorks)
+2024-10-07 18:11:18.725 +00:00 [DBG] Attempting to bind parameter 'page' of type 'System.Int32' ...
+2024-10-07 18:11:18.727 +00:00 [DBG] Attempting to bind parameter 'page' of type 'System.Int32' using the name '' in request data ...
+2024-10-07 18:11:18.728 +00:00 [DBG] Could not find a value in the request with name '' for binding parameter 'page' of type 'System.Int32'.
+2024-10-07 18:11:18.729 +00:00 [DBG] Done attempting to bind parameter 'page' of type 'System.Int32'.
+2024-10-07 18:11:18.729 +00:00 [DBG] Done attempting to bind parameter 'page' of type 'System.Int32'.
+2024-10-07 18:11:18.730 +00:00 [DBG] Attempting to validate the bound parameter 'page' of type 'System.Int32' ...
+2024-10-07 18:11:18.732 +00:00 [DBG] Done attempting to validate the bound parameter 'page' of type 'System.Int32'.
+2024-10-07 18:11:18.734 +00:00 [DBG] Attempting to bind parameter 'pageSize' of type 'System.Int32' ...
+2024-10-07 18:11:18.734 +00:00 [DBG] Attempting to bind parameter 'pageSize' of type 'System.Int32' using the name '' in request data ...
+2024-10-07 18:11:18.735 +00:00 [DBG] Could not find a value in the request with name '' for binding parameter 'pageSize' of type 'System.Int32'.
+2024-10-07 18:11:18.735 +00:00 [DBG] Done attempting to bind parameter 'pageSize' of type 'System.Int32'.
+2024-10-07 18:11:18.736 +00:00 [DBG] Done attempting to bind parameter 'pageSize' of type 'System.Int32'.
+2024-10-07 18:11:18.736 +00:00 [DBG] Attempting to validate the bound parameter 'pageSize' of type 'System.Int32' ...
+2024-10-07 18:11:18.737 +00:00 [DBG] Done attempting to validate the bound parameter 'pageSize' of type 'System.Int32'.
+2024-10-07 18:11:19.237 +00:00 [DBG] The index {'UserId'} was not created on entity type 'IdentityUserRole<string>' as the properties are already covered by the index {'UserId', 'RoleId'}.
+2024-10-07 18:11:19.238 +00:00 [DBG] The index {'UserId'} was not created on entity type 'IdentityUserToken<string>' as the properties are already covered by the index {'UserId', 'LoginProvider', 'Name'}.
+2024-10-07 18:11:19.432 +00:00 [DBG] The property 'Comment.UserId' was created in shadow state because there are no eligible CLR members with a matching name.
+2024-10-07 18:11:19.433 +00:00 [DBG] The property 'Post.UserId' was created in shadow state because there are no eligible CLR members with a matching name.
+2024-10-07 18:11:19.613 +00:00 [DBG] Entity Framework Core 8.0.6 initialized 'RitualWorksContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL:8.0.4+51faf6e9c9c7ef99c3e98d98a96adb8fa8ae4553' with options: None
+2024-10-07 18:11:19.641 +00:00 [DBG] Compiling query expression: 
+'DbSet<Product>()
+    .OrderBy(p => p.Name)
+    .Skip(__p_0)
+    .Take(__p_1)'
+2024-10-07 18:11:19.811 +00:00 [DBG] Generated query execution expression: 
+'queryContext => new SingleQueryingEnumerable<Product>(
+    (RelationalQueryContext)queryContext, 
+    RelationalCommandCache.QueryExpression(
+        Projection Mapping:
+            EmptyProjectionMember -> Dictionary<IProperty, int> { [Property: Product.Id (Guid) Required PK AfterSave:Throw ValueGenerated.OnAdd, 0], [Property: Product.BlobName (string), 1], [Property: Product.Brand (string), 2], [Property: Product.CategoryId (Guid) Required FK Index, 3], [Property: Product.CreatedBy (string), 4], [Property: Product.CreatedDate (DateTime) Required, 5], [Property: Product.Description (string) Required, 6], [Property: Product.InStock (bool) Required, 7], [Property: Product.IsNew (bool) Required, 8], [Property: Product.LastModifiedBy (string), 9], [Property: Product.LastModifiedDate (DateTime?), 10], [Property: Product.Name (string) Required, 11], [Property: Product.Price (decimal) Required, 12], [Property: Product.Rating (double) Required, 13], [Property: Product.Stock (int) Required, 14], [Property: Product.Type (string), 15] }
+        SELECT p.Id, p.BlobName, p.Brand, p.CategoryId, p.CreatedBy, p.CreatedDate, p.Description, p.InStock, p.IsNew, p.LastModifiedBy, p.LastModifiedDate, p.Name, p.Price, p.Rating, p.Stock, p.Type
+        FROM Products AS p
+        ORDER BY p.Name ASC
+        OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY), 
+    null, 
+    Func<QueryContext, DbDataReader, ResultContext, SingleQueryResultCoordinator, Product>, 
+    RitualWorks.Db.RitualWorksContext, 
+    False, 
+    False, 
+    True
+)'
+2024-10-07 18:11:19.836 +00:00 [DBG] Creating DbConnection.
+2024-10-07 18:11:19.856 +00:00 [DBG] Created DbConnection. (19ms).
+2024-10-07 18:11:19.859 +00:00 [DBG] Opening connection to database 'your_postgres_db' on server 'tcp://postgres_primary:5432'.
+2024-10-07 18:11:19.973 +00:00 [DBG] Opened connection to database 'your_postgres_db' on server 'tcp://postgres_primary:5432'.
+2024-10-07 18:11:19.977 +00:00 [DBG] Creating DbCommand for 'ExecuteReader'.
+2024-10-07 18:11:19.983 +00:00 [DBG] Created DbCommand for 'ExecuteReader' (2ms).
+2024-10-07 18:11:19.987 +00:00 [DBG] Initialized DbCommand for 'ExecuteReader' (10ms).
+2024-10-07 18:11:19.996 +00:00 [DBG] Executing DbCommand [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."BlobName", p."Brand", p."CategoryId", p."CreatedBy", p."CreatedDate", p."Description", p."InStock", p."IsNew", p."LastModifiedBy", p."LastModifiedDate", p."Name", p."Price", p."Rating", p."Stock", p."Type"
+FROM "Products" AS p
+ORDER BY p."Name"
+LIMIT @__p_1 OFFSET @__p_0
+2024-10-07 18:11:20.050 +00:00 [INF] Executed DbCommand (57ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."BlobName", p."Brand", p."CategoryId", p."CreatedBy", p."CreatedDate", p."Description", p."InStock", p."IsNew", p."LastModifiedBy", p."LastModifiedDate", p."Name", p."Price", p."Rating", p."Stock", p."Type"
+FROM "Products" AS p
+ORDER BY p."Name"
+LIMIT @__p_1 OFFSET @__p_0
+2024-10-07 18:11:20.091 +00:00 [DBG] Context 'RitualWorksContext' started tracking 'Product' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2024-10-07 18:11:20.134 +00:00 [DBG] Context 'RitualWorksContext' started tracking 'Product' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2024-10-07 18:11:20.135 +00:00 [DBG] Context 'RitualWorksContext' started tracking 'Product' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2024-10-07 18:11:20.135 +00:00 [DBG] Context 'RitualWorksContext' started tracking 'Product' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2024-10-07 18:11:20.136 +00:00 [DBG] Context 'RitualWorksContext' started tracking 'Product' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2024-10-07 18:11:20.137 +00:00 [DBG] Context 'RitualWorksContext' started tracking 'Product' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2024-10-07 18:11:20.137 +00:00 [DBG] Context 'RitualWorksContext' started tracking 'Product' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2024-10-07 18:11:20.138 +00:00 [DBG] Context 'RitualWorksContext' started tracking 'Product' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2024-10-07 18:11:20.138 +00:00 [DBG] Context 'RitualWorksContext' started tracking 'Product' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2024-10-07 18:11:20.139 +00:00 [DBG] Context 'RitualWorksContext' started tracking 'Product' entity. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see key values.
+2024-10-07 18:11:20.142 +00:00 [DBG] Closing data reader to 'your_postgres_db' on server 'tcp://postgres_primary:5432'.
+2024-10-07 18:11:20.150 +00:00 [DBG] A data reader for 'your_postgres_db' on server 'tcp://postgres_primary:5432' is being disposed after spending 95ms reading results.
+2024-10-07 18:11:20.153 +00:00 [DBG] Closing connection to database 'your_postgres_db' on server 'tcp://postgres_primary:5432'.
+2024-10-07 18:11:20.157 +00:00 [DBG] Closed connection to database 'your_postgres_db' on server 'tcp://postgres_primary:5432' (3ms).
+2024-10-07 18:11:20.176 +00:00 [DBG] List of registered output formatters, in the following order: ["Microsoft.AspNetCore.Mvc.Formatters.HttpNoContentOutputFormatter","Microsoft.AspNetCore.Mvc.Formatters.StringOutputFormatter","Microsoft.AspNetCore.Mvc.Formatters.StreamOutputFormatter","Microsoft.AspNetCore.Mvc.Formatters.SystemTextJsonOutputFormatter"]
+2024-10-07 18:11:20.186 +00:00 [DBG] No information found on request to perform content negotiation.
+2024-10-07 18:11:20.186 +00:00 [DBG] Attempting to select an output formatter without using a content type as no explicit content types were specified for the response.
+2024-10-07 18:11:20.187 +00:00 [DBG] Attempting to select the first formatter in the output formatters list which can write the result.
+2024-10-07 18:11:20.188 +00:00 [DBG] Selected output formatter 'Microsoft.AspNetCore.Mvc.Formatters.SystemTextJsonOutputFormatter' and content type 'application/json' to write the response.
+2024-10-07 18:11:20.189 +00:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[RitualWorks.Controllers.ProductDto, RitualWorks, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2024-10-07 18:11:20.229 +00:00 [INF] Executed action RitualWorks.Controllers.ProductsController.GetProducts (RitualWorks) in 2686.8912ms
+2024-10-07 18:11:20.229 +00:00 [INF] Executed endpoint 'RitualWorks.Controllers.ProductsController.GetProducts (RitualWorks)'
+2024-10-07 18:11:20.233 +00:00 [DBG] 'RitualWorksContext' disposed.
+2024-10-07 18:11:20.236 +00:00 [DBG] Disposing connection to database 'your_postgres_db' on server 'tcp://postgres_primary:5432'.
+2024-10-07 18:11:20.238 +00:00 [DBG] Disposed connection to database 'your_postgres_db' on server 'tcp://postgres_primary:5432' (1ms).
+2024-10-07 18:11:20.239 +00:00 [INF] Request finished HTTP/1.0 GET http://api.local.ritualworks.com/api/products - 200 null application/json; charset=utf-8 2778.9798ms
+2024-10-07 18:11:20.240 +00:00 [DBG] Connection id "0HN76V6ILKA7G" disconnecting.
+2024-10-07 18:11:22.518 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:11:22.519 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0015ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:11:22.622 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:11:22.623 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0017ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:11:32.522 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:11:32.524 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.004ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:11:32.625 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:11:32.626 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0025ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:11:33.117 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:11:33.118 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:11:33.118 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:11:33.119 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:11:33.120 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:11:33.121 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:11:33.121 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:11:33.122 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 5.4902ms
+2024-10-07 18:11:33.123 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:11:42.525 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:11:42.627 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:11:42.710 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.003ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:11:42.712 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0031ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:11:48.116 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:11:48.117 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:11:48.117 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:11:48.118 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:11:48.119 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:11:48.120 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:11:48.120 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:11:48.121 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 5.5714ms
+2024-10-07 18:11:48.122 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:11:52.714 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:11:52.716 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0025ms - processed: 0 items - remaining: 1 ite2022024-10-07 18:11:52.714 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 ite2022024-10-07 18:11:52.721 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0038ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:12:02.720 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:12:02.721 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0025ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:12:02.727 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:12:02.729 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0033ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:12:03.117 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:12:03.118 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:12:03.119 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:12:03.120 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:12:03.121 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:12:03.122 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:12:03.122 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:12:03.123 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 5.8725ms
+2024-10-07 18:12:03.124 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:12:12.723 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:12:12.723 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0016ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:12:12.731 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:12:12.732 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0024ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:12:18.117 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:12:18.118 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:12:18.118 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:12:18.119 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:12:18.119 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:12:18.119 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:12:18.120 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:12:18.121 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 3.8328ms
+2024-10-07 18:12:18.121 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:12:22.724 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:12:22.727 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0036ms - processed: 0 items - remaining: 1 it20242024-10-07 18:12:22.734 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:12:22.736 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0021ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:12:32.728 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:12:32.729 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0037ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:12:32.738 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:12:32.739 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0023ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:12:33.117 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:12:33.118 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:12:33.118 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:12:33.118 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:12:33.119 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:12:33.119 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:12:33.120 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:12:33.120 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 2.9368ms
+2024-10-07 18:12:33.121 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+2024-10-07 18:12:42.730 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:12:42.730 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0017ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:12:42.742 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:12:42.742 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0014ms - processed: 0 items - remaining: 1 items
+2024-10-07 18:12:48.118 +00:00 [INF] Request starting HTTP/1.1 GET http://app1:8080/metrics - null null
+2024-10-07 18:12:48.119 +00:00 [DBG] The request path /metrics does not match a supported file type
+2024-10-07 18:12:48.120 +00:00 [DBG] No candidates found for the request path '/metrics'
+2024-10-07 18:12:48.120 +00:00 [DBG] Request did not match any endpoints
+2024-10-07 18:12:48.121 +00:00 [DBG] AuthenticationScheme: Bearer was not authenticated.
+2024-10-07 18:12:48.122 +00:00 [DBG] The request path  does not match the path filter
+2024-10-07 18:12:48.122 +00:00 [DBG] Connection id "0HN76V6KBOSF5" completed keep alive response.
+2024-10-07 18:12:48.123 +00:00 [INF] Request finished HTTP/1.1 GET http://app1:8080/metrics - 404 0 null 4.7815ms
+2024-10-07 18:12:48.124 +00:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://app1:8080/metrics, Response status code: 404
+-10-07 18:12:42.741 +00:00 [DBG] Starting HttpMessageHandler cleanup cycle with 1 items
+2024-10-07 18:12:42.742 +00:00 [DBG] Ending HttpMessageHandler cleanup cycle after 0.0012ms - processed: 0 items - remaining: 1 items
