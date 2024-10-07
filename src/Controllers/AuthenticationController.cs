@@ -82,8 +82,18 @@ namespace RitualWorks.Controllers
             var token = GenerateToken(user.UserName, user.Id, DateTime.Now.AddHours(1));
             SetJwtCookie(token);
 
-            return Ok(new { message = "Login successful" });
+            // Construct user object to include in the response
+            var userResponse = new
+            {
+                id = user.Id,
+                username = user.UserName,
+                email = user.Email
+            };
+
+            // Return user details along with a success message and token
+            return Ok(new { message = "Login successful", user = userResponse, token = token });
         }
+
 
         [HttpPost("logout")]
         public IActionResult Logout()

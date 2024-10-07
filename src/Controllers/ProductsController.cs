@@ -62,14 +62,13 @@ namespace RitualWorks.Controllers
             {
                 return BadRequest(ModelState);
             }
-            /*
 
             var category = await _categoryRepository.GetCategoryByIdAsync(productDto.CategoryId);
             if (category == null)
             {
                 return BadRequest("Invalid category ID.");
             }
-*/
+
             var product = _mapper.Map<Product>(productDto);
             product.Id = Guid.NewGuid();
 
