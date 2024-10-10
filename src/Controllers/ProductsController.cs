@@ -7,6 +7,7 @@ using RitualWorks.Contracts;
 using RitualWorks.Db;
 using RitualWorks.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 namespace RitualWorks.Controllers
 {
     [Route("api/[controller]")]
@@ -56,7 +57,7 @@ namespace RitualWorks.Controllers
 
 
         [HttpPost]
-        [Authorize]
+       // [Authorize]
         public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] ProductDto productDto)
         {
             if (!ModelState.IsValid)
@@ -80,7 +81,7 @@ namespace RitualWorks.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+      //  [Authorize]
         public async Task<ActionResult<ProductDto>> UpdateProduct(Guid id, [FromBody] ProductDto productDto)
         {
             if (!ModelState.IsValid)
@@ -153,6 +154,8 @@ namespace RitualWorks.Controllers
     public Guid CategoryId { get; set; }
     public List<string>? ImageUrls { get; set; }
     public List<ProductReviewDto>? ProductReviews { get; set; }
+     public List<IFormFile> Images { get; set; }
+    public List<IFormFile> Assets { get; set; }
 }
 
 public class ProductReviewDto

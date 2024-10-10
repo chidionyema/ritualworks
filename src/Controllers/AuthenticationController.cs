@@ -228,12 +228,14 @@ namespace RitualWorks.Controllers
 
         private void SetJwtCookie(JwtSecurityToken token)
         {
+            bool isDevelopment =  _configuration["ASPNETCORE_ENVIRONMENT"]?.ToLower() == "development";
+    
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
+                Secure = !isDevelopment,
+                SameSite = isDevelopment ? SameSiteMode.Lax : SameSiteMode.None, 
                 Expires = token.ValidTo
             };
             Response.Cookies.Append("jwt", tokenString, cookieOptions);

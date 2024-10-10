@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RitualWorks.Contracts;
 using RitualWorks.Db;
-using RitualWorks.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

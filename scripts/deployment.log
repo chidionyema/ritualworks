@@ -12260,3 +12260,235 @@
 2024-10-07 18:49:48 - Delaying startup of frontend services to ensure backend services are ready...
 2024-10-07 18:49:58 - Building and starting frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
 2024-10-07 18:58:15 - Deployment completed successfully. All services are up and running.
+2024-10-08 10:36:56 - Docker network 'internal_network' already exists.
+2024-10-08 10:36:56 - Docker network 'external_network' already exists.
+2024-10-08 10:38:53 - Docker network 'internal_network' already exists.
+2024-10-08 10:38:53 - Docker network 'external_network' already exists.
+2024-10-08 10:39:44 - Docker network 'internal_network' already exists.
+2024-10-08 10:39:44 - Docker network 'external_network' already exists.
+2024-10-08 10:46:29 - Docker network 'internal_network' already exists.
+2024-10-08 10:46:29 - Docker network 'external_network' already exists.
+2024-10-08 10:51:52 - Docker network 'internal_network' already exists.
+2024-10-08 10:51:52 - Docker network 'external_network' already exists.
+2024-10-08 10:53:41 - Docker network 'internal_network' already exists.
+2024-10-08 10:53:41 - Docker network 'external_network' already exists.
+2024-10-08 10:55:27 - Docker network 'internal_network' already exists.
+2024-10-08 10:55:27 - Docker network 'external_network' already exists.
+2024-10-08 10:56:44 - Docker network 'internal_network' already exists.
+2024-10-08 10:56:44 - Docker network 'external_network' already exists.
+2024-10-08 10:59:26 - Docker network 'internal_network' already exists.
+2024-10-08 10:59:26 - Docker network 'external_network' already exists.
+2024-10-08 11:13:08 - Docker network 'internal_network' already exists.
+2024-10-08 11:13:08 - Docker network 'external_network' already exists.
+2024-10-08 11:14:10 - Ensuring correct script directory...
+2024-10-08 11:14:10 - Building and starting backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-08 11:14:25 - Delaying startup of frontend services to ensure backend services are ready...
+2024-10-08 11:14:35 - Building and starting frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
+2024-10-08 11:21:01 - Deployment completed successfully. All services are up and running.
+2024-10-08 18:36:35 - Docker network 'internal_network' already exists.
+2024-10-08 18:36:35 - Docker network 'external_network' already exists.
+2024-10-08 18:37:18 - Docker network 'internal_network' already exists.
+2024-10-08 18:37:18 - Docker network 'external_network' already exists.
+2024-10-08 18:38:01 - Ensuring correct script directory...
+2024-10-08 18:38:01 - Building and starting backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-08 18:38:32 - Delaying startup of frontend services to ensure backend services are ready...
+2024-10-08 18:38:42 - Building and starting frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
+2024-10-08 18:48:42 - Deployment completed successfully. All services are up and running.
+2024-10-08 19:14:49 - Docker network 'internal_network' already exists.
+2024-10-08 19:14:50 - Docker network 'external_network' already exists.
+2024-10-08 19:27:48 - Docker network 'internal_network' already exists.
+2024-10-08 19:27:48 - Docker network 'external_network' already exists.
+2024-10-08 19:28:41 - Ensuring correct script directory...
+2024-10-08 19:28:41 - Building and starting backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-08 19:29:08 - Delaying startup of frontend services to ensure backend services are ready...
+2024-10-08 19:29:18 - Building and starting frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
+2024-10-08 19:30:58 - Deployment completed successfully. All services are up and running.
+2024-10-08 19:44:03 - Docker network 'internal_network' already exists.
+2024-10-08 19:44:03 - Docker network 'external_network' already exists.
+2024-10-09 14:14:24 - Ensuring correct script directory...
+2024-10-09 14:14:24 - Building and starting backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-09 14:14:57 - Delaying startup of frontend services to ensure backend services are ready...
+2024-10-09 14:15:07 - Building and starting frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
+2024-10-09 14:15:21 - Deployment completed successfully. All services are up and running.
+2024-10-09 14:23:57 - Docker network 'internal_network' already exists.
+2024-10-09 14:23:58 - Docker network 'external_network' already exists.
+2024-10-09 14:24:41 - Docker network 'internal_network' already exists.
+2024-10-09 14:24:41 - Docker network 'external_network' already exists.
+2024-10-09 14:25:27 - Ensuring correct script directory...
+2024-10-09 14:25:27 - Building and starting backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-09 14:25:54 - Delaying startup of frontend services to ensure backend services are ready...
+2024-10-09 14:26:04 - Building and starting frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
+2024-10-09 14:33:51 - Deployment completed successfully. All services are up and running.
+2024-10-09 16:43:07 - Docker network 'internal_network' already exists.
+2024-10-09 16:43:07 - Docker network 'external_network' already exists.
+2024-10-09 16:44:42 - Docker network 'internal_network' already exists.
+2024-10-09 16:44:42 - Docker network 'external_network' already exists.
+2024-10-09 17:16:37 - Docker network 'internal_network' already exists.
+2024-10-09 17:16:37 - Docker network 'external_network' already exists.
+2024-10-09 17:17:27 - Docker network 'internal_network' already exists.
+2024-10-09 17:17:27 - Docker network 'external_network' already exists.
+2024-10-09 17:17:58 - Docker network 'internal_network' already exists.
+2024-10-09 17:17:58 - Docker network 'external_network' already exists.
+2024-10-09 17:25:55 - Docker network 'internal_network' already exists.
+2024-10-09 17:25:55 - Docker network 'external_network' already exists.
+2024-10-09 17:38:09 - Docker network 'internal_network' already exists.
+2024-10-09 17:38:09 - Docker network 'external_network' already exists.
+2024-10-09 17:45:32 - Docker network 'internal_network' already exists.
+2024-10-09 17:45:32 - Docker network 'external_network' already exists.
+2024-10-09 17:47:25 - Docker network 'internal_network' already exists.
+2024-10-09 17:47:25 - Docker network 'external_network' already exists.
+2024-10-09 17:51:31 - Docker network 'internal_network' already exists.
+2024-10-09 17:51:31 - Docker network 'external_network' already exists.
+2024-10-09 17:54:17 - Docker network 'internal_network' already exists.
+2024-10-09 17:54:17 - Docker network 'external_network' already exists.
+2024-10-10 07:25:19 - Docker network 'internal_network' already exists.
+2024-10-10 07:25:19 - Docker network 'external_network' already exists.
+2024-10-10 07:36:13 - Docker network 'internal_network' already exists.
+2024-10-10 07:36:13 - Docker network 'external_network' already exists.
+2024-10-10 07:43:47 - Docker network 'internal_network' already exists.
+2024-10-10 07:43:47 - Docker network 'external_network' already exists.
+2024-10-10 07:50:13 - Docker network 'internal_network' already exists.
+2024-10-10 07:50:13 - Docker network 'external_network' already exists.
+2024-10-10 07:50:53 - Docker network 'internal_network' already exists.
+2024-10-10 07:50:53 - Docker network 'external_network' already exists.
+2024-10-10 07:52:43 - Docker network 'internal_network' already exists.
+2024-10-10 07:52:44 - Docker network 'external_network' already exists.
+2024-10-10 07:53:10 - Docker network 'internal_network' already exists.
+2024-10-10 07:53:10 - Docker network 'external_network' already exists.
+2024-10-10 07:55:21 - Docker network 'internal_network' already exists.
+2024-10-10 07:55:21 - Docker network 'external_network' already exists.
+2024-10-10 08:00:34 - Docker network 'internal_network' already exists.
+2024-10-10 08:00:34 - Docker network 'external_network' already exists.
+2024-10-10 08:17:48 - Docker network 'internal_network' already exists.
+2024-10-10 08:17:48 - Docker network 'external_network' already exists.
+2024-10-10 08:31:03 - Docker network 'internal_network' already exists.
+2024-10-10 08:31:03 - Docker network 'external_network' already exists.
+2024-10-10 08:38:16 - Docker network 'internal_network' already exists.
+2024-10-10 08:38:17 - Docker network 'external_network' already exists.
+2024-10-10 08:47:11 - Docker network 'internal_network' already exists.
+2024-10-10 08:47:11 - Docker network 'external_network' already exists.
+2024-10-10 08:48:33 - Docker network 'internal_network' already exists.
+2024-10-10 08:48:34 - Docker network 'external_network' already exists.
+2024-10-10 08:49:04 - Docker network 'internal_network' already exists.
+2024-10-10 08:49:05 - Docker network 'external_network' already exists.
+2024-10-10 08:49:27 - Docker network 'internal_network' already exists.
+2024-10-10 08:49:27 - Docker network 'external_network' already exists.
+2024-10-10 08:51:16 - Docker network 'internal_network' already exists.
+2024-10-10 08:51:16 - Docker network 'external_network' already exists.
+2024-10-10 08:52:51 - Docker network 'internal_network' already exists.
+2024-10-10 08:52:51 - Docker network 'external_network' already exists.
+2024-10-10 08:53:03 - Docker network 'internal_network' already exists.
+2024-10-10 08:53:03 - Docker network 'external_network' already exists.
+2024-10-10 08:54:45 - Docker network 'internal_network' already exists.
+2024-10-10 08:54:45 - Docker network 'external_network' already exists.
+2024-10-10 08:56:46 - Docker network 'internal_network' already exists.
+2024-10-10 08:56:46 - Docker network 'external_network' already exists.
+2024-10-10 08:58:36 - Docker network 'internal_network' already exists.
+2024-10-10 08:58:36 - Docker network 'external_network' already exists.
+2024-10-10 08:59:35 - Docker network 'internal_network' already exists.
+2024-10-10 08:59:35 - Docker network 'external_network' already exists.
+2024-10-10 09:00:46 - Docker network 'internal_network' already exists.
+2024-10-10 09:00:47 - Docker network 'external_network' already exists.
+2024-10-10 09:13:56 - Docker network 'internal_network' already exists.
+2024-10-10 09:13:57 - Docker network 'external_network' already exists.
+2024-10-10 09:18:56 - Docker network 'internal_network' already exists.
+2024-10-10 09:18:56 - Docker network 'external_network' already exists.
+2024-10-10 09:20:01 - Docker network 'internal_network' already exists.
+2024-10-10 09:20:01 - Docker network 'external_network' already exists.
+2024-10-10 09:26:14 - Docker network 'internal_network' already exists.
+2024-10-10 09:26:14 - Docker network 'external_network' already exists.
+2024-10-10 09:26:47 - Docker network 'internal_network' already exists.
+2024-10-10 09:26:47 - Docker network 'external_network' already exists.
+2024-10-10 09:32:17 - Docker network 'internal_network' already exists.
+2024-10-10 09:32:17 - Docker network 'external_network' already exists.
+2024-10-10 09:41:42 - Docker network 'internal_network' already exists.
+2024-10-10 09:41:42 - Docker network 'external_network' already exists.
+2024-10-10 09:44:43 - Docker network 'internal_network' already exists.
+2024-10-10 09:44:43 - Docker network 'external_network' already exists.
+2024-10-10 09:45:22 - Docker network 'internal_network' already exists.
+2024-10-10 09:45:23 - Docker network 'external_network' already exists.
+2024-10-10 09:50:17 - Docker network 'internal_network' already exists.
+2024-10-10 09:50:17 - Docker network 'external_network' already exists.
+2024-10-10 09:55:02 - Docker network 'internal_network' already exists.
+2024-10-10 09:55:02 - Docker network 'external_network' already exists.
+2024-10-10 10:07:04 - Docker network 'internal_network' already exists.
+2024-10-10 10:07:04 - Docker network 'external_network' already exists.
+2024-10-10 10:26:13 - Docker network 'internal_network' already exists.
+2024-10-10 10:26:13 - Docker network 'external_network' already exists.
+2024-10-10 10:28:03 - Docker network 'internal_network' already exists.
+2024-10-10 10:28:03 - Docker network 'external_network' already exists.
+2024-10-10 10:33:37 - Docker network 'internal_network' already exists.
+2024-10-10 10:33:38 - Docker network 'external_network' already exists.
+2024-10-10 10:44:13 - Docker network 'internal_network' already exists.
+2024-10-10 10:44:14 - Docker network 'external_network' already exists.
+2024-10-10 10:45:23 - Docker network 'internal_network' already exists.
+2024-10-10 10:45:23 - Docker network 'external_network' already exists.
+2024-10-10 10:49:10 - Docker network 'internal_network' already exists.
+2024-10-10 10:49:10 - Docker network 'external_network' already exists.
+2024-10-10 10:54:12 - Docker network 'internal_network' already exists.
+2024-10-10 10:54:12 - Docker network 'external_network' already exists.
+2024-10-10 10:56:38 - Docker network 'internal_network' already exists.
+2024-10-10 10:56:38 - Docker network 'external_network' already exists.
+2024-10-10 10:59:48 - Docker network 'internal_network' already exists.
+2024-10-10 10:59:48 - Docker network 'external_network' already exists.
+2024-10-10 11:00:36 - Docker network 'internal_network' already exists.
+2024-10-10 11:00:36 - Docker network 'external_network' already exists.
+2024-10-10 11:03:54 - Docker network 'internal_network' already exists.
+2024-10-10 11:03:54 - Docker network 'external_network' already exists.
+2024-10-10 11:05:30 - Docker network 'internal_network' already exists.
+2024-10-10 11:05:30 - Docker network 'external_network' already exists.
+2024-10-10 11:12:08 - Docker network 'internal_network' already exists.
+2024-10-10 11:12:08 - Docker network 'external_network' already exists.
+2024-10-10 11:24:42 - Docker network 'internal_network' already exists.
+2024-10-10 11:24:42 - Docker network 'external_network' already exists.
+2024-10-10 11:26:27 - Ensuring correct script directory...
+2024-10-10 11:26:27 - Building and starting backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-10 11:26:31 - Error: Failed to start backend services.
+2024-10-10 11:26:40 - Docker network 'internal_network' already exists.
+2024-10-10 11:26:40 - Docker network 'external_network' already exists.
+2024-10-10 11:27:40 - Ensuring correct script directory...
+2024-10-10 11:27:40 - Building and starting backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-10 11:27:54 - Delaying startup of frontend services to ensure backend services are ready...
+2024-10-10 11:28:04 - Building and starting frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
+2024-10-10 11:38:35 - Deployment completed successfully. All services are up and running.
+2024-10-10 11:43:25 - Docker network 'internal_network' already exists.
+2024-10-10 11:43:27 - Docker network 'external_network' already exists.
+2024-10-10 11:48:01 - Ensuring correct script directory...
+2024-10-10 11:48:01 - Building and starting backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-10 11:48:37 - Delaying startup of frontend services to ensure backend services are ready...
+2024-10-10 11:48:48 - Building and starting frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
+2024-10-10 11:49:08 - Deployment completed successfully. All services are up and running.
+2024-10-10 17:00:33 - Docker network 'internal_network' already exists.
+2024-10-10 17:00:33 - Docker network 'external_network' already exists.
+2024-10-10 17:01:43 - Docker network 'internal_network' already exists.
+2024-10-10 17:01:44 - Docker network 'external_network' already exists.
+2024-10-10 17:02:23 - Docker network 'internal_network' already exists.
+2024-10-10 17:02:23 - Docker network 'external_network' already exists.
+2024-10-10 17:03:28 - Docker network 'internal_network' already exists.
+2024-10-10 17:03:28 - Docker network 'external_network' already exists.
+2024-10-10 17:04:06 - Docker network 'internal_network' already exists.
+2024-10-10 17:04:07 - Docker network 'external_network' already exists.
+2024-10-10 17:07:07 - Docker network 'internal_network' already exists.
+2024-10-10 17:07:07 - Docker network 'external_network' already exists.
+2024-10-10 17:08:03 - Ensuring correct script directory...
+2024-10-10 17:08:03 - Building and starting backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-10 17:08:04 - Error: Failed to start backend services.
+2024-10-10 17:09:21 - Docker network 'internal_network' already exists.
+2024-10-10 17:09:21 - Docker network 'external_network' already exists.
+2024-10-10 17:10:27 - Ensuring correct script directory...
+2024-10-10 17:10:27 - Building and starting backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-10 17:10:57 - Delaying startup of frontend services to ensure backend services are ready...
+2024-10-10 17:11:07 - Building and starting frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
+2024-10-10 17:12:08 - Deployment completed successfully. All services are up and running.
+2024-10-10 17:22:59 - Docker network 'internal_network' already exists.
+2024-10-10 17:23:00 - Docker network 'external_network' already exists.
+2024-10-10 17:26:10 - Ensuring correct script directory...
+2024-10-10 17:26:10 - Building and starting backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-10 17:26:40 - Delaying startup of frontend services to ensure backend services are ready...
+2024-10-10 17:26:50 - Building and starting frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
+2024-10-10 17:27:14 - Deployment completed successfully. All services are up and running.
+2024-10-10 17:32:53 - Docker network 'internal_network' already exists.
+2024-10-10 17:32:53 - Docker network 'external_network' already exists.
+2024-10-10 17:34:18 - Ensuring correct script directory...
+2024-10-10 17:34:19 - Building and starting backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-10 17:34:24 - Error: Failed to start backend services.

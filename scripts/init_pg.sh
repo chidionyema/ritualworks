@@ -1,17 +1,28 @@
 #!/bin/bash
 
-set -e  # Exit on any error
+set -e  # Exit immediately if any command exits with a non-zero status
 
+# Define constants and configuration
+VAULT_CONTAINER_NAME="compose-vault-1"    # Name of the running Vault container
+DOCKER_SUBNET="172.20.0.0/16"             # Adjust as necessary based on your Docker network
+CERT_DIR="/certs-volume"                  # Directory where certificates are stored in the shared volume
+
+# Helper function to log messages with timestamps
 log() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $1"
 }
 
+# Error handling function
+error_exit() {
+    log "Error: $1"
+    exit 1
+}
+
 log "Starting PostgreSQL initialization script..."
 
-# Ensure the script runs as the postgres user (or user with UID 1001)
+# Ensure the script runs as the postgres user (UID 1001)
 if [ "$(id -u)" -ne "1001" ]; then
-    log "This script must be run as user 1001 (postgres)"
-    exit 1
+    error_exit "This script must be run as user 1001 (postgres)"
 fi
 
 log "Running as the correct user."
@@ -20,66 +31,61 @@ log "Running as the correct user."
 PGDATA="/bitnami/postgresql/data"
 export PGDATA  # Export PGDATA so that it's available for all PostgreSQL commands
 
-# Check if the data directory is empty or lacks critical configuration files
-if [ ! "$(ls -A $PGDATA)" ] || [ ! -f "$PGDATA/postgresql.conf" ] || [ ! -f "$PGDATA/pg_hba.conf" ]; then
-    log "Data directory is empty or missing critical configuration files. Initializing the data directory..."
-    
-    # Remove the empty or improperly initialized directory to reinitialize properly
-    rm -rf "$PGDATA"
-    mkdir -p "$PGDATA"
-    chown -R postgres:postgres "$PGDATA"
-    chmod 700 "$PGDATA"
-    
-    # Run initdb to initialize the data directory and create configuration files as the postgres user
-    log "Initializing PostgreSQL data directory with default configuration files..."
-    /opt/bitnami/postgresql/bin/initdb -D "$PGDATA"
-    if [ $? -ne 0 ]; then
-        log "Error: Failed to initialize PostgreSQL data directory."
-        exit 1
-    fi
-    log "PostgreSQL data directory initialized successfully."
-else
-    log "Data directory $PGDATA already exists and contains configuration files. Skipping initialization."
-fi
-
-# Check again if the configuration files exist to confirm initialization
+# Check if the configuration files exist
 POSTGRESQL_CONF_FILE="$PGDATA/postgresql.conf"
 PG_HBA_CONF="$PGDATA/pg_hba.conf"
 
 if [ ! -f "$POSTGRESQL_CONF_FILE" ] || [ ! -f "$PG_HBA_CONF" ]; then
-    log "Error: Configuration files not found after initialization. Please ensure PostgreSQL has been initialized properly."
-    exit 1
+    error_exit "Configuration files not found in $PGDATA."
 else
     log "Configuration files found. Proceeding with configuration."
 fi
 
-log "Setting ownership and permissions of $PGDATA..."
-chown -R postgres:postgres "$PGDATA"
-chmod 700 "$PGDATA"
-if [ $? -ne 0 ]; then
-    log "Error: Failed to set ownership and permissions of $PGDATA."
-    exit 1
+# Check if SSL certificates are present in the shared volume directory
+if [ ! -f "$CERT_DIR/postgres.ritualworks.com.crt" ] || [ ! -f "$CERT_DIR/postgres.ritualworks.com.key" ]; then
+    error_exit "SSL certificate or key file not found in $CERT_DIR."
 fi
+
+# Copy SSL certificates from shared volume to PostgreSQL configuration directory
+log "Copying SSL certificates from $CERT_DIR to /opt/bitnami/postgresql/conf/..."
+cp "$CERT_DIR/postgres.ritualworks.com.crt" /opt/bitnami/postgresql/conf/server.crt || error_exit "Failed to copy certificate to /opt/bitnami/postgresql/conf/server.crt."
+cp "$CERT_DIR/postgres.ritualworks.com.key" /opt/bitnami/postgresql/conf/server.key || error_exit "Failed to copy private key to /opt/bitnami/postgresql/conf/server.key."
+
+# Set permissions and ownership for the copied SSL certificate and key files in /opt/bitnami/postgresql/conf/
+log "Setting permissions for SSL certificate and key files in /opt/bitnami/postgresql/conf/..."
+chmod 600 /opt/bitnami/postgresql/conf/server.crt /opt/bitnami/postgresql/conf/server.key || error_exit "Failed to set permissions for certificate files in /opt/bitnami/postgresql/conf/."
+chown postgres:postgres /opt/bitnami/postgresql/conf/server.crt /opt/bitnami/postgresql/conf/server.key || error_exit "Failed to set ownership for certificate files in /opt/bitnami/postgresql/conf/."
 
 # Pre-configure PostgreSQL settings before starting the server
 log "Pre-configuring PostgreSQL..."
 
-# Modify postgresql.conf using sed before PostgreSQL starts
+# Enable listening on all interfaces
+log "Setting listen_addresses to '*'..."
 sed -i "/^#*\s*listen_addresses\s*=\s*/c\listen_addresses = '*'" "$POSTGRESQL_CONF_FILE"
 
-# Modify pg_hba.conf using sed before PostgreSQL starts
-HOST_IP=$(hostname -i)
-DOCKER_SUBNET="172.20.0.0/16"  # Adjust as necessary
+# Enable SSL and specify the certificate and key file paths directly in the postgresql.conf
+log "Enabling SSL in postgresql.conf with paths to /opt/bitnami/postgresql/conf/..."
+sed -i "/^#*\s*ssl\s*=\s*/c\ssl = on" "$POSTGRESQL_CONF_FILE"
+sed -i "/^#*\s*ssl_cert_file\s*=\s*/c\ssl_cert_file = '/opt/bitnami/postgresql/conf/server.crt'" "$POSTGRESQL_CONF_FILE"
+sed -i "/^#*\s*ssl_key_file\s*=\s*/c\ssl_key_file = '/opt/bitnami/postgresql/conf/server.key'" "$POSTGRESQL_CONF_FILE"
 
-sed -i "s/host    all             all             127.0.0.1\/32            trust/host    all             all             $HOST_IP\/32             md5/" "$PG_HBA_CONF"
-sed -i "/^# Allow replication connections/c\local   replication     all                                     trust" "$PG_HBA_CONF"
-sed -i "/^# Allow connections from Docker subnet/c\host    all             all             $DOCKER_SUBNET          md5" "$PG_HBA_CONF"
-sed -i "/^# Allow all connections with MD5 password/c\host    all             all             0.0.0.0/0               md5" "$PG_HBA_CONF"
-# Add a new entry to allow connections from the Vault container to your_postgres_db database
-echo "host    your_postgres_db    vault    172.20.0.0/16    md5" >> "$PG_HBA_CONF"
+# Modify pg_hba.conf to enforce SSL connections
+log "Modifying pg_hba.conf to enforce SSL connections..."
 
-# Add a new entry to allow connections from the Vault container IP
-echo "host    all    all    172.20.0.5/32    md5" >> "$PG_HBA_CONF"
+# Replace existing host entries to require SSL and use md5 authentication
+log "Updating existing host entries to enforce SSL and md5 authentication..."
+sed -i "s/host\s\+all\s\+all\s\+127\.0\.0\.1\/32\s\+trust/hostssl all all 127.0.0.1\/32 md5/" "$PG_HBA_CONF"
+sed -i "s/host\s\+all\s\+all\s\+::1\/128\s\+trust/hostssl all all ::1\/128 md5/" "$PG_HBA_CONF"
+sed -i "s/host\s\+all\s\+all\s\+0\.0\.0\.0\/0\s\+trust/hostssl all all 0.0.0.0\/0 md5/" "$PG_HBA_CONF"
+
+# Allow connections from the Docker subnet with md5 authentication
+log "Allowing connections from Docker subnet $DOCKER_SUBNET with md5 authentication..."
+echo "hostssl all all $DOCKER_SUBNET md5" >> "$PG_HBA_CONF"
+
+# *** Allowing Connections from Vault Container Using Hostname ***
+log "Allowing connections from Vault container '$VAULT_CONTAINER_NAME' using hostname..."
+echo "hostssl your_postgres_db vault $VAULT_CONTAINER_NAME md5" >> "$PG_HBA_CONF"
+# *** End of Vault Container Connection ***
 
 log "PostgreSQL configuration files pre-configured successfully."
 
@@ -95,52 +101,6 @@ until pg_isready -U postgres; do
     sleep 2
 done
 log "PostgreSQL is ready."
-
-# Set default values if environment variables are not set
-DEFAULT_USER="myuser"
-DEFAULT_PASSWORD="mypassword"
-USER=${POSTGRES_USER:-$DEFAULT_USER}
-PASSWORD=${POSTGRES_PASSWORD:-$DEFAULT_PASSWORD}
-DB=${POSTGRES_DB:-"your_postgres_db"}
-
-# Debug: Log the environment variables and defaults
-log "Using POSTGRES_USER: $USER"
-log "Using POSTGRES_PASSWORD: $PASSWORD"
-log "Using POSTGRES_DB: $DB"
-
-# Create the necessary role if it doesn't exist and grant CREATEDB privilege
-log "Creating role if it doesn't exist: $USER"
-psql -U postgres -d postgres -c "DO \$\$
-BEGIN
-   IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = '$USER') THEN
-      CREATE ROLE $USER LOGIN PASSWORD '$PASSWORD';
-      ALTER ROLE $USER CREATEDB;  -- Grant CREATEDB privilege
-   ELSE
-      ALTER ROLE $USER CREATEDB;  -- Ensure CREATEDB privilege is granted if the role exists
-   END IF;
-END
-\$\$;" || log "Error: Failed to create or update role $USER."
-
-# Check if the database already exists
-log "Checking if database '$DB' exists..."
-DB_EXISTS=$(psql -U postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$DB'")
-if [ "$DB_EXISTS" == "1" ]; then
-    log "Database '$DB' already exists. Skipping creation."
-else
-    log "Creating database '$DB' with owner $USER..."
-    psql -U postgres -c "CREATE DATABASE $DB OWNER $USER;" || log "Error: Failed to create database $DB."
-fi
-
-# Verify if the role was created successfully
-log "Verifying role creation..."
-ROLE_EXISTS=$(psql -U postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='$USER'")
-if [ "$ROLE_EXISTS" == "1" ]; then
-    log "Role $USER created or updated successfully."
-else
-    log "Error: Role $USER was not created or updated."
-fi
-log "Reloading PostgreSQL configuration..."
-pg_ctl -D "$PGDATA" reload || log "Error: Failed to reload PostgreSQL configuration."
 
 # Tail the PostgreSQL logs to keep the container running and for visibility
 log "Tailing PostgreSQL logs..."

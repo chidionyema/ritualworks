@@ -16,26 +16,14 @@ error_exit() {
     exit 1
 }
 
-# Function to deploy Vault
-deploy_vault() {
-    log "Deploying Vault using install_vault_server.sh..."
-    ./install_vault_server.sh || error_exit "Failed to deploy Vault."
-    log "Configuring Vault..."
-    ./configure_vault.sh
-
-}
 
 # Function to generate certificates
 generate_certs() {
     log "Generating certificates..."
     sudo ./generate_certs.sh || error_exit "Certificate generation failed."
+    ./generate_vault_certs.sh
 }
 
-# Function to automate deployment steps
-automate_deployment() {
-    log "Automating the deployment process..."
-    sudo ./automate_deployment.sh || error_exit "Failed to automate the deployment process."
-}
 
 # Function to start all services
 start_services() {
@@ -51,10 +39,14 @@ log "Creating Docker networks..."
 ./create_networks.sh || error_exit "Failed to create Docker networks."
 
 # Step 2: Deploy Vault
-deploy_vault
-
-# Step 3: Generate certificates
-generate_certs
+ log "Deploying Vault using install_vault_server.sh..."
+ ./install_vault_server.sh || error_exit "Failed to deploy Vault."
+ sudo ./generate_vault_certs.sh
+ log "Configuring Vault..."
+ ./install_postgres.sh
+ ./configure_vault.sh
+ #Step 3: Generate certificates
+  #generate_certs
 
 # Step 4: Automate the deployment process
 # automate_deployment

@@ -31,7 +31,8 @@ services:
       dockerfile: docker/Dockerfile.haproxy
     volumes:
       - ../../haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
-      - ../../ssl/certs:/etc/ssl/certs
+      - certs-volume:/certs-volume:rw  
+
     ports:
       - "5433:5432"
       - "8404:8404"
@@ -254,11 +255,11 @@ services:
     environment:
       - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
       - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
-      - MINIO_SERVER_CERT=/etc/ssl/certs/public.crt
-      - MINIO_SERVER_KEY=/etc/ssl/certs/private.key
+      - MINIO_SERVER_CERT=/certs-volume/public.crt
+      - MINIO_SERVER_KEY=/certs-volume/private.key
     volumes:
       - minio-data1:/data
-      - ../../ssl/certs:/etc/ssl/certs
+      - certs-volume:/certs-volume:rw  
     networks:
       - internal_network
     healthcheck:
@@ -281,11 +282,11 @@ services:
     environment:
       - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
       - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
-      - MINIO_SERVER_CERT=/etc/ssl/certs/public.crt
-      - MINIO_SERVER_KEY=/etc/ssl/certs/private.key
+      - MINIO_SERVER_CERT=/certs-volume/public.crt
+      - MINIO_SERVER_KEY=/certs-volume/private.key
     volumes:
       - minio-data2:/data
-      - ../../ssl/certs:/etc/ssl/certs
+      - certs-volume:/certs-volume:rw  
     networks:
       - internal_network
     healthcheck:
@@ -386,3 +387,5 @@ volumes:
     driver: local
   grafana-data:  # Added the missing Grafana volume definition
     driver: local
+  certs-volume:
+    external: true 

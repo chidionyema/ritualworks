@@ -239,6 +239,20 @@ public partial class Program
                 ValidAudience = jwtAudience,
                 IssuerSigningKey = new SymmetricSecurityKey(keyBytes)
             };
+
+             options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var token = context.Request.Cookies["jwt"];
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        context.Token = token;
+                    }
+                    return Task.CompletedTask;
+                }
+            };
+            
         });
 
         // Configure Stripe
