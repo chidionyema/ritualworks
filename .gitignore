@@ -35,6 +35,7 @@ scripts/unseal_keys.json
 scripts/new_vault_token.txt
 # To ignore the entire ssl/certs directory
 docker/compose/.env.bak
+docker/compose/.env
 data/
 elasticsearch/logs/gc.log
 elasticsearch/logs/gc.log.2
