@@ -1,0 +1,5 @@
+data_source_name: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@patroni:5432/postgres?sslmode=disable"
+exclude_databases:
+  - "template0"
+  - "template1"
+  - "postgres"

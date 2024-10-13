@@ -1,0 +1,32 @@
+{
+    "dashboard": {
+      "id": null,
+      "uid": "elasticsearch-dashboard",
+      "title": "Elasticsearch Dashboard",
+      "timezone": "browser",
+      "schemaVersion": 26,
+      "version": 0,
+      "panels": [
+        {
+          "type": "graph",
+          "title": "Elasticsearch Node Stats",
+          "datasource": "Elasticsearch",
+          "targets": [
+            {
+              "refId": "A",
+              "query": "node_stats",
+              "metric": "elasticsearch_node_stats"
+            }
+          ],
+          "gridPos": {
+            "x": 0,
+            "y": 0,
+            "w": 24,
+            "h": 9
+          }
+        }
+      ]
+    },
+    "overwrite": true
+  }
+  

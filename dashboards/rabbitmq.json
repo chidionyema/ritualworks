@@ -1,0 +1,38 @@
+{
+    "id": null,
+    "uid": "rabbitmq-dashboard",
+    "title": "RabbitMQ Overview",
+    "tags": ["rabbitmq", "messaging"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 1,
+    "panels": [
+      {
+        "type": "graph",
+        "title": "Messages Published Per Second",
+        "targets": [
+          {
+            "expr": "rate(rabbitmq_channel_messages_published_total{job='rabbitmq'}[5m])",
+            "legendFormat": "Published Messages",
+            "interval": ""
+          }
+        ],
+        "xaxis": { "show": true },
+        "yaxes": [{ "format": "short", "show": true }, { "show": true }]
+      },
+      {
+        "type": "graph",
+        "title": "Queue Size",
+        "targets": [
+          {
+            "expr": "rabbitmq_queue_messages_ready{job='rabbitmq'}",
+            "legendFormat": "{{queue}}",
+            "interval": ""
+          }
+        ],
+        "xaxis": { "show": true },
+        "yaxes": [{ "format": "short", "show": true }, { "show": true }]
+      }
+    ]
+  }
+  

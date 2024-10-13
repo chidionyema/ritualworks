@@ -1,0 +1,34 @@
+FROM nginx:alpine
+
+# Install dos2unix for converting line endings
+RUN apk update && apk add --no-cache dos2unix bash coreutils
+
+# Create necessary directories
+RUN mkdir -p /etc/nginx /etc/nginx/ssl /var/log/nginx
+
+# Copy Nginx configuration template
+COPY ../nginx/nginx.conf.template /etc/nginx/nginx.conf.template
+
+# Verify the template was copied
+RUN echo "Checking /etc/nginx/nginx.conf.template:" && ls -l /etc/nginx/nginx.conf.template
+
+# Copy the script
+COPY ../scripts/generate_nginx_conf.sh /generate_nginx_conf.sh
+
+# Convert line endings to Unix style
+RUN dos2unix /generate_nginx_conf.sh
+
+# Verify the script was copied
+RUN echo "Checking /generate_nginx_conf.sh:" && ls -l /generate_nginx_conf.sh
+
+# Set executable permissions for the script
+RUN chmod +x /generate_nginx_conf.sh
+
+# Copy a .env file for testing
+COPY .env /etc/nginx/.env
+
+# Verify the script is executable
+RUN echo "Checking permissions of /generate_nginx_conf.sh:" && ls -l /generate_nginx_conf.sh
+
+# Set the entrypoint to the script
+ENTRYPOINT ["/generate_nginx_conf.sh"]

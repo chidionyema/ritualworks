@@ -1,0 +1,205 @@
+worker_processes auto;
+
+events {
+    worker_connections ${WORKER_CONNECTIONS};
+}
+
+http {
+    limit_req_zone $binary_remote_addr zone=req_limit_per_ip:10m rate=30r/s;
+    limit_conn_zone $binary_remote_addr zone=conn_limit_per_ip:10m;
+
+    upstream app_cluster {
+        server ${APP_SERVER_1};
+        server ${APP_SERVER_2};
+        server ${APP_SERVER_3};
+    }
+
+    upstream qtrader_cluster {
+        server ${QTRADER_SERVER};
+    }
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256';
+    ssl_session_timeout 1d;
+    ssl_session_cache shared:MozSSL:10m;
+    ssl_session_tickets off;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options DENY;
+    add_header X-XSS-Protection "1; mode=block";
+    add_header Referrer-Policy "no-referrer-when-downgrade";
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; object-src 'none';";
+
+    access_log /proc/self/fd/1;
+    error_log /proc/self/fd/2;
+
+    server {
+        listen 80;
+        server_name ${API_SERVER_NAME};
+        return 301 https://$host$request_uri;
+    }
+
+    server {
+        listen 443 ssl http2;
+        server_name ${API_SERVER_NAME};
+
+        ssl_certificate /etc/nginx/ssl/${SSL_CERTIFICATE};
+        ssl_certificate_key /etc/nginx/ssl/${SSL_CERTIFICATE_KEY};
+
+        location / {
+            proxy_pass http://app_cluster;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            set $cors_origin "";
+            if ($http_origin ~* (${CORS_ORIGINS})) {
+                set $cors_origin $http_origin;
+            }
+            add_header 'Access-Control-Allow-Origin' $cors_origin always;
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE' always;
+            add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept, Authorization' always;
+
+            if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' $cors_origin always;
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS, PUT, DELETE' always;
+                add_header 'Access-Control-Allow-Headers' 'Origin, Content-Type, Accept, Authorization' always;
+                add_header 'Access-Control-Max-Age' 1728000;
+                add_header 'Content-Length' 0;
+                add_header 'Content-Type' 'text/plain charset=UTF-8';
+                return 204;
+            }
+
+            limit_req zone=req_limit_per_ip burst=20 nodelay;
+            limit_conn conn_limit_per_ip 1000;
+        }
+    }
+
+    server {
+        listen 80;
+        server_name ${QTRADER_SERVER_NAME};
+        return 301 https://$host$request_uri;
+    }
+
+    server {
+        listen 443 ssl http2;
+        server_name ${QTRADER_SERVER_NAME};
+
+        ssl_certificate /etc/nginx/ssl/${SSL_CERTIFICATE};
+        ssl_certificate_key /etc/nginx/ssl/${SSL_CERTIFICATE_KEY};
+
+        location / {
+            proxy_pass https://qtrader_cluster;
+            proxy_ssl_certificate /etc/nginx/ssl/${QTRADER_SSL_CERTIFICATE};
+            proxy_ssl_certificate_key /etc/nginx/ssl/${QTRADER_SSL_CERTIFICATE_KEY};
+            proxy_ssl_trusted_certificate /etc/nginx/ssl/${QTRADER_SSL_TRUSTED_CERTIFICATE};
+            proxy_ssl_verify off;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+
+    server {
+        listen 80;
+        server_name ${PROMETHEUS_SERVER_NAME};
+        return 301 https://$host$request_uri;
+    }
+
+    server {
+        listen 443 ssl http2;
+        server_name ${PROMETHEUS_SERVER_NAME};
+
+        ssl_certificate /etc/nginx/ssl/${SSL_CERTIFICATE};
+        ssl_certificate_key /etc/nginx/ssl/${SSL_CERTIFICATE_KEY};
+
+        location / {
+            proxy_pass http://prometheus:9090/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            limit_req zone=req_limit_per_ip burst=20 nodelay;
+            limit_conn conn_limit_per_ip 1000;
+        }
+    }
+
+    server {
+        listen 80;
+        server_name ${GRAFANA_SERVER_NAME};
+        return 301 https://$host$request_uri;
+    }
+
+    server {
+        listen 443 ssl http2;
+        server_name ${GRAFANA_SERVER_NAME};
+
+        ssl_certificate /etc/nginx/ssl/${SSL_CERTIFICATE};
+        ssl_certificate_key /etc/nginx/ssl/${SSL_CERTIFICATE_KEY};
+
+        location / {
+            proxy_pass http://grafana:3000/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            limit_req zone=req_limit_per_ip burst=20 nodelay;
+            limit_conn conn_limit_per_ip 1000;
+        }
+    }
+
+    server {
+        listen 80;
+        server_name localhost;
+        return 301 https://$host$request_uri;
+    }
+
+    server {
+        listen 443 ssl http2;
+        server_name localhost;
+
+        ssl_certificate /etc/nginx/ssl/${SSL_CERTIFICATE};
+        ssl_certificate_key /etc/nginx/ssl/${SSL_CERTIFICATE_KEY};
+
+        location /api {
+            proxy_pass http://app_cluster;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            limit_req zone=req_limit_per_ip burst=20 nodelay;
+            limit_conn conn_limit_per_ip 1000;
+        }
+
+        location /prometheus {
+            proxy_pass http://prometheus:9090/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            limit_req zone=req_limit_per_ip burst=20 nodelay;
+            limit_conn conn_limit_per_ip 1000;
+        }
+
+        location /grafana {
+            proxy_pass http://grafana:3000/;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            limit_req zone=req_limit_per_ip burst=20 nodelay;
+            limit_conn conn_limit_per_ip 1000;
+        }
+    }
+}

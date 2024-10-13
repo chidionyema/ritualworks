@@ -1,0 +1,31 @@
+psql: error: connection to server on socket "/tmp/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+psql: error: connection to server on socket "/tmp/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+Password: su: Authentication failure
+/scripts/entrypoint.sh: line 39: gosu: command not found
+runuser: may not be used by non-root users
+psql: error: connection to server on socket "/tmp/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+psql: error: connection to server on socket "/tmp/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+psql: error: connection to server on socket "/tmp/.s.PGSQL.5432" failed: FATAL:  role "-d" does not exist
+psql: error: connection to server on socket "/tmp/.s.PGSQL.5432" failed: FATAL:  role "-d" does not exist
+CREATE EXTENSION
+CREATE EXTENSION
+psql: error: connection to server on socket "/tmp/.s.PGSQL.5432" failed: No such file or directory
+	Is the server running locally and accepting connections on that socket?
+CREATE EXTENSION
+CREATE EXTENSION
+NOTICE:  extension "repmgr" already exists, skipping
+CREATE EXTENSION
+NOTICE:  extension "repmgr" already exists, skipping
+CREATE EXTENSION
+NOTICE:  extension "repmgr" already exists, skipping
+CREATE EXTENSION
+NOTICE:  extension "repmgr" already exists, skipping
+CREATE EXTENSION
+NOTICE:  extension "repmgr" already exists, skipping
+CREATE EXTENSION
+NOTICE:  extension "repmgr" already exists, skipping
+CREATE EXTENSION

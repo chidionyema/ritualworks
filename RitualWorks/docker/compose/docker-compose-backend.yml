@@ -1,0 +1,397 @@
+version: '3.8'
+
+services:
+  vault-agent:
+    image: hashicorp/vault:latest
+    environment:
+      VAULT_ADDR: http://vault:8200
+    volumes:
+      - ../../vault/data:/vault/data
+      - ../../vault/secrets:/vault/secrets
+      - ../../vault/config:/vault/config
+      - ../../scripts:/vault/scripts
+    networks:
+      - internal_network
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+    privileged: true
+    command: sh -c "chown -R vault:vault /vault/secrets && chmod -R 770 /vault/secrets && vault agent -config=/vault/config/vault-agent-config.hcl"
+
+  haproxy:
+    build:
+      context: ../..
+      dockerfile: docker/Dockerfile.haproxy
+    volumes:
+      - ../../haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+      - certs-volume:/certs-volume:rw  
+    ports:
+      - "5433:5432"
+      - "8404:8404"
+    env_file:
+      - .env
+    networks:
+      - internal_network
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  redis-master:
+    image: redis:latest
+    command: ["redis-server", "/etc/redis/redis.conf", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-master-data:/data
+      - ../../config/redis.conf:/etc/redis/redis.conf
+      - certs-volume:/certs-volume:ro
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--tls", "--cert", "/certs-volume/redis.crt", "--key", "/certs-volume/redis.key", "--cacert", "/certs-volume/ca.crt", "-h", "127.0.0.1", "-p", "6379", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  redis-replica:
+    image: redis:latest
+    command: ["redis-server", "/etc/redis/redis.conf", "--replicaof", "redis-master", "6379"]
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-replica-data:/data
+      - ../../config/redis.conf:/etc/redis/redis.conf
+      - certs-volume:/certs-volume:ro
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--tls", "--cert", "/certs-volume/redis.crt", "--key", "/certs-volume/redis.key", "--cacert", "/certs-volume/ca.crt", "-h", "127.0.0.1", "-p", "6379", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  es-node-1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
+    environment:
+      - cluster.name=my-cluster
+      - node.name=es-node-1
+      - discovery.seed_hosts=es-node-1,es-node-2
+      - cluster.initial_master_nodes=es-node-1,es-node-2
+      - ELASTIC_PASSWORD=your_elastic_password
+      - NODE_NAME=es-node-1
+      - ES_JAVA_OPTS=-Djava.security.policy=/usr/share/elasticsearch/config/my-security.policy
+      - xpack.security.enabled=true
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/es-node-1.ritualworks.com.key
+      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/es-node-1.ritualworks.com.crt
+      - xpack.security.transport.ssl.certificate_authorities=/usr/share/elasticsearch/config/ca.crt
+    volumes:
+      - es-data-node1:/usr/share/elasticsearch/data
+      - es-backup:/usr/share/elasticsearch/backup
+      - ../../config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ../../config/my-security.policy:/usr/share/elasticsearch/config/my-security.policy
+      - certs-volume:/certs-volume:ro
+      - ../../scripts/es-entrypoint.sh:/usr/share/elasticsearch/config/es-entrypoint.sh:ro
+      - ../../config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
+      - ../../config/jvm.options:/usr/share/elasticsearch/config/jvm.options
+      - ../../elasticsearch/logs:/usr/share/elasticsearch/logs
+      - ../../elasticsearch/heapdumps:/var/lib/elasticsearch/heapdumps
+    entrypoint: ["/usr/share/elasticsearch/config/es-entrypoint.sh"]
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f https://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  es-node-2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
+    environment:
+      - cluster.name=my-cluster
+      - node.name=es-node-2
+      - discovery.seed_hosts=es-node-1,es-node-2
+      - cluster.initial_master_nodes=es-node-1,es-node-2
+      - ELASTIC_PASSWORD=your_elastic_password
+      - NODE_NAME=es-node-2
+      - ES_JAVA_OPTS=-Djava.security.policy=/usr/share/elasticsearch/config/my-security.policy
+      - xpack.security.enabled=true
+      - xpack.security.transport.ssl.enabled=true
+      - xpack.security.transport.ssl.verification_mode=certificate
+      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/es-node-2.ritualworks.com.key
+      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/es-node-2.ritualworks.com.crt
+      - xpack.security.transport.ssl.certificate_authorities=/usr/share/elasticsearch/config/ca.crt
+    volumes:
+      - es-data-node2:/usr/share/elasticsearch/data
+      - es-backup:/usr/share/elasticsearch/backup
+      - ../../config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ../../config/my-security.policy:/usr/share/elasticsearch/config/my-security.policy
+      - certs-volume:/certs-volume:ro
+      - ../../scripts/es-entrypoint.sh:/usr/share/elasticsearch/config/es-entrypoint.sh:ro
+      - ../../config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
+      - ../../config/jvm.options:/usr/share/elasticsearch/config/jvm.options
+      - ../../elasticsearch/logs:/usr/share/elasticsearch/logs
+      - ../../elasticsearch/heapdumps:/var/lib/elasticsearch/heapdumps
+    entrypoint: ["/usr/share/elasticsearch/config/es-entrypoint.sh"]
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f https://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  rabbitmq-node1:
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbit_user
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+      - RABBITMQ_NODENAME=rabbit@rabbitmq-node1
+    hostname: rabbitmq-node1
+    networks:
+      internal_network:
+        aliases:
+          - rabbitmq-node1
+    volumes:
+      - rabbitmq-data-node1:/var/lib/rabbitmq
+      - certs-volume:/certs-volume:ro
+      - ../../scripts:/etc/rabbitmq-init
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmqctl --erlang-cookie $(cat /var/lib/rabbitmq/.erlang.cookie) status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    command: >
+      /bin/bash -c "
+      rabbitmq-server;
+      while ! rabbitmqctl wait /var/lib/rabbitmq/mnesia/rabbit@rabbitmq-node1.pid --timeout 60; do
+        echo 'Waiting for RabbitMQ server to start...'
+        sleep 1
+      done;
+      echo 'RabbitMQ server started.';
+      rabbitmqctl set_policy ha-all '.*' '{\"ha-mode\":\"all\"}' --apply-to queues;
+      "
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  rabbitmq-node2:
+    image: rabbitmq:3-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbit_user
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+      - RABBITMQ_NODENAME=rabbit@rabbitmq-node2
+    hostname: rabbitmq-node2
+    networks:
+      internal_network:
+        aliases:
+          - rabbitmq-node2
+    volumes:
+      - rabbitmq-data-node2:/var/lib/rabbitmq
+      - certs-volume:/certs-volume:ro
+      - ../../scripts:/etc/rabbitmq-init
+    depends_on:
+      - rabbitmq-node1
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmqctl --erlang-cookie $(cat /var/lib/rabbitmq/.erlang.cookie) status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    command: >
+      /bin/bash -c "
+      rabbitmq-server;
+      while ! rabbitmqctl wait /var/lib/rabbitmq/mnesia/rabbit@rabbitmq-node2.pid --timeout 60; do
+        echo 'Waiting for RabbitMQ server to start...'
+        sleep 1
+      done;
+      echo 'RabbitMQ server started.';
+      while ! rabbitmqctl -n rabbit@rabbitmq-node1 --erlang-cookie $(cat /var/lib/rabbitmq/.erlang.cookie) ping; do
+        echo 'Waiting for rabbitmq-node1...'
+        sleep 5
+      done;
+      echo 'rabbitmq-node1 is ready. Joining the cluster...';
+      rabbitmqctl stop_app;
+      rabbitmqctl reset;
+      rabbitmqctl join_cluster rabbit@rabbitmq-node1;
+      rabbitmqctl start_app;
+      rabbitmqctl await_online_nodes 2 --timeout 60;
+      "
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  minio1:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+      - MINIO_SERVER_CERT=/certs-volume/public.crt
+      - MINIO_SERVER_KEY=/certs-volume/private.key
+    volumes:
+      - minio-data1:/data
+      - certs-volume:/certs-volume:ro
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/ready || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    command: server /data --certs-dir /certs-volume
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  minio2:
+    image: minio/minio:latest
+    ports:
+      - "9001:9000"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+      - MINIO_SERVER_CERT=/certs-volume/public.crt
+      - MINIO_SERVER_KEY=/certs-volume/private.key
+    volumes:
+      - minio-data2:/data
+      - certs-volume:/certs-volume:rw  
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9001/minio/health/ready || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    command: server /data --certs-dir /certs-volume
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ../../config/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:9090/-/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../../grafana-data:/var/lib/grafana
+      - ../../provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ../../provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ../../dashboards:/var/lib/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin  # Change this for security
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+networks:
+  internal_network:
+    name: internal_network
+    external: true
+    ipam:
+      config:
+        - subnet: 172.22.0.0/16
+  external_network:
+    name: external_network
+    external: true
+    ipam:
+      config:
+        - subnet: 172.23.0.0/16
+
+volumes:
+  postgres-creds:
+  redis-master-data:
+    driver: local
+  redis-replica-data:
+    driver: local
+  es-data-node1:
+    driver: local
+  es-data-node2:
+    driver: local
+  es-backup:
+    driver: local
+  rabbitmq-data-node1:
+    driver: local
+  rabbitmq-data-node2:
+    driver: local
+  minio-data1:
+    driver: local
+  minio-data2:
+    driver: local
+  grafana-data:
+    driver: local
+  certs-volume:
+    external: true
