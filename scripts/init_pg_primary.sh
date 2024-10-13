@@ -111,6 +111,10 @@ echo "hostssl all all $VAULT_CONTAINER_NAME md5" >> "$PG_HBA_CONF"
 
 # *** End of Vault Container Connection ***
 
+log "Setting correct ownership and permissions for PGDATA directory..."
+chown -R postgres:postgres $PGDATA || error_exit "Failed to set ownership for PGDATA directory."
+chmod 700 $PGDATA || error_exit "Failed to set permissions for PGDATA directory."
+
 # Start PostgreSQL server before creating the users and databases
 log "Starting PostgreSQL server with new data directory..."
 postgres -D "$PGDATA" -c config_file=/bitnami/postgresql/data/postgresql.conf &
@@ -151,7 +155,10 @@ fi
 log "Setting correct ownership for PGDATA directory..."
 chown -R postgres:postgres $PGDATA || error_exit "Failed to set ownership for PGDATA directory."
 
-# *** Create repmgr user for replication ***
+# *** Key change: Grant sequence permissions to the PostgreSQL user ***
+log "Granting sequence permissions to '$POSTGRES_USER'..."
+psql -U postgres -d $POSTGRES_DB -c "GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO $POSTGRES_USER;" || error_exit "Failed to grant sequence permissions to $POSTGRES_USER."
+
 
 # Tail the PostgreSQL logs to keep the container running and for visibility
 log "Tailing PostgreSQL logs..."

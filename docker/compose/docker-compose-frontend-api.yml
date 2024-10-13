@@ -30,7 +30,7 @@ services:
     volumes:
       - uploads:/app/uploads
       - ../../vault/secrets:/vault/secrets
-      - ./app_logs:/logs
+      - ../../app_logs:/logs
     networks:
       - internal_network
       - external_network
@@ -68,7 +68,7 @@ services:
     volumes:
       - ../../nginx/nginx.conf:/etc/nginx/nginx.conf
       - ../../nginx/ssl:/etc/nginx/ssl
-      - ./logs:/var/log/nginx
+      - ../../nginx_logs:/var/log/nginx
     depends_on:
       - app
     networks:
@@ -78,7 +78,7 @@ services:
   verify_dns_and_access:
     image: busybox
     volumes:
-      - ./verify_dns_and_access.sh:/verify_dns_and_access.sh
+      - ../../scripts/verify_dns_and_access.sh:/verify_dns_and_access.sh
     depends_on:
       - nginx
     command: sh /verify_dns_and_access.sh

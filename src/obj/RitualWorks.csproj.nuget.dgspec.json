@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/chidionyema/Documents/code/RitualWorks/src/RitualWorks.csproj": {}
+    "/Users/chidionyema/Documents/code/Ritualworks/src/RitualWorks.csproj": {}
   },
   "projects": {
-    "/Users/chidionyema/Documents/code/RitualWorks/src/RitualWorks.csproj": {
+    "/Users/chidionyema/Documents/code/Ritualworks/src/RitualWorks.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/chidionyema/Documents/code/RitualWorks/src/RitualWorks.csproj",
+        "projectUniqueName": "/Users/chidionyema/Documents/code/Ritualworks/src/RitualWorks.csproj",
         "projectName": "RitualWorks",
-        "projectPath": "/Users/chidionyema/Documents/code/RitualWorks/src/RitualWorks.csproj",
+        "projectPath": "/Users/chidionyema/Documents/code/Ritualworks/src/RitualWorks.csproj",
         "packagesPath": "/Users/chidionyema/.dotnet/tools/.nuget/packages/",
-        "outputPath": "/Users/chidionyema/Documents/code/RitualWorks/src/obj/",
+        "outputPath": "/Users/chidionyema/Documents/code/Ritualworks/src/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/chidionyema/.dotnet/tools/.nuget/NuGet/NuGet.Config"

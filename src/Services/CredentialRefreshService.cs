@@ -1,5 +1,6 @@
-// Services/CredentialRefreshService.cs
 using System;
+using System.IO;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -11,17 +12,15 @@ namespace RitualWorks.Services
 {
     public class CredentialRefreshService : BackgroundService
     {
-        private readonly VaultService _vaultService;
         private readonly ILogger<CredentialRefreshService> _logger;
         private readonly IOptionsMonitor<DatabaseCredentials> _dbCredentialsMonitor;
-        private readonly TimeSpan _refreshInterval = TimeSpan.FromMinutes(5);
+        private readonly string _dbCredsFilePath = "/vault/secrets/db-creds.json"; // Path to the Vault Agent template output
+        private readonly TimeSpan _checkInterval = TimeSpan.FromMinutes(5);
 
         public CredentialRefreshService(
-            VaultService vaultService,
             ILogger<CredentialRefreshService> logger,
             IOptionsMonitor<DatabaseCredentials> dbCredentialsMonitor)
         {
-            _vaultService = vaultService;
             _logger = logger;
             _dbCredentialsMonitor = dbCredentialsMonitor;
         }
@@ -32,23 +31,38 @@ namespace RitualWorks.Services
             {
                 try
                 {
-                    _logger.LogInformation("Refreshing database credentials from Vault.");
+                    if (File.Exists(_dbCredsFilePath))
+                    {
+                        _logger.LogInformation("Reading latest credentials from db-creds.json.");
 
-                    var newCredentials = await _vaultService.FetchPostgresCredentialsAsync("vault");
+                        var credsContent = await File.ReadAllTextAsync(_dbCredsFilePath, stoppingToken);
+                        var newCredentials = JsonSerializer.Deserialize<DatabaseCredentials>(credsContent);
 
-                    // Update the DatabaseCredentials options
-                    _dbCredentialsMonitor.CurrentValue.Username = newCredentials.Username;
-                    _dbCredentialsMonitor.CurrentValue.Password = newCredentials.Password;
+                        if (newCredentials != null)
+                        {
+                            // Update the DatabaseCredentials options
+                            _dbCredentialsMonitor.CurrentValue.Username = newCredentials.Username;
+                            _dbCredentialsMonitor.CurrentValue.Password = newCredentials.Password;
 
-                    _logger.LogInformation("Database credentials refreshed.");
+                            _logger.LogInformation("Database credentials refreshed from db-creds.json.");
+                        }
+                        else
+                        {
+                            _logger.LogWarning("Failed to deserialize credentials from db-creds.json.");
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogWarning($"Credentials file {_dbCredsFilePath} not found.");
+                    }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error refreshing database credentials.");
+                    _logger.LogError(ex, "Error reading credentials from db-creds.json.");
                 }
 
-                // Wait until next refresh interval
-                await Task.Delay(_refreshInterval, stoppingToken);
+                // Wait until next check interval
+                await Task.Delay(_checkInterval, stoppingToken);
             }
         }
     }

@@ -11147,11 +11147,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/chidionyema/Documents/code/RitualWorks/tests/RitualWorks.Tests.Unit/RitualWorks.Tests.Unit.csproj",
+      "projectUniqueName": "/Users/chidionyema/Documents/code/Ritualworks/tests/RitualWorks.Tests.Unit/RitualWorks.Tests.Unit.csproj",
       "projectName": "RitualWorks.Tests.Unit",
-      "projectPath": "/Users/chidionyema/Documents/code/RitualWorks/tests/RitualWorks.Tests.Unit/RitualWorks.Tests.Unit.csproj",
+      "projectPath": "/Users/chidionyema/Documents/code/Ritualworks/tests/RitualWorks.Tests.Unit/RitualWorks.Tests.Unit.csproj",
       "packagesPath": "/Users/chidionyema/.dotnet/tools/.nuget/packages/",
-      "outputPath": "/Users/chidionyema/Documents/code/RitualWorks/tests/RitualWorks.Tests.Unit/obj/",
+      "outputPath": "/Users/chidionyema/Documents/code/Ritualworks/tests/RitualWorks.Tests.Unit/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/chidionyema/.dotnet/tools/.nuget/NuGet/NuGet.Config"
@@ -11166,8 +11166,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "/Users/chidionyema/Documents/code/RitualWorks/src/RitualWorks.csproj": {
-              "projectPath": "/Users/chidionyema/Documents/code/RitualWorks/src/RitualWorks.csproj"
+            "/Users/chidionyema/Documents/code/Ritualworks/src/RitualWorks.csproj": {
+              "projectPath": "/Users/chidionyema/Documents/code/Ritualworks/src/RitualWorks.csproj"
             }
           }
         }

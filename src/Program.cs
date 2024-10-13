@@ -107,13 +107,14 @@ public partial class Program
             );
 
             // Inject static secrets into configuration
-            builder.Configuration.AddInMemoryCollection(new Dictionary<string, string>
-            {
-                ["Jwt:Key"] = secrets["jwt_key"],
-                ["MassTransit:RabbitMq:Password"] = secrets["rabbitmq_password"],
-                ["MinIO:AccessKey"] = secrets["minio_access_key"],
-                ["MinIO:SecretKey"] = secrets["minio_secret_key"]
-            });
+        builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
+        {
+            ["Jwt:Key"] = secrets["jwt_key"],
+            ["MassTransit:RabbitMq:Password"] = secrets["rabbitmq_password"],
+            ["MinIO:AccessKey"] = secrets["minio_access_key"],
+            ["MinIO:SecretKey"] = secrets["minio_secret_key"]
+        });
+
 
             // Log the configuration values
             var loggerFactory = builder.Services.BuildServiceProvider().GetRequiredService<ILoggerFactory>();
@@ -137,25 +138,24 @@ public partial class Program
         builder.Services.AddDbContext<RitualWorksContext>((serviceProvider, options) =>
         {
             var dbCredsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<DatabaseCredentials>>();
-            var dbCreds = dbCredsMonitor.CurrentValue;
 
-            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
-
+            // Function to configure the DbContext
             void ConfigureDbContext(DatabaseCredentials creds)
             {
-                var postgresConnectionString = $"Host=postgres_primary;Port=5432;Database=your_postgres_db;Username={creds.Username};Password={creds.Password}";
-                logger.LogInformation("Connecting to PostgreSQL with connection string: {ConnectionString}", postgresConnectionString);
-                options.UseNpgsql(postgresConnectionString);
+                var connectionString = $"Host=postgres_primary;Port=5432;Database=your_postgres_db;Username={creds.Username};Password={creds.Password}";
+                options.UseNpgsql(connectionString);
             }
 
-            ConfigureDbContext(dbCreds);
+            // Set initial configuration with the current credentials
+            ConfigureDbContext(dbCredsMonitor.CurrentValue);
 
+            // Update DbContext whenever the credentials change
             dbCredsMonitor.OnChange(creds =>
             {
                 ConfigureDbContext(creds);
-                logger.LogInformation("Database credentials changed. DbContext reconfigured.");
             });
         });
+
 
         // Add MassTransit with RabbitMQ and log connection details
         builder.Services.AddMassTransit(x =>

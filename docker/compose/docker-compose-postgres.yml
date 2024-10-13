@@ -1,7 +1,6 @@
 version: '3.8'
 
 services:
-
   postgres_primary:
     image: bitnami/postgresql-repmgr:latest
     user: "1001"
@@ -21,7 +20,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ../../data/postgres-primary-data:/bitnami/postgresql
+      - postgres-primary-data:/bitnami/postgresql  # Named volume for persistent data
       - ../../scripts:/scripts
       - ./postgres_logs:/opt/bitnami/postgresql/logs
       - certs-volume:/certs-volume:rw
@@ -60,9 +59,9 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - ../../data/postgres-standby-data:/bitnami/postgresql
+      - postgres-standby-data:/bitnami/postgresql  # Named volume for persistent data
       - ../../scripts:/scripts
-      - ./postgres_logs:/opt/bitnami/postgresql/logs 
+      - ../../postgres_logs:/opt/bitnami/postgresql/logs 
       - certs-volume:/certs-volume
     networks:
       - internal_network
@@ -79,6 +78,24 @@ services:
         max_attempts: 3
         window: 120s
 
+  pg_backup:
+    image: postgres:latest
+    depends_on:
+      - postgres_primary
+    environment:
+      POSTGRES_USER: ${POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - ../../backups:/backups  # Local directory to store the backups
+      - ../../scripts:/scripts
+    networks:
+      - internal_network
+    entrypoint: ["/bin/bash", "-c", "/scripts/scheduled_backup.sh"]
+    deploy:
+      restart_policy:
+        condition: on-failure
+
 networks:
   internal_network:
     name: internal_network
@@ -86,14 +103,9 @@ networks:
     ipam:
       config:
         - subnet: 172.22.0.0/16
-  external_network:
-    name: external_network
-    external: true
-    ipam:
-      config:
-        - subnet: 172.23.0.0/16
 
 volumes:
-  postgres-data:          # Persistent volume 
+  postgres-primary-data:  # Named volume for primary data
+  postgres-standby-data:  # Named volume for standby data
   certs-volume:
     external: true

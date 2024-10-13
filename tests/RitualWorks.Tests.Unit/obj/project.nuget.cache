@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "3nyO1uKsq0rFcZ014qWMQAphd2CYoiDbjzcwiQ/6CBAE4fT4fa0k5YtIm6cq5plS8BBT25m1hHQcoRKWwUht2A==",
+  "dgSpecHash": "0SkXcQK1bD296z7B7Vp/FjIf3/MMwGKzPvrVtm58jn0R/CWoHJ2bvIVjr1B6VKgFZIEyf2q/ByaUbPssFvKwIw==",
   "success": true,
-  "projectFilePath": "/Users/chidionyema/Documents/code/RitualWorks/tests/RitualWorks.Tests.Unit/RitualWorks.Tests.Unit.csproj",
+  "projectFilePath": "/Users/chidionyema/Documents/code/Ritualworks/tests/RitualWorks.Tests.Unit/RitualWorks.Tests.Unit.csproj",
   "expectedPackageFiles": [
     "/Users/chidionyema/.dotnet/tools/.nuget/packages/automapper/13.0.1/automapper.13.0.1.nupkg.sha512",
     "/Users/chidionyema/.dotnet/tools/.nuget/packages/awssdk.core/3.7.304.30/awssdk.core.3.7.304.30.nupkg.sha512",

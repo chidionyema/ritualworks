@@ -1,0 +1,2 @@
+172.21.0.1 - - [13/Oct/2024:11:26:16 +0000] "GET /api/products HTTP/2.0" 500 36418 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+172.21.0.1 - - [13/Oct/2024:11:51:58 +0000] "GET /api/products HTTP/2.0" 200 957 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
