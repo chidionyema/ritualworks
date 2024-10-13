@@ -13,6 +13,8 @@ services:
     networks:
       - internal_network
     command: consul agent -server -bootstrap-expect=1 -client=0.0.0.0 -ui -config-file=/etc/consul.d/consul-http.hcl
+    depends_on:
+      - backup
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8500/v1/status/leader"]
       interval: 10s
@@ -35,16 +37,32 @@ services:
       - ../../vault/secrets:/vault/secrets
       - ../../vault/config:/vault/config
       - ../../scripts:/vault/scripts
-      - vault-data:/vault/file
-      - certs-volume:/certs-volume:rw            # Persistent data directory for Vault
+      - vault-data:/vault/file                 # Persistent volume for Vault data
+      - certs-volume:/certs-volume:rw          # Persistent data directory for Vault
     networks:
       - internal_network
     cap_add:
       - IPC_LOCK
     depends_on:
+      - backup
       - consul
+
     command: vault server -config=/vault/config/vault-config.hcl
 
+  backup:
+    image: busybox
+  
+    volumes:
+      - consul-data:/data/consul            # Back up the Consul data volume
+      - vault-data:/data/vault              # Back up the Vault data volume
+      - ../../backups:/backups  
+      - ../../scripts:/vault/scripts                # Local directory to store the backups
+    networks:
+      - internal_network
+    entrypoint: ["/bin/sh", "-c", "/vault/scripts/backup_script.sh"]
+    deploy:
+      restart_policy:
+        condition: on-failure
 
 networks:
   internal_network:
