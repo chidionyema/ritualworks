@@ -1,0 +1,29 @@
+# Use the official .NET SDK image to build and run migrations
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+# Set the working directory inside the container
+WORKDIR /src
+
+# Copy the .csproj file and restore dependencies
+# This command copies only the project file to benefit from Docker's layer caching
+COPY src/RitualWorks.csproj ./
+
+# Restore the project dependencies based on the project file
+RUN dotnet restore "./RitualWorks.csproj"
+
+# Copy the entire source code into the container
+# This command copies the actual source files after dependencies have been restored
+COPY src/. ./
+
+# Install Entity Framework Core tools globally
+RUN dotnet tool install --global dotnet-ef --version 8.0.0
+
+# Add the .NET tools to the PATH environment variable
+ENV PATH="$PATH:/root/.dotnet/tools"
+
+# Build the project (optional step, depends on how migrations are handled)
+RUN dotnet build -c Release --no-restore
+
+# Set the default entrypoint to the EF Core CLI tool
+# This entrypoint will allow you to run EF Core commands directly from the container
+ENTRYPOINT ["dotnet-ef"]

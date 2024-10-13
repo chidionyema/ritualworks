@@ -1,0 +1,11 @@
+# Use an official Ubuntu image as a base
+FROM ubuntu:latest
+
+# Copy the setup script from the scripts folder in the context to the container
+COPY ../scripts/setup_local_dns.sh /setup_local_dns.sh
+
+# Make the script executable
+RUN chmod +x /setup_local_dns.sh
+
+# Command to run the script
+CMD ["bash", "/setup_local_dns.sh"]

@@ -1,0 +1,11 @@
+FROM bitnami/postgresql-repmgr:latest
+
+# Copy certificates into the container with correct permissions
+COPY ../ssl/certs/postgres.ritualworks.com.crt /opt/bitnami/postgresql/conf/server.crt
+COPY ../ssl/certs/postgres.ritualworks.com.key /opt/bitnami/postgresql/conf/server.key
+
+# Set permissions for the SSL certificates
+RUN chmod 600 /opt/bitnami/postgresql/conf/server.key && \
+    chown postgres:postgres /opt/bitnami/postgresql/conf/server.key
+
+USER 1001  # Switch to the postgres user

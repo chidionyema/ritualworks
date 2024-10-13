@@ -1,0 +1,508 @@
+2024-09-26 17:56:44.437 UTC [37] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 17:56:44.438 UTC [37] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2024-09-26 17:56:44.439 UTC [37] LOG:  could not bind IPv6 address "::1": Cannot assign requested address
+2024-09-26 17:56:44.442 UTC [37] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 17:56:44.457 UTC [40] LOG:  database system was interrupted; last known up at 2024-09-26 17:47:54 UTC
+2024-09-26 17:56:44.481 UTC [37] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 17:56:44.482 UTC [37] LOG:  listening on IPv4 address "127.0.0.1", port 5432
+2024-09-26 17:56:44.482 UTC [37] LOG:  could not bind IPv6 address "::1": Cannot assign requested address
+2024-09-26 17:56:44.486 UTC [37] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 17:56:44.501 UTC [40] LOG:  database system was interrupted; last known up at 2024-09-26 17:54:31 UTC
+2024-09-26 17:56:45.424 UTC [40] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 17:56:45.442 UTC [40] LOG:  redo starts at 0/14F7AD8
+2024-09-26 17:56:45.443 UTC [40] LOG:  invalid record length at 0/14F7BC0: expected at least 24, got 0
+2024-09-26 17:56:45.443 UTC [40] LOG:  redo done at 0/14F7B88 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 17:56:45.461 UTC [38] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 17:56:45.463 UTC [40] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 17:56:45.481 UTC [38] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.005 s, sync=0.002 s, total=0.022 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/14F7BC0, redo lsn=0/14F7BC0
+2024-09-26 17:56:45.485 UTC [40] LOG:  redo starts at 0/14F7C70
+2024-09-26 17:56:45.485 UTC [40] LOG:  invalid record length at 0/14F7CA8: expected at least 24, got 0
+2024-09-26 17:56:45.485 UTC [40] LOG:  redo done at 0/14F7C70 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 17:56:45.487 UTC [37] LOG:  database system is ready to accept connections
+2024-09-26 17:56:45.504 UTC [38] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 17:56:45.524 UTC [38] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.008 s, sync=0.003 s, total=0.022 s; sync files=2, longest=0.002 s, average=0.002 s; distance=0 kB, estimate=0 kB; lsn=0/14F7CA8, redo lsn=0/14F7CA8
+2024-09-26 17:56:45.531 UTC [37] LOG:  database system is ready to accept connections
+2024-09-26 17:56:47.050 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 17:56:47.052 UTC [37] LOG:  parameter "lc_monetary" removed from configuration file, reset to default
+2024-09-26 17:56:47.053 UTC [37] LOG:  parameter "default_text_search_config" removed from configuration file, reset to default
+2024-09-26 17:56:47.053 UTC [37] LOG:  parameter "lc_numeric" removed from configuration file, reset to default
+2024-09-26 17:56:47.054 UTC [37] LOG:  parameter "dynamic_shared_memory_type" cannot be changed without restarting the server
+2024-09-26 17:56:47.054 UTC [37] LOG:  parameter "lc_time" removed from configuration file, reset to default
+2024-09-26 17:56:47.055 UTC [37] LOG:  parameter "listen_addresses" cannot be changed without restarting the server
+2024-09-26 17:56:47.056 UTC [37] LOG:  parameter "ssl_ca_file" changed to "/etc/ssl/certs/ca.crt"
+2024-09-26 17:56:47.056 UTC [37] LOG:  configuration file "/bitnami/postgresql/data/postgresql.conf" contains errors; unaffected changes were applied
+2024-09-26 17:56:47.092 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 17:56:47.095 UTC [37] LOG:  parameter "lc_monetary" removed from configuration file, reset to default
+2024-09-26 17:56:47.095 UTC [37] LOG:  parameter "default_text_search_config" removed from configuration file, reset to default
+2024-09-26 17:56:47.096 UTC [37] LOG:  parameter "lc_numeric" removed from configuration file, reset to default
+2024-09-26 17:56:47.098 UTC [37] LOG:  parameter "dynamic_shared_memory_type" cannot be changed without restarting the server
+2024-09-26 17:56:47.099 UTC [37] LOG:  parameter "lc_time" removed from configuration file, reset to default
+2024-09-26 17:56:47.100 UTC [37] LOG:  parameter "listen_addresses" cannot be changed without restarting the server
+2024-09-26 17:56:47.101 UTC [37] LOG:  parameter "ssl_ca_file" changed to "/etc/ssl/certs/ca.crt"
+2024-09-26 17:56:47.102 UTC [37] LOG:  configuration file "/bitnami/postgresql/data/postgresql.conf" contains errors; unaffected changes were applied
+2024-09-26 17:56:47.210 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 17:56:47.215 UTC [37] LOG:  parameter "dynamic_shared_memory_type" cannot be changed without restarting the server
+2024-09-26 17:56:47.216 UTC [37] LOG:  parameter "listen_addresses" cannot be changed without restarting the server
+2024-09-26 17:56:47.217 UTC [37] LOG:  configuration file "/bitnami/postgresql/data/postgresql.conf" contains errors; unaffected changes were applied
+2024-09-26 17:56:47.252 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 17:56:47.257 UTC [37] LOG:  parameter "dynamic_shared_memory_type" cannot be changed without restarting the server
+2024-09-26 17:56:47.258 UTC [37] LOG:  parameter "listen_addresses" cannot be changed without restarting the server
+2024-09-26 17:58:16.659 UTC [37] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 17:58:16.660 UTC [37] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 17:58:16.660 UTC [37] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 17:58:16.665 UTC [37] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 17:58:16.671 UTC [37] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 17:58:16.671 UTC [37] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 17:58:16.672 UTC [37] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 17:58:16.676 UTC [37] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 17:58:16.681 UTC [40] LOG:  database system was interrupted; last known up at 2024-09-26 17:56:45 UTC
+2024-09-26 17:58:16.694 UTC [40] LOG:  database system was interrupted; last known up at 2024-09-26 17:56:45 UTC
+2024-09-26 17:58:17.950 UTC [40] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 17:58:17.966 UTC [40] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 17:58:17.972 UTC [40] LOG:  redo starts at 0/14F7D20
+2024-09-26 17:58:17.987 UTC [40] LOG:  redo starts at 0/14F7C38
+2024-09-26 17:58:18.124 UTC [40] LOG:  invalid record length at 0/1924420: expected at least 24, got 0
+2024-09-26 17:58:18.125 UTC [40] LOG:  redo done at 0/19243C8 system usage: CPU: user: 0.01 s, system: 0.04 s, elapsed: 0.15 s
+2024-09-26 17:58:18.136 UTC [40] LOG:  invalid record length at 0/1924338: expected at least 24, got 0
+2024-09-26 17:58:18.136 UTC [40] LOG:  redo done at 0/19242E0 system usage: CPU: user: 0.02 s, system: 0.03 s, elapsed: 0.14 s
+2024-09-26 17:58:18.145 UTC [38] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 17:58:18.159 UTC [38] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 17:58:18.564 UTC [38] LOG:  checkpoint complete: wrote 934 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.330 s, sync=0.081 s, total=0.420 s; sync files=308, longest=0.005 s, average=0.001 s; distance=4273 kB, estimate=4273 kB; lsn=0/1924420, redo lsn=0/1924420
+2024-09-26 17:58:18.756 UTC [38] LOG:  checkpoint complete: wrote 934 buffers (5.7%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.423 s, sync=0.158 s, total=0.600 s; sync files=308, longest=0.006 s, average=0.001 s; distance=4273 kB, estimate=4273 kB; lsn=0/1924338, redo lsn=0/1924338
+2024-09-26 17:58:18.758 UTC [37] LOG:  database system is ready to accept connections
+2024-09-26 17:58:18.887 UTC [37] LOG:  database system is ready to accept connections
+2024-09-26 17:58:18.991 UTC [56] ERROR:  database "your_postgres_db" already exists
+2024-09-26 17:58:18.991 UTC [56] STATEMENT:  CREATE DATABASE your_postgres_db OWNER myuser;
+2024-09-26 17:58:19.151 UTC [56] ERROR:  database "your_postgres_db" already exists
+2024-09-26 17:58:19.151 UTC [56] STATEMENT:  CREATE DATABASE your_postgres_db OWNER myuser;
+2024-09-26 17:58:19.178 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 17:58:19.449 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 17:58:19.457 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 17:58:19.569 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 17:58:48.743 UTC [37] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 17:58:48.744 UTC [37] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 17:58:48.744 UTC [37] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 17:58:48.748 UTC [37] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 17:58:48.766 UTC [40] LOG:  database system was interrupted; last known up at 2024-09-26 17:58:18 UTC
+2024-09-26 17:58:49.945 UTC [40] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 17:58:49.959 UTC [40] LOG:  redo starts at 0/1924498
+2024-09-26 17:58:49.961 UTC [40] LOG:  invalid record length at 0/1925280: expected at least 24, got 0
+2024-09-26 17:58:49.961 UTC [40] LOG:  redo done at 0/1925228 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 17:58:49.979 UTC [38] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 17:58:49.997 UTC [38] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.002 s, total=0.020 s; sync files=3, longest=0.001 s, average=0.001 s; distance=3 kB, estimate=3 kB; lsn=0/1925280, redo lsn=0/1925280
+2024-09-26 17:58:50.003 UTC [37] LOG:  database system is ready to accept connections
+2024-09-26 17:58:50.141 UTC [56] ERROR:  database "your_postgres_db" already exists
+2024-09-26 17:58:50.141 UTC [56] STATEMENT:  CREATE DATABASE your_postgres_db OWNER myuser;
+2024-09-26 17:58:50.310 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 17:58:50.433 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:00:41.420 UTC [37] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:00:41.421 UTC [37] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:00:41.422 UTC [37] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:00:41.426 UTC [37] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:00:41.449 UTC [40] LOG:  database system was interrupted; last known up at 2024-09-26 17:58:49 UTC
+2024-09-26 18:00:41.569 UTC [36] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:00:41.569 UTC [36] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:00:41.570 UTC [36] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:00:41.574 UTC [36] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:00:41.597 UTC [39] LOG:  database system was interrupted; last known up at 2024-09-26 17:58:18 UTC
+2024-09-26 18:00:42.774 UTC [39] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:00:42.787 UTC [39] LOG:  redo starts at 0/19243B0
+2024-09-26 18:00:42.789 UTC [39] LOG:  invalid record length at 0/1925198: expected at least 24, got 0
+2024-09-26 18:00:42.789 UTC [39] LOG:  redo done at 0/1925140 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:00:42.804 UTC [37] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:00:42.814 UTC [40] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:00:42.826 UTC [37] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.004 s, total=0.023 s; sync files=3, longest=0.002 s, average=0.002 s; distance=3 kB, estimate=3 kB; lsn=0/1925198, redo lsn=0/1925198
+2024-09-26 18:00:42.833 UTC [36] LOG:  database system is ready to accept connections
+2024-09-26 18:00:42.844 UTC [40] LOG:  redo starts at 0/19252F8
+2024-09-26 18:00:42.846 UTC [40] LOG:  invalid record length at 0/1926400: expected at least 24, got 0
+2024-09-26 18:00:42.846 UTC [40] LOG:  redo done at 0/19263A8 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:00:42.870 UTC [38] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:00:42.894 UTC [38] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.008 s, sync=0.002 s, total=0.026 s; sync files=3, longest=0.001 s, average=0.001 s; distance=4 kB, estimate=4 kB; lsn=0/1926400, redo lsn=0/1926400
+2024-09-26 18:00:42.900 UTC [37] LOG:  database system is ready to accept connections
+2024-09-26 18:00:42.953 UTC [55] ERROR:  database "your_postgres_db" already exists
+2024-09-26 18:00:42.953 UTC [55] STATEMENT:  CREATE DATABASE your_postgres_db OWNER myuser;
+2024-09-26 18:00:43.081 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:00:43.119 UTC [56] ERROR:  database "your_postgres_db" already exists
+2024-09-26 18:00:43.119 UTC [56] STATEMENT:  CREATE DATABASE your_postgres_db OWNER myuser;
+2024-09-26 18:00:43.184 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:00:43.257 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:00:43.376 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:03:27.278 UTC [37] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:03:27.279 UTC [37] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:03:27.279 UTC [37] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:03:27.284 UTC [37] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:03:27.304 UTC [40] LOG:  database system was interrupted; last known up at 2024-09-26 18:00:42 UTC
+2024-09-26 18:03:27.346 UTC [37] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:03:27.347 UTC [37] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:03:27.348 UTC [37] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:03:27.351 UTC [37] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:03:27.367 UTC [40] LOG:  database system was interrupted; last known up at 2024-09-26 18:00:42 UTC
+2024-09-26 18:03:28.598 UTC [40] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:03:28.618 UTC [40] LOG:  redo starts at 0/1925210
+2024-09-26 18:03:28.621 UTC [40] LOG:  invalid record length at 0/1926318: expected at least 24, got 0
+2024-09-26 18:03:28.621 UTC [40] LOG:  redo done at 0/19262C0 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:03:28.645 UTC [38] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:03:28.670 UTC [40] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:03:28.672 UTC [38] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.010 s, sync=0.002 s, total=0.028 s; sync files=3, longest=0.001 s, average=0.001 s; distance=4 kB, estimate=4 kB; lsn=0/1926318, redo lsn=0/1926318
+2024-09-26 18:03:28.677 UTC [37] LOG:  database system is ready to accept connections
+2024-09-26 18:03:28.691 UTC [40] LOG:  redo starts at 0/1926478
+2024-09-26 18:03:28.693 UTC [40] LOG:  invalid record length at 0/1927878: expected at least 24, got 0
+2024-09-26 18:03:28.694 UTC [40] LOG:  redo done at 0/1927820 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:03:28.712 UTC [38] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:03:28.741 UTC [38] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.010 s, sync=0.004 s, total=0.030 s; sync files=3, longest=0.003 s, average=0.002 s; distance=5 kB, estimate=5 kB; lsn=0/1927878, redo lsn=0/1927878
+2024-09-26 18:03:28.748 UTC [37] LOG:  database system is ready to accept connections
+2024-09-26 18:03:28.883 UTC [56] ERROR:  database "your_postgres_db" already exists
+2024-09-26 18:03:28.883 UTC [56] STATEMENT:  CREATE DATABASE your_postgres_db OWNER myuser;
+2024-09-26 18:03:28.961 UTC [56] ERROR:  database "your_postgres_db" already exists
+2024-09-26 18:03:28.961 UTC [56] STATEMENT:  CREATE DATABASE your_postgres_db OWNER myuser;
+2024-09-26 18:03:29.028 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:03:29.109 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:03:29.139 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:03:29.221 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:04:00.238 UTC [37] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:04:00.239 UTC [37] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:04:00.239 UTC [37] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:04:00.244 UTC [37] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:04:00.256 UTC [37] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:04:00.257 UTC [37] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:04:00.257 UTC [37] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:04:00.262 UTC [37] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:04:00.266 UTC [40] LOG:  database system was interrupted; last known up at 2024-09-26 18:03:28 UTC
+2024-09-26 18:04:00.283 UTC [40] LOG:  database system was interrupted; last known up at 2024-09-26 18:03:28 UTC
+2024-09-26 18:04:01.567 UTC [40] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:04:01.583 UTC [40] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:04:01.585 UTC [40] LOG:  redo starts at 0/19278F0
+2024-09-26 18:04:01.587 UTC [40] LOG:  invalid record length at 0/1929010: expected at least 24, got 0
+2024-09-26 18:04:01.587 UTC [40] LOG:  redo done at 0/1928FB8 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:04:01.606 UTC [40] LOG:  redo starts at 0/1926390
+2024-09-26 18:04:01.608 UTC [40] LOG:  invalid record length at 0/1927790: expected at least 24, got 0
+2024-09-26 18:04:01.608 UTC [40] LOG:  redo done at 0/1927738 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:04:01.615 UTC [38] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:04:01.639 UTC [38] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:04:01.641 UTC [38] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.009 s, sync=0.002 s, total=0.028 s; sync files=3, longest=0.001 s, average=0.001 s; distance=5 kB, estimate=5 kB; lsn=0/1929010, redo lsn=0/1929010
+2024-09-26 18:04:01.646 UTC [37] LOG:  database system is ready to accept connections
+2024-09-26 18:04:01.665 UTC [38] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.010 s, sync=0.003 s, total=0.029 s; sync files=3, longest=0.001 s, average=0.001 s; distance=5 kB, estimate=5 kB; lsn=0/1927790, redo lsn=0/1927790
+2024-09-26 18:04:01.672 UTC [37] LOG:  database system is ready to accept connections
+2024-09-26 18:04:01.828 UTC [56] ERROR:  database "your_postgres_db" already exists
+2024-09-26 18:04:01.828 UTC [56] STATEMENT:  CREATE DATABASE your_postgres_db OWNER myuser;
+2024-09-26 18:04:01.836 UTC [56] ERROR:  database "your_postgres_db" already exists
+2024-09-26 18:04:01.836 UTC [56] STATEMENT:  CREATE DATABASE your_postgres_db OWNER myuser;
+2024-09-26 18:04:01.961 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:04:01.962 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:04:02.055 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:04:02.055 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:05:05.536 UTC [36] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:05:05.538 UTC [36] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:05:05.538 UTC [36] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:05:05.542 UTC [36] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:05:05.562 UTC [39] LOG:  database system was interrupted; last known up at 2024-09-26 18:04:01 UTC
+2024-09-26 18:05:05.603 UTC [36] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:05:05.604 UTC [36] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:05:05.604 UTC [36] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:05:05.607 UTC [36] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:05:05.624 UTC [39] LOG:  database system was interrupted; last known up at 2024-09-26 18:04:01 UTC
+2024-09-26 18:05:06.933 UTC [39] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:05:06.951 UTC [39] LOG:  redo starts at 0/1929088
+2024-09-26 18:05:06.953 UTC [39] LOG:  invalid record length at 0/192AAB8: expected at least 24, got 0
+2024-09-26 18:05:06.953 UTC [39] LOG:  redo done at 0/192AA60 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:05:06.973 UTC [37] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:05:07.000 UTC [37] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.012 s, sync=0.002 s, total=0.029 s; sync files=3, longest=0.001 s, average=0.001 s; distance=6 kB, estimate=6 kB; lsn=0/192AAB8, redo lsn=0/192AAB8
+2024-09-26 18:05:07.002 UTC [39] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:05:07.007 UTC [36] LOG:  database system is ready to accept connections
+2024-09-26 18:05:07.033 UTC [39] LOG:  redo starts at 0/1927808
+2024-09-26 18:05:07.036 UTC [39] LOG:  invalid record length at 0/1928F28: expected at least 24, got 0
+2024-09-26 18:05:07.036 UTC [39] LOG:  redo done at 0/1928ED0 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:05:07.065 UTC [37] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:05:07.093 UTC [37] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.008 s, sync=0.004 s, total=0.030 s; sync files=3, longest=0.002 s, average=0.002 s; distance=5 kB, estimate=5 kB; lsn=0/1928F28, redo lsn=0/1928F28
+2024-09-26 18:05:07.100 UTC [36] LOG:  database system is ready to accept connections
+2024-09-26 18:05:07.179 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:05:07.283 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:05:07.361 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:05:07.475 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:07:51.796 UTC [36] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:07:51.797 UTC [36] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:07:51.797 UTC [36] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:07:51.801 UTC [36] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:07:51.814 UTC [36] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:07:51.815 UTC [36] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:07:51.815 UTC [36] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:07:51.817 UTC [39] LOG:  database system was interrupted; last known up at 2024-09-26 18:05:07 UTC
+2024-09-26 18:07:51.819 UTC [36] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:07:51.836 UTC [39] LOG:  database system was interrupted; last known up at 2024-09-26 18:05:07 UTC
+2024-09-26 18:07:53.081 UTC [39] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:07:53.097 UTC [39] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:07:53.098 UTC [39] LOG:  redo starts at 0/1928FA0
+2024-09-26 18:07:53.100 UTC [39] LOG:  invalid record length at 0/192A928: expected at least 24, got 0
+2024-09-26 18:07:53.100 UTC [39] LOG:  redo done at 0/192A8D0 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:07:53.119 UTC [39] LOG:  redo starts at 0/192AB30
+2024-09-26 18:07:53.121 UTC [39] LOG:  invalid record length at 0/192C7C0: expected at least 24, got 0
+2024-09-26 18:07:53.121 UTC [39] LOG:  redo done at 0/192C768 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:07:53.125 UTC [37] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:07:53.148 UTC [37] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:07:53.150 UTC [37] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.009 s, sync=0.002 s, total=0.027 s; sync files=3, longest=0.001 s, average=0.001 s; distance=6 kB, estimate=6 kB; lsn=0/192A928, redo lsn=0/192A928
+2024-09-26 18:07:53.155 UTC [36] LOG:  database system is ready to accept connections
+2024-09-26 18:07:53.169 UTC [37] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.008 s, sync=0.002 s, total=0.024 s; sync files=3, longest=0.001 s, average=0.001 s; distance=7 kB, estimate=7 kB; lsn=0/192C7C0, redo lsn=0/192C7C0
+2024-09-26 18:07:53.175 UTC [36] LOG:  database system is ready to accept connections
+2024-09-26 18:07:53.345 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:07:53.369 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:07:53.455 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:07:53.479 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:08:24.626 UTC [37] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:08:24.628 UTC [37] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:08:24.629 UTC [37] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:08:24.633 UTC [37] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:08:24.656 UTC [40] LOG:  database system was interrupted; last known up at 2024-09-26 18:07:53 UTC
+2024-09-26 18:08:24.690 UTC [36] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:08:24.694 UTC [36] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:08:24.694 UTC [36] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:08:24.699 UTC [36] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:08:24.725 UTC [39] LOG:  database system was interrupted; last known up at 2024-09-26 18:07:53 UTC
+2024-09-26 18:08:26.370 UTC [40] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:08:26.395 UTC [40] LOG:  redo starts at 0/192C838
+2024-09-26 18:08:26.398 UTC [40] LOG:  invalid record length at 0/192E738: expected at least 24, got 0
+2024-09-26 18:08:26.398 UTC [40] LOG:  redo done at 0/192E6E0 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:08:26.423 UTC [38] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:08:26.429 UTC [39] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:08:26.456 UTC [38] LOG:  checkpoint complete: wrote 5 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.014 s, sync=0.004 s, total=0.034 s; sync files=4, longest=0.002 s, average=0.001 s; distance=7 kB, estimate=7 kB; lsn=0/192E738, redo lsn=0/192E738
+2024-09-26 18:08:26.457 UTC [39] LOG:  redo starts at 0/192A9A0
+2024-09-26 18:08:26.459 UTC [39] LOG:  invalid record length at 0/192C530: expected at least 24, got 0
+2024-09-26 18:08:26.460 UTC [39] LOG:  redo done at 0/192C4D8 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:08:26.463 UTC [37] LOG:  database system is ready to accept connections
+2024-09-26 18:08:26.484 UTC [37] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:08:26.510 UTC [37] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.011 s, sync=0.002 s, total=0.027 s; sync files=3, longest=0.001 s, average=0.001 s; distance=7 kB, estimate=7 kB; lsn=0/192C530, redo lsn=0/192C530
+2024-09-26 18:08:26.516 UTC [36] LOG:  database system is ready to accept connections
+2024-09-26 18:08:26.667 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:08:26.727 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:08:26.768 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:08:26.837 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:09:03.839 UTC [51] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:09:03.840 UTC [51] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:09:03.841 UTC [51] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:09:03.847 UTC [51] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:09:03.868 UTC [51] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:09:03.868 UTC [54] LOG:  database system was shut down at 2024-09-26 18:09:02 UTC
+2024-09-26 18:09:03.869 UTC [51] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:09:03.870 UTC [51] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:09:03.874 UTC [51] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:09:03.891 UTC [51] LOG:  database system is ready to accept connections
+2024-09-26 18:09:03.900 UTC [54] LOG:  database system was shut down at 2024-09-26 18:09:02 UTC
+2024-09-26 18:09:03.920 UTC [51] LOG:  database system is ready to accept connections
+2024-09-26 18:09:04.251 UTC [51] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:09:04.255 UTC [51] LOG:  parameter "lc_monetary" removed from configuration file, reset to default
+2024-09-26 18:09:04.256 UTC [51] LOG:  parameter "default_text_search_config" removed from configuration file, reset to default
+2024-09-26 18:09:04.257 UTC [51] LOG:  parameter "lc_numeric" removed from configuration file, reset to default
+2024-09-26 18:09:04.257 UTC [51] LOG:  parameter "dynamic_shared_memory_type" cannot be changed without restarting the server
+2024-09-26 18:09:04.258 UTC [51] LOG:  parameter "lc_time" removed from configuration file, reset to default
+2024-09-26 18:09:04.259 UTC [51] LOG:  parameter "ssl_ca_file" changed to "/etc/ssl/certs/ca.crt"
+2024-09-26 18:09:04.259 UTC [51] LOG:  configuration file "/bitnami/postgresql/data/postgresql.conf" contains errors; unaffected changes were applied
+2024-09-26 18:09:04.282 UTC [51] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:09:04.286 UTC [51] LOG:  parameter "lc_monetary" removed from configuration file, reset to default
+2024-09-26 18:09:04.286 UTC [51] LOG:  parameter "default_text_search_config" removed from configuration file, reset to default
+2024-09-26 18:09:04.287 UTC [51] LOG:  parameter "lc_numeric" removed from configuration file, reset to default
+2024-09-26 18:09:04.288 UTC [51] LOG:  parameter "dynamic_shared_memory_type" cannot be changed without restarting the server
+2024-09-26 18:09:04.289 UTC [51] LOG:  parameter "lc_time" removed from configuration file, reset to default
+2024-09-26 18:09:04.290 UTC [51] LOG:  parameter "ssl_ca_file" changed to "/etc/ssl/certs/ca.crt"
+2024-09-26 18:09:04.291 UTC [51] LOG:  configuration file "/bitnami/postgresql/data/postgresql.conf" contains errors; unaffected changes were applied
+2024-09-26 18:09:04.388 UTC [51] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:09:04.392 UTC [51] LOG:  parameter "dynamic_shared_memory_type" cannot be changed without restarting the server
+2024-09-26 18:09:04.393 UTC [51] LOG:  configuration file "/bitnami/postgresql/data/postgresql.conf" contains errors; unaffected changes were applied
+2024-09-26 18:09:04.419 UTC [51] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:09:04.423 UTC [51] LOG:  parameter "dynamic_shared_memory_type" cannot be changed without restarting the server
+2024-09-26 18:10:30.535 UTC [51] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:10:30.537 UTC [51] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:10:30.537 UTC [51] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:10:30.542 UTC [51] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:10:30.563 UTC [54] LOG:  database system was shut down at 2024-09-26 18:10:28 UTC
+2024-09-26 18:10:30.580 UTC [51] LOG:  database system is ready to accept connections
+2024-09-26 18:10:30.612 UTC [52] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:10:30.613 UTC [52] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:10:30.614 UTC [52] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:10:30.617 UTC [52] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:10:30.635 UTC [55] LOG:  database system was shut down at 2024-09-26 18:10:28 UTC
+2024-09-26 18:10:30.652 UTC [52] LOG:  database system is ready to accept connections
+2024-09-26 18:10:30.791 UTC [51] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:10:30.793 UTC [51] LOG:  parameter "lc_monetary" removed from configuration file, reset to default
+2024-09-26 18:10:30.794 UTC [51] LOG:  parameter "default_text_search_config" removed from configuration file, reset to default
+2024-09-26 18:10:30.794 UTC [51] LOG:  parameter "lc_numeric" removed from configuration file, reset to default
+2024-09-26 18:10:30.795 UTC [51] LOG:  parameter "dynamic_shared_memory_type" cannot be changed without restarting the server
+2024-09-26 18:10:30.795 UTC [51] LOG:  parameter "lc_time" removed from configuration file, reset to default
+2024-09-26 18:10:30.796 UTC [51] LOG:  parameter "ssl_ca_file" changed to "/etc/ssl/certs/ca.crt"
+2024-09-26 18:10:30.796 UTC [51] LOG:  configuration file "/bitnami/postgresql/data/postgresql.conf" contains errors; unaffected changes were applied
+2024-09-26 18:10:30.896 UTC [52] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:10:30.899 UTC [52] LOG:  parameter "lc_monetary" removed from configuration file, reset to default
+2024-09-26 18:10:30.899 UTC [52] LOG:  parameter "default_text_search_config" removed from configuration file, reset to default
+2024-09-26 18:10:30.900 UTC [52] LOG:  parameter "lc_numeric" removed from configuration file, reset to default
+2024-09-26 18:10:30.900 UTC [52] LOG:  parameter "dynamic_shared_memory_type" cannot be changed without restarting the server
+2024-09-26 18:10:30.901 UTC [52] LOG:  parameter "lc_time" removed from configuration file, reset to default
+2024-09-26 18:10:30.902 UTC [52] LOG:  parameter "ssl_ca_file" changed to "/etc/ssl/certs/ca.crt"
+2024-09-26 18:10:30.902 UTC [52] LOG:  configuration file "/bitnami/postgresql/data/postgresql.conf" contains errors; unaffected changes were applied
+2024-09-26 18:10:30.911 UTC [51] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:10:30.914 UTC [51] LOG:  parameter "dynamic_shared_memory_type" cannot be changed without restarting the server
+2024-09-26 18:10:30.915 UTC [51] LOG:  configuration file "/bitnami/postgresql/data/postgresql.conf" contains errors; unaffected changes were applied
+2024-09-26 18:10:31.028 UTC [52] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:10:31.031 UTC [52] LOG:  parameter "dynamic_shared_memory_type" cannot be changed without restarting the server
+2024-09-26 18:10:31.031 UTC [52] LOG:  configuration file "/bitnami/postgresql/data/postgresql.conf" contains errors; unaffected changes were applied
+2024-09-26 18:11:45.868 UTC [36] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:11:45.869 UTC [36] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:11:45.869 UTC [36] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:11:45.874 UTC [36] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:11:45.895 UTC [39] LOG:  database system was interrupted; last known up at 2024-09-26 18:10:30 UTC
+2024-09-26 18:11:47.115 UTC [39] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:11:47.135 UTC [39] LOG:  redo starts at 0/14E9BC0
+2024-09-26 18:11:47.139 UTC [39] LOG:  invalid record length at 0/14EA9B0: expected at least 24, got 0
+2024-09-26 18:11:47.139 UTC [39] LOG:  redo done at 0/14EA958 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:11:47.156 UTC [37] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:11:47.182 UTC [37] LOG:  checkpoint complete: wrote 7 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.012 s, sync=0.004 s, total=0.027 s; sync files=6, longest=0.001 s, average=0.001 s; distance=3 kB, estimate=3 kB; lsn=0/14EA9B0, redo lsn=0/14EA9B0
+2024-09-26 18:11:47.189 UTC [36] LOG:  database system is ready to accept connections
+2024-09-26 18:11:47.410 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:11:47.526 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:13:59.353 UTC [37] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:13:59.354 UTC [37] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:13:59.355 UTC [37] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:13:59.358 UTC [37] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:13:59.376 UTC [40] LOG:  database system was interrupted; last known up at 2024-09-26 18:11:47 UTC
+2024-09-26 18:13:59.381 UTC [38] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:13:59.382 UTC [38] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:13:59.383 UTC [38] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:13:59.387 UTC [38] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:13:59.402 UTC [41] LOG:  database system was interrupted; last known up at 2024-09-26 18:10:30 UTC
+2024-09-26 18:14:00.564 UTC [40] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:14:00.619 UTC [40] LOG:  redo starts at 0/14EAA28
+2024-09-26 18:14:00.621 UTC [40] LOG:  invalid record length at 0/14EB660: expected at least 24, got 0
+2024-09-26 18:14:00.622 UTC [40] LOG:  redo done at 0/14EB608 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:14:00.628 UTC [41] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:14:00.649 UTC [38] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:14:00.653 UTC [41] LOG:  redo starts at 0/14E9BC0
+2024-09-26 18:14:00.658 UTC [41] LOG:  invalid record length at 0/14EA9B0: expected at least 24, got 0
+2024-09-26 18:14:00.658 UTC [41] LOG:  redo done at 0/14EA958 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:14:00.680 UTC [38] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.012 s, sync=0.003 s, total=0.033 s; sync files=3, longest=0.002 s, average=0.001 s; distance=3 kB, estimate=3 kB; lsn=0/14EB660, redo lsn=0/14EB660
+2024-09-26 18:14:00.686 UTC [39] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:14:00.689 UTC [37] LOG:  database system is ready to accept connections
+2024-09-26 18:14:00.714 UTC [39] LOG:  checkpoint complete: wrote 7 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.012 s, sync=0.004 s, total=0.030 s; sync files=6, longest=0.001 s, average=0.001 s; distance=3 kB, estimate=3 kB; lsn=0/14EA9B0, redo lsn=0/14EA9B0
+2024-09-26 18:14:00.726 UTC [38] LOG:  database system is ready to accept connections
+2024-09-26 18:14:00.858 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:14:00.897 UTC [38] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:14:01.027 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:14:01.054 UTC [38] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:14:01.154 UTC [37] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:14:01.189 UTC [38] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:18:53.840 UTC [36] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:18:53.842 UTC [36] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:18:53.843 UTC [36] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:18:53.848 UTC [36] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:18:53.867 UTC [39] LOG:  database system was interrupted; last known up at 2024-09-26 18:14:00 UTC
+2024-09-26 18:18:53.918 UTC [35] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:18:53.918 UTC [35] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:18:53.919 UTC [35] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:18:53.923 UTC [35] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:18:53.945 UTC [38] LOG:  database system was interrupted; last known up at 2024-09-26 18:14:00 UTC
+2024-09-26 18:18:54.842 UTC [39] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:18:54.864 UTC [39] LOG:  redo starts at 0/14EB6D8
+2024-09-26 18:18:54.866 UTC [39] LOG:  invalid record length at 0/14EC530: expected at least 24, got 0
+2024-09-26 18:18:54.866 UTC [39] LOG:  redo done at 0/14EC4D8 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:18:54.881 UTC [37] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:18:54.901 UTC [37] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.006 s, sync=0.003 s, total=0.021 s; sync files=3, longest=0.001 s, average=0.001 s; distance=3 kB, estimate=3 kB; lsn=0/14EC530, redo lsn=0/14EC530
+2024-09-26 18:18:54.905 UTC [38] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:18:54.907 UTC [36] LOG:  database system is ready to accept connections
+2024-09-26 18:18:54.926 UTC [38] LOG:  redo starts at 0/14EAA28
+2024-09-26 18:18:54.927 UTC [38] LOG:  invalid record length at 0/14EB660: expected at least 24, got 0
+2024-09-26 18:18:54.928 UTC [38] LOG:  redo done at 0/14EB608 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:18:54.949 UTC [36] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:18:54.974 UTC [36] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.008 s, sync=0.003 s, total=0.028 s; sync files=3, longest=0.001 s, average=0.001 s; distance=3 kB, estimate=3 kB; lsn=0/14EB660, redo lsn=0/14EB660
+2024-09-26 18:18:54.987 UTC [35] LOG:  database system is ready to accept connections
+2024-09-26 18:18:55.069 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:18:55.145 UTC [35] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:18:55.170 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:18:55.256 UTC [35] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:20:16.483 UTC [36] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:20:16.485 UTC [36] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:20:16.485 UTC [36] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:20:16.489 UTC [36] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:20:16.507 UTC [39] LOG:  database system was interrupted; last known up at 2024-09-26 18:18:54 UTC
+2024-09-26 18:20:16.510 UTC [35] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:20:16.511 UTC [35] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:20:16.511 UTC [35] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:20:16.515 UTC [35] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:20:16.530 UTC [38] LOG:  database system was interrupted; last known up at 2024-09-26 18:18:54 UTC
+2024-09-26 18:20:17.800 UTC [39] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:20:17.823 UTC [38] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:20:17.825 UTC [39] LOG:  redo starts at 0/14EC5A8
+2024-09-26 18:20:17.828 UTC [39] LOG:  invalid record length at 0/14ED5F0: expected at least 24, got 0
+2024-09-26 18:20:17.828 UTC [39] LOG:  redo done at 0/14ED598 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:20:17.848 UTC [38] LOG:  redo starts at 0/14EB6D8
+2024-09-26 18:20:17.851 UTC [38] LOG:  invalid record length at 0/14EC530: expected at least 24, got 0
+2024-09-26 18:20:17.851 UTC [38] LOG:  redo done at 0/14EC4D8 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:20:17.855 UTC [37] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:20:17.874 UTC [36] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:20:17.880 UTC [37] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.010 s, sync=0.003 s, total=0.027 s; sync files=3, longest=0.001 s, average=0.001 s; distance=4 kB, estimate=4 kB; lsn=0/14ED5F0, redo lsn=0/14ED5F0
+2024-09-26 18:20:17.887 UTC [36] LOG:  database system is ready to accept connections
+2024-09-26 18:20:17.900 UTC [36] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.009 s, sync=0.003 s, total=0.028 s; sync files=3, longest=0.001 s, average=0.001 s; distance=3 kB, estimate=3 kB; lsn=0/14EC530, redo lsn=0/14EC530
+2024-09-26 18:20:17.906 UTC [35] LOG:  database system is ready to accept connections
+2024-09-26 18:20:18.117 UTC [36] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:20:18.183 UTC [35] LOG:  received SIGHUP, reloading configuration files
+2024-09-26 18:21:28.171 UTC [36] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:21:28.173 UTC [36] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:21:28.173 UTC [36] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:21:28.179 UTC [36] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:21:28.211 UTC [39] LOG:  database system was interrupted; last known up at 2024-09-26 18:20:17 UTC
+2024-09-26 18:21:28.236 UTC [36] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:21:28.237 UTC [36] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:21:28.238 UTC [36] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:21:28.243 UTC [36] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:21:28.262 UTC [39] LOG:  database system was interrupted; last known up at 2024-09-26 18:20:17 UTC
+2024-09-26 18:21:29.391 UTC [39] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:21:29.413 UTC [39] LOG:  redo starts at 0/14EC5A8
+2024-09-26 18:21:29.415 UTC [39] LOG:  invalid record length at 0/14ED548: expected at least 24, got 0
+2024-09-26 18:21:29.415 UTC [39] LOG:  redo done at 0/14ED4F0 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:21:29.433 UTC [37] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:21:29.434 UTC [39] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:21:29.454 UTC [37] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.007 s, sync=0.003 s, total=0.022 s; sync files=3, longest=0.002 s, average=0.001 s; distance=4 kB, estimate=4 kB; lsn=0/14ED548, redo lsn=0/14ED548
+2024-09-26 18:21:29.455 UTC [39] LOG:  redo starts at 0/14ED668
+2024-09-26 18:21:29.457 UTC [39] LOG:  invalid record length at 0/14EE828: expected at least 24, got 0
+2024-09-26 18:21:29.458 UTC [39] LOG:  redo done at 0/14EE7D0 system usage: CPU: user: 0.00 s, system: 0.00 s, elapsed: 0.00 s
+2024-09-26 18:21:29.460 UTC [36] LOG:  database system is ready to accept connections
+2024-09-26 18:21:29.477 UTC [37] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:21:29.496 UTC [37] LOG:  checkpoint complete: wrote 4 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.006 s, sync=0.003 s, total=0.021 s; sync files=3, longest=0.001 s, average=0.001 s; distance=4 kB, estimate=4 kB; lsn=0/14EE828, redo lsn=0/14EE828
+2024-09-26 18:21:29.502 UTC [36] LOG:  database system is ready to accept connections
+2024-09-26 18:21:58.175 UTC [36] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:21:58.177 UTC [36] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:21:58.182 UTC [36] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:21:58.191 UTC [36] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:21:58.214 UTC [39] LOG:  database system was interrupted; last known up at 2024-09-26 18:21:29 UTC
+2024-09-26 18:21:58.979 UTC [39] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:21:58.990 UTC [39] LOG:  invalid record length at 0/14EE8A0: expected at least 24, got 0
+2024-09-26 18:21:58.990 UTC [39] LOG:  redo is not required
+2024-09-26 18:21:59.005 UTC [37] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:21:59.021 UTC [37] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.004 s, sync=0.001 s, total=0.018 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/14EE8A0, redo lsn=0/14EE8A0
+2024-09-26 18:21:59.027 UTC [36] LOG:  database system is ready to accept connections
+2024-09-26 18:22:26.005 UTC [36] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:22:26.007 UTC [36] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:22:26.007 UTC [36] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:22:26.012 UTC [36] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:22:26.035 UTC [39] LOG:  database system was interrupted; last known up at 2024-09-26 18:21:29 UTC
+2024-09-26 18:22:26.084 UTC [36] LOG:  starting PostgreSQL 16.4 on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14) 12.2.0, 64-bit
+2024-09-26 18:22:26.085 UTC [36] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2024-09-26 18:22:26.086 UTC [36] LOG:  listening on IPv6 address "::", port 5432
+2024-09-26 18:22:26.091 UTC [36] LOG:  listening on Unix socket "/tmp/.s.PGSQL.5432"
+2024-09-26 18:22:26.114 UTC [39] LOG:  database system was interrupted; last known up at 2024-09-26 18:21:59 UTC
+2024-09-26 18:22:27.569 UTC [39] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:22:27.589 UTC [39] LOG:  invalid record length at 0/14ED5C0: expected at least 24, got 0
+2024-09-26 18:22:27.590 UTC [39] LOG:  redo is not required
+2024-09-26 18:22:27.615 UTC [37] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:22:27.644 UTC [37] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.008 s, sync=0.004 s, total=0.031 s; sync files=2, longest=0.003 s, average=0.002 s; distance=0 kB, estimate=0 kB; lsn=0/14ED5C0, redo lsn=0/14ED5C0
+2024-09-26 18:22:27.648 UTC [39] LOG:  database system was not properly shut down; automatic recovery in progress
+2024-09-26 18:22:27.652 UTC [36] LOG:  database system is ready to accept connections
+2024-09-26 18:22:27.672 UTC [39] LOG:  invalid record length at 0/14EE918: expected at least 24, got 0
+2024-09-26 18:22:27.672 UTC [39] LOG:  redo is not required
+2024-09-26 18:22:27.705 UTC [37] LOG:  checkpoint starting: end-of-recovery immediate wait
+2024-09-26 18:22:27.733 UTC [37] LOG:  checkpoint complete: wrote 3 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.011 s, sync=0.002 s, total=0.030 s; sync files=2, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/14EE918, redo lsn=0/14EE918
+2024-09-26 18:22:27.741 UTC [36] LOG:  database system is ready to accept connections
+postgres: could not access the server configuration file "/opt/bitnami/postgresql/conf/postgresql.conf": No such file or directory
+postgres: could not access the server configuration file "/opt/bitnami/postgresql/conf/postgresql.conf": No such file or directory
+postgres: could not access the server configuration file "/opt/bitnami/postgresql/conf/postgresql.conf": No such file or directory
+postgres: could not access the server configuration file "/opt/bitnami/postgresql/conf/postgresql.conf": No such file or directory
+postgres: could not access the server configuration file "/opt/bitnami/postgresql/conf/postgresql.conf": No such file or directory
+postgres: could not access the server configuration file "/opt/bitnami/postgresql/conf/postgresql.conf": No such file or directory
+postgres: could not access the server configuration file "/opt/bitnami/postgresql/conf/postgresql.conf": No such file or directory
+postgres: could not access the server configuration file "/opt/bitnami/postgresql/conf/postgresql.conf": No such file or directory
+postgres: could not access the server configuration file "/opt/bitnami/postgresql/conf/postgresql.conf": No such file or directory

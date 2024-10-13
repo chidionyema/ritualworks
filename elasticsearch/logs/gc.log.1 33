@@ -1,0 +1,25 @@
+[2024-10-12T15:02:42.111+0000][0.108s] CardTable entry size: 512
+[2024-10-12T15:02:42.117+0000][0.114s] Using G1
+[2024-10-12T15:02:42.195+0000][0.192s] Version: 18.0.2.1+1-1 (release)
+[2024-10-12T15:02:42.198+0000][0.195s] CPUs: 6 total, 6 available
+[2024-10-12T15:02:42.202+0000][0.198s] Memory: 7859M
+[2024-10-12T15:02:42.207+0000][0.204s] Large Page Support: Disabled
+[2024-10-12T15:02:42.208+0000][0.205s] NUMA Support: Disabled
+[2024-10-12T15:02:42.209+0000][0.206s] Compressed Oops: Enabled (32-bit)
+[2024-10-12T15:02:42.211+0000][0.208s] Heap Region Size: 1M
+[2024-10-12T15:02:42.212+0000][0.209s] Heap Min Capacity: 2G
+[2024-10-12T15:02:42.213+0000][0.210s] Heap Initial Capacity: 2G
+[2024-10-12T15:02:42.215+0000][0.212s] Heap Max Capacity: 2G
+[2024-10-12T15:02:42.216+0000][0.212s] Pre-touch: Disabled
+[2024-10-12T15:02:42.217+0000][0.213s] Parallel Workers: 6
+[2024-10-12T15:02:42.218+0000][0.215s] Concurrent Workers: 2
+[2024-10-12T15:02:42.220+0000][0.216s] Concurrent Refinement Workers: 6
+[2024-10-12T15:02:42.221+0000][0.217s] Periodic GC: Disabled
+[2024-10-12T15:02:42.223+0000][0.219s] CDS archive(s) mapped at: [0x0000000800000000-0x0000000800bae000-0x0000000800bae000), size 12247040, SharedBaseAddress: 0x0000000800000000, ArchiveRelocationMode: 0.
+[2024-10-12T15:02:42.224+0000][0.220s] Compressed class space mapped at: 0x0000000800c00000-0x0000000840c00000, reserved size: 1073741824
+[2024-10-12T15:02:42.225+0000][0.222s] Narrow klass base: 0x0000000800000000, Narrow klass shift: 0, Narrow klass range: 0x100000000
+[2024-10-12T15:02:42.425+0000][0.422s] Heap
+[2024-10-12T15:02:42.428+0000][0.424s]  garbage-first heap   total 2097152K, used 1966K [0x0000000080000000, 0x0000000100000000)
+[2024-10-12T15:02:42.439+0000][0.436s]   region size 1024K, 2 young (2048K), 0 survivors (0K)
+[2024-10-12T15:02:42.442+0000][0.439s]  Metaspace       used 49K, committed 128K, reserved 1114112K
+[2024-10-12T15:02:42.446+0000][0.442s]   class space    used 0K, committed 64K, reserved 1048576K

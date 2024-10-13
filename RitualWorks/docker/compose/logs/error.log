@@ -1,0 +1,804 @@
+2024/10/05 17:44:30 [emerg] 1#1: host not found in upstream "app3:8080" in /etc/nginx/nginx.conf:12
+2024/10/05 17:45:00 [emerg] 1#1: host not found in upstream "app3:8080" in /etc/nginx/nginx.conf:12
+2024/10/05 17:45:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:57
+2024/10/05 17:45:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:97
+2024/10/05 17:45:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:120
+2024/10/05 17:45:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:143
+2024/10/05 17:45:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 17:45:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 17:45:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 17:45:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 17:45:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 17:45:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 17:45:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 17:45:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 17:46:14 [error] 22#22: *6 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products/categories HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/05 17:46:39 [error] 22#22: *6 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "POST /api/assets2/upload-chunk HTTP/2.0", upstream: "http://172.21.0.3:8080/api/assets2/upload-chunk", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/05 17:49:12 [error] 22#22: *6 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "POST /api/assets2/upload-chunk HTTP/2.0", upstream: "http://172.21.0.4:8080/api/assets2/upload-chunk", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/05 18:15:19 [error] 22#22: *35 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/authentication/verify-token HTTP/2.0", upstream: "http://172.21.0.4:8080/api/authentication/verify-token", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/05 18:15:38 [error] 22#22: *34 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.4:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/05 18:21:47 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:57
+2024/10/05 18:21:47 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:97
+2024/10/05 18:21:47 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:120
+2024/10/05 18:21:47 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:143
+2024/10/05 18:21:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 18:21:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 18:21:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 18:21:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 18:21:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 18:21:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 18:21:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/05 18:21:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 12:41:05 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:57
+2024/10/06 12:41:05 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:97
+2024/10/06 12:41:05 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:120
+2024/10/06 12:41:05 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:143
+2024/10/06 12:41:05 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 12:41:05 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 12:41:05 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 12:41:05 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 12:41:05 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 12:41:05 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 12:41:05 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 12:41:05 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 14:19:10 [emerg] 1#1: host not found in upstream "app2:8080" in /etc/nginx/nginx.conf:11
+2024/10/06 14:25:19 [emerg] 1#1: host not found in upstream "app2:8080" in /etc/nginx/nginx.conf:11
+2024/10/06 14:27:02 [emerg] 1#1: host not found in upstream "app2:8080" in /etc/nginx/nginx.conf:11
+2024/10/06 14:27:04 [emerg] 1#1: host not found in upstream "app2:8080" in /etc/nginx/nginx.conf:11
+2024/10/06 14:27:08 [emerg] 1#1: host not found in upstream "app2:8080" in /etc/nginx/nginx.conf:11
+2024/10/06 14:27:20 [emerg] 1#1: host not found in upstream "app2:8080" in /etc/nginx/nginx.conf:11
+2024/10/06 14:27:23 [emerg] 1#1: host not found in upstream "app2:8080" in /etc/nginx/nginx.conf:11
+2024/10/06 14:28:19 [emerg] 1#1: host not found in upstream "app2:8080" in /etc/nginx/nginx.conf:11
+2024/10/06 14:35:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:57
+2024/10/06 14:35:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:97
+2024/10/06 14:35:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:120
+2024/10/06 14:35:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:143
+2024/10/06 14:35:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 14:35:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 14:35:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 14:35:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 14:35:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 14:35:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 14:35:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 14:35:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 14:40:06 [error] 28#28: *6 recv() failed (113: No route to host) while reading response header from upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products/categories HTTP/2.0", upstream: "http://172.21.0.2:8080/api/products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/06 14:43:02 [error] 28#28: *6 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "POST /api/assets2/upload HTTP/2.0", upstream: "http://172.21.0.2:8080/api/assets2/upload", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/06 14:51:45 [error] 28#28: *20 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products/categories HTTP/2.0", upstream: "http://172.21.0.2:8080/api/products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/06 14:59:18 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:16
+2024/10/06 16:15:56 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:16
+2024/10/06 16:16:06 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:16
+2024/10/06 16:16:49 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:16
+2024/10/06 16:17:38 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:16
+2024/10/06 16:17:45 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:16
+2024/10/06 16:17:50 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:16
+2024/10/06 16:27:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:57
+2024/10/06 16:27:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:97
+2024/10/06 16:27:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:120
+2024/10/06 16:27:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:143
+2024/10/06 16:27:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 16:27:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 16:27:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 16:27:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 16:27:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 16:27:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 16:27:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 16:27:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 17:10:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/06 17:10:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/06 17:10:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/06 17:10:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/06 17:10:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 17:10:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 17:10:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 17:10:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 17:56:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/06 17:56:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/06 17:56:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/06 17:56:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/06 17:56:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 17:56:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 17:56:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/06 17:56:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 09:42:22 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/07 09:42:22 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/07 09:42:22 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/07 09:42:22 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/07 09:42:22 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 09:42:22 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 09:42:22 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 09:42:22 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 11:18:42 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/07 11:18:42 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/07 11:18:42 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/07 11:18:42 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/07 11:18:42 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 11:18:42 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 11:18:42 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 11:18:42 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 11:20:34 [error] 28#28: *5 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "POST /api/authentication/login HTTP/2.0", upstream: "http://172.21.0.2:8080/api/authentication/login", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 11:21:30 [error] 28#28: *2 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "POST /api/assets2/upload HTTP/2.0", upstream: "http://172.21.0.2:8080/api/assets2/upload", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 11:30:18 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/07 11:30:18 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/07 11:30:18 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/07 11:30:18 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/07 11:30:18 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 11:30:18 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 11:30:18 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 11:30:18 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 12:44:22 [error] 29#29: *104 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 12:44:44 [error] 29#29: *104 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 17:38:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/07 17:38:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/07 17:38:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/07 17:38:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/07 17:38:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 17:38:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 17:38:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 17:38:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 17:58:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/07 17:58:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/07 17:58:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/07 17:58:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/07 17:58:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 17:58:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 17:58:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 17:58:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/07 18:11:17 [error] 29#29: *3 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.2:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/07 19:20:07 [error] 29#29: *13 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/authentication/verify-token HTTP/2.0", upstream: "http://172.21.0.2:8080/api/authentication/verify-token", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 19:35:33 [error] 29#29: *26 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.2:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 19:41:32 [error] 29#29: *34 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.2:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 19:43:21 [error] 29#29: *45 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/authentication/verify-token HTTP/2.0", upstream: "http://172.21.0.2:8080/api/authentication/verify-token", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 19:44:57 [error] 29#29: *52 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.2:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 19:48:45 [error] 29#29: *62 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.2:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 19:55:20 [error] 29#29: *71 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/authentication/verify-token HTTP/2.0", upstream: "http://172.21.0.2:8080/api/authentication/verify-token", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 19:55:44 [error] 29#29: *69 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.2:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 19:56:45 [error] 29#29: *69 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.2:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 19:59:19 [error] 29#29: *92 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.2:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 20:22:13 [error] 29#29: *106 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.2:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 20:28:13 [error] 29#29: *115 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.2:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 20:28:36 [error] 29#29: *114 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/authentication/verify-token HTTP/2.0", upstream: "http://172.21.0.2:8080/api/authentication/verify-token", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 20:35:06 [error] 29#29: *134 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.2:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/07 20:51:14 [error] 29#29: *143 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.2:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 09:11:14 [error] 29#29: *154 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/authentication/verify-token HTTP/2.0", upstream: "http://172.21.0.2:8080/api/authentication/verify-token", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 10:21:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/08 10:21:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/08 10:21:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/08 10:21:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/08 10:21:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/08 10:21:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/08 10:21:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/08 10:21:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/08 10:23:28 [error] 29#29: *3 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.4:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/08 10:23:31 [error] 29#29: *3 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/08 10:27:13 [error] 29#29: *9 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/08 10:27:21 [error] 29#29: *9 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.4:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/08 10:29:15 [error] 29#29: *19 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.4:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/08 10:29:18 [error] 29#29: *19 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/08 10:30:44 [error] 29#29: *19 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/08 10:30:55 [error] 29#29: *19 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.4:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/08 10:31:02 [error] 29#29: *19 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/08 10:33:08 [error] 29#29: *41 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/authentication/verify-token HTTP/2.0", upstream: "http://172.21.0.3:8080/api/authentication/verify-token", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 10:33:08 [error] 29#29: *40 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.4:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:34:46 [error] 29#29: *56 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/08 17:34:49 [error] 29#29: *56 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.4:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/08 17:36:19 [error] 29#29: *56 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.4:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/08 17:36:22 [error] 29#29: *56 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/08 17:48:42 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/08 17:48:42 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/08 17:48:42 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/08 17:48:42 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/08 17:48:42 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/08 17:48:42 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/08 17:48:42 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/08 17:48:42 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/08 17:49:30 [error] 29#29: *3 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/08 17:51:01 [error] 29#29: *7 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.4:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:51:15 [error] 29#29: *7 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.3:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:51:18 [error] 29#29: *7 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.4:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:53:24 [error] 29#29: *16 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "POST /api/products HTTP/2.0", upstream: "http://172.21.0.4:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:53:27 [error] 29#29: *16 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "POST /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:54:06 [error] 29#29: *16 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.3:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:54:09 [error] 29#29: *16 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.4:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:55:08 [error] 29#29: *23 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "POST /api/authentication/login HTTP/2.0", upstream: "http://172.21.0.4:8080/api/authentication/login", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:55:11 [error] 29#29: *23 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "POST /api/authentication/login HTTP/2.0", upstream: "http://172.21.0.3:8080/api/authentication/login", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:56:09 [error] 29#29: *16 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.4:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:56:09 [error] 29#29: *23 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/authentication/verify-token HTTP/2.0", upstream: "http://172.21.0.3:8080/api/authentication/verify-token", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:56:48 [error] 29#29: *16 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.4:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:56:51 [error] 29#29: *16 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.3:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:57:25 [error] 29#29: *16 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "POST /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:57:28 [error] 29#29: *16 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "POST /api/products HTTP/2.0", upstream: "http://172.21.0.4:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:58:48 [error] 29#29: *53 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/authentication/verify-token HTTP/2.0", upstream: "http://172.21.0.4:8080/api/authentication/verify-token", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 17:58:48 [error] 29#29: *52 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 18:00:55 [error] 29#29: *52 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.3:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 18:00:58 [error] 29#29: *52 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.4:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/08 18:30:58 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/08 18:30:58 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/08 18:30:58 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/08 18:30:58 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/08 18:30:58 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/08 18:30:58 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/08 18:30:58 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/08 18:30:58 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/09 13:15:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/09 13:15:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/09 13:15:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/09 13:15:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/09 13:15:20 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/09 13:15:20 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/09 13:15:20 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/09 13:15:20 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/09 13:18:07 [error] 29#29: *6 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "POST /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/09 13:18:59 [error] 29#29: *13 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/authentication/verify-token HTTP/2.0", upstream: "http://172.21.0.3:8080/api/authentication/verify-token", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/09 13:19:20 [error] 29#29: *6 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.3:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/09 13:20:31 [error] 29#29: *6 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.3:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/09 13:33:47 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/09 13:33:47 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/09 13:33:47 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/09 13:33:47 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/09 13:33:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/09 13:33:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/09 13:33:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/09 13:33:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/09 13:47:51 [error] 29#29: *4 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/authentication/verify-token HTTP/2.0", upstream: "http://172.21.0.3:8080/api/authentication/verify-token", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/09 13:49:21 [error] 29#29: *3 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "POST /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/10 10:38:34 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:16
+2024/10/10 10:40:08 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:16
+2024/10/10 10:40:40 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:16
+2024/10/10 10:40:49 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:16
+2024/10/10 10:42:34 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:16
+2024/10/10 10:49:08 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/10 10:49:08 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/10 10:49:08 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/10 10:49:08 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/10 10:49:08 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 10:49:08 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 10:49:08 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 10:49:08 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 16:12:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/10 16:12:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/10 16:12:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/10 16:12:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/10 16:12:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 16:12:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 16:12:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 16:12:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 16:27:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/10 16:27:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/10 16:27:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/10 16:27:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/10 16:27:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 16:27:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 16:27:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 16:27:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 17:13:12 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/10 17:13:12 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/10 17:13:12 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/10 17:13:12 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/10 17:13:12 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 17:13:12 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 17:13:12 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 17:13:12 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 17:45:59 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/10 17:45:59 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/10 17:45:59 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/10 17:45:59 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/10 17:45:59 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 17:45:59 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 17:45:59 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 17:45:59 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 18:00:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/10 18:00:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/10 18:00:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/10 18:00:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/10 18:00:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 18:00:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 18:00:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 18:00:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 18:09:05 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/10 18:09:05 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/10 18:09:05 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/10 18:09:05 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/10 18:09:05 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 18:09:05 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 18:09:05 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 18:09:05 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 18:22:13 [emerg] 1#1: host not found in upstream "app2:8080" in /etc/nginx/nginx.conf:11
+2024/10/10 18:23:44 [emerg] 1#1: host not found in upstream "app2:8080" in /etc/nginx/nginx.conf:11
+2024/10/10 18:24:09 [emerg] 1#1: host not found in upstream "app2:8080" in /etc/nginx/nginx.conf:11
+2024/10/10 18:24:37 [emerg] 1#1: host not found in upstream "app2:8080" in /etc/nginx/nginx.conf:11
+2024/10/10 18:24:47 [emerg] 1#1: host not found in upstream "app2:8080" in /etc/nginx/nginx.conf:11
+2024/10/10 18:55:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/10 18:55:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/10 18:55:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/10 18:55:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/10 18:55:20 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 18:55:20 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 18:55:20 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 18:55:20 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 21:40:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/10 21:40:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/10 21:40:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/10 21:40:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/10 21:40:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 21:40:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 21:40:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 21:40:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 21:51:13 [error] 29#29: *3 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.20.0.12:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/10 21:51:13 [error] 29#29: *3 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.2:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/10 21:51:33 [error] 29#29: *3 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.3:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/10 21:52:13 [error] 29#29: *3 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/10 22:11:54 [error] 29#29: *31 connect() failed (111: Connection refused) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/10 22:11:54 [error] 29#29: *31 connect() failed (111: Connection refused) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.20.0.12:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/10 22:11:54 [error] 29#29: *31 connect() failed (111: Connection refused) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.2:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/10 22:13:06 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/10 22:13:06 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/10 22:13:06 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/10 22:13:06 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/10 22:13:06 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 22:13:06 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 22:13:06 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 22:13:06 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 22:20:26 [error] 29#29: *2 upstream timed out (110: Connection timed out) while reading response header from upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.20.0.17:8080/api/products", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/10 23:12:02 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/10 23:12:02 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/10 23:12:02 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/10 23:12:02 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/10 23:12:02 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 23:12:02 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 23:12:02 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 23:12:02 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 23:22:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/10 23:22:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/10 23:22:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/10 23:22:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/10 23:22:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 23:22:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 23:22:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 23:22:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 23:50:30 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/10 23:50:30 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/10 23:50:30 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/10 23:50:30 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/10 23:50:30 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 23:50:30 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 23:50:30 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/10 23:50:30 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 01:12:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:35
+2024/10/11 01:12:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:90
+2024/10/11 01:12:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:134
+2024/10/11 01:12:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:178
+2024/10/11 01:12:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 01:12:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 01:12:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 01:12:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 09:22:41 [emerg] 1#1: host not found in upstream "app1:8080" in /etc/nginx/nginx.conf:10
+2024/10/11 16:35:43 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/11 16:35:43 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/11 16:35:43 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/11 16:35:43 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/11 16:35:43 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 16:35:43 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 16:35:43 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 16:35:43 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 16:36:28 [error] 29#29: *4 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/products HTTP/2.0", upstream: "http://172.21.0.3:8080/api/products", host: "api.local.ritualworks.com"
+2024/10/11 17:56:14 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/11 20:06:26 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/11 20:52:12 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/11 20:54:36 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/11 20:56:20 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/11 21:08:13 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/11 21:08:13 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/11 21:08:13 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/11 21:08:13 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/11 21:08:13 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 21:08:13 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 21:08:13 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 21:08:13 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 21:33:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/11 21:33:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/11 21:33:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/11 21:33:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/11 21:33:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 21:33:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 21:33:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 21:33:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 21:48:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/11 21:48:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/11 21:48:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/11 21:48:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/11 21:48:50 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 21:48:50 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 21:48:50 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 21:48:50 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 22:03:26 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/11 22:03:26 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/11 22:03:26 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/11 22:03:26 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/11 22:03:26 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 22:03:26 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 22:03:26 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 22:03:26 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 22:12:31 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/11 22:12:31 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/11 22:12:31 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/11 22:12:31 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/11 22:12:31 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 22:12:31 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 22:12:31 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/11 22:12:31 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 13:00:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 13:00:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 13:00:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 13:00:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 13:00:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 13:00:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 13:00:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 13:00:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 13:41:40 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 13:41:40 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 13:41:40 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 13:41:40 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 13:41:40 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 13:41:40 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 13:41:40 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 13:41:40 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 13:52:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 13:52:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 13:52:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 13:52:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 13:52:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 13:52:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 13:52:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 13:52:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 13:53:18 [error] 29#29: *4 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.4:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/12 13:53:18 [error] 29#29: *4 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/authentication/verify-token HTTP/2.0", upstream: "http://172.21.0.4:8080/api/authentication/verify-token", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/12 13:53:55 [error] 29#29: *4 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "POST /api/authentication/login HTTP/2.0", upstream: "http://172.21.0.4:8080/api/authentication/login", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/12 13:54:15 [error] 29#29: *4 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.4:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/12 14:01:26 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 14:02:38 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 14:03:07 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 14:03:11 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 14:03:13 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 14:03:15 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 14:05:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 14:05:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 14:05:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 14:05:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 14:05:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 14:05:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 14:05:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 14:05:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 14:18:44 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 14:19:38 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 14:20:27 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 14:25:03 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 14:25:03 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 14:25:03 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 14:25:03 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 14:25:03 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 14:25:03 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 14:25:03 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 14:25:03 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 14:44:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 14:44:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 14:44:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 14:44:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 14:44:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 14:44:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 14:44:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 14:44:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:02:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 15:02:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 15:02:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 15:02:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 15:02:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:02:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:02:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:02:09 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:19:25 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 15:19:25 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 15:19:25 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 15:19:25 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 15:19:25 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:19:25 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:19:25 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:19:25 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:29:59 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 15:29:59 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 15:29:59 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 15:29:59 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 15:29:59 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:29:59 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:29:59 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:29:59 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:37:55 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 15:44:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 15:44:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 15:44:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 15:44:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 15:44:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:44:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:44:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 15:44:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:02:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 16:02:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 16:02:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 16:02:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 16:02:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:02:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:02:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:02:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:04:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 16:04:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 16:04:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 16:04:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 16:04:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:04:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:04:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:04:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:17:39 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 16:17:39 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 16:17:39 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 16:17:39 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 16:17:39 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:17:39 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:17:39 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:17:39 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:27:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 16:27:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 16:27:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 16:27:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 16:27:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:27:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:27:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:27:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:34:39 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 16:34:39 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 16:34:39 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 16:34:39 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 16:34:39 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:34:39 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:34:39 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:34:39 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:44:43 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 16:44:43 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 16:44:43 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 16:44:43 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 16:44:43 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:44:43 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:44:43 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:44:43 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:59:11 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 16:59:11 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 16:59:11 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 16:59:11 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 16:59:11 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:59:11 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:59:11 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 16:59:11 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 17:05:19 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 17:05:19 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 17:05:19 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 17:05:19 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 17:05:19 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 17:05:19 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 17:05:19 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 17:05:19 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 17:33:33 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 17:36:41 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 17:36:51 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 17:37:03 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 20:41:31 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 20:49:46 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 20:54:31 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 21:13:27 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 21:13:27 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 21:13:27 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 21:13:27 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 21:13:27 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:13:27 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:13:27 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:13:27 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:24:00 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 21:29:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 21:29:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 21:29:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 21:29:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 21:29:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:29:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:29:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:29:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:32:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 21:32:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 21:32:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 21:32:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 21:32:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:32:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:32:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:32:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:36:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 21:36:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 21:36:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 21:36:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 21:36:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:36:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:36:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:36:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:45:23 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 21:45:23 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 21:45:23 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 21:45:23 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 21:45:23 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:45:23 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:45:23 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:45:23 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:49:32 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 21:49:32 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 21:49:32 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 21:49:32 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 21:49:32 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:49:32 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:49:32 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:49:32 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:52:32 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 21:52:32 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 21:52:32 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 21:52:32 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 21:52:32 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:52:32 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:52:32 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:52:32 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:55:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 21:55:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 21:55:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 21:55:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 21:55:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:55:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:55:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 21:55:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:06:28 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 22:06:28 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 22:06:28 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 22:06:28 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 22:06:28 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:06:28 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:06:28 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:06:28 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:10:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 22:10:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 22:10:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 22:10:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 22:10:20 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:10:20 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:10:20 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:10:20 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:12:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 22:12:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 22:12:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 22:12:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 22:12:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:12:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:12:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:12:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:14:55 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 22:14:55 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 22:14:55 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 22:14:55 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 22:14:55 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:14:55 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:14:55 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:14:55 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:17:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 22:17:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 22:17:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 22:17:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 22:17:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:17:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:17:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:17:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:20:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 22:20:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 22:20:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 22:20:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 22:20:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:20:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:20:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:20:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:30:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 22:30:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 22:30:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 22:30:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 22:30:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:30:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:30:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:30:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:35:16 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 22:35:16 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 22:35:16 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 22:35:16 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 22:35:16 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:35:16 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:35:16 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:35:16 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:45:01 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 22:45:01 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 22:45:01 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 22:45:01 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 22:45:01 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:45:01 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:45:01 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:45:01 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:48:03 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 22:48:03 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 22:48:03 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 22:48:03 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 22:48:03 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:48:03 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:48:03 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 22:48:03 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 23:23:51 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 23:23:51 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 23:23:51 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 23:23:51 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 23:23:51 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 23:23:51 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 23:23:51 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 23:23:51 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 23:39:34 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 23:39:34 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 23:39:34 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 23:39:34 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 23:39:34 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 23:39:34 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 23:39:34 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 23:39:34 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 23:51:33 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/12 23:59:46 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/12 23:59:46 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/12 23:59:46 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/12 23:59:46 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/12 23:59:46 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 23:59:46 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 23:59:46 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/12 23:59:46 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:05:21 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/13 00:05:21 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/13 00:05:21 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/13 00:05:21 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/13 00:05:21 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:05:21 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:05:21 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:05:21 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:08:41 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/nginx.conf:20
+2024/10/13 00:25:32 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/13 00:25:32 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/13 00:25:32 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/13 00:25:32 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/13 00:25:32 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:25:32 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:25:32 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:25:32 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:30:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/13 00:30:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/13 00:30:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/13 00:30:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/13 00:30:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:30:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:30:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:30:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:37:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/13 00:37:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/13 00:37:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/13 00:37:17 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/13 00:37:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:37:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:37:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:37:17 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:42:37 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:41
+2024/10/13 00:42:37 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:103
+2024/10/13 00:42:37 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:150
+2024/10/13 00:42:37 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/nginx.conf:197
+2024/10/13 00:42:37 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:42:37 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:42:37 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/13 00:42:37 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"

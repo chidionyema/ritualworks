@@ -1,0 +1,1 @@
+/opt/bitnami/postgresql/bin/postgres "-D" "/bitnami/postgresql/data" "-c" "config_file=/bitnami/postgresql/data/postgresql.conf"
