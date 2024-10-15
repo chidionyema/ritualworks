@@ -3,13 +3,16 @@
 set -e  # Exit immediately if any command exits with a non-zero status
 
 # Define constants and configuration
-VAULT_CONTAINER_NAME="ritualworks-vault-1"    # Name of the running Vault container
-DOCKER_SUBNET="172.20.0.0/16"                 # Adjust based on your Docker network
-CERT_DIR="/certs-volume"                      # Directory where certificates are stored in the shared volume
-PRIMARY_HOST="postgres_primary"               # The hostname of the primary node
-PGDATA="/bitnami/postgresql/data"             # PostgreSQL data directory
-REPMGR_NODE_NAME="postgres-standby-1"         # Replication node name for this standby
-REPMGR_CONF_FILE="/opt/bitnami/repmgr/conf/repmgr.conf"  # Path to repmgr.conf
+VAULT_CONTAINER_NAME="ritualworks-vault-1"
+DOCKER_SUBNET="172.20.0.0/16"
+CERT_DIR="/certs-volume"
+PRIMARY_HOST="ritualworks-postgres_primary-1"
+PGDATA="/bitnami/postgresql/data"
+REPMGR_NODE_NAME="ritualworks-postgres_standby-1"
+REPMGR_CONF_FILE="/opt/bitnami/repmgr/conf/repmgr.conf"
+REPMGR_USER="repmgr"
+REPMGR_PASSWORD="${REPMGR_PASSWORD:-repmgrpass}"
+POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-mypassword}"  # The postgres superuser password
 
 # Helper function to log messages with timestamps
 log() {
@@ -36,86 +39,56 @@ if [ ! -f "$CERT_DIR/postgres.ritualworks.com.crt" ] || [ ! -f "$CERT_DIR/postgr
     error_exit "SSL certificate or key file not found in $CERT_DIR."
 fi
 
-# Copy SSL certificates from shared volume to PostgreSQL configuration directory
+# Copy SSL certificates to PostgreSQL configuration directory
 log "Copying SSL certificates from $CERT_DIR to /opt/bitnami/postgresql/conf/..."
-cp "$CERT_DIR/postgres.ritualworks.com.crt" /opt/bitnami/postgresql/conf/server.crt || error_exit "Failed to copy certificate to /opt/bitnami/postgresql/conf/server.crt."
-cp "$CERT_DIR/postgres.ritualworks.com.key" /opt/bitnami/postgresql/conf/server.key || error_exit "Failed to copy private key to /opt/bitnami/postgresql/conf/server.key."
+cp "$CERT_DIR/postgres.ritualworks.com.crt" /opt/bitnami/postgresql/conf/server.crt || error_exit "Failed to copy certificate."
+cp "$CERT_DIR/postgres.ritualworks.com.key" /opt/bitnami/postgresql/conf/server.key || error_exit "Failed to copy key."
 
-# Set permissions and ownership for the copied SSL certificate and key files in /opt/bitnami/postgresql/conf/
-log "Setting permissions for SSL certificate and key files in /opt/bitnami/postgresql/conf/..."
-chmod 600 /opt/bitnami/postgresql/conf/server.crt /opt/bitnami/postgresql/conf/server.key || error_exit "Failed to set permissions for certificate files."
-chown postgres:postgres /opt/bitnami/postgresql/conf/server.crt /opt/bitnami/postgresql/conf/server.key || error_exit "Failed to set ownership for certificate files."
+# Set permissions and ownership
+log "Setting permissions for SSL certificates..."
+chmod 600 /opt/bitnami/postgresql/conf/server.crt /opt/bitnami/postgresql/conf/server.key
+chown postgres:postgres /opt/bitnami/postgresql/conf/server.crt /opt/bitnami/postgresql/conf/server.key
 
-# Function to wait until the primary PostgreSQL node is ready
+# Wait until the primary node is ready
 wait_for_primary_ready() {
     log "Waiting for primary node $PRIMARY_HOST to be ready..."
-
-    until pg_isready -h $PRIMARY_HOST -U repmgr; do
+    until pg_isready -h $PRIMARY_HOST -U $REPMGR_USER; do
         log "Primary node $PRIMARY_HOST is not ready yet...waiting."
         sleep 5
     done
-
     log "Primary node $PRIMARY_HOST is ready."
 }
 
-# Wait for the primary node before proceeding
 wait_for_primary_ready
 
-# Initialize standby node with pg_basebackup if PGDATA is empty
-if [ -z "$(ls -A $PGDATA)" ]; then
-    log "PGDATA directory is empty. Performing pg_basebackup from the primary node $PRIMARY_HOST..."
+# Clean the data directory
+log "Cleaning the data directory..."
+rm -rf ${PGDATA:?}/*
 
-    PGPASSWORD=$POSTGRES_PASSWORD pg_basebackup -h $PRIMARY_HOST -D $PGDATA -U repmgr -Fp -Xs -P --no-password || error_exit "Failed to perform pg_basebackup from primary node."
-else
-    log "PGDATA directory is not empty. Skipping pg_basebackup."
-fi
-
-# Ensure the PostgreSQL configuration files exist
-POSTGRESQL_CONF_FILE="$PGDATA/postgresql.conf"
-PG_HBA_CONF="$PGDATA/pg_hba.conf"
-
-if [ ! -f "$POSTGRESQL_CONF_FILE" ] || [ ! -f "$PG_HBA_CONF" ]; then
-    error_exit "Configuration files not found in $PGDATA."
-else
-    log "Configuration files found. Proceeding with configuration."
-fi
-
-# Pre-configure PostgreSQL settings before starting the server
-log "Pre-configuring PostgreSQL for replication..."
-
-# Set replication settings in postgresql.conf
-log "Setting wal_level and hot_standby settings..."
-sed -i "/^#*\s*wal_level\s*=\s*/c\wal_level = replica" "$POSTGRESQL_CONF_FILE"
-sed -i "/^#*\s*hot_standby\s*=\s*/c\hot_standby = on" "$POSTGRESQL_CONF_FILE"
-
-# Modify pg_hba.conf to allow replication from the primary node
-log "Adding replication-specific entries to pg_hba.conf..."
-echo "hostssl replication repmgr $PRIMARY_HOST md5" >> "$PG_HBA_CONF"
-echo "hostssl all all $DOCKER_SUBNET md5" >> "$PG_HBA_CONF"
-
-# Modify SSL settings in postgresql.conf
-log "Enabling SSL in postgresql.conf..."
-sed -i "/^#*\s*ssl\s*=\s*/c\ssl = on" "$POSTGRESQL_CONF_FILE"
-sed -i "/^#*\s*ssl_cert_file\s*=\s*/c\ssl_cert_file = '/opt/bitnami/postgresql/conf/server.crt'" "$POSTGRESQL_CONF_FILE"
-sed -i "/^#*\s*ssl_key_file\s*=\s*/c\ssl_key_file = '/opt/bitnami/postgresql/conf/server.key'" "$POSTGRESQL_CONF_FILE"
-
-# Create repmgr.conf dynamically
-REPMGR_PASSWORD=$REPMGR_PASSWORD
-
+# Create repmgr.conf before cloning
 log "Creating repmgr.conf dynamically..."
-cat > $REPMGR_CONF_FILE <<EOF
+cat > "$REPMGR_CONF_FILE" <<EOF
 node_id=2
 node_name='$REPMGR_NODE_NAME'
-conninfo='host=$PRIMARY_HOST user=repmgr dbname=repmgr connect_timeout=2 sslmode=require password=$REPMGR_PASSWORD'
+conninfo='host=$REPMGR_NODE_NAME user=$REPMGR_USER dbname=repmgr connect_timeout=2 sslmode=require password=$REPMGR_PASSWORD'
 data_directory='$PGDATA'
 use_replication_slots=1
+pg_bindir='/opt/bitnami/postgresql/bin'
 EOF
 
 log "repmgr.conf created successfully."
 
-sleep 5
-# Start PostgreSQL server in standby mode
-log "Starting PostgreSQL server in standby mode..."
+# Set the PGPASSWORD environment variable for repmgr user
+export PGPASSWORD=$REPMGR_PASSWORD
+
+# Clone the standby node using repmgr
+log "Cloning standby node from the primary..."
+repmgr -h $PRIMARY_HOST -U $REPMGR_USER -d repmgr -f "$REPMGR_CONF_FILE" \
+  standby clone --fast-checkpoint --verbose \
+  || error_exit "Failed to clone standby node from primary."
+
+# Start PostgreSQL server manually
+log "Starting PostgreSQL server..."
 postgres -D "$PGDATA" &
 PG_PID=$!
 
@@ -127,11 +100,14 @@ until pg_isready -U postgres; do
 done
 log "PostgreSQL is ready."
 
+# Set the PGPASSWORD environment variable for postgres superuser
+export PGPASSWORD=$POSTGRES_PASSWORD
+
 # Register the standby node with the primary
 log "Registering standby node with the primary..."
-repmgr -f "$REPMGR_CONF_FILE" standby register --force --verbose || error_exit "Failed to register standby with primary."
+repmgr -f "$REPMGR_CONF_FILE" -S postgres standby register --force --verbose || error_exit "Failed to register standby with primary."
 
-# Tail the PostgreSQL logs to keep the container running and for visibility
+# Tail the PostgreSQL logs
 log "Tailing PostgreSQL logs..."
 tail -f /opt/bitnami/postgresql/logs/postgresql.log &
 

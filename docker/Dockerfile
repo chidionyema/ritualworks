@@ -2,7 +2,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-
 # Copy project file and restore dependencies
 COPY ["src/RitualWorks.csproj", "./"]
 RUN dotnet --version && dotnet restore "./RitualWorks.csproj"
@@ -32,6 +31,5 @@ COPY --from=build /root/.dotnet /root/.dotnet
 COPY --from=build /root/.nuget /root/.nuget
 ENV PATH="$PATH:/root/.dotnet/tools"
 
-
-# Set the entrypoint to the application
-ENTRYPOINT ["dotnet", "RitualWorks.dll"]
+# Directly fetch role_id and secret_id from files and set them as environment variables
+ENTRYPOINT ["/bin/bash", "-c", "dotnet RitualWorks.dll"]

@@ -2,6 +2,7 @@
 using RitualWorks.Services;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+
 namespace RitualWorks.Controllers
 {
     [ApiController]
@@ -22,7 +23,15 @@ namespace RitualWorks.Controllers
             var results = await _searchService.SearchProductsAsync(query);
             return Ok(results);
         }
+
+        // Dummy POST method
+        [HttpPost("dummy")]
+        [Authorize]
+        public async Task<IActionResult> DummyPost([FromBody] object dummyData)
+        {
+            // Simulate some processing logic
+            await Task.Delay(1000);  // Simulating async work
+            return Ok(new { Message = "Dummy POST request was successful", Data = dummyData });
+        }
     }
-
 }
-

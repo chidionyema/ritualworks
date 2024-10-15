@@ -1,32 +1,28 @@
 {
-    "dashboard": {
-      "id": null,
-      "uid": "minio-dashboard",
-      "title": "MinIO Dashboard",
-      "timezone": "browser",
-      "schemaVersion": 26,
-      "version": 0,
-      "panels": [
+  "id": null,
+  "uid": "minio-dashboard",
+  "title": "MinIO Dashboard",
+  "timezone": "browser",
+  "schemaVersion": 26,
+  "version": 0,
+  "panels": [
+    {
+      "type": "graph",
+      "title": "MinIO Server Metrics",
+      "datasource": "Prometheus",
+      "targets": [
         {
-          "type": "graph",
-          "title": "MinIO Server Metrics",
-          "datasource": "Prometheus",
-          "targets": [
-            {
-              "refId": "A",
-              "expr": "minio_disk_storage_usage",
-              "legendFormat": "{{instance}}"
-            }
-          ],
-          "gridPos": {
-            "x": 0,
-            "y": 0,
-            "w": 24,
-            "h": 9
-          }
+          "refId": "A",
+          "expr": "minio_disk_storage_usage",
+          "legendFormat": "{{instance}}"
         }
-      ]
-    },
-    "overwrite": true
-  }
-  
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 9
+      }
+    }
+  ]
+}

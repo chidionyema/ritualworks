@@ -26,7 +26,6 @@ services:
       - RabbitMq__Host=rabbitmq
       - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
-      - VAULT_TOKEN=${VAULT_TOKEN}
     volumes:
       - uploads:/app/uploads
       - ../../vault/secrets:/vault/secrets
@@ -49,7 +48,6 @@ services:
       dockerfile: docker/Dockerfile.migrations
     environment:
       - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USERNAME};Password=${POSTGRES_PASSWORD};SSL Mode=Disable
-      - VAULT_TOKEN=${VAULT_TOKEN}
       - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
       - POSTGRES_USERNAME=${POSTGRES_USERNAME}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}

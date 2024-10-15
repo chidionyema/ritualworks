@@ -208,7 +208,7 @@ create_token() {
 
     # Create a new token with the specified policies
     local token
-    token=$(docker exec "$VAULT_CONTAINER_NAME" vault token create -policy=$policies -format=json | jq -r '.auth.client_token')
+    token=$(docker exec "$VAULT_CONTAINER_NAME" vault token create -policy="$policies" -format=json | jq -r '.auth.client_token')
 
     # Check if the token was successfully created
     if [[ -z "$token" ]]; then
@@ -289,17 +289,20 @@ create_or_update_vault_user() {
     local postgres_container="ritualworks-postgres_primary-1"  # Replace with your actual PostgreSQL container name
     local db_name="your_postgres_db"  # Replace with your PostgreSQL database name
 
+    # Wait for PostgreSQL to be ready inside the container
+    wait_for_postgres_ready "$postgres_container" "postgres"
+
     log "Checking if PostgreSQL user '$db_user' exists..."
 
     user_exists=$(docker exec "$postgres_container" psql -U postgres -d postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='$db_user'")
 
     if [[ "$user_exists" == "1" ]]; then
         log "User '$db_user' already exists in PostgreSQL. Updating the password and privileges..."
-        docker exec "$postgres_container" psql -U postgres -d postgres -c "ALTER ROLE $db_user WITH PASSWORD '$db_password' SUPERUSER CREATEROLE;" || error_exit "Failed to update user '$db_user'."
+        docker exec "$postgres_container" psql -U postgres -d postgres -c "ALTER ROLE \"$db_user\" WITH PASSWORD '$db_password' SUPERUSER CREATEROLE;" || error_exit "Failed to update user '$db_user'."
         log "Password and privileges for user '$db_user' updated successfully."
     else
         log "Creating user '$db_user' in PostgreSQL with SUPERUSER and CREATEROLE privileges..."
-        docker exec "$postgres_container" psql -U postgres -d postgres -c "CREATE ROLE $db_user WITH LOGIN PASSWORD '$db_password' SUPERUSER CREATEROLE;" || error_exit "Failed to create user '$db_user'."
+        docker exec "$postgres_container" psql -U postgres -d postgres -c "CREATE ROLE \"$db_user\" WITH LOGIN PASSWORD '$db_password' SUPERUSER CREATEROLE;" || error_exit "Failed to create user '$db_user'."
         log "User '$db_user' created successfully."
     fi
 
@@ -311,6 +314,19 @@ create_or_update_vault_user() {
 
     # Return the created/updated username and password for further use
     echo "$db_user:$db_password"
+}
+
+# **Added Function to Wait for PostgreSQL Readiness**
+# Function to wait until PostgreSQL is ready inside the container
+wait_for_postgres_ready() {
+    local container_name="$1"
+    local user="$2"
+    log "Waiting for PostgreSQL server in container '$container_name' to be ready..."
+    until docker exec "$container_name" pg_isready -U "$user" > /dev/null 2>&1; do
+        log "PostgreSQL in container '$container_name' is not ready yet...waiting."
+        sleep 2
+    done
+    log "PostgreSQL in container '$container_name' is ready."
 }
 
 # Function to fetch a static secret from Vault by field
@@ -390,9 +406,13 @@ configure_vault_postgresql_roles() {
         vault write database/roles/vault \
             db_name=postgresql \
             creation_statements=\"CREATE ROLE \\\"{{name}}\\\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; \
-            GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \\\"{{name}}\\\";\" \
+            GRANT CONNECT ON DATABASE your_postgres_db TO \\\"{{name}}\\\"; \
+            GRANT USAGE ON SCHEMA public TO \\\"{{name}}\\\"; \
+            GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \\\"{{name}}\\\"; \
+            ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO \\\"{{name}}\\\";\" \
             default_ttl=\"1h\" \
             max_ttl=\"24h\"
+
     " || error_exit "Failed to configure Vault PostgreSQL roles."
 }
 
@@ -497,6 +517,9 @@ main() {
     VAULT_ADDR=${VAULT_ADDR:-"http://127.0.0.1:8200"}
     VAULT_POSTGRES_ADMIN_PASSWORD="your_actual_password"  # Set this to your PostgreSQL admin password
 
+    # Define Docker subnet (adjust based on your Docker network)
+    DOCKER_SUBNET="172.20.0.0/16"
+
     # Authenticate with Vault using the root token from the unseal keys file
     if [[ ! -f "$UNSEAL_KEYS_FILE" ]]; then
         error_exit "Unseal keys file not found: $UNSEAL_KEYS_FILE"
@@ -530,9 +553,7 @@ main() {
     create_user "readonly-user" "readonly-password" "read-secrets-policy"
 
     # Create tokens and store them as environment variables in the .env file
-    create_token "write-secrets-policy" "VAULT_TOKEN"
-    create_token "read-secrets-policy" "VAULT_TOKEN"
-    create_token "root-policy" "ADMIN_TOKEN"
+    create_token "root" "ADMIN_TOKEN"
 
     log "All policies, groups, roles, users, and tokens created successfully."
 
@@ -544,11 +565,11 @@ main() {
     # Configure Vault database secrets engine roles and static secrets
     configure_vault_postgresql_roles
 
-    # Create AppRole for Vault and store credentials
-    create_approle_and_store_credentials "vault" "vault-read-secrets-policy" "../vault/config/role_id" "../vault/secrets/secret_id"
-
     # Configure Vault secrets
     configure_vault_secrets
+
+    # Create AppRole for Vault and store credentials
+    create_approle_and_store_credentials "vault" "vault-read-secrets-policy" "../vault/config/role_id" "../vault/secrets/secret_id"
 
     # Fetch dynamic credentials from Vault
     dynamic_creds=$(fetch_dynamic_postgres_credentials "vault")
@@ -557,11 +578,11 @@ main() {
 
     # Collect environment variables with Vault-provided username and password
     local env_vars="POSTGRES_USERNAME=$dynamic_username
-    POSTGRES_PASSWORD=$dynamic_password
-    JWT_KEY=$(fetch_static_secret "secret/$ENVIRONMENT" "jwt_key")
-    MINIO_ACCESS_KEY=$(fetch_static_secret "secret/$ENVIRONMENT" "minio_access_key")
-    MINIO_SECRET_KEY=$(fetch_static_secret "secret/$ENVIRONMENT" "minio_secret_key")
-    RABBITMQ_PASSWORD=$(fetch_static_secret "secret/$ENVIRONMENT" "rabbitmq_password")"
+POSTGRES_PASSWORD=$dynamic_password
+JWT_KEY=$(fetch_static_secret "secret/$ENVIRONMENT" "jwt_key")
+MINIO_ACCESS_KEY=$(fetch_static_secret "secret/$ENVIRONMENT" "minio_access_key")
+MINIO_SECRET_KEY=$(fetch_static_secret "secret/$ENVIRONMENT" "minio_secret_key")
+RABBITMQ_PASSWORD=$(fetch_static_secret "secret/$ENVIRONMENT" "rabbitmq_password")"
 
     log "Updating environment variables..."
     update_env_file "$env_vars"

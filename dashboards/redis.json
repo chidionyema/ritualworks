@@ -1,32 +1,28 @@
 {
-    "dashboard": {
-      "id": null,
-      "uid": "redis-dashboard",
-      "title": "Redis Dashboard",
-      "timezone": "browser",
-      "schemaVersion": 26,
-      "version": 0,
-      "panels": [
+  "id": null,
+  "uid": "redis-dashboard",
+  "title": "Redis Dashboard",
+  "timezone": "browser",
+  "schemaVersion": 26,
+  "version": 0,
+  "panels": [
+    {
+      "type": "graph",
+      "title": "Redis Performance Metrics",
+      "datasource": "Prometheus",
+      "targets": [
         {
-          "type": "graph",
-          "title": "Redis Performance Metrics",
-          "datasource": "Prometheus",
-          "targets": [
-            {
-              "refId": "A",
-              "expr": "redis_commands_processed_total",
-              "legendFormat": "{{instance}}"
-            }
-          ],
-          "gridPos": {
-            "x": 0,
-            "y": 0,
-            "w": 24,
-            "h": 9
-          }
+          "refId": "A",
+          "expr": "redis_commands_processed_total",
+          "legendFormat": "{{instance}}"
         }
-      ]
-    },
-    "overwrite": true
-  }
-  
+      ],
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 9
+      }
+    }
+  ]
+}

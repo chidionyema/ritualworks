@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Nest;
 using RitualWorks.Db;
-using static RitualWorks.Controllers.ProductsController;
+using RitualWorks.Controllers;
 
 namespace RitualWorks.Services
 {

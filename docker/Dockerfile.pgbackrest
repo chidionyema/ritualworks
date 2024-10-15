@@ -1,23 +1,10 @@
-# Use a base PostgreSQL image
-FROM postgres:13
+# Use the official PostgreSQL image as the base
+FROM postgres:latest
 
+# Install necessary packages and pgBackRest
+RUN apt-get update && \
+    apt-get install -y pgbackrest && \
+    rm -rf /var/lib/apt/lists/*
 
-# Install pgBackRest
-RUN apt-get update --no-install-recommends && apt-get install -y pgbackrest
-
-# Copy the pgBackRest configuration file
-COPY config/pgbackrest.conf /etc/pgbackrest/pgbackrest.conf
-
-# Debug: Display the contents of the configuration file to ensure it is copied correctly
-RUN cat /etc/pgbackrest/pgbackrest.conf
-
-# Set the execution permission for the script
-COPY scripts/install_pgbackrest.sh /install_pgbackrest.sh
-RUN chmod +x /install_pgbackrest.sh
-
-
-# Run the pgBackRest installation script
-RUN /install_pgbackrest.sh
-
-# Run pgBackRest check command
-RUN pgbackrest --stanza=pgcluster check
+# Set the entrypoint to bash so the script can be run
+ENTRYPOINT ["/bin/bash"]

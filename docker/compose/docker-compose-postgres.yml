@@ -20,10 +20,12 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres-primary-data:/bitnami/postgresql  # Named volume for persistent data
+      - ../../data/postgres-primary-data:/bitnami/postgresql
       - ../../scripts:/scripts
-      - ./postgres_logs:/opt/bitnami/postgresql/logs
+      - ../../postgres_logs:/opt/bitnami/postgresql/logs
       - certs-volume:/certs-volume:rw
+      - ../../config:/etc/pgbackrest  # pgBackRest config from host's ../../config
+      - pgbackrest-data:/var/lib/pgbackrest  # Backup data storage
     networks:
       - internal_network
     healthcheck:
@@ -59,10 +61,12 @@ services:
     ports:
       - "5434:5432"
     volumes:
-      - postgres-standby-data:/bitnami/postgresql  # Named volume for persistent data
+      - ../../data/postgres-standby-data:/bitnami/postgresql
       - ../../scripts:/scripts
       - ../../postgres_logs:/opt/bitnami/postgresql/logs 
       - certs-volume:/certs-volume
+      - ../../config:/etc/pgbackrest  # pgBackRest config from host's ../../config
+      - pgbackrest-data:/var/lib/pgbackrest  # Backup data storage
     networks:
       - internal_network
     healthcheck:
@@ -78,23 +82,21 @@ services:
         max_attempts: 3
         window: 120s
 
-  pg_backup:
-    image: postgres:latest
+  pgbackrest:
+    build:
+      context: ../
+      dockerfile: Dockerfile.pgbackrest  # Use the custom Dockerfile
     depends_on:
       - postgres_primary
-    environment:
-      POSTGRES_USER: ${POSTGRES_USERNAME}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
+      - ../../config:/etc/pgbackrest  # pgBackRest config from host's ../../config
+      - pgbackrest-data:/var/lib/pgbackrest  # Backup data storage
+      - ../../data/postgres-primary-data:/bitnami/postgresql
       - ../../backups:/backups  # Local directory to store the backups
-      - ../../scripts:/scripts
+      - ../../scripts:/scripts  # Scripts directory for backup and restore
     networks:
       - internal_network
-    entrypoint: ["/bin/bash", "-c", "/scripts/scheduled_backup.sh"]
-    deploy:
-      restart_policy:
-        condition: on-failure
+    entrypoint: ["/bin/bash", "-c", "/scripts/pgbackrest_backup.sh"]
 
 networks:
   internal_network:
@@ -109,3 +111,4 @@ volumes:
   postgres-standby-data:  # Named volume for standby data
   certs-volume:
     external: true
+  pgbackrest-data:  # Backup data volume for pgBackRest
