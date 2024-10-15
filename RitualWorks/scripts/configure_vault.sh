@@ -390,7 +390,10 @@ configure_vault_postgresql_roles() {
         vault write database/roles/vault \
             db_name=postgresql \
             creation_statements=\"CREATE ROLE \\\"{{name}}\\\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; \
-            GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \\\"{{name}}\\\";\" \
+            GRANT CONNECT ON DATABASE your_postgres_db TO \\\"{{name}}\\\"; \
+            GRANT USAGE ON SCHEMA public TO \\\"{{name}}\\\"; \
+            GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \\\"{{name}}\\\"; \
+            ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO \\\"{{name}}\\\";\" \
             default_ttl=\"1h\" \
             max_ttl=\"24h\"
     " || error_exit "Failed to configure Vault PostgreSQL roles."
@@ -529,9 +532,6 @@ main() {
     create_user "write-user" "write-password" "write-secrets-policy"
     create_user "readonly-user" "readonly-password" "read-secrets-policy"
 
-    # Create tokens and store them as environment variables in the .env file
-    create_token "write-secrets-policy" "VAULT_TOKEN"
-    create_token "read-secrets-policy" "VAULT_TOKEN"
     create_token "root-policy" "ADMIN_TOKEN"
 
     log "All policies, groups, roles, users, and tokens created successfully."
@@ -543,12 +543,13 @@ main() {
 
     # Configure Vault database secrets engine roles and static secrets
     configure_vault_postgresql_roles
-
-    # Create AppRole for Vault and store credentials
-    create_approle_and_store_credentials "vault" "vault-read-secrets-policy" "../vault/config/role_id" "../vault/secrets/secret_id"
-
+    
     # Configure Vault secrets
     configure_vault_secrets
+
+      # Create AppRole for Vault and store credentials
+    create_approle_and_store_credentials "vault" "vault-read-secrets-policy" "../vault/config/role_id" "../vault/secrets/secret_id"
+
 
     # Fetch dynamic credentials from Vault
     dynamic_creds=$(fetch_dynamic_postgres_credentials "vault")

@@ -13,22 +13,56 @@ error_exit() {
     exit 1
 }
 
+# Set environment variables and Docker Compose file
 ENVIRONMENT=${ENVIRONMENT:-$(echo "${ASPNETCORE_ENVIRONMENT:-dev}" | tr '[:upper:]' '[:lower:]')}
 DOCKER_COMPOSE_FILE="../docker/compose/docker-compose-postgres.yml"
+STANZA_NAME="ritualworks"
+POSTGRES_PRIMARY_SERVICE="pg_primary"
+POSTGRES_USER="postgres"  # Change this to the actual PostgreSQL username if needed
+POSTGRES_DB="postgres"    # Change this to the actual database if needed
 
-# Function to start postgres
+# Function to start PostgreSQL services (primary and standby)
 start_postgres() {
-    log "Starting postgresl..."
-    docker-compose  -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" up -d  || error_exit "Failed to start Vault and Consul"
-    
-    log "Waiting for postgres to start..."
-    sleep 2  # Ensure enough time for postgres to fully initialize
+    log "Starting PostgreSQL services (primary and standby)..."
+    docker-compose -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" up -d pg_primary pg_standby || error_exit "Failed to start PostgreSQL services"
 }
 
+# Function to check if PostgreSQL is ready
+check_postgres_ready() {
+    log "Checking PostgreSQL readiness..."
 
-# Main function to encapsulate script flow
+    local retries=20
+    local count=0
+    local wait_time=3
+
+    while ! docker-compose -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" exec -T "$POSTGRES_PRIMARY_SERVICE" \
+      pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" > /dev/null 2>&1; do
+        count=$((count + 1))
+        if [ $count -ge $retries ]; then
+            error_exit "PostgreSQL is not ready after multiple attempts."
+        fi
+        log "PostgreSQL is not ready yet. Waiting..."
+        sleep "$wait_time"
+    done
+
+    log "PostgreSQL is ready."
+}
+
+# Function to create the pgBackRest stanza
+create_pgbackrest_stanza() {
+    log "Creating pgBackRest stanza '$STANZA_NAME'..."
+    docker-compose -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" run --rm pgbackrest \
+        pgbackrest --stanza="$STANZA_NAME" --log-level-console=info stanza-create || error_exit "Failed to create pgBackRest stanza"
+    
+    log "pgBackRest stanza '$STANZA_NAME' created successfully."
+}
+
+# Main function to encapsulate the script flow
 main() {
     start_postgres
+    check_postgres_ready
+    create_pgbackrest_stanza
 }
+
 # Run the main function
 main

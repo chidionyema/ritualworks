@@ -4,7 +4,6 @@ set -e
 
 VAULT_CONTAINER_NAME="ritualworks-vault-1"
 VAULT_ADDR="${VAULT_ADDR:-http://127.0.0.1:8200}"
-VAULT_TOKEN="${VAULT_TOKEN:-}"
 VAULT_PATH="${VAULT_PATH:-pki}"
 CERT_TTL="${CERT_TTL:-8760h}"
 ISSUE_TTL="${ISSUE_TTL:-72h}"
@@ -32,6 +31,7 @@ authenticate_with_root_token() {
     docker exec "$VAULT_CONTAINER_NAME" vault login -no-print "$VAULT_ROOT_TOKEN" || error_exit "Failed to authenticate with Vault."
 }
 
+# Create shared certificate directory inside the Vault container
 docker exec "$VAULT_CONTAINER_NAME" mkdir -p "$SHARED_CERT_DIR" || error_exit "Failed to create shared cert directory."
 
 enable_pki_engine() {
@@ -107,6 +107,17 @@ request_cert() {
         echo \"\$response\" | jq -r '.data.private_key' > $shared_key_file" || error_exit "Failed to request certificate."
 
     log "Certificate for $service saved with SANs in $shared_cert_file and $shared_key_file."
+
+    # **Additional Code to Generate .pem File for PostgreSQL**
+    if [[ "$service" == "postgres" ]]; then
+        local pem_file="$SHARED_CERT_DIR/${domain}.pem"
+        log "Creating PEM file for PostgreSQL at $pem_file"
+
+        # Concatenate certificate and key to create .pem file
+        docker exec "$VAULT_CONTAINER_NAME" sh -c "cat $shared_cert_file $shared_key_file > $pem_file" || error_exit "Failed to create PEM file for PostgreSQL."
+
+        log "PEM file for PostgreSQL created at $pem_file."
+    fi
 }
 
 export_root_ca() {

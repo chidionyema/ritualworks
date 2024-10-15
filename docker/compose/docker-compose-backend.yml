@@ -49,7 +49,7 @@ services:
       - "6379:6379"
     volumes:
       - redis-master-data:/data
-      - ../../config/redis.conf:/etc/redis/redis.conf
+      - ../../config/redis-master.conf:/etc/redis/redis.conf
       - certs-volume:/certs-volume:ro
     networks:
       - internal_network
@@ -72,7 +72,7 @@ services:
       - "6380:6379"
     volumes:
       - redis-replica-data:/data
-      - ../../config/redis.conf:/etc/redis/redis.conf
+      - ../../config/redis-replica.conf:/etc/redis/redis.conf
       - certs-volume:/certs-volume:ro
     networks:
       - internal_network
@@ -174,10 +174,9 @@ services:
 
   rabbitmq-node1:
     image: rabbitmq:3-management
-    environment:
-      - RABBITMQ_DEFAULT_USER=rabbit_user
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
-      - RABBITMQ_NODENAME=rabbit@rabbitmq-node1
+    ports:
+      - "5672:5672"
+      - "15672:15672"
     hostname: rabbitmq-node1
     networks:
       internal_network:
@@ -185,8 +184,9 @@ services:
           - rabbitmq-node1
     volumes:
       - rabbitmq-data-node1:/var/lib/rabbitmq
-      - certs-volume:/certs-volume:ro
-      - ../../scripts:/etc/rabbitmq-init
+      - certs-volume:/etc/ssl/certs:ro
+      - ../../config/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie:ro
+      - ../../config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro 
     healthcheck:
       test: ["CMD-SHELL", "rabbitmqctl --erlang-cookie $(cat /var/lib/rabbitmq/.erlang.cookie) status"]
       interval: 30s
@@ -200,8 +200,16 @@ services:
         sleep 1
       done;
       echo 'RabbitMQ server started.';
+      
+      rabbitmqctl add_user rabbit_user ${RABBITMQ_DEFAULT_PASS};
+      rabbitmqctl set_user_tags rabbit_user administrator;
+      rabbitmqctl set_permissions -p / rabbit_user '.*' '.*' '.*';
       rabbitmqctl set_policy ha-all '.*' '{\"ha-mode\":\"all\"}' --apply-to queues;
       "
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbit_user
+      - RABBITMQ_DEFAULT_PASS=password
+      - RABBITMQ_NODENAME=rabbit@rabbitmq-node1
     deploy:
       restart_policy:
         condition: on-failure
@@ -211,21 +219,21 @@ services:
 
   rabbitmq-node2:
     image: rabbitmq:3-management
-    environment:
-      - RABBITMQ_DEFAULT_USER=rabbit_user
-      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
-      - RABBITMQ_NODENAME=rabbit@rabbitmq-node2
+    ports:
+      - "5673:5672"   # AMQP Port for node2 (host port 5673 mapped to container port 5672)
+      - "15673:15672" 
     hostname: rabbitmq-node2
+    depends_on:
+      - rabbitmq-node1
     networks:
       internal_network:
         aliases:
           - rabbitmq-node2
     volumes:
       - rabbitmq-data-node2:/var/lib/rabbitmq
-      - certs-volume:/certs-volume:ro
-      - ../../scripts:/etc/rabbitmq-init
-    depends_on:
-      - rabbitmq-node1
+      - certs-volume:/etc/ssl/certs:ro
+      - ../../config/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie:ro
+      - ../../config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro 
     healthcheck:
       test: ["CMD-SHELL", "rabbitmqctl --erlang-cookie $(cat /var/lib/rabbitmq/.erlang.cookie) status"]
       interval: 30s
@@ -239,10 +247,12 @@ services:
         sleep 1
       done;
       echo 'RabbitMQ server started.';
+      
       while ! rabbitmqctl -n rabbit@rabbitmq-node1 --erlang-cookie $(cat /var/lib/rabbitmq/.erlang.cookie) ping; do
         echo 'Waiting for rabbitmq-node1...'
         sleep 5
       done;
+
       echo 'rabbitmq-node1 is ready. Joining the cluster...';
       rabbitmqctl stop_app;
       rabbitmqctl reset;
@@ -250,6 +260,10 @@ services:
       rabbitmqctl start_app;
       rabbitmqctl await_online_nodes 2 --timeout 60;
       "
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbit_user
+      - RABBITMQ_DEFAULT_PASS=password
+      - RABBITMQ_NODENAME=rabbit@rabbitmq-node2
     deploy:
       restart_policy:
         condition: on-failure
@@ -311,68 +325,12 @@ services:
         max_attempts: 3
         window: 120s
 
-  prometheus:
-    image: prom/prometheus:latest
-    ports:
-      - "9090:9090"
-    volumes:
-      - ../../config/prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - internal_network
-    healthcheck:
-      test: ["CMD", "wget", "--spider", "http://localhost:9090/-/ready"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
-  grafana:
-    image: grafana/grafana:latest
-    ports:
-      - "3000:3000"
-    volumes:
-      - ../../grafana-data:/var/lib/grafana
-      - ../../provisioning/datasources:/etc/grafana/provisioning/datasources
-      - ../../provisioning/dashboards:/etc/grafana/provisioning/dashboards
-      - ../../dashboards:/var/lib/grafana/dashboards
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin  # Change this for security
-    networks:
-      - internal_network
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
 networks:
   internal_network:
     name: internal_network
     external: true
-    ipam:
-      config:
-        - subnet: 172.22.0.0/16
-  external_network:
-    name: external_network
-    external: true
-    ipam:
-      config:
-        - subnet: 172.23.0.0/16
 
 volumes:
-  postgres-creds:
   redis-master-data:
     driver: local
   redis-replica-data:
@@ -390,8 +348,6 @@ volumes:
   minio-data1:
     driver: local
   minio-data2:
-    driver: local
-  grafana-data:
     driver: local
   certs-volume:
     external: true

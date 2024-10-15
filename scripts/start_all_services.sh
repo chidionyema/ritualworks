@@ -31,18 +31,19 @@ build_backend_services() {
   local compose_file=$1
 
   log "Building backend services defined in ${compose_file}..."
-  docker-compose -p "$PROJECT_NAME" -f "$compose_file"  up --build -d  || error_exit "Failed to build backend services."
+  docker-compose -p "$PROJECT_NAME" -f "$compose_file" build || error_exit "Failed to build backend services."
+  docker-compose -p "$PROJECT_NAME" -f "$compose_file" up -d || error_exit "Failed to bring up backend services."
 }
 
-
-# Function to start and scale frontend Docker services
+# Function to build and start frontend services (ensure latest build)
 start_and_scale_frontend_services() {
   local compose_file=$1
   local scale_count=$2
 
-  log "Starting and scaling frontend services defined in ${compose_file} with scale=${scale_count} for 'app' service..."
+  log "Building frontend services defined in ${compose_file}..."
+  docker-compose -p "$PROJECT_NAME" -f "$compose_file" build || error_exit "Failed to build frontend services."
 
-  # Use `docker-compose up` with `--scale` to scale the `app` service
+  log "Starting and scaling frontend services defined in ${compose_file} with scale=${scale_count} for 'app' service..."
   docker-compose -p "$PROJECT_NAME" -f "$compose_file" up -d --scale app="$scale_count" || error_exit "Failed to start and scale frontend services."
 }
 

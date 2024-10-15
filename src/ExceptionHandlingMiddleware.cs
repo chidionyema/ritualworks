@@ -1,3 +1,8 @@
+using System;
+using System.Threading.Tasks;       
+using Microsoft.AspNetCore.Http;    
+using Microsoft.Extensions.Logging; 
+
 public class ExceptionHandlingMiddleware
 {
     private readonly RequestDelegate _next;
