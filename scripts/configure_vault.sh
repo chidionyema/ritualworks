@@ -270,7 +270,8 @@ grant_permissions_to_vault() {
     local schema="public"
 
     log "Granting broad permissions to user '$db_user' on all tables, views, sequences, and schemas in the database '$db_name'..."
-
+    #  delay so postgress tables are fully ready
+    sleep 3
     # Grant all privileges on all tables, sequences, and functions in the public schema to the user
     docker exec "$postgres_container" psql -U postgres -d "$db_name" -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA $schema TO \"$db_user\";" || error_exit "Failed to grant permissions on tables."
     docker exec "$postgres_container" psql -U postgres -d "$db_name" -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA $schema TO \"$db_user\";" || error_exit "Failed to grant permissions on sequences."

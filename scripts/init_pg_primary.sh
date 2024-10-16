@@ -11,7 +11,7 @@ REPMGR_PASSWORD="${REPMGR_PASSWORD:-repmgrpass}"  # Default password for repmgr
 
 # Environment variables for creating the user and database
 POSTGRES_USER="${POSTGRES_USER:-myuser}"      # Default user if not set
-POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-mypassword}" # Password for the default user
+POSTGRES_PASSWORD="mypassword" # Password for the default user
 POSTGRES_DB="${POSTGRES_DB:-your_postgres_db}" # Default database if not set
 VAULT_USER="vault"                            # Vault user for DB secrets
 VAULT_PASSWORD="${VAULT_PASSWORD:-vaultpassword}"  # Password for Vault user
@@ -121,6 +121,25 @@ until pg_isready -U postgres; do
 done
 log "PostgreSQL is ready."
 
+# Create default application user and database
+log "Creating user '$POSTGRES_USER' if it does not exist..."
+psql -U postgres -d postgres -c "DO \$\$
+BEGIN
+    IF NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = '$POSTGRES_USER') THEN
+        CREATE ROLE $POSTGRES_USER WITH LOGIN PASSWORD '$POSTGRES_PASSWORD';
+    END IF;
+END
+\$\$;" || error_exit "Failed to create user '$POSTGRES_USER'."
+
+
+log "Checking if database '$POSTGRES_DB' exists..."
+DB_EXISTS=$(psql -U postgres -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$POSTGRES_DB'")
+if [ "$DB_EXISTS" != "1" ]; then
+    log "Creating database '$POSTGRES_DB'..."
+    psql -U postgres -d postgres -c "CREATE DATABASE $POSTGRES_DB OWNER $POSTGRES_USER;" || error_exit "Failed to create database '$POSTGRES_DB'."
+else
+    log "Database '$POSTGRES_DB' already exists. Skipping creation."
+fi
 # Set password for postgres superuser
 log "Setting password for postgres user..."
 psql -U postgres -d postgres -c "ALTER USER postgres WITH PASSWORD '$POSTGRES_PASSWORD';" || error_exit "Failed to set password for postgres user."
@@ -139,24 +158,8 @@ psql -U postgres -c "CREATE DATABASE repmgr OWNER $REPMGR_USER;" || error_exit "
 psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE repmgr TO $REPMGR_USER;" || error_exit "Failed to grant privileges on repmgr database."
 log "repmgr user and database setup completed."
 
-# Create default application user and database
-log "Creating user '$POSTGRES_USER' if it does not exist..."
-psql -U postgres -d postgres -c "DO \$\$
-BEGIN
-    IF NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = '$POSTGRES_USER') THEN
-        CREATE ROLE $POSTGRES_USER WITH LOGIN PASSWORD '$POSTGRES_PASSWORD';
-    END IF;
-END
-\$\$;" || error_exit "Failed to create user '$POSTGRES_USER'."
 
-log "Checking if database '$POSTGRES_DB' exists..."
-DB_EXISTS=$(psql -U postgres -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$POSTGRES_DB'")
-if [ "$DB_EXISTS" != "1" ]; then
-    log "Creating database '$POSTGRES_DB'..."
-    psql -U postgres -d postgres -c "CREATE DATABASE $POSTGRES_DB OWNER $POSTGRES_USER;" || error_exit "Failed to create database '$POSTGRES_DB'."
-else
-    log "Database '$POSTGRES_DB' already exists. Skipping creation."
-fi
+
 
 # Create 'vault' user and grant privileges
 log "Creating user '$VAULT_USER' if it does not exist..."
