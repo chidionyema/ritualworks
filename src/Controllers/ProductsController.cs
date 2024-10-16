@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper; // Added for AutoMapper
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RitualWorks.Contracts;
 using RitualWorks.Db;
@@ -17,21 +19,24 @@ namespace RitualWorks.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly IProductRepository _productRepository;
+        private readonly RitualWorksContext _context;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IAssetService _assetService;
         private readonly ILogger<ProductsController> _logger;
+        private readonly IMapper _mapper; // Added for AutoMapper
 
         public ProductsController(
-            IProductRepository productRepository,
+            RitualWorksContext context,
             ICategoryRepository categoryRepository,
             IAssetService assetService,
-            ILogger<ProductsController> logger)
+            ILogger<ProductsController> logger,
+            IMapper mapper) // Injected IMapper
         {
-            _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
             _assetService = assetService ?? throw new ArgumentNullException(nameof(assetService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         #region Product Endpoints
@@ -39,115 +44,145 @@ namespace RitualWorks.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts(int page = 1, int pageSize = 10)
         {
-            var products = await _productRepository.GetProductsAsync(page, pageSize);
-            var productDtos = products.Select(MapToProductDto).ToList();
+            var products = await _context.Products
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductAssets)
+                .OrderBy(p => p.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var productDtos = _mapper.Map<List<ProductDto>>(products);
             return Ok(productDtos);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDto>> GetProduct(Guid id)
         {
-            var product = await _productRepository.GetProductByIdAsync(id);
+            var product = await _context.Products
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductAssets)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (product == null)
-            {
                 return NotFound();
-            }
 
-            var productDto = MapToProductDto(product);
+            var productDto = _mapper.Map<ProductDto>(product);
             return Ok(productDto);
         }
 
         [HttpGet("categories/{categoryId}")]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCategory(Guid categoryId, int page = 1, int pageSize = 10)
         {
-            var products = await _productRepository.GetProductsByCategoryAsync(categoryId, page, pageSize);
-            var productDtos = products.Select(MapToProductDto).ToList();
+            var products = await _context.Products
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductAssets)
+                .Where(p => p.CategoryId == categoryId)
+                .OrderBy(p => p.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var productDtos = _mapper.Map<List<ProductDto>>(products);
             return Ok(productDtos);
         }
 
-   [HttpPost]
-[Authorize]
-public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] ProductCreateDto productCreateDto)
-{
-    if (!ModelState.IsValid)
-        return BadRequest(ModelState);
-
-    try
-    {
-        // Ensure the category exists
-        var category = await _categoryRepository.GetCategoryByIdAsync(productCreateDto.CategoryId);
-        if (category == null)
-            return BadRequest("Invalid category ID.");
-
-        // Map the incoming DTO to a Product entity and generate a new Product ID
-        var product = MapToProduct(productCreateDto);
-        product.Id = Guid.NewGuid();
-
-        // Add the product to the database first, so it exists before adding images or assets
-        await _productRepository.AddProductAsync(product);
-
-        // Fetch the product from the database to ensure it's the latest version
-        product = await _productRepository.GetProductByIdAsync(product.Id);
-
-        // Handle image uploads after adding the product
-        if (productCreateDto.Images != null && productCreateDto.Images.Count > 0)
-        {
-            var uploadedImages = await UploadProductImages(productCreateDto.Images, product.Id, productCreateDto.Name);
-            product.ProductImages.AddRange(uploadedImages);
-        }
-
-        // Handle asset uploads after adding the product
-        if (productCreateDto.Assets != null && productCreateDto.Assets.Count > 0)
-        {
-            var uploadedAssets = await UploadProductAssets(productCreateDto.Assets, product.Id, productCreateDto.Name);
-            product.ProductAssets.AddRange(uploadedAssets);
-        }
-
-        // Update the product with the newly uploaded images and assets
-        await _productRepository.UpdateProductAsync(product);
-
-        // Map the saved product to DTO for returning
-        var productDto = MapToProductDto(product);
-        return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, productDto);
-    }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Error creating product.");
-        return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
-    }
-}
-
-
-        [HttpPut("{id}")]
+        [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ProductDto>> UpdateProduct(Guid id, [FromBody] ProductDto productDto)
+        public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] ProductCreateDto productCreateDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var product = await _productRepository.GetProductByIdAsync(id);
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // Ensure the category exists
+                var category = await _categoryRepository.GetCategoryByIdAsync(productCreateDto.CategoryId);
+                if (category == null)
+                    return BadRequest("Invalid category ID.");
+
+                // Map the incoming DTO to a Product entity
+                var product = _mapper.Map<Product>(productCreateDto);
+
+                // Add the product to the database
+                await _context.Products.AddAsync(product);
+                await _context.SaveChangesAsync(); // Save to get the generated product.Id
+
+                // Handle image uploads
+                if (productCreateDto.Images != null && productCreateDto.Images.Count > 0)
+                {
+                    var uploadedImages = await UploadProductImages(productCreateDto.Images, product.Id, productCreateDto.Name);
+                    _context.ProductImages.AddRange(uploadedImages);
+                }
+
+                // Handle asset uploads
+                if (productCreateDto.Assets != null && productCreateDto.Assets.Count > 0)
+                {
+                    var uploadedAssets = await UploadProductAssets(productCreateDto.Assets, product.Id, productCreateDto.Name);
+                    _context.ProductAssets.AddRange(uploadedAssets);
+                }
+
+                // Save all changes
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                var productDto = _mapper.Map<ProductDto>(product);
+                return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, productDto);
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Error creating product.");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
+            }
+        }
+
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<ActionResult<ProductDto>> UpdateProduct(Guid id, [FromForm] ProductCreateDto productCreateDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var product = await _context.Products
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductAssets)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (product == null)
                 return NotFound();
 
-            var category = await _categoryRepository.GetCategoryByIdAsync(productDto.CategoryId);
+            var category = await _categoryRepository.GetCategoryByIdAsync(productCreateDto.CategoryId);
             if (category == null)
                 return BadRequest("Invalid category ID.");
 
-            // Update product properties
-            product.Name = productDto.Name;
-            product.Description = productDto.Description;
-            product.Price = productDto.Price;
-            product.Stock = productDto.Stock;
-            product.Rating = productDto.Rating;
-            product.IsNew = productDto.IsNew;
-            product.InStock = productDto.InStock;
-            product.Brand = productDto.Brand;
-            product.Type = productDto.Type;
-            product.CategoryId = productDto.CategoryId;
+            // Map the updated values onto the existing product entity
+            _mapper.Map(productCreateDto, product);
 
-            await _productRepository.UpdateProductAsync(product);
-            var updatedProductDto = MapToProductDto(product);
+            // Handle image uploads
+            if (productCreateDto.Images != null && productCreateDto.Images.Count > 0)
+            {
+                // Optionally, delete existing images
+                _context.ProductImages.RemoveRange(product.ProductImages);
+
+                var uploadedImages = await UploadProductImages(productCreateDto.Images, product.Id, productCreateDto.Name);
+                _context.ProductImages.AddRange(uploadedImages);
+            }
+
+            // Handle asset uploads
+            if (productCreateDto.Assets != null && productCreateDto.Assets.Count > 0)
+            {
+                // Optionally, delete existing assets
+                _context.ProductAssets.RemoveRange(product.ProductAssets);
+
+                var uploadedAssets = await UploadProductAssets(productCreateDto.Assets, product.Id, productCreateDto.Name);
+                _context.ProductAssets.AddRange(uploadedAssets);
+            }
+
+            await _context.SaveChangesAsync();
+
+            var updatedProductDto = _mapper.Map<ProductDto>(product);
             return Ok(updatedProductDto);
         }
 
@@ -155,11 +190,21 @@ public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] ProductCrea
         [Authorize]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
-            var product = await _productRepository.GetProductByIdAsync(id);
+            var product = await _context.Products
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductAssets)
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (product == null)
                 return NotFound();
 
-            await _productRepository.DeleteProductAsync(product.Id);
+            // Optionally, delete associated images and assets
+            _context.ProductImages.RemoveRange(product.ProductImages);
+            _context.ProductAssets.RemoveRange(product.ProductAssets);
+
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+
             return NoContent();
         }
 
@@ -167,7 +212,7 @@ public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] ProductCrea
         public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
         {
             var categories = await _categoryRepository.GetCategoriesAsync();
-            var categoryDtos = categories.Select(MapToCategoryDto).ToList();
+            var categoryDtos = _mapper.Map<List<CategoryDto>>(categories);
             return Ok(categoryDtos);
         }
 
@@ -178,9 +223,12 @@ public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] ProductCrea
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var category = new Category(Guid.NewGuid(), categoryDto.Name);
-            await _categoryRepository.AddCategoryAsync(category);
-            var createdCategoryDto = MapToCategoryDto(category);
+            var category = _mapper.Map<Category>(categoryDto);
+
+            await _context.Categories.AddAsync(category);
+            await _context.SaveChangesAsync();
+
+            var createdCategoryDto = _mapper.Map<CategoryDto>(category);
             return CreatedAtAction(nameof(GetCategories), new { id = category.Id }, createdCategoryDto);
         }
 
@@ -188,74 +236,15 @@ public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] ProductCrea
 
         #region Helper Methods
 
-        private ProductDto MapToProductDto(Product product)
-        {
-            return new ProductDto
-            {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                Price = product.Price,
-                Stock = product.Stock,
-                Rating = product.Rating,
-                IsNew = product.IsNew,
-                InStock = product.InStock,
-                Brand = product.Brand,
-                Type = product.Type,
-                CategoryId = product.CategoryId,
-                ProductImages = product.ProductImages?.Select(image => new ProductImageDto
-                {
-                    Id = image.Id,
-                    Url = image.Url,
-                    BlobName = image.BlobName,
-                    ProductId = image.ProductId
-                }).ToList(),
-                ProductAssets = product.ProductAssets?.Select(asset => new ProductAssetDto
-                {
-                    Id = asset.Id,
-                    AssetUrl = asset.AssetUrl,
-                    BlobName = asset.BlobName,
-                    ProductId = asset.ProductId
-                }).ToList()
-            };
-        }
-
-        private Product MapToProduct(ProductCreateDto productCreateDto)
-        {
-            return new Product
-            {
-                Name = productCreateDto.Name,
-                Description = productCreateDto.Description,
-                Price = productCreateDto.Price,
-                Stock = productCreateDto.Stock,
-                Rating = productCreateDto.Rating,
-                IsNew = productCreateDto.IsNew,
-                InStock = productCreateDto.InStock,
-                Brand = productCreateDto.Brand,
-                Type = productCreateDto.Type,
-                CategoryId = productCreateDto.CategoryId
-            };
-        }
-
-        private CategoryDto MapToCategoryDto(Category category)
-        {
-            return new CategoryDto
-            {
-                Id = category.Id,
-                Name = category.Name
-            };
-        }
-
-        private async Task<List<ProductImage>> UploadProductImages(List<IFormFile> images, Guid productId, string productName)
+        private async Task<List<ProductImage>> UploadProductImages(List<IFormFile> images, Guid productId, string username)
         {
             var uploadedImages = new List<ProductImage>();
 
             foreach (var image in images)
             {
-                var imageUrl = await _assetService.UploadFileAsync(image, productId, productName);
+                var imageUrl = await _assetService.UploadFileAsync(image, productId, username);
                 var productImage = new ProductImage
                 {
-                    Id = Guid.NewGuid(),
                     Url = imageUrl,
                     BlobName = Path.GetFileName(imageUrl),
                     ProductId = productId
@@ -266,16 +255,15 @@ public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] ProductCrea
             return uploadedImages;
         }
 
-        private async Task<List<ProductAsset>> UploadProductAssets(List<IFormFile> assets, Guid productId, string productName)
+        private async Task<List<ProductAsset>> UploadProductAssets(List<IFormFile> assets, Guid productId, string username)
         {
             var uploadedAssets = new List<ProductAsset>();
 
             foreach (var asset in assets)
             {
-                var assetUrl = await _assetService.UploadFileAsync(asset, productId, productName);
+                var assetUrl = await _assetService.UploadFileAsync(asset, productId, username);
                 var productAsset = new ProductAsset
                 {
-                    Id = Guid.NewGuid(),
                     AssetUrl = assetUrl,
                     BlobName = Path.GetFileName(assetUrl),
                     ProductId = productId
@@ -301,11 +289,11 @@ public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] ProductCrea
         public double Rating { get; set; }
         public bool IsNew { get; set; }
         public bool InStock { get; set; }
-        public string? Brand { get; set; }
-        public string? Type { get; set; }
+        public string Brand { get; set; }
+        public string Type { get; set; }
         public Guid CategoryId { get; set; }
-        public List<ProductImageDto>? ProductImages { get; set; }
-        public List<ProductAssetDto>? ProductAssets { get; set; }
+        public List<ProductImageDto> ProductImages { get; set; }
+        public List<ProductAssetDto> ProductAssets { get; set; }
     }
 
     public class ProductCreateDto
@@ -317,8 +305,8 @@ public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] ProductCrea
         public double Rating { get; set; }
         public bool IsNew { get; set; }
         public bool InStock { get; set; }
-        public string? Brand { get; set; }
-        public string? Type { get; set; }
+        public string Brand { get; set; }
+        public string Type { get; set; }
         public Guid CategoryId { get; set; }
         public List<IFormFile> Images { get; set; }
         public List<IFormFile> Assets { get; set; }
@@ -343,7 +331,7 @@ public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] ProductCrea
     public class CategoryDto
     {
         public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
+        public string Name { get; set; }
     }
 
     #endregion

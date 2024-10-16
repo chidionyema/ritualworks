@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using RitualWorks.Contracts;
 using RitualWorks.Db;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace RitualWorks.Repositories
 {
@@ -14,56 +14,48 @@ namespace RitualWorks.Repositories
 
         public ProductRepository(RitualWorksContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<IEnumerable<Product>> GetProductsAsync(int page, int pageSize)
         {
-            var products = await _context.Products
-                             .OrderBy(p => p.Name)
-                             .Skip((page - 1) * pageSize)
-                             .Take(pageSize)
-                             .ToListAsync();
+            return await _context.Products
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductAssets)
+                .OrderBy(p => p.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+        }
 
-            Console.WriteLine("Products Retrieved: " + string.Join(", ", products.Select(p => p.Name)));
-            return products;
+        public async Task<Product> GetProductByIdAsync(Guid id)
+        {
+            return await _context.Products
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductAssets)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(Guid categoryId, int page, int pageSize)
         {
             return await _context.Products
-                                 .Where(p => p.CategoryId == categoryId)
-                                 .OrderBy(p => p.Name) // Ensure consistent order
-                                 .Skip((page - 1) * pageSize)
-                                 .Take(pageSize)
-                                 .ToListAsync();
+                .Include(p => p.ProductImages)
+                .Include(p => p.ProductAssets)
+                .Where(p => p.CategoryId == categoryId)
+                .OrderBy(p => p.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
-        public async Task AddProductAssetAsync(ProductAsset productAsset)
-        {
-            await _context.ProductAssets.AddAsync(productAsset);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task<Product> GetProductByIdAsync(Guid id)
-        {
-            return await _context.Products.Include(p => p.ProductImages).FirstOrDefaultAsync(p => p.Id == id);
-        }
-
-         public async Task<List<Product>> GetProductsByIdsAsync(List<Guid> productIds)
-        {
-            return await _context.Products.Where(p => productIds.Contains(p.Id)).ToListAsync();
-        }
         public async Task AddProductAsync(Product product)
         {
             await _context.Products.AddAsync(product);
-            await _context.SaveChangesAsync();
         }
 
         public async Task UpdateProductAsync(Product product)
         {
             _context.Products.Update(product);
-            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteProductAsync(Guid id)
@@ -72,15 +64,57 @@ namespace RitualWorks.Repositories
             if (product != null)
             {
                 _context.Products.Remove(product);
-                await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<IEnumerable<Category>> GetCategoriesAsync()
+        {
+            return await _context.Categories
+                .OrderBy(c => c.Name)
+                .ToListAsync();
+        }
+
+        public async Task<Category> GetCategoryByIdAsync(Guid id)
+        {
+            return await _context.Categories.FindAsync(id);
+        }
+
+        public async Task AddCategoryAsync(Category category)
+        {
+            await _context.Categories.AddAsync(category);
+        }
+
+        public async Task AddProductImagesAsync(IEnumerable<ProductImage> images)
+        {
+            await _context.ProductImages.AddRangeAsync(images);
+        }
+
+        public async Task AddProductAssetsAsync(IEnumerable<ProductAsset> assets)
+        {
+            await _context.ProductAssets.AddRangeAsync(assets);
         }
 
         public async Task AddProductImageAsync(ProductImage productImage)
         {
             await _context.ProductImages.AddAsync(productImage);
+        }
+
+        public async Task AddProductAssetAsync(ProductAsset productAsset)
+        {
+            await _context.ProductAssets.AddAsync(productAsset);
+        }
+
+        public async Task<List<Product>> GetProductsByIdsAsync(List<Guid> productIds)
+        {
+            return await _context.Products
+                .Where(p => productIds.Contains(p.Id))
+                .ToListAsync();
+        }
+
+        public async Task SaveChangesAsync()
+        {
             await _context.SaveChangesAsync();
         }
     }
-}
 
+}

@@ -67,83 +67,55 @@ your-project/
 - This setup uses `VAULT_DEV_ROOT_TOKEN_ID` for development purposes. Use a secure method to handle Vault tokens and secrets in production.
 
 
-
-### Configure Grafana
-
-#### Add Prometheus Data Source:
-
-1. Open Grafana in your browser (`http://localhost:3001`).
-2. Log in with the default credentials (`admin / admin`).
-3. Add a new data source and select Prometheus.
-4. Set the URL to `http://prometheus:9090` and save the data source.
-
-#### Import Dashboards:
-
-You can import predefined dashboards for Postgres, Redis, Elasticsearch, RabbitMQ, etc.
-
-1. Go to the Dashboard section in Grafana.
-2. Import a new dashboard by entering the dashboard ID from the Grafana website (e.g., 11074 for PostgreSQL, 763 for Redis, etc.).
-
-### Setting Up Permissions for Grafana Provisioning Files
-
-To ensure that Grafana can access and read the provisioning files correctly, follow these steps to set the appropriate ownership and permissions:
-
-1. **Set Ownership to the Grafana User**
-
-   Replace `/path/to` with the actual paths where your provisioning files and dashboards are located. The Grafana service typically runs with the user ID `472`, so it's important to adjust the ownership accordingly:
-
-   ```bash
-   # Set ownership to the Grafana user (replace with the correct user if needed)
-   sudo chown -R 472:472 /path/to/config/provisioning/datasources
-   sudo chown -R 472:472 /path/to/config/provisioning/dashboards
-   sudo chown -R 472:472 /path/to/dashboards
-
-2. **Set Read and Execute Permissions for Directories and Read Permissions for Files
-```bash
-   sudo chmod -R 755 /path/to/config/provisioning/datasources
-   sudo chmod -R 755 /path/to/config/provisioning/dashboards
-   sudo chmod -R 755 /path/to/dashboards
-
-This step ensures that the Grafana service has the correct permissions to execute the necessary files:
-3. *Ensure That Files Have Read Permissions
-
-To make sure all files within the directories are readable, execute the following commands:
+Vault for secrets management
+HAProxy for load balancing and SSL termination
+Redis with master-replica setup for caching
+Elasticsearch cluster for search capabilities
+RabbitMQ cluster for messaging
+MinIO instances for object storage
+Prometheus and Grafana for monitoring
+PostgreSQL with primary-standby replication
+Consul for service discovery and configuration
+Custom Application Services with Nginx as a reverse proxy
 
 
-```bash
-sudo find /path/to/config/provisioning/datasources -type f -exec chmod 644 {} \;
-sudo find /path/to/config/provisioning/dashboards -type f -exec chmod 644 {} \;
-sudo find /path/to/dashboards -type f -exec chmod 644 {} \;
+How Components Work Together for Scalability and Availability
+HAProxy and Nginx Load Balancing:
 
-e.g 
-```bash
-      sudo chown -R 472:472 ./provisioning/datasources
-      sudo chown -R 472:472 ./provisioning/dashboards
-      sudo chown -R 472:472 ./dashboards
-       # Set read and execute permissions for directories, and read permissions for files
-      sudo chmod -R 755 ./provisioning/datasources
-      sudo chmod -R 755 ./provisioning/dashboards
-      sudo chmod -R 755 ./dashboards
-      # Ensure that files have read permissions
-      sudo find ./provisioning/datasources -type f -exec chmod 644 {} \;
-      sudo find ./provisioning/dashboards -type f -exec chmod 644 {} \;
-      sudo find ./dashboards -type f -exec chmod 644 {} \;
+Distributes incoming requests across multiple instances of services like PostgreSQL and the application.
+Supports scaling out by adding more backend instances without changing the client configuration.
+Database Replication and Failover:
 
-      
+PostgreSQL primary-standby setup allows for automatic failover.
+Repmgr manages replication and promotes standby to primary if needed.
+Caching Layer with Redis:
 
-4. *Restart Grafana
+Offloads frequent read requests from the database.
+Master-replica setup ensures high availability and scalability for read operations.
+Search Capabilities with Elasticsearch:
 
-After adjusting the permissions, restart Grafana to apply the changes:
-```bash docker-compose restart grafana
+Clustered setup allows for distributing indexing and search load.
+Data is sharded and replicated, improving performance and ensuring data availability.
+Asynchronous Processing with RabbitMQ:
 
-5. Check Grafana's logs to ensure that all provisioning files are being loaded correctly:
-```bash docker logs <grafana_container_name>
+Decouples services by handling background tasks and message queuing.
+Clustered setup ensures messages are not lost and can be processed even if a node fails.
+Object Storage with MinIO:
 
+Provides scalable storage for unstructured data like files and images.
+Can be scaled by adding more instances in a distributed mode.
+Monitoring and Alerting:
 
-* Vault is already initialized
-delete vault/data folder  stop and delete vault and consul containers
+Prometheus collects metrics from all services, allowing for proactive scaling decisions.
+Grafana visualizes metrics, helping in identifying bottlenecks or failures.
+Service Discovery with Consul:
 
+Dynamically discovers and configures services, enabling them to find each other without hard-coded addresses.
+Facilitates scaling by automatically updating service catalogs.
+Secrets Management with Vault:
 
+Centralizes credential management, reducing security risks.
+Scales by handling dynamic secret generation for an increasing number of services.
 
 ### access  vault UI
 http://127.0.0.1:8200/ui

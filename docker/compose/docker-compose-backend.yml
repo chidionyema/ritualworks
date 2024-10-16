@@ -210,6 +210,7 @@ services:
       - RABBITMQ_DEFAULT_USER=rabbit_user
       - RABBITMQ_DEFAULT_PASS=password
       - RABBITMQ_NODENAME=rabbit@rabbitmq-node1
+      - RABBITMQ_CONFIG_FILE=/etc/rabbitmq/rabbitmq.conf 
     deploy:
       restart_policy:
         condition: on-failure
@@ -264,6 +265,7 @@ services:
       - RABBITMQ_DEFAULT_USER=rabbit_user
       - RABBITMQ_DEFAULT_PASS=password
       - RABBITMQ_NODENAME=rabbit@rabbitmq-node2
+      - RABBITMQ_CONFIG_FILE=/etc/rabbitmq/rabbitmq.conf 
     deploy:
       restart_policy:
         condition: on-failure
