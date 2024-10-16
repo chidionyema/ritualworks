@@ -21,7 +21,7 @@ fi
 # Perform initial full backup if none exists
 if ! backups_exist; then
     echo "No existing backups found. Performing initial full backup..."
-    pgbackrest --stanza=ritualworks --type=full --log-level-console=info backup
+    pgbackrest --stanza=ritualworks --type=full backup
 fi
 
 # Perform scheduled backups
@@ -29,10 +29,10 @@ while true; do
     DAY_OF_WEEK=$(date +%u)
     if [ "$DAY_OF_WEEK" -eq 7 ]; then
         echo "Performing full backup..."
-        pgbackrest --stanza=ritualworks --type=full --log-level-console=info backup
+        pgbackrest --stanza=ritualworks --type=full backup
     else
         echo "Performing incremental backup..."
-        pgbackrest --stanza=ritualworks --type=incr --log-level-console=info backup
+        pgbackrest --stanza=ritualworks --type=incr backup
     fi
 
     echo "Backup completed: $(date)"

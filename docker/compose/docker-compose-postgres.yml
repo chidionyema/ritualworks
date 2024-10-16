@@ -82,21 +82,21 @@ services:
         max_attempts: 3
         window: 120s
 
-  pgbackrest:
-    build:
-      context: ../
-      dockerfile: Dockerfile.pgbackrest  # Use the custom Dockerfile
+  pg_dump_backup:
+    image: postgres:13-alpine
     depends_on:
       - postgres_primary
     volumes:
-      - ../../config:/etc/pgbackrest  # pgBackRest config from host's ../../config
-      - pgbackrest-data:/var/lib/pgbackrest  # Backup data storage
-      - ../../data/postgres-primary-data:/bitnami/postgresql
-      - ../../backups:/backups  # Local directory to store the backups
-      - ../../scripts:/scripts  # Scripts directory for backup and restore
+      - ../../backups:/backups  # Directory to store backups
+      - ../../scripts:/scripts  # Directory containing backup scripts
+    environment:
+      - PGPASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_HOST=postgres_primary
     networks:
       - internal_network
-    entrypoint: ["/bin/bash", "-c", "/scripts/pgbackrest_backup.sh"]
+    entrypoint: ["/bin/bash", "/scripts/pg_dump_backup.sh"]
 
 networks:
   internal_network:

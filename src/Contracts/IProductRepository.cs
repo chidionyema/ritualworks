@@ -16,6 +16,7 @@ namespace RitualWorks.Contracts
         Task AddProductImageAsync(ProductImage productImage);
         Task AddProductAssetAsync(ProductAsset productAsset);
         Task<List<Product>> GetProductsByIdsAsync(List<Guid> productIds);
+        Task SaveChangesAsync();
 
          
     }

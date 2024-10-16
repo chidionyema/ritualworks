@@ -28,6 +28,8 @@ using RitualWorks.Models;
 using Serilog;
 using Serilog.Events;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Authentication;
+
 
 public partial class Program
 {
@@ -119,6 +121,7 @@ public partial class Program
 
     public static async Task ConfigureServicesAsync(WebApplicationBuilder builder)
     {
+        builder.Services.AddAutoMapper(typeof(MappingProfile));
         // Add Identity services
         builder.Services.AddIdentity<User, IdentityRole>()
             .AddEntityFrameworkStores<RitualWorksContext>()
@@ -202,13 +205,11 @@ public partial class Program
 
     private static void AddRepositoryAndServiceDependencies(WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<IFileStorageService, LocalFileSystemService>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
         builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
         builder.Services.AddScoped<IOrderRepository, OrderRepository>();
         builder.Services.AddScoped<OrderService>();
-        builder.Services.AddScoped<ISignedUrlService, SignedUrlService>();
         builder.Services.AddScoped<IAssetService, AssetService>();
     }
 
@@ -217,16 +218,22 @@ public partial class Program
         builder.Services.AddMassTransit(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
-            x.AddConsumer<MyConsumer>();
+            // x.AddConsumer<MyConsumer>();
 
             x.UsingRabbitMq((context, cfg) =>
             {
                 var rabbitMqHost = builder.Configuration["MassTransit:RabbitMq:Host"];
-                var rabbitMqUsername = "rabbit_user"; 
-                var rabbitMqPassword = "password";  
+                var rabbitMqUsername = builder.Configuration["MassTransit:RabbitMq:Username"];
+                var rabbitMqPassword = builder.Configuration["MassTransit:RabbitMq:Password"];
+
+                var rabbitMqSslEnabled = bool.Parse(builder.Configuration["MassTransit:RabbitMq:Ssl:Enabled"]);
+                var rabbitMqServerName = builder.Configuration["MassTransit:RabbitMq:Ssl:ServerName"];
+                var rabbitMqCertPath = builder.Configuration["MassTransit:RabbitMq:Ssl:CertificatePath"];
+                var rabbitMqCertPassphrase = builder.Configuration["MassTransit:RabbitMq:Ssl:CertificatePassphrase"];
+                var useCertAsAuth = bool.Parse(builder.Configuration["MassTransit:RabbitMq:Ssl:UseCertificateAsAuthentication"]);
 
                 var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
-                logger.LogInformation("Connecting to RabbitMQ Host: {Host}, Username: {Username}", rabbitMqHost, rabbitMqUsername);
+                logger.LogInformation("Connecting to RabbitMQ Host: {Host}, Username: {Username}, SSL: {SslEnabled}", rabbitMqHost, rabbitMqUsername, rabbitMqSslEnabled);
 
                 cfg.Host(new Uri(rabbitMqHost), h =>
                 {
@@ -234,6 +241,17 @@ public partial class Program
                     h.Password(rabbitMqPassword);
                     h.Heartbeat(10); 
                     h.RequestedConnectionTimeout(TimeSpan.FromSeconds(30)); 
+
+                    if (rabbitMqSslEnabled)
+                    {
+                        h.UseSsl(ssl =>
+                        {
+                            ssl.Protocol = SslProtocols.Tls12;
+                            ssl.ServerName = rabbitMqServerName;
+                            ssl.CertificatePath = rabbitMqCertPath;
+                            ssl.CertificatePassphrase = rabbitMqCertPassphrase;
+                                             });
+                    }
                 });
 
                 cfg.PrefetchCount = 16;
@@ -243,6 +261,7 @@ public partial class Program
                 cfg.ConfigureEndpoints(context);
             });
         });
+
     }
 
     private static void AddMinioClient(WebApplicationBuilder builder)

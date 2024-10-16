@@ -40,3 +40,4 @@ data/
 elasticsearch/logs/gc.log
 elasticsearch/logs/gc.log.2
 grafana-data/grafana.db
+vault/

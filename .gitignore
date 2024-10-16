@@ -33,7 +33,7 @@ scripts/unseal_keys.json
 scripts/new_vault_token.txt
 scripts/unseal_keys.json
 scripts/new_vault_token.txt
-vault/secrets/vault-agent-token
+vault/secrets/
 # To ignore the entire ssl/certs directory
 docker/compose/.env.bak
 docker/compose/.env
