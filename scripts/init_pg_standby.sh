@@ -61,6 +61,8 @@ wait_for_primary_ready() {
 
 wait_for_primary_ready
 
+ #  delay so postgress tables are fully ready
+    sleep 9
 # Clean the data directory
 log "Cleaning the data directory..."
 rm -rf ${PGDATA:?}/*

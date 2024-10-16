@@ -364,3 +364,48 @@
 2024/10/16 10:27:54 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
 2024/10/16 10:27:54 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
 2024/10/16 10:27:54 [emerg] 1#1: duplicate upstream "app_cluster" in /etc/nginx/conf.d/upstreams.conf:4
+2024/10/16 10:56:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/16 10:56:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/16 10:56:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/16 10:56:20 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/16 10:56:20 [emerg] 1#1: duplicate upstream "app_cluster" in /etc/nginx/conf.d/upstreams.conf:4
+2024/10/16 10:57:57 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/16 10:57:57 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/16 10:57:57 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/16 10:57:57 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/16 10:57:57 [emerg] 1#1: duplicate upstream "app_cluster" in /etc/nginx/conf.d/upstreams.conf:4
+2024/10/16 10:59:43 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/16 10:59:43 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/16 10:59:43 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/16 10:59:43 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/16 10:59:43 [emerg] 1#1: duplicate upstream "app_cluster" in /etc/nginx/conf.d/upstreams.conf:4
+2024/10/16 11:14:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/16 11:14:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/16 11:14:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/16 11:14:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/16 11:14:14 [emerg] 1#1: duplicate upstream "app_cluster" in /etc/nginx/conf.d/upstreams.conf:4
+2024/10/16 11:30:39 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/16 11:30:39 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/16 11:30:39 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/16 11:30:39 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/16 11:30:39 [emerg] 1#1: duplicate upstream "app_cluster" in /etc/nginx/conf.d/upstreams.conf:4
+2024/10/16 11:31:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/16 11:31:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/16 11:31:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/16 11:31:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/16 11:31:50 [emerg] 1#1: duplicate upstream "app_cluster" in /etc/nginx/conf.d/upstreams.conf:4
+2024/10/16 11:33:42 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/16 11:33:42 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/16 11:33:42 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/16 11:33:42 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/16 11:33:42 [emerg] 1#1: duplicate upstream "app_cluster" in /etc/nginx/conf.d/upstreams.conf:4
+2024/10/16 11:33:45 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/16 11:33:45 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/16 11:33:45 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/16 11:33:45 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/16 11:33:45 [emerg] 1#1: duplicate upstream "app_cluster" in /etc/nginx/conf.d/upstreams.conf:4
+2024/10/16 18:16:29 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/16 18:16:29 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/16 18:16:29 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/16 18:16:29 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/16 18:16:29 [emerg] 1#1: duplicate upstream "app_cluster" in /etc/nginx/conf.d/upstreams.conf:4

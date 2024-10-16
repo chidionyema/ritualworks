@@ -22,6 +22,17 @@ start_services() {
     ./start_all_services.sh || error_exit "Service startup failed."
 }
 
+DOCKER_COMPOSE_FILE="../docker/compose/docker-compose-postgres.yml"
+
+# Function to start postgres
+start_postgres() {
+    log "Starting postgresl..."
+    docker-compose  -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" up -d  || error_exit "Failed to start Vault and Consul"
+    
+    log "Waiting for postgres to start..."
+    sleep 2  # Ensure enough time for postgres to fully initialize
+}
+
 # Main script execution
 log "Initializing Vault and Docker services deployment..."
 
@@ -39,7 +50,7 @@ log "Generating Vault certificates..."
 
 # Step 4: Configure Vault and PostgreSQL
 log "Configuring Vault and PostgreSQL..."
-./install_postgres.sh || error_exit "PostgreSQL installation failed."
+start_postgres
 ./configure_vault.sh || error_exit "Vault configuration failed."
 
 # Step 5: Start all services

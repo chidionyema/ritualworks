@@ -38,6 +38,6 @@ vault/secrets/
 docker/compose/.env.bak
 docker/compose/.env
 data/
-elasticsearch/logs/gc.log
-elasticsearch/logs/gc.log.2
+
 grafana-data/grafana.db
+elasticsearch/logs

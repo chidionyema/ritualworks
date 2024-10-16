@@ -512,27 +512,9 @@ main() {
     # Enable necessary authentication methods in Vault
     enable_approle_auth
     enable_userpass_auth
-
-    # Create policies with specific capabilities
-    create_policy "write-secrets-policy" 'path "secret/data/*" { capabilities = ["create", "read", "update", "delete", "list"] }'
-    create_policy "read-secrets-policy" 'path "secret/data/*" { capabilities = ["read"] }'
-
-    # Create policies for PostgreSQL
+     # Create policies for PostgreSQL
     create_policy "vault-read-secrets-policy" 'path "database/creds/vault" { capabilities = ["read"] }'
-
-    # Create groups and associate policies
-    create_group "write-group" "write-secrets-policy"
-    create_group "readonly-group" "read-secrets-policy"
-
-    # Create roles for the AppRole authentication method
-    create_role "write-role" "write-secrets-policy"
-    create_role "read-role" "read-secrets-policy"
-
-    # Create users for the Userpass authentication method
-    create_user "write-user" "write-password" "write-secrets-policy"
-    create_user "readonly-user" "readonly-password" "read-secrets-policy"
-
-    create_token "root-policy" "ADMIN_TOKEN"
+        create_token "root-policy" "ADMIN_TOKEN"
 
     log "All policies, groups, roles, users, and tokens created successfully."
 
@@ -568,6 +550,26 @@ main() {
     update_env_file "$env_vars"
 
     log "Process complete."
+
+
+    # Create policies with specific capabilities
+    # create_policy "write-secrets-policy" 'path "secret/data/*" { capabilities = ["create", "read", "update", "delete", "list"] }'
+    # create_policy "read-secrets-policy" 'path "secret/data/*" { capabilities = ["read"] }'
+
+   
+    # Create groups and associate policies
+    #  create_group "write-group" "write-secrets-policy"
+     # create_group "readonly-group" "read-secrets-policy"
+
+    # Create roles for the AppRole authentication method
+    #  create_role "write-role" "write-secrets-policy"
+    #  create_role "read-role" "read-secrets-policy"
+
+    # Create users for the Userpass authentication method
+     # create_user "write-user" "write-password" "write-secrets-policy"
+     # create_user "readonly-user" "readonly-password" "read-secrets-policy"
+
+
 }
 
 # Execute the main function with command-line arguments
