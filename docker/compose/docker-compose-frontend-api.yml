@@ -26,6 +26,8 @@ services:
       - uploads:/app/uploads
       - ../../vault/secrets:/vault/secrets
       - ../../app_logs:/logs
+      - certs-volume:/certs-volume:rw  
+
     networks:
       - internal_network
       - external_network
@@ -148,4 +150,6 @@ volumes:
   postgres-creds:
   grafana-data:
     driver: local
+  certs-volume:
+    external: true
   

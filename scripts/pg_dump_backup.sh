@@ -7,12 +7,16 @@ POSTGRES_HOST="${POSTGRES_HOST}"
 POSTGRES_PORT=5432
 POSTGRES_USER="${POSTGRES_USER}"
 POSTGRES_DB="${POSTGRES_DB}"
+POSTGRES_PASSWORD="mypassword"  # Ensure this is set in the environment
 
 # Wait for PostgreSQL to be ready
 until pg_isready -h $POSTGRES_HOST -p $POSTGRES_PORT -U $POSTGRES_USER; do
   echo "Waiting for PostgreSQL at $POSTGRES_HOST:$POSTGRES_PORT..."
   sleep 2
 done
+
+# Export PGPASSWORD for authentication
+export PGPASSWORD="${POSTGRES_PASSWORD}"
 
 # Perform the backup
 echo "Starting backup of database '$POSTGRES_DB'..."

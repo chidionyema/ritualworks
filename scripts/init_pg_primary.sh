@@ -94,6 +94,9 @@ sed -i "/^#*\s*wal_log_hints\s*=\s*/c\wal_log_hints = on" "$POSTGRESQL_CONF_FILE
 # Modify pg_hba.conf to enforce SSL connections and allow replication for repmgr
 log "Modifying pg_hba.conf to allow connections..."
 
+# Add the following line to allow password-based connections for the user 'myuser'
+echo "host all myuser $DOCKER_SUBNET md5" >> "$PG_HBA_CONF"
+
 # Allow replication connections from any host in the Docker subnet using SSL
 echo "hostssl replication $REPMGR_USER $DOCKER_SUBNET md5" >> "$PG_HBA_CONF"
 
@@ -144,6 +147,9 @@ fi
 log "Setting password for postgres user..."
 psql -U postgres -d postgres -c "ALTER USER postgres WITH PASSWORD '$POSTGRES_PASSWORD';" || error_exit "Failed to set password for postgres user."
 
+# Grant all privileges on all tables in public schema to the postgres user
+log "Granting privileges on all tables in public schema to $POSTGRES_USER..."
+psql -U postgres -d $POSTGRES_DB -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $POSTGRES_USER;" || error_exit "Failed to grant privileges on tables to $POSTGRES_USER."
 # Create repmgr user and database
 log "Creating repmgr user and database..."
 psql -U postgres -d postgres -c "DO \$\$

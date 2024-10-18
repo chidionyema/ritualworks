@@ -38,6 +38,10 @@ vault/secrets/
 docker/compose/.env.bak
 docker/compose/.env
 data/
-
+backups
+app_logs
+nginx_logs
+postgres_logs
+logs
 grafana-data/grafana.db
 elasticsearch/logs
