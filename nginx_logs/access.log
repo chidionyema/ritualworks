@@ -504,3 +504,5 @@
 172.21.0.1 - - [16/Oct/2024:08:35:52 +0000] "GET /api/products HTTP/2.0" 200 4507 "http://localhost:3001/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36"
 172.21.0.1 - - [16/Oct/2024:08:35:52 +0000] "GET /api/products HTTP/2.0" 200 4507 "http://localhost:3001/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36"
 172.21.0.1 - - [16/Oct/2024:08:35:53 +0000] "GET /api/products HTTP/2.0" 200 4507 "http://localhost:3001/" "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Mobile Safari/537.36"
+172.21.0.1 - - [18/Oct/2024:11:36:47 +0000] "GET /api/products HTTP/2.0" 200 548 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+172.21.0.1 - - [18/Oct/2024:11:36:48 +0000] "GET /favicon.ico HTTP/2.0" 404 0 "https://api.local.ritualworks.com/api/products" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"

@@ -113,6 +113,7 @@ services:
       - ../../nginx/ssl:/etc/nginx/ssl
       - ../../nginx/conf.d/:/etc/nginx/conf.d/:ro
       - ../../nginx_logs:/var/log/nginx
+      - certs-volume:/certs-volume:rw  
     depends_on:
       prometheus:
         condition: service_healthy

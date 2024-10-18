@@ -1,5 +1,4 @@
 using AutoMapper;
-using RitualWorks.Contracts;
 using RitualWorks.Db;
 using RitualWorks.Controllers;
 public class MappingProfile : Profile
