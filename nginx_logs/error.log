@@ -409,3 +409,46 @@
 2024/10/16 18:16:29 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
 2024/10/16 18:16:29 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
 2024/10/16 18:16:29 [emerg] 1#1: duplicate upstream "app_cluster" in /etc/nginx/conf.d/upstreams.conf:4
+2024/10/18 08:09:35 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/18 08:09:35 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/18 08:09:35 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/18 08:09:35 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/18 08:09:35 [emerg] 1#1: duplicate upstream "app_cluster" in /etc/nginx/conf.d/upstreams.conf:4
+2024/10/18 09:11:46 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/18 09:11:46 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/18 09:11:46 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/18 09:11:46 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/18 09:11:46 [emerg] 1#1: host not found in upstream "app:8080" in /etc/nginx/conf.d/upstreams.conf:6
+2024/10/18 09:24:28 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/18 09:24:28 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/18 09:24:28 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/18 09:24:28 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/18 09:24:28 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/18 09:24:28 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/18 09:24:28 [emerg] 1#1: cannot load certificate "/etc/nginx/ssl/minio.local.ritualworks.com.crt": BIO_new_file() failed (SSL: error:80000002:system library::No such file or directory:calling fopen(/etc/nginx/ssl/minio.local.ritualworks.com.crt, r) error:10000080:BIO routines::no such file)
+2024/10/18 09:29:45 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/18 09:29:45 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/18 09:29:45 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/18 09:29:45 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/18 09:29:45 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/18 09:29:45 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/18 09:29:45 [emerg] 1#1: cannot load certificate "/etc/nginx/ssl/minio.local.ritualworks.com.crt": BIO_new_file() failed (SSL: error:80000002:system library::No such file or directory:calling fopen(/etc/nginx/ssl/minio.local.ritualworks.com.crt, r) error:10000080:BIO routines::no such file)
+2024/10/18 09:35:05 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/18 09:35:05 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/18 09:35:05 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/18 09:35:05 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/18 09:35:05 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/18 09:35:05 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/18 09:35:05 [emerg] 1#1: cannot load certificate "/etc/nginx/ssl/minio.local.ritualworks.com.crt": BIO_new_file() failed (SSL: error:80000002:system library::No such file or directory:calling fopen(/etc/nginx/ssl/minio.local.ritualworks.com.crt, r) error:10000080:BIO routines::no such file)
+2024/10/18 09:38:49 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/18 09:38:49 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/18 09:38:49 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/18 09:38:49 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/18 09:38:49 [emerg] 1#1: host not found in upstream "app:8080" in /etc/nginx/conf.d/upstreams.conf:6
+2024/10/18 09:48:38 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/18 09:48:38 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/18 09:48:38 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/18 09:48:38 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/18 09:48:38 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/18 09:48:38 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/18 09:48:38 [emerg] 1#1: cannot load certificate "/etc/nginx/ssl/minio.local.ritualworks.com.crt": BIO_new_file() failed (SSL: error:80000002:system library::No such file or directory:calling fopen(/etc/nginx/ssl/minio.local.ritualworks.com.crt, r) error:10000080:BIO routines::no such file)

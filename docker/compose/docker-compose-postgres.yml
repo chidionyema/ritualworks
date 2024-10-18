@@ -83,7 +83,7 @@ services:
         window: 120s
 
   pg_dump_backup:
-    image: postgres:13-alpine
+    image: postgres:16-alpine
     depends_on:
       - postgres_primary
     volumes:
