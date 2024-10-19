@@ -177,6 +177,7 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+      - "5671:5671"
     hostname: rabbitmq-node1
     networks:
       internal_network:
@@ -223,6 +224,7 @@ services:
     ports:
       - "5673:5672"   # AMQP Port for node2 (host port 5673 mapped to container port 5672)
       - "15673:15672" 
+      - "5674:5671"
     hostname: rabbitmq-node2
     depends_on:
       - rabbitmq-node1

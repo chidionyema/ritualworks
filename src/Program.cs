@@ -213,56 +213,53 @@ public partial class Program
         builder.Services.AddScoped<IAssetService, AssetService>();
     }
 
-    private static void AddMassTransit(WebApplicationBuilder builder)
+private static void AddMassTransit(WebApplicationBuilder builder)
+{
+    builder.Services.AddMassTransit(x =>
     {
-        builder.Services.AddMassTransit(x =>
+        x.SetKebabCaseEndpointNameFormatter();
+        // x.AddConsumer<MyConsumer>();
+
+        x.UsingRabbitMq((context, cfg) =>
         {
-            x.SetKebabCaseEndpointNameFormatter();
-            // x.AddConsumer<MyConsumer>();
+            var rabbitMqHost = builder.Configuration["MassTransit:RabbitMq:Host"];
+            var rabbitMqUsername = builder.Configuration["MassTransit:RabbitMq:Username"];
+            var rabbitMqPassword = builder.Configuration["MassTransit:RabbitMq:Password"];
 
-            x.UsingRabbitMq((context, cfg) =>
+            var rabbitMqSslEnabled = bool.Parse(builder.Configuration["MassTransit:RabbitMq:Ssl:Enabled"]);
+            var rabbitMqServerName = builder.Configuration["MassTransit:RabbitMq:Ssl:ServerName"];
+            // We no longer need the client certificate settings since mTLS is disabled
+
+            var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("Connecting to RabbitMQ Host: {Host}, Username: {Username}, SSL: {SslEnabled}", rabbitMqHost, rabbitMqUsername, rabbitMqSslEnabled);
+
+            cfg.Host(new Uri(rabbitMqHost), h =>
             {
-                var rabbitMqHost = builder.Configuration["MassTransit:RabbitMq:Host"];
-                var rabbitMqUsername = builder.Configuration["MassTransit:RabbitMq:Username"];
-                var rabbitMqPassword = builder.Configuration["MassTransit:RabbitMq:Password"];
+                h.Username(rabbitMqUsername);
+                h.Password(rabbitMqPassword);
+                h.Heartbeat(10); 
+                h.RequestedConnectionTimeout(TimeSpan.FromSeconds(30));
 
-                var rabbitMqSslEnabled = bool.Parse(builder.Configuration["MassTransit:RabbitMq:Ssl:Enabled"]);
-                var rabbitMqServerName = builder.Configuration["MassTransit:RabbitMq:Ssl:ServerName"];
-                var rabbitMqCertPath = builder.Configuration["MassTransit:RabbitMq:Ssl:CertificatePath"];
-                var rabbitMqCertPassphrase = builder.Configuration["MassTransit:RabbitMq:Ssl:CertificatePassphrase"];
-                var useCertAsAuth = bool.Parse(builder.Configuration["MassTransit:RabbitMq:Ssl:UseCertificateAsAuthentication"]);
-
-                var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
-                logger.LogInformation("Connecting to RabbitMQ Host: {Host}, Username: {Username}, SSL: {SslEnabled}", rabbitMqHost, rabbitMqUsername, rabbitMqSslEnabled);
-
-                cfg.Host(new Uri(rabbitMqHost), h =>
+                if (rabbitMqSslEnabled)
                 {
-                    h.Username(rabbitMqUsername);
-                    h.Password(rabbitMqPassword);
-                    h.Heartbeat(10); 
-                    h.RequestedConnectionTimeout(TimeSpan.FromSeconds(30)); 
-
-                    if (rabbitMqSslEnabled)
+                    h.UseSsl(ssl =>
                     {
-                        h.UseSsl(ssl =>
-                        {
-                            ssl.Protocol = SslProtocols.Tls12;
-                            ssl.ServerName = rabbitMqServerName;
-                            ssl.CertificatePath = rabbitMqCertPath;
-                            ssl.CertificatePassphrase = rabbitMqCertPassphrase;
-                                             });
-                    }
-                });
-
-                cfg.PrefetchCount = 16;
-                cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
-                cfg.UseInMemoryOutbox();
-
-                cfg.ConfigureEndpoints(context);
+                        ssl.Protocol = SslProtocols.Tls12;  // Ensure we're using TLS 1.2 or newer
+                        ssl.ServerName = rabbitMqServerName;  // ServerName is still needed
+                        // Client certificates are not used, so no CertificatePath or Passphrase
+                    });
+                }
             });
-        });
 
-    }
+            cfg.PrefetchCount = 16;
+            cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
+            cfg.UseInMemoryOutbox();
+
+            cfg.ConfigureEndpoints(context);
+        });
+    });
+}
+
 
     private static void AddMinioClient(WebApplicationBuilder builder)
     {
