@@ -11,6 +11,7 @@ namespace RitualWorks.Contracts
         Task<Order> GetOrderByIdAsync(Guid id);
         Task CreateOrderAsync(Order order);
         Task UpdateOrderStatusAsync(Guid orderId, OrderStatus status);
+        Task SaveChangesAsync();
     }
 }
 
