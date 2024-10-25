@@ -1,3 +1,5 @@
+// Program.cs
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -29,12 +31,11 @@ using Serilog;
 using Serilog.Events;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Authentication;
-
+using System.Data.Common;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 public partial class Program
 {
-    private static string _dbCredsFilePath = "/vault/secrets/db-creds.json";
-
     public static async Task Main(string[] args)
     {
         ConfigureLogging();
@@ -43,16 +44,6 @@ public partial class Program
         builder.Host.UseSerilog();
 
         ConfigureEnvironmentVariables(builder);
-
-        // Load database credentials from the file
-        var dbCredentials = LoadDbCredentialsFromFile();
-        if (dbCredentials == null)
-        {
-            throw new InvalidOperationException("Failed to retrieve database credentials from the file.");
-        }
-
-        // Inject the database credentials into the configuration
-        InjectDbCredentialsIntoConfiguration(builder, dbCredentials);
 
         await ConfigureServicesAsync(builder);
 
@@ -81,51 +72,19 @@ public partial class Program
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
     }
 
-    // Load the database credentials from the JSON file
-   private static DatabaseCredentials LoadDbCredentialsFromFile()
-{
-    var credentialsFilePath = _dbCredsFilePath;
-
-    if (!System.IO.File.Exists(credentialsFilePath))
-    {
-        throw new FileNotFoundException($"Vault credentials file not found at: {credentialsFilePath}");
-    }
-
-    var jsonContent = System.IO.File.ReadAllText(credentialsFilePath);
-    Console.WriteLine($"Loaded  json Content: {jsonContent}");
-
-    var dbCredentials = JsonSerializer.Deserialize<DatabaseCredentials>(jsonContent);
-    
-    // Log to verify
-    Console.WriteLine($"Loaded DB credentials: {dbCredentials.Username}, {dbCredentials.Password}");
-
-    return dbCredentials;
-}
-
-
-    // Inject the database credentials into the configuration
-    private static void InjectDbCredentialsIntoConfiguration(WebApplicationBuilder builder, DatabaseCredentials dbCredentials)
-    {
-        var existingConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-        // Parse the connection string and replace the Username and Password
-        var updatedConnectionString = new Npgsql.NpgsqlConnectionStringBuilder(existingConnectionString)
-        {
-            Username = dbCredentials.Username,
-            Password = dbCredentials.Password
-        }.ConnectionString;
-
-        // Update the connection string in the configuration
-        builder.Configuration["ConnectionStrings:DefaultConnection"] = updatedConnectionString;
-    }
-
     public static async Task ConfigureServicesAsync(WebApplicationBuilder builder)
     {
         builder.Services.AddAutoMapper(typeof(MappingProfile));
+
         // Add Identity services
         builder.Services.AddIdentity<User, IdentityRole>()
             .AddEntityFrameworkStores<RitualWorksContext>()
             .AddDefaultTokenProviders();
+
+        // Register the connection string provider and the interceptor
+        builder.Services.AddSingleton<IConnectionStringProvider, ConnectionStringProvider>();
+        builder.Services.AddSingleton<DynamicCredentialsConnectionInterceptor>();
+        builder.Services.AddHostedService<CredentialRefreshService>();
 
         ConfigureDbContext(builder);
         ConfigureServices(builder);
@@ -139,11 +98,11 @@ public partial class Program
     {
         builder.Services.AddDbContext<RitualWorksContext>((serviceProvider, options) =>
         {
-            var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var connectionStringProvider = serviceProvider.GetRequiredService<IConnectionStringProvider>();
+            var interceptor = serviceProvider.GetRequiredService<DynamicCredentialsConnectionInterceptor>();
 
-            // Use the connection string to configure Npgsql
-            options.UseNpgsql(connectionString);
+            options.UseNpgsql(connectionStringProvider.GetConnectionString());
+            options.AddInterceptors(interceptor);
         });
     }
 
@@ -213,53 +172,50 @@ public partial class Program
         builder.Services.AddScoped<IAssetService, AssetService>();
     }
 
-private static void AddMassTransit(WebApplicationBuilder builder)
-{
-    builder.Services.AddMassTransit(x =>
+    private static void AddMassTransit(WebApplicationBuilder builder)
     {
-        x.SetKebabCaseEndpointNameFormatter();
-        // x.AddConsumer<MyConsumer>();
-
-        x.UsingRabbitMq((context, cfg) =>
+        builder.Services.AddMassTransit(x =>
         {
-            var rabbitMqHost = builder.Configuration["MassTransit:RabbitMq:Host"];
-            var rabbitMqUsername = builder.Configuration["MassTransit:RabbitMq:Username"];
-            var rabbitMqPassword = builder.Configuration["MassTransit:RabbitMq:Password"];
+            x.SetKebabCaseEndpointNameFormatter();
+            // x.AddConsumer<MyConsumer>();
 
-            var rabbitMqSslEnabled = bool.Parse(builder.Configuration["MassTransit:RabbitMq:Ssl:Enabled"]);
-            var rabbitMqServerName = builder.Configuration["MassTransit:RabbitMq:Ssl:ServerName"];
-            // We no longer need the client certificate settings since mTLS is disabled
-
-            var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("Connecting to RabbitMQ Host: {Host}, Username: {Username}, SSL: {SslEnabled}", rabbitMqHost, rabbitMqUsername, rabbitMqSslEnabled);
-
-            cfg.Host(new Uri(rabbitMqHost), h =>
+            x.UsingRabbitMq((context, cfg) =>
             {
-                h.Username(rabbitMqUsername);
-                h.Password(rabbitMqPassword);
-                h.Heartbeat(10); 
-                h.RequestedConnectionTimeout(TimeSpan.FromSeconds(30));
+                var rabbitMqHost = builder.Configuration["MassTransit:RabbitMq:Host"];
+                var rabbitMqUsername = builder.Configuration["MassTransit:RabbitMq:Username"];
+                var rabbitMqPassword = builder.Configuration["MassTransit:RabbitMq:Password"];
 
-                if (rabbitMqSslEnabled)
+                var rabbitMqSslEnabled = bool.Parse(builder.Configuration["MassTransit:RabbitMq:Ssl:Enabled"]);
+                var rabbitMqServerName = builder.Configuration["MassTransit:RabbitMq:Ssl:ServerName"];
+
+                var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
+                logger.LogInformation("Connecting to RabbitMQ Host: {Host}, Username: {Username}, SSL: {SslEnabled}", rabbitMqHost, rabbitMqUsername, rabbitMqSslEnabled);
+
+                cfg.Host(new Uri(rabbitMqHost), h =>
                 {
-                    h.UseSsl(ssl =>
+                    h.Username(rabbitMqUsername);
+                    h.Password(rabbitMqPassword);
+                    h.Heartbeat(10);
+                    h.RequestedConnectionTimeout(TimeSpan.FromSeconds(30));
+
+                    if (rabbitMqSslEnabled)
                     {
-                        ssl.Protocol = SslProtocols.Tls12;  // Ensure we're using TLS 1.2 or newer
-                        ssl.ServerName = rabbitMqServerName;  // ServerName is still needed
-                        // Client certificates are not used, so no CertificatePath or Passphrase
-                    });
-                }
+                        h.UseSsl(ssl =>
+                        {
+                            ssl.Protocol = SslProtocols.Tls12;
+                            ssl.ServerName = rabbitMqServerName;
+                        });
+                    }
+                });
+
+                cfg.PrefetchCount = 16;
+                cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
+                cfg.UseInMemoryOutbox();
+
+                cfg.ConfigureEndpoints(context);
             });
-
-            cfg.PrefetchCount = 16;
-            cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
-            cfg.UseInMemoryOutbox();
-
-            cfg.ConfigureEndpoints(context);
         });
-    });
-}
-
+    }
 
     private static void AddMinioClient(WebApplicationBuilder builder)
     {

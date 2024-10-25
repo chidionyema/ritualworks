@@ -48,20 +48,11 @@ check_postgres_ready() {
     log "PostgreSQL is ready."
 }
 
-# Function to create the pgBackRest stanza
-create_pgbackrest_stanza() {
-    log "Creating pgBackRest stanza '$STANZA_NAME'..."
-    docker-compose -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" run --rm pgbackrest \
-        pgbackrest --stanza="$STANZA_NAME" --log-level-console=info stanza-create || error_exit "Failed to create pgBackRest stanza"
-    
-    log "pgBackRest stanza '$STANZA_NAME' created successfully."
-}
 
 # Main function to encapsulate the script flow
 main() {
     start_postgres
     check_postgres_ready
-    create_pgbackrest_stanza
 }
 
 # Run the main function

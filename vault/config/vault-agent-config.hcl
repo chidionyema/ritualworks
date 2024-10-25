@@ -28,7 +28,5 @@ listener "tcp" {
 template {
   source      = "/vault/config/db-credentials-template.hcl"
   destination = "/vault/secrets/db-creds.json"
-  command     = "pkill -HUP postgres"
+  command     = "pg_ctl reload"  # or systemctl reload postgresql, depending on how Postgres is managed
 }
-
-

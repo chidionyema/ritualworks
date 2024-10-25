@@ -83,7 +83,7 @@ request_cert() {
             sans="san=DNS:es-node-1.ritualworks.com,DNS:es-node-2.ritualworks.com"
             ;;
         "minio1"|"minio2")
-            sans="san=DNS:minio1,DNS:minio2"
+            sans="san=DNS:minio.local.ritualworks.com,DNS:minio1,DNS:minio2"
             ;;
         *)
             sans="san=DNS:${domain}"
