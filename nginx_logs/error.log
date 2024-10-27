@@ -542,3 +542,21 @@
 2024/10/21 18:24:59 [warn] 23#23: *28 upstream server temporarily disabled while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /swagger HTTP/2.0", upstream: "http://172.21.0.4:8080/swagger", host: "api.local.ritualworks.com"
 2024/10/21 18:38:01 [error] 21#21: *42 connect() failed (113: No route to host) while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.4:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
 2024/10/21 18:38:01 [warn] 21#21: *42 upstream server temporarily disabled while connecting to upstream, client: 172.21.0.1, server: api.local.ritualworks.com, request: "GET /api/Products/categories HTTP/2.0", upstream: "http://172.21.0.4:8080/api/Products/categories", host: "api.local.ritualworks.com", referrer: "http://localhost:3001/"
+2024/10/25 17:46:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/25 17:46:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/25 17:46:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/25 17:46:09 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/25 17:46:09 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/conf.d/upstreams.conf:12
+2024/10/25 17:48:40 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/25 17:48:40 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/25 17:48:40 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/25 17:48:40 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/25 17:48:40 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/conf.d/upstreams.conf:12
+2024/10/25 17:51:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/10/25 17:51:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/10/25 17:51:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/10/25 17:51:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/10/25 17:51:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/25 17:51:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"
+2024/10/25 17:51:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/10/25 17:51:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/etc/nginx/ssl/local.ritualworks.com.crt"

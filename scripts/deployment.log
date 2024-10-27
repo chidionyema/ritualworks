@@ -15584,3 +15584,91 @@
 2024-10-25 17:00:44 - Building frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
 2024-10-25 17:06:18 - Starting and scaling frontend services defined in ../docker/compose/docker-compose-frontend-api.yml with scale=3 for 'app' service...
 2024-10-25 17:06:39 - Deployment completed successfully. All services are up and running.
+2024-10-25 17:54:02 - Docker network 'internal_network' already exists.
+2024-10-25 17:54:02 - Docker network 'external_network' already exists.
+2024-10-25 17:54:02 - Creating Docker volume 'certs-volume'
+2024-10-25 17:54:02 - Docker setup completed successfully.
+2024-10-25 18:08:59 - Docker network 'internal_network' already exists.
+2024-10-25 18:08:59 - Docker network 'external_network' already exists.
+2024-10-25 18:08:59 - Docker volume 'certs-volume' already exists.
+2024-10-25 18:08:59 - Docker setup completed successfully.
+2024-10-25 18:30:29 - Docker network 'internal_network' already exists.
+2024-10-25 18:30:29 - Docker network 'external_network' already exists.
+2024-10-25 18:30:30 - Docker volume 'certs-volume' already exists.
+2024-10-25 18:30:30 - Docker setup completed successfully.
+2024-10-25 18:31:07 - Docker network 'internal_network' already exists.
+2024-10-25 18:31:07 - Docker network 'external_network' already exists.
+2024-10-25 18:31:07 - Docker volume 'certs-volume' already exists.
+2024-10-25 18:31:07 - Docker setup completed successfully.
+2024-10-25 18:33:28 - Docker network 'internal_network' already exists.
+2024-10-25 18:33:28 - Docker network 'external_network' already exists.
+2024-10-25 18:33:28 - Docker volume 'certs-volume' already exists.
+2024-10-25 18:33:28 - Docker setup completed successfully.
+2024-10-25 18:36:33 - Docker network 'internal_network' already exists.
+2024-10-25 18:36:34 - Docker network 'external_network' already exists.
+2024-10-25 18:36:34 - Docker volume 'certs-volume' already exists.
+2024-10-25 18:36:34 - Docker setup completed successfully.
+2024-10-25 18:37:01 - Docker network 'internal_network' already exists.
+2024-10-25 18:37:01 - Docker network 'external_network' already exists.
+2024-10-25 18:37:01 - Docker volume 'certs-volume' already exists.
+2024-10-25 18:37:01 - Docker setup completed successfully.
+2024-10-25 18:38:34 - Docker network 'internal_network' already exists.
+2024-10-25 18:38:34 - Docker network 'external_network' already exists.
+2024-10-25 18:38:35 - Docker volume 'certs-volume' already exists.
+2024-10-25 18:38:35 - Docker setup completed successfully.
+2024-10-25 18:38:43 - Docker network 'internal_network' already exists.
+2024-10-25 18:38:43 - Docker network 'external_network' already exists.
+2024-10-25 18:38:43 - Docker volume 'certs-volume' already exists.
+2024-10-25 18:38:43 - Docker setup completed successfully.
+2024-10-25 18:38:53 - Docker network 'internal_network' already exists.
+2024-10-25 18:38:53 - Docker network 'external_network' already exists.
+2024-10-25 18:38:53 - Docker volume 'certs-volume' already exists.
+2024-10-25 18:38:53 - Docker setup completed successfully.
+2024-10-25 18:39:38 - Docker network 'internal_network' already exists.
+2024-10-25 18:39:38 - Docker network 'external_network' already exists.
+2024-10-25 18:39:38 - Docker volume 'certs-volume' already exists.
+2024-10-25 18:39:38 - Docker setup completed successfully.
+2024-10-25 18:40:59 - Docker network 'internal_network' already exists.
+2024-10-25 18:40:59 - Docker network 'external_network' already exists.
+2024-10-25 18:41:00 - Creating Docker volume 'certs-volume'
+2024-10-25 18:41:00 - Docker setup completed successfully.
+2024-10-25 18:41:15 - Docker network 'internal_network' already exists.
+2024-10-25 18:41:15 - Docker network 'external_network' already exists.
+2024-10-25 18:41:15 - Docker volume 'certs-volume' already exists.
+2024-10-25 18:41:15 - Docker setup completed successfully.
+2024-10-25 18:41:51 - Ensuring correct script directory...
+2024-10-25 18:41:51 - Building backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-25 18:42:05 - Delaying startup of frontend services to ensure backend services are ready...
+2024-10-25 18:42:08 - Building frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
+2024-10-25 18:42:17 - Starting and scaling frontend services defined in ../docker/compose/docker-compose-frontend-api.yml with scale=3 for 'app' service...
+2024-10-25 18:42:22 - Error: Failed to start and scale frontend services.
+2024-10-25 18:43:17 - Docker network 'internal_network' already exists.
+2024-10-25 18:43:17 - Docker network 'external_network' already exists.
+2024-10-25 18:43:18 - Docker volume 'certs-volume' already exists.
+2024-10-25 18:43:18 - Docker setup completed successfully.
+2024-10-25 18:45:11 - Ensuring correct script directory...
+2024-10-25 18:45:11 - Building backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-25 18:45:24 - Delaying startup of frontend services to ensure backend services are ready...
+2024-10-25 18:45:27 - Building frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
+2024-10-25 18:45:36 - Starting and scaling frontend services defined in ../docker/compose/docker-compose-frontend-api.yml with scale=3 for 'app' service...
+2024-10-25 18:46:09 - Deployment completed successfully. All services are up and running.
+2024-10-25 18:48:54 - Docker network 'internal_network' already exists.
+2024-10-25 18:48:55 - Docker network 'external_network' already exists.
+2024-10-25 18:48:55 - Docker volume 'certs-volume' already exists.
+2024-10-25 18:48:55 - Docker setup completed successfully.
+2024-10-25 18:50:56 - Ensuring correct script directory...
+2024-10-25 18:50:56 - Building backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-25 18:51:29 - Delaying startup of frontend services to ensure backend services are ready...
+2024-10-25 18:51:32 - Building frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
+2024-10-25 18:51:42 - Starting and scaling frontend services defined in ../docker/compose/docker-compose-frontend-api.yml with scale=3 for 'app' service...
+2024-10-25 18:51:57 - Deployment completed successfully. All services are up and running.
+2024-10-25 21:11:09 - Docker network 'internal_network' already exists.
+2024-10-25 21:11:10 - Docker network 'external_network' already exists.
+2024-10-25 21:11:10 - Docker volume 'certs-volume' already exists.
+2024-10-25 21:11:10 - Docker setup completed successfully.
+2024-10-25 21:12:20 - Ensuring correct script directory...
+2024-10-25 21:12:20 - Building backend services defined in ../docker/compose/docker-compose-backend.yml...
+2024-10-25 21:13:48 - Delaying startup of frontend services to ensure backend services are ready...
+2024-10-25 21:13:51 - Building frontend services defined in ../docker/compose/docker-compose-frontend-api.yml...
+2024-10-25 21:13:58 - Starting and scaling frontend services defined in ../docker/compose/docker-compose-frontend-api.yml with scale=3 for 'app' service...
+2024-10-25 21:14:07 - Deployment completed successfully. All services are up and running.
