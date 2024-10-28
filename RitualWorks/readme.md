@@ -28,8 +28,15 @@ your-project/
 ### Prerequisites
 
 - Docker and Docker Compose installed
-- Docker Swarm initialized
-- Access to the internet to pull Docker images
+- Install GPG: On macOS, you can install GPG using Homebrew:
+
+bash
+brew install gnupg
+gpg --encrypt --recipient YOUR_EMAIL unseal_keys.json
+This will create an encrypted file, unseal_keys.json.gpg, which you can store securel
+
+
+
 
 ### Automated Deployment
 

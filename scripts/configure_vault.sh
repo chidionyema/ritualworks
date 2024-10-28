@@ -572,21 +572,10 @@ main() {
     # Create AppRole for Vault and store credentials
     create_approle_and_store_credentials "vault" "vault-read-secrets-policy" "../vault/config/role_id" "../vault/secrets/secret_id"
 
-    # Fetch dynamic credentials from Vault
-    dynamic_creds=$(fetch_dynamic_postgres_credentials "vault")
-    dynamic_username=$(echo "$dynamic_creds" | cut -d':' -f1)
-    dynamic_password=$(echo "$dynamic_creds" | cut -d':' -f2)
 
-    # Collect environment variables with Vault-provided username and password
-    local env_vars="POSTGRES_USERNAME=$dynamic_username
-    POSTGRES_PASSWORD=$dynamic_password
-    JWT_KEY=$(fetch_static_secret "secret/$ENVIRONMENT" "jwt_key")
-    MINIO_ACCESS_KEY=$(fetch_static_secret "secret/$ENVIRONMENT" "minio_access_key")
-    MINIO_SECRET_KEY=$(fetch_static_secret "secret/$ENVIRONMENT" "minio_secret_key")
-    RABBITMQ_PASSWORD=$(fetch_static_secret "secret/$ENVIRONMENT" "rabbitmq_password")"
     
     log "Updating environment variables..."
-    update_env_file "$env_vars"
+   # update_env_file "$env_vars"
 
     log "Process complete."
 }

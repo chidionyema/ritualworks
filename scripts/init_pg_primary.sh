@@ -11,7 +11,7 @@ REPMGR_PASSWORD="${REPMGR_PASSWORD:-repmgrpass}"  # Default password for repmgr
 
 # Environment variables for creating the user and database
 POSTGRES_USER="${POSTGRES_USER:-myuser}"      # Default user if not set
-POSTGRES_PASSWORD="mypassword" # Password for the default user
+POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-mypassword}"  # Password for the default user
 POSTGRES_DB="${POSTGRES_DB:-your_postgres_db}" # Default database if not set
 VAULT_USER="vault"                            # Vault user for DB secrets
 VAULT_PASSWORD="${VAULT_PASSWORD:-vaultpassword}"  # Password for Vault user
