@@ -873,3 +873,6 @@
 172.20.0.1 - - [25/Oct/2024:20:59:14 +0000] "GET /api/products HTTP/2.0" 200 763 "http://localhost:3001/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
 172.20.0.1 - - [25/Oct/2024:20:59:14 +0000] "GET /api/products HTTP/2.0" 200 763 "http://localhost:3001/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
 172.20.0.1 - - [25/Oct/2024:20:59:14 +0000] "GET /api/products HTTP/2.0" 200 763 "http://localhost:3001/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+172.21.0.1 - - [28/Oct/2024:09:16:21 +0000] "GET /api/products HTTP/2.0" 200 763 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+172.21.0.1 - - [28/Oct/2024:09:16:23 +0000] "GET /favicon.ico HTTP/2.0" 404 0 "https://api.local.ritualworks.com/api/products" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+172.21.0.1 - - [28/Oct/2024:10:16:10 +0000] "GET /api/products HTTP/2.0" 200 763 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"

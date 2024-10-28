@@ -7,13 +7,12 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RitualWorks.Contracts;
 
-namespace RitualWorks.Services // Adjust the namespace as needed
+namespace RitualWorks.Services
 {
     public class CredentialRefreshService : BackgroundService
     {
         private readonly ILogger<CredentialRefreshService> _logger;
         private readonly IConnectionStringProvider _connectionStringProvider;
-        private readonly TimeSpan _checkInterval = TimeSpan.FromMinutes(1);
 
         public CredentialRefreshService(
             ILogger<CredentialRefreshService> logger,
@@ -25,6 +24,8 @@ namespace RitualWorks.Services // Adjust the namespace as needed
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            TimeSpan checkInterval = TimeSpan.FromMinutes(1); // Default interval
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
@@ -34,13 +35,22 @@ namespace RitualWorks.Services // Adjust the namespace as needed
                     _connectionStringProvider.UpdateConnectionString();
 
                     _logger.LogInformation("Database credentials refreshed.");
+
+                    // Get the lease duration and adjust the interval
+                    int leaseDuration = _connectionStringProvider.GetLeaseDuration();
+                    checkInterval = TimeSpan.FromSeconds(leaseDuration * 0.8); // Refresh at 80% of TTL
+
+                    _logger.LogInformation("Next credential refresh in {Interval} seconds.", checkInterval.TotalSeconds);
                 }
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error refreshing database credentials.");
+
+                    // Retry after a short delay on error
+                    checkInterval = TimeSpan.FromSeconds(30);
                 }
 
-                await Task.Delay(_checkInterval, stoppingToken);
+                await Task.Delay(checkInterval, stoppingToken);
             }
         }
     }

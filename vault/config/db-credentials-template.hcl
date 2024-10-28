@@ -1,6 +1,11 @@
-{{ with secret "database/creds/vault" }}
+{{ with secret "database/creds/vault" -}}
 {
-  "username": "{{ .Data.username }}",
-  "password": "{{ .Data.password }}"
+  "lease_id": "{{ .LeaseID }}",
+  "lease_duration": {{ .LeaseDuration }},
+  "renewable": {{ .Renewable }},
+  "data": {
+    "username": "{{ .Data.username }}",
+    "password": "{{ .Data.password }}"
+  }
 }
-{{ end }}
+{{- end }}

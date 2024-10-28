@@ -4,16 +4,18 @@ using System;
 using System.IO;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
-using RitualWorks.Models; // Adjust the namespace as needed
+using Npgsql;  // For NpgsqlConnection.ClearAllPools()
 using RitualWorks.Contracts;
-namespace RitualWorks.Services // Adjust the namespace as needed
-{
+using RitualWorks.Models;  // Adjust the namespace as needed
 
+namespace RitualWorks.Services  // Adjust the namespace as needed
+{
     public class ConnectionStringProvider : IConnectionStringProvider
     {
         private readonly IConfiguration _configuration;
         private readonly object _lock = new object();
         private string _connectionString;
+        private int _leaseDuration;
         private readonly string _dbCredsFilePath = "/vault/secrets/db-creds.json";
 
         public ConnectionStringProvider(IConfiguration configuration)
@@ -30,13 +32,21 @@ namespace RitualWorks.Services // Adjust the namespace as needed
             }
         }
 
+        public int GetLeaseDuration()
+        {
+            lock (_lock)
+            {
+                return _leaseDuration;
+            }
+        }
+
         public void UpdateConnectionString()
         {
             var dbCredentials = LoadDbCredentialsFromFile();
 
             var existingConnectionString = _configuration.GetConnectionString("DefaultConnection");
 
-            var updatedConnectionString = new Npgsql.NpgsqlConnectionStringBuilder(existingConnectionString)
+            var updatedConnectionString = new NpgsqlConnectionStringBuilder(existingConnectionString)
             {
                 Username = dbCredentials.Username,
                 Password = dbCredentials.Password
@@ -45,19 +55,13 @@ namespace RitualWorks.Services // Adjust the namespace as needed
             lock (_lock)
             {
                 _connectionString = updatedConnectionString;
+                // Clear the connection pool to close existing connections with old credentials
+                NpgsqlConnection.ClearAllPools();
             }
         }
 
         private DatabaseCredentials LoadDbCredentialsFromFile()
         {
-            var username = _configuration["DB_USERNAME"];
-            var password = _configuration["DB_PASSWORD"];
-
-            if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
-            {
-                return new DatabaseCredentials { Username = username, Password = password };
-            }
-
             var credentialsFilePath = _dbCredsFilePath;
 
             if (!File.Exists(credentialsFilePath))
@@ -66,14 +70,41 @@ namespace RitualWorks.Services // Adjust the namespace as needed
             }
 
             var jsonContent = File.ReadAllText(credentialsFilePath);
-            Console.WriteLine($"Loaded json Content: {jsonContent}");
+            Console.WriteLine($"Loaded JSON content: {jsonContent}");
 
-            var dbCredentials = JsonSerializer.Deserialize<DatabaseCredentials>(jsonContent);
+            using var jsonDocument = JsonDocument.Parse(jsonContent);
+            var rootElement = jsonDocument.RootElement;
 
-            // Log to verify
-            Console.WriteLine($"Loaded DB credentials: {dbCredentials.Username}, {dbCredentials.Password}");
+            // Read the lease duration from the root element
+            if (!rootElement.TryGetProperty("lease_duration", out var leaseDurationElement))
+            {
+                throw new InvalidOperationException("Lease duration not found in credentials file.");
+            }
+            var leaseDuration = leaseDurationElement.GetInt32();
 
-            return dbCredentials;
+            // Read the data object containing the credentials
+            if (!rootElement.TryGetProperty("data", out var dataElement))
+            {
+                throw new InvalidOperationException("Credentials data not found in credentials file.");
+            }
+
+            var username = dataElement.GetProperty("username").GetString();
+            var password = dataElement.GetProperty("password").GetString();
+
+            // Store the lease duration in a thread-safe manner
+            lock (_lock)
+            {
+                _leaseDuration = leaseDuration;
+            }
+
+            // Log to verify (ensure sensitive data is not logged in production)
+            Console.WriteLine($"Loaded DB credentials: Username={username}, Lease Duration={_leaseDuration} seconds");
+
+            return new DatabaseCredentials
+            {
+                Username = username,
+                Password = password
+            };
         }
     }
 }

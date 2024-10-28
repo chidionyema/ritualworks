@@ -23,10 +23,30 @@ DOCKER_COMPOSE_FILE="../docker/compose/docker-compose-vault.yml"
 # Function to start Vault and Consul services
 start_vault_and_consul() {
     log "Starting Vault and Consul..."
-    docker-compose   -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" up -d consul vault || error_exit "Failed to start Vault and Consul"
-    
-    log "Waiting for Vault to start..."
-    sleep 3  # Ensure enough time for Vault and Consul to fully initialize
+    docker-compose -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" up -d consul vault || error_exit "Failed to start Vault and Consul"
+
+    wait_for_vault
+}
+
+# Function to wait for Vault readiness
+wait_for_vault() {
+    local timeout=60  # Maximum time to wait in seconds
+    local interval=5  # Time between checks in seconds
+    local elapsed=0
+
+    log "Waiting for Vault to become ready..."
+    while true; do
+        http_status=$(docker exec "$VAULT_CONTAINER_NAME" curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8200/v1/sys/health || true)
+        if [[ "$http_status" =~ ^(200|429|501|503)$ ]]; then
+            log "Vault is now responding with HTTP status code $http_status."
+            break
+        fi
+        if [ "$elapsed" -ge "$timeout" ]; then
+            error_exit "Vault did not become ready within $timeout seconds."
+        fi
+        sleep "$interval"
+        elapsed=$((elapsed + interval))
+    done
 }
 
 # Function to unseal Vault using stored keys
@@ -44,7 +64,7 @@ unseal_vault() {
     docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_1" || error_exit "Failed to unseal Vault (key 1)"
     docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_2" || error_exit "Failed to unseal Vault (key 2)"
     docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_3" || error_exit "Failed to unseal Vault (key 3)"
-    
+
     log "Vault successfully unsealed."
 }
 
@@ -52,7 +72,7 @@ unseal_vault() {
 initialize_vault() {
     log "Initializing Vault..."
     INIT_OUTPUT=$(docker exec "$VAULT_CONTAINER_NAME" vault operator init -format=json) || error_exit "Vault initialization failed."
-    
+
     log "Saving unseal keys and root token to $BACKUP_FILE..."
     echo "$INIT_OUTPUT" > "$BACKUP_FILE" || error_exit "Failed to write keys to $BACKUP_FILE."
 
@@ -66,15 +86,16 @@ initialize_vault() {
     docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_1" || error_exit "Failed to unseal Vault (key 1)"
     docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_2" || error_exit "Failed to unseal Vault (key 2)"
     docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_3" || error_exit "Failed to unseal Vault (key 3)"
-    
+
     log "Vault successfully initialized and unsealed."
 }
 
 # Function to check Vault status and act accordingly
 check_vault_status() {
     log "Checking Vault status..."
-    
-    if docker exec "$VAULT_CONTAINER_NAME" vault status | grep -q "Initialized.*true"; then
+
+    init_status=$(docker exec "$VAULT_CONTAINER_NAME" vault operator init -status || true)
+    if echo "$init_status" | grep -q "Vault is initialized"; then
         log "Vault is already initialized."
 
         if docker exec "$VAULT_CONTAINER_NAME" vault status | grep -q "Sealed.*true"; then

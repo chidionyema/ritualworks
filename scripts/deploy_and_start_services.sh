@@ -26,11 +26,30 @@ DOCKER_COMPOSE_FILE="../docker/compose/docker-compose-postgres.yml"
 
 # Function to start postgres
 start_postgres() {
-    log "Starting postgresl..."
-    docker-compose  -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" up -d  || error_exit "Failed to start Vault and Consul"
+    log "Starting postgres..."
+    docker-compose -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" up -d || error_exit "Failed to start PostgreSQL"
     
-    log "Waiting for postgres to start..."
-    sleep 2  # Ensure enough time for postgres to fully initialize
+    log "Waiting for PostgreSQL to start..."
+    sleep 2  # Ensure enough time for PostgreSQL to fully initialize
+}
+
+# Function to generate certificates for Vault with retry logic
+generate_vault_certs() {
+    local RETRIES=5
+    local DELAY=5
+
+    log "Generating Vault certificates..."
+    for i in $(seq 1 $RETRIES); do
+        if ./generate_vault_certs.sh; then
+            log "Vault certificates generated successfully."
+            return 0
+        else
+            log "Certificate generation failed (Attempt $i/$RETRIES). Retrying in ${DELAY}s..."
+            sleep $DELAY
+        fi
+    done
+
+    error_exit "Certificate generation for Vault failed after $RETRIES attempts."
 }
 
 # Main script execution
@@ -44,9 +63,8 @@ log "Creating Docker networks..."
 log "Deploying Vault server..."
 ./install_vault_server.sh || error_exit "Vault deployment failed."
 
-# Step 3: Generate certificates for Vault
-log "Generating Vault certificates..."
-./generate_vault_certs.sh || error_exit "Certificate generation for Vault failed."
+# Step 3: Generate certificates for Vault with retry mechanism
+generate_vault_certs
 
 # Step 4: Configure Vault and PostgreSQL
 log "Configuring Vault and PostgreSQL..."
