@@ -1,4 +1,0 @@
-﻿namespace RitualWorks.DTOs
-{
-   
-}

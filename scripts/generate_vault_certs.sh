@@ -21,13 +21,33 @@ error_exit() {
     exit 1
 }
 
-authenticate_with_root_token() {
-    local unseal_keys_file="$1"
-    log "Authenticating with Vault using root token..."
-    VAULT_ROOT_TOKEN=$(jq -r '.root_token' "$unseal_keys_file")
-    if [[ -z "$VAULT_ROOT_TOKEN" ]]; then
-        error_exit "Failed to extract root token from $unseal_keys_file."
+# Function to decrypt the backup file
+decrypt_backup_file() {
+    if command -v gpg >/dev/null 2>&1; then
+        log "Decrypting the backup file..."
+        gpg --decrypt --batch --yes --passphrase "$ENCRYPTION_PASSPHRASE" --output "$UNSEAL_KEYS_FILE" "$ENCRYPTED_UNSEAL_KEYS_FILE" || error_exit "Failed to decrypt the backup file."
+    else
+        error_exit "GPG is not installed. Cannot decrypt the backup file."
     fi
+}
+
+authenticate_with_root_token() {
+    log "Authenticating with Vault using root token..."
+
+    if [[ ! -f "$ENCRYPTED_UNSEAL_KEYS_FILE" ]]; then
+        error_exit "Encrypted unseal keys file not found: $ENCRYPTED_UNSEAL_KEYS_FILE"
+    fi
+
+    decrypt_backup_file
+
+    VAULT_ROOT_TOKEN=$(jq -r '.root_token' "$UNSEAL_KEYS_FILE")
+    if [[ -z "$VAULT_ROOT_TOKEN" ]]; then
+        error_exit "Failed to extract root token from $UNSEAL_KEYS_FILE."
+    fi
+
+    # Securely delete the decrypted unseal keys file after use
+    shred -u "$UNSEAL_KEYS_FILE"
+
     docker exec "$VAULT_CONTAINER_NAME" vault login -no-print "$VAULT_ROOT_TOKEN" || error_exit "Failed to authenticate with Vault."
 }
 
@@ -108,7 +128,7 @@ request_cert() {
 
     log "Certificate for $service saved with SANs in $shared_cert_file and $shared_key_file."
 
-    # **Additional Code to Generate .pem File for PostgreSQL**
+    # Additional Code to Generate .pem File for PostgreSQL
     if [[ "$service" == "postgres" ]]; then
         local pem_file="$SHARED_CERT_DIR/${domain}.pem"
         log "Creating PEM file for PostgreSQL at $pem_file"
@@ -128,12 +148,20 @@ export_root_ca() {
 }
 
 main() {
-    UNSEAL_KEYS_FILE="unseal_keys.json"
-    if [[ ! -f "$UNSEAL_KEYS_FILE" ]]; then
-        error_exit "Unseal keys file not found: $UNSEAL_KEYS_FILE"
+    # Ensure the ENCRYPTION_PASSPHRASE environment variable is set
+    if [[ -z "$ENCRYPTION_PASSPHRASE" ]]; then
+        error_exit "The ENCRYPTION_PASSPHRASE environment variable is not set."
     fi
 
-    authenticate_with_root_token "$UNSEAL_KEYS_FILE"
+    UNSEAL_KEYS_FILE="unseal_keys.json"
+    ENCRYPTED_UNSEAL_KEYS_FILE="unseal_keys.json.gpg"
+
+    if [[ ! -f "$ENCRYPTED_UNSEAL_KEYS_FILE" ]]; then
+        error_exit "Encrypted unseal keys file not found: $ENCRYPTED_UNSEAL_KEYS_FILE"
+    fi
+
+    authenticate_with_root_token
+
     enable_pki_engine
     configure_pki_engine
     generate_root_ca

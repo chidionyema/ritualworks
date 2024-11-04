@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Load environment variables from .env file
-if [ -f ../docker/compose/.env ]; then
-    export $(cat ../docker/compose/.env | grep -v '#' | awk '/=/ {print $1}')
+if [ -f ../.env ]; then
+    export $(cat ../.env | grep -v '#' | awk '/=/ {print $1}')
 else
     echo "ERROR: .env file not found. Exiting."
     exit 1

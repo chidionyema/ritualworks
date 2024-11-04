@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Load environment variables from .env file if present
-if [ -f .env ]; then
-    export $(cat .env | grep -v '#' | awk '/=/ {print $1}')
+if [ -f ../.env ]; then
+    export $(cat ../.env | grep -v '#' | awk '/=/ {print $1}')
 fi
 
 # Check required environment variables

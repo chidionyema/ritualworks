@@ -22,7 +22,7 @@ error_exit() {
 update_env_variable() {
     local key="$1"
     local value="$2"
-    local env_file="../docker/compose/.env"
+    local env_file="../.env"
 
     log "Updating .env with $key=$value"
 
@@ -50,7 +50,7 @@ update_env_variable() {
 #   $1 - Multiline string containing key=value pairs
 update_env_file() {
     local env_vars="$1"
-    local env_file="../docker/compose/.env"
+    local env_file="../.env"
 
     log "Updating .env file with new variables..."
 
@@ -69,25 +69,27 @@ update_env_file() {
     log ".env file updated successfully."
 }
 
-# Function to authenticate with Vault using a root token
-# Parameters:
-#   $1 - Path to the unseal keys file (e.g., "unseal_keys.json")
+# Function to authenticate with Vault using the root token from the encrypted unseal keys file
 authenticate_with_root_token() {
-    local unseal_keys_file="$1"
-
     log "Authenticating with Vault using root token..."
 
-    # Extract the root token from the provided JSON file
-    VAULT_ROOT_TOKEN=$(jq -r '.root_token' "$unseal_keys_file")
-    
+    # Decrypt the backup file to read the root token
+    decrypt_backup_file
+
+    # Extract the root token from the decrypted unseal keys file
+    VAULT_ROOT_TOKEN=$(jq -r '.root_token' "$BACKUP_FILE")
+
+    # Securely delete the decrypted backup file after use
+    shred -u "$BACKUP_FILE"
+
     # Check if the root token was successfully extracted
     if [[ -z "$VAULT_ROOT_TOKEN" ]]; then
-        error_exit "Failed to extract root token from $unseal_keys_file."
+        error_exit "Failed to extract root token from $BACKUP_FILE."
     fi
 
     # Log in to Vault using the root token
     docker exec "$VAULT_CONTAINER_NAME" vault login "$VAULT_ROOT_TOKEN" || error_exit "Failed to authenticate with Vault using root token."
-    
+
     log "Successfully authenticated with Vault using root token."
 
     # Write the root token to the .env file
@@ -146,81 +148,6 @@ create_policy() {
     log "Policy $policy_name created successfully."
 }
 
-# Function to create a new group in Vault
-# Parameters:
-#   $1 - The name of the group
-#   $2 - The policies to associate with the group
-create_group() {
-    local group_name="$1"
-    local policies="$2"
-
-    log "Creating group $group_name..."
-
-    # Create the group with the specified policies
-    docker exec "$VAULT_CONTAINER_NAME" vault write identity/group name=$group_name policies=$policies || error_exit "Failed to create group $group_name"
-
-    log "Group $group_name created successfully."
-}
-
-# Function to create a new role in Vault
-# Parameters:
-#   $1 - The name of the role
-#   $2 - The policies to associate with the role
-create_role() {
-    local role_name="$1"
-    local policies="$2"
-
-    log "Creating role $role_name..."
-
-    # Create the role with the specified policies
-    docker exec "$VAULT_CONTAINER_NAME" vault write auth/approle/role/$role_name policies=$policies || error_exit "Failed to create role $role_name"
-
-    log "Role $role_name created successfully."
-}
-
-# Function to create a new user in Vault
-# Parameters:
-#   $1 - The username
-#   $2 - The password
-#   $3 - The policies to associate with the user
-create_user() {
-    local username="$1"
-    local password="$2"
-    local policies="$3"
-
-    log "Creating user $username..."
-
-    # Create the user with the specified policies
-    docker exec "$VAULT_CONTAINER_NAME" vault write auth/userpass/users/$username password=$password policies=$policies || error_exit "Failed to create user $username"
-
-    log "User $username created successfully."
-}
-
-# Function to create a new token in Vault
-# Parameters:
-#   $1 - The policies to associate with the token
-#   $2 - The environment variable name to store the token
-create_token() {
-    local policies="$1"
-    local token_variable="$2"
-
-    log "Creating token with policies: $policies..."
-
-    # Create a new token with the specified policies
-    local token
-    token=$(docker exec "$VAULT_CONTAINER_NAME" vault token create -policy="$policies" -format=json | jq -r '.auth.client_token')
-
-    # Check if the token was successfully created
-    if [[ -z "$token" ]]; then
-        error_exit "Failed to create token with policies: $policies"
-    fi
-
-    log "Token created: $token"
-
-    # Update the .env file with the created token
-    update_env_variable "$token_variable" "$token"
-}
-
 # Function to update the pg_hba.conf file and reload PostgreSQL configuration
 # Parameters:
 #   $1 - PostgreSQL container name
@@ -270,7 +197,7 @@ grant_permissions_to_vault() {
     local schema="public"
 
     log "Granting broad permissions to user '$db_user' on all tables, views, sequences, and schemas in the database '$db_name'..."
-    #  delay so postgress tables are fully ready
+    # Delay so PostgreSQL tables are fully ready
     sleep 3
     # Grant all privileges on all tables, sequences, and functions in the public schema to the user
     docker exec "$postgres_container" psql -U postgres -d "$db_name" -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA $schema TO \"$db_user\";" || error_exit "Failed to grant permissions on tables."
@@ -317,7 +244,6 @@ create_or_update_vault_user() {
     echo "$db_user:$db_password"
 }
 
-# **Added Function to Wait for PostgreSQL Readiness**
 # Function to wait until PostgreSQL is ready inside the container
 wait_for_postgres_ready() {
     local container_name="$1"
@@ -509,24 +435,152 @@ configure_vault_secrets() {
     log "Vault secrets configured successfully."
 }
 
+# Function to start Vault and Consul services
+start_vault_and_consul() {
+    log "Starting Vault and Consul..."
+    docker-compose -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" up -d consul vault || error_exit "Failed to start Vault and Consul"
+
+    wait_for_vault
+}
+
+# Function to wait for Vault readiness
+wait_for_vault() {
+    local timeout=60  # Maximum time to wait in seconds
+    local interval=5  # Time between checks in seconds
+    local elapsed=0
+
+    log "Waiting for Vault to become ready..."
+    while true; do
+        http_status=$(docker exec "$VAULT_CONTAINER_NAME" curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8200/v1/sys/health || true)
+        if [[ "$http_status" =~ ^(200|429|501|503)$ ]]; then
+            log "Vault is now responding with HTTP status code $http_status."
+            break
+        fi
+        if [ "$elapsed" -ge "$timeout" ]; then
+            error_exit "Vault did not become ready within $timeout seconds."
+        fi
+        sleep "$interval"
+        elapsed=$((elapsed + interval))
+    done
+}
+
+# Function to encrypt the backup file
+encrypt_backup_file() {
+    if command -v gpg >/dev/null 2>&1; then
+        log "Encrypting the backup file..."
+        gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase "$ENCRYPTION_PASSPHRASE" "$BACKUP_FILE"
+        shred -u "$BACKUP_FILE"  # Securely delete the original file
+        log "Backup file encrypted as $ENCRYPTED_BACKUP_FILE."
+    else
+        error_exit "GPG is not installed. Cannot encrypt the backup file."
+    fi
+}
+
+# Function to decrypt the backup file
+decrypt_backup_file() {
+    if command -v gpg >/dev/null 2>&1; then
+        log "Decrypting the backup file..."
+        gpg --decrypt --batch --yes --passphrase "$ENCRYPTION_PASSPHRASE" --output "$BACKUP_FILE" "$ENCRYPTED_BACKUP_FILE" || error_exit "Failed to decrypt the backup file."
+    else
+        error_exit "GPG is not installed. Cannot decrypt the backup file."
+    fi
+}
+
+# Function to unseal Vault using stored keys
+unseal_vault() {
+    if [[ ! -f "$ENCRYPTED_BACKUP_FILE" ]]; then
+        error_exit "Encrypted unseal keys file not found: $ENCRYPTED_BACKUP_FILE"
+    fi
+
+    decrypt_backup_file
+
+    log "Reading unseal keys from $BACKUP_FILE..."
+    VAULT_UNSEAL_KEY_1=$(jq -r '.unseal_keys_b64[0]' "$BACKUP_FILE")
+    VAULT_UNSEAL_KEY_2=$(jq -r '.unseal_keys_b64[1]' "$BACKUP_FILE")
+    VAULT_UNSEAL_KEY_3=$(jq -r '.unseal_keys_b64[2]' "$BACKUP_FILE")
+
+    # Securely delete the decrypted backup file after use
+    shred -u "$BACKUP_FILE"
+
+    log "Unsealing Vault..."
+    docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_1" || error_exit "Failed to unseal Vault (key 1)"
+    docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_2" || error_exit "Failed to unseal Vault (key 2)"
+    docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_3" || error_exit "Failed to unseal Vault (key 3)"
+
+    log "Vault successfully unsealed."
+}
+
+# Function to initialize Vault and store keys
+initialize_vault() {
+    log "Initializing Vault..."
+    INIT_OUTPUT=$(docker exec "$VAULT_CONTAINER_NAME" vault operator init -format=json) || error_exit "Vault initialization failed."
+
+    log "Saving unseal keys and root token to $BACKUP_FILE..."
+    echo "$INIT_OUTPUT" > "$BACKUP_FILE" || error_exit "Failed to write keys to $BACKUP_FILE."
+
+    encrypt_backup_file
+
+    log "Unsealing Vault with the generated keys..."
+    # Decrypt to read the keys
+    decrypt_backup_file
+
+    VAULT_UNSEAL_KEY_1=$(jq -r '.unseal_keys_b64[0]' "$BACKUP_FILE")
+    VAULT_UNSEAL_KEY_2=$(jq -r '.unseal_keys_b64[1]' "$BACKUP_FILE")
+    VAULT_UNSEAL_KEY_3=$(jq -r '.unseal_keys_b64[2]' "$BACKUP_FILE")
+
+    # Securely delete the decrypted backup file after use
+    shred -u "$BACKUP_FILE"
+
+    docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_1" || error_exit "Failed to unseal Vault (key 1)"
+    docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_2" || error_exit "Failed to unseal Vault (key 2)"
+    docker exec "$VAULT_CONTAINER_NAME" vault operator unseal "$VAULT_UNSEAL_KEY_3" || error_exit "Failed to unseal Vault (key 3)"
+
+    log "Vault successfully initialized and unsealed."
+}
+
+# Function to check Vault status and act accordingly
+check_vault_status() {
+    log "Checking Vault status..."
+
+    init_status=$(docker exec "$VAULT_CONTAINER_NAME" vault operator init -status || true)
+    if echo "$init_status" | grep -q "Vault is initialized"; then
+        log "Vault is already initialized."
+
+        if docker exec "$VAULT_CONTAINER_NAME" vault status | grep -q "Sealed.*true"; then
+            log "Vault is sealed. Proceeding to unseal..."
+            unseal_vault
+        else
+            log "Vault is already unsealed."
+        fi
+
+    else
+        log "Vault is not initialized. Initializing now..."
+        initialize_vault
+    fi
+}
+
 # Main function to manage Vault configuration
 main() {
-    # Define the name of the Vault container and the path to the unseal keys file
+    # Ensure the ENCRYPTION_PASSPHRASE environment variable is set
+    if [[ -z "$ENCRYPTION_PASSPHRASE" ]]; then
+        error_exit "The ENCRYPTION_PASSPHRASE environment variable is not set."
+    fi
+
+    # Define essential variables and paths
     VAULT_CONTAINER_NAME="ritualworks-vault-1"
-    UNSEAL_KEYS_FILE="unseal_keys.json"
+    BACKUP_FILE="unseal_keys.json"
+    ENCRYPTED_BACKUP_FILE="unseal_keys.json.gpg"
     ENVIRONMENT=${ENVIRONMENT:-"Development"}
     VAULT_ADDR=${VAULT_ADDR:-"http://127.0.0.1:8200"}
+    DOCKER_COMPOSE_FILE="../docker/compose/docker-compose-vault.yml"
     VAULT_POSTGRES_ADMIN_PASSWORD="your_actual_password"  # Set this to your PostgreSQL admin password
 
     # Define Docker subnet (adjust based on your Docker network)
     DOCKER_SUBNET="172.20.0.0/16"
 
-    # Authenticate with Vault using the root token from the unseal keys file
-    if [[ ! -f "$UNSEAL_KEYS_FILE" ]]; then
-        error_exit "Unseal keys file not found: $UNSEAL_KEYS_FILE"
-    fi
-
-    authenticate_with_root_token "$UNSEAL_KEYS_FILE"
+    start_vault_and_consul
+    check_vault_status
+    authenticate_with_root_token
 
     log "Starting creation of policies, groups, roles, users, and tokens..."
 
@@ -535,26 +589,7 @@ main() {
     enable_userpass_auth
 
     # Create policies with specific capabilities
-    create_policy "write-secrets-policy" 'path "secret/data/*" { capabilities = ["create", "read", "update", "delete", "list"] }'
     create_policy "read-secrets-policy" 'path "secret/data/*" { capabilities = ["read"] }'
-
-    # Create policies for PostgreSQL
-    create_policy "vault-read-secrets-policy" 'path "database/creds/vault" { capabilities = ["read"] }'
-
-    # Create groups and associate policies
-    create_group "write-group" "write-secrets-policy"
-    create_group "readonly-group" "read-secrets-policy"
-
-    # Create roles for the AppRole authentication method
-    create_role "write-role" "write-secrets-policy"
-    create_role "read-role" "read-secrets-policy"
-
-    # Create users for the Userpass authentication method
-    create_user "write-user" "write-password" "write-secrets-policy"
-    create_user "readonly-user" "readonly-password" "read-secrets-policy"
-
-    # Create tokens and store them as environment variables in the .env file
-    create_token "root" "ADMIN_TOKEN"
 
     log "All policies, groups, roles, users, and tokens created successfully."
 
@@ -569,13 +604,14 @@ main() {
     # Configure Vault secrets
     configure_vault_secrets
 
+    # Create policies for PostgreSQL
+    create_policy "vault-read-secrets-policy" 'path "database/creds/vault" { capabilities = ["read"] }'
+
     # Create AppRole for Vault and store credentials
     create_approle_and_store_credentials "vault" "vault-read-secrets-policy" "../vault/config/role_id" "../vault/secrets/secret_id"
 
-
-    
     log "Updating environment variables..."
-   # update_env_file "$env_vars"
+    # update_env_file "$env_vars"
 
     log "Process complete."
 }

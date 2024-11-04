@@ -3,7 +3,34 @@
 This project sets up a Docker Swarm stack with integrated HashiCorp Vault for secrets management. The setup includes various services such as PostgreSQL, Redis, Elasticsearch, Prometheus, Grafana, and RabbitMQ.
 
 ## Directory Structure
+Set the Encryption Passphrase:
 
+Before running the script, export the ENCRYPTION_PASSPHRASE environment variable:
+
+bash
+Copy code
+export ENCRYPTION_PASSPHRASE="your-strong-passphrase-here"
+Security Note: Ensure the passphrase is strong and securely managed. Avoid hardcoding it or exposing it in logs, shell history, or process lists. You can prompt for it securely if necessary:
+
+bash
+Copy code
+read -s -p "Enter encryption passphrase: " ENCRYPTION_PASSPHRASE
+echo
+Modify Necessary Variables:
+
+Update placeholders like your_actual_password, your_postgres_db, and postgres_primary with your actual values.
+Ensure that the paths like ../vault/config/role_id and ../vault/secrets/secret_id exist and are writable.
+Ensure GPG is Installed:
+
+Install GPG if it's not already installed:
+
+bash
+Copy code
+# On Ubuntu/Debian
+sudo apt-get install gnupg
+
+# On CentOS/RHEL
+sudo yum install gnupg
 ```
 your-project/
 ├── .env

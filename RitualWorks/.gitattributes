@@ -1,4 +1,0 @@
-terraform/azure/.terraform/providers/registry.terraform.io/hashicorp/azurerm/* filter=lfs diff=lfs merge=lfs -text
-terraform/aws/.terraform/providers/registry.terraform.io/hashicorp/aws/* filter=lfs diff=lfs merge=lfs -text
-terraform/aws/.terraform/providers/registry.terraform.io/hashicorp/aws/5.58.0/darwin_amd64/terraform-provider-aws_v5.58.0_x5 filter=lfs diff=lfs merge=lfs -text
-terraform/azure/.terraform/providers/registry.terraform.io/hashicorp/azurerm/3.112.0/darwin_amd64/terraform-provider-azurerm_v3.112.0_x5 filter=lfs diff=lfs merge=lfs -text
