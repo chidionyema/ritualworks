@@ -45,3 +45,5 @@ postgres_logs
 logs
 grafana-data/grafana.db
 elasticsearch/logs
+.env
+.env copy
