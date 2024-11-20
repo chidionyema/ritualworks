@@ -8,9 +8,9 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Xunit;
 using FluentAssertions;
-using RitualWorks.Controllers;
+using haworks.Controllers;
 
-namespace RitualWorks.Tests
+namespace haworks.Tests
 {
     [Collection("Integration Tests")]
     public class AssetsControllerTests : IDisposable

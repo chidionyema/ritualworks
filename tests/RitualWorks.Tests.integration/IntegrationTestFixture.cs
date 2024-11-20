@@ -12,11 +12,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Npgsql;
-using RitualWorks.Db;
+using haworks.Db;
 using Xunit;
 using System.Linq;
 using Microsoft.AspNetCore.TestHost;
-namespace RitualWorks.Tests
+namespace haworks.Tests
 {
     public class IntegrationTestFixture : IAsyncLifetime
     {
@@ -114,7 +114,7 @@ namespace RitualWorks.Tests
                         var connectionString = $"Host=localhost;Port=5432;Database={uniqueDbName};Username=myuser;Password=mypassword;";
 
                         services.AddEntityFrameworkNpgsql()
-                            .AddDbContext<RitualWorksContext>(options =>
+                            .AddDbContext<haworksContext>(options =>
                                 options.UseNpgsql(connectionString));
 
                         services.AddAuthentication("Test")
@@ -127,7 +127,7 @@ namespace RitualWorks.Tests
                         using (var scope = sp.CreateScope())
                         {
                             var scopedServices = scope.ServiceProvider;
-                            var db = scopedServices.GetRequiredService<RitualWorksContext>();
+                            var db = scopedServices.GetRequiredService<haworksContext>();
                             db.Database.Migrate();
 
                             // Seed data
@@ -215,7 +215,7 @@ namespace RitualWorks.Tests
 
         private async Task SeedData(IServiceProvider serviceProvider)
         {
-            var context = serviceProvider.GetRequiredService<RitualWorksContext>();
+            var context = serviceProvider.GetRequiredService<haworksContext>();
 
             var category = new Category(Guid.NewGuid(), "Test Category");
             context.Categories.Add(category);
@@ -244,7 +244,7 @@ namespace RitualWorks.Tests
             var currentDirectory = AppContext.BaseDirectory;
             var directoryInfo = new DirectoryInfo(currentDirectory);
 
-            while (directoryInfo != null && !File.Exists(Path.Combine(directoryInfo.FullName, "RitualWorks.sln")))
+            while (directoryInfo != null && !File.Exists(Path.Combine(directoryInfo.FullName, "haworks.sln")))
             {
                 directoryInfo = directoryInfo.Parent;
             }
@@ -275,7 +275,7 @@ namespace RitualWorks.Tests
         {
             var projectPath = GetProjectPath();
 
-            var testConfigPath = Path.Combine(projectPath, "tests", "RitualWorks.Tests.integration");
+            var testConfigPath = Path.Combine(projectPath, "tests", "haworks.Tests.integration");
 
             if (!Directory.Exists(testConfigPath))
             {

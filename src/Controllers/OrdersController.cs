@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RitualWorks.Db;
-using RitualWorks.Services;
+using haworks.Db;
+using haworks.Services;
 
-namespace RitualWorks.Controllers
+namespace haworks.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

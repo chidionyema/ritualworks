@@ -14,7 +14,7 @@ error_exit() {
 }
 
 # Define essential variables and paths
-VAULT_CONTAINER_NAME="ritualworks-vault-1"
+VAULT_CONTAINER_NAME="haworks-vault-1"
 VAULT_ADDR=${VAULT_ADDR:-"http://127.0.0.1:8200"}
 BACKUP_FILE="unseal_keys.json"
 ENCRYPTED_BACKUP_FILE="unseal_keys.json.gpg"
@@ -24,7 +24,7 @@ DOCKER_COMPOSE_FILE="../docker/compose/docker-compose-vault.yml"
 # Function to start Vault and Consul services
 start_vault_and_consul() {
     log "Starting Vault and Consul..."
-    docker-compose -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" up -d consul vault || error_exit "Failed to start Vault and Consul"
+    docker-compose -p "haworks" -f "$DOCKER_COMPOSE_FILE" up -d consul vault || error_exit "Failed to start Vault and Consul"
 
     wait_for_vault
 }

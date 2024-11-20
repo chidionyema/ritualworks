@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using RitualWorks.Contracts;
-using RitualWorks.Db;
+using haworks.Contracts;
+using haworks.Db;
 
-namespace RitualWorks.Repositories
+namespace haworks.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly RitualWorksContext _context;
+        private readonly haworksContext _context;
 
-        public ProductRepository(RitualWorksContext context)
+        public ProductRepository(haworksContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
@@ -89,19 +89,19 @@ namespace RitualWorks.Repositories
             await _context.ProductImages.AddRangeAsync(images);
         }
 
+        public void RemoveProductImages(IEnumerable<ProductImage> images)
+        {
+            _context.ProductImages.RemoveRange(images);
+        }
+
         public async Task AddProductAssetsAsync(IEnumerable<ProductAsset> assets)
         {
             await _context.ProductAssets.AddRangeAsync(assets);
         }
 
-        public async Task AddProductImageAsync(ProductImage productImage)
+        public void RemoveProductAssets(IEnumerable<ProductAsset> assets)
         {
-            await _context.ProductImages.AddAsync(productImage);
-        }
-
-        public async Task AddProductAssetAsync(ProductAsset productAsset)
-        {
-            await _context.ProductAssets.AddAsync(productAsset);
+            _context.ProductAssets.RemoveRange(assets);
         }
 
         public async Task<List<Product>> GetProductsByIdsAsync(List<Guid> productIds)
@@ -116,5 +116,4 @@ namespace RitualWorks.Repositories
             await _context.SaveChangesAsync();
         }
     }
-
 }

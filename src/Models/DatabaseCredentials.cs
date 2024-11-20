@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace RitualWorks.Models
+namespace haworks.Models
 {
    public class DatabaseCredentials
 {

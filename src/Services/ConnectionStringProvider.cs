@@ -1,14 +1,12 @@
-// ConnectionStringProvider.cs
 
 using System;
 using System.IO;
 using System.Text.Json;
 using Microsoft.Extensions.Configuration;
-using Npgsql;  // For NpgsqlConnection.ClearAllPools()
-using RitualWorks.Contracts;
-using RitualWorks.Models;  // Adjust the namespace as needed
-
-namespace RitualWorks.Services  // Adjust the namespace as needed
+using Npgsql;  
+using haworks.Contracts;
+using haworks.Models;  
+namespace haworks.Services  
 {
     public class ConnectionStringProvider : IConnectionStringProvider
     {

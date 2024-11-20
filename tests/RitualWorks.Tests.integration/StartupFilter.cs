@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using System;
 
-namespace RitualWorks.Tests
+namespace haworks.Tests
 {
     // Custom StartupFilter to add TestAuthenticationMiddleware
     public class StartupFilter : IStartupFilter

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace RitualWorks.Contracts
+namespace haworks.Contracts
 {
     public interface IFileStorageService
     {

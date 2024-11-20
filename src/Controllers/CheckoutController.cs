@@ -9,10 +9,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RitualWorks.Contracts;
-using RitualWorks.Db;
+using haworks.Contracts;
+using haworks.Db;
 
-namespace RitualWorks.Controllers
+namespace haworks.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -162,7 +162,6 @@ namespace RitualWorks.Controllers
         }
     }
 
-    // Helper DTO class for deserializing Stripe response
     public class StripeCheckoutSession
     {
         public string Id { get; set; } = string.Empty;

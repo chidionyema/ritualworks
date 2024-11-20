@@ -1,17 +1,17 @@
-﻿using RitualWorks.Db;
+﻿using haworks.Db;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using RitualWorks.Contracts;
+using haworks.Contracts;
 
-namespace RitualWorks.Repositories
+namespace haworks.Repositories
 {
     public class OrderRepository : IOrderRepository
     {
-        private readonly RitualWorksContext _context;
+        private readonly haworksContext _context;
 
-        public OrderRepository(RitualWorksContext context)
+        public OrderRepository(haworksContext context)
         {
             _context = context;
         }

@@ -1,16 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using RitualWorks.Db;
+using haworks.Db;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace RitualWorks.Repositories
+namespace haworks.Repositories
 {
     public class BaseRepository<TEntity> where TEntity : class
     {
-        protected readonly RitualWorksContext _context;
+        protected readonly haworksContext _context;
 
-        public BaseRepository(RitualWorksContext context)
+        public BaseRepository(haworksContext context)
         {
             _context = context;
         }

@@ -1,15 +1,15 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using RitualWorks.Contracts;
-using RitualWorks.Db;
+using haworks.Contracts;
+using haworks.Db;
 
-namespace RitualWorks.Repositories
+namespace haworks.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly RitualWorksContext _context;
+        private readonly haworksContext _context;
 
-        public UserRepository(RitualWorksContext context)
+        public UserRepository(haworksContext context)
         {
             _context = context;
         }
@@ -17,7 +17,6 @@ namespace RitualWorks.Repositories
         public async Task<User?> GetUserByIdAsync(string userId)
         {
             return await _context.Users
-                .Include(u => u.Rituals)
                 .FirstOrDefaultAsync(u => u.Id == userId);
         }
     }

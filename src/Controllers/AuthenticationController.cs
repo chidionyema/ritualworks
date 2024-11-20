@@ -4,7 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using RitualWorks.Db;
+using haworks.Db;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using System.Security.Claims;
@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 
-namespace RitualWorks.Controllers
+namespace haworks.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

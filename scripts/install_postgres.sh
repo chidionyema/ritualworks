@@ -19,7 +19,7 @@ DOCKER_COMPOSE_FILE="../docker/compose/docker-compose-postgres.yml"
 # Function to start postgres
 start_postgres() {
     log "Starting postgresl..."
-    docker-compose  -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" up -d  || error_exit "Failed to start Vault and Consul"
+    docker-compose  -p "haworks" -f "$DOCKER_COMPOSE_FILE" up -d  || error_exit "Failed to start Vault and Consul"
     
     log "Waiting for postgres to start..."
     sleep 2  # Ensure enough time for postgres to fully initialize

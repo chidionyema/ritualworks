@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Nest;
-using RitualWorks.Db;
-using RitualWorks.Controllers;
-
-namespace RitualWorks.Services
+using haworks.Db;
+using haworks.Controllers;
+using haworks.Dto;
+namespace haworks.Services
 {
     public class SearchService
     {

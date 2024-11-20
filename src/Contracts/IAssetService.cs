@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace RitualWorks.Services
+namespace haworks.Services
 {
     public interface IAssetService
     {

@@ -5,18 +5,18 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
-using RitualWorks.Controllers;
-using RitualWorks.Db;
+using haworks.Controllers;
+using haworks.Db;
 using Xunit;
 
-namespace RitualWorks.Tests
+namespace haworks.Tests
 {
     [Collection("Integration Tests")]
     public class ProductsControllerTests : IAsyncLifetime
     {
         private readonly HttpClient _client;
         private readonly IntegrationTestFixture _fixture;
-        private readonly RitualWorksContext _context;
+        private readonly haworksContext _context;
 
         public ProductsControllerTests(IntegrationTestFixture fixture)
         {
@@ -28,7 +28,7 @@ namespace RitualWorks.Tests
             _client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Test");
 
             // Access the DbContext for cleanup
-            _context = factory.Services.CreateScope().ServiceProvider.GetRequiredService<RitualWorksContext>();
+            _context = factory.Services.CreateScope().ServiceProvider.GetRequiredService<haworksContext>();
         }
 
         public async Task InitializeAsync()
@@ -48,7 +48,6 @@ namespace RitualWorks.Tests
             // Clear products, categories, and other related entities
             _context.Products.RemoveRange(_context.Products);
             _context.Categories.RemoveRange(_context.Categories);
-            // Add more entities as necessary
             await _context.SaveChangesAsync();
         }
 

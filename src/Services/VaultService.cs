@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using Newtonsoft.Json;
-using RitualWorks.Models;
+using haworks.Models;
 using Newtonsoft.Json.Linq;
 
-namespace RitualWorks.Services
+namespace haworks.Services
 {
     public class VaultSettings
     {

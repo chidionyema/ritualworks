@@ -1,6 +1,6 @@
-@RitualWorks_HostAddress = http://localhost:5245
+@haworks_HostAddress = http://localhost:5245
 
-GET {{RitualWorks_HostAddress}}/weatherforecast/
+GET {{haworks_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###

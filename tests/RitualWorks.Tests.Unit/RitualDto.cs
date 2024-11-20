@@ -1,6 +1,6 @@
-﻿using RitualWorks.Db;
+﻿using haworks.Db;
 
-namespace RitualWorks.DTOs
+namespace haworks.DTOs
 {
    
 }

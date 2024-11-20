@@ -6,10 +6,10 @@ WORKDIR /src
 
 # Copy the .csproj file and restore dependencies
 # This command copies only the project file to benefit from Docker's layer caching
-COPY src/RitualWorks.csproj ./
+COPY src/haworks.csproj ./
 
 # Restore the project dependencies based on the project file
-RUN dotnet restore "./RitualWorks.csproj"
+RUN dotnet restore "./haworks.csproj"
 
 # Copy the entire source code into the container
 # This command copies the actual source files after dependencies have been restored

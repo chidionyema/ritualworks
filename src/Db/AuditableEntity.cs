@@ -1,6 +1,6 @@
 using System;
 
-namespace RitualWorks.Db
+namespace haworks.Db
 {
     public interface IEntityWithGuid
     {

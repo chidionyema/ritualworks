@@ -2,7 +2,9 @@
 
 # Load environment variables from .env file
 if [ -f ../.env ]; then
-    export $(cat ../.env | grep -v '#' | awk '/=/ {print $1}')
+    set -a  # Automatically export all variables
+    source ../.env
+    set +a
 else
     echo "ERROR: .env file not found. Exiting."
     exit 1
@@ -21,7 +23,7 @@ done
 
 # Entries to add to /etc/hosts
 HOST_ENTRIES="127.0.0.1 $API_SERVER_NAME
-127.0.0.1 frontend.local.ritualworks.com
+127.0.0.1 frontend.local.haworks.com
 127.0.0.1 $PROMETHEUS_SERVER_NAME
 127.0.0.1 $GRAFANA_SERVER_NAME
 127.0.0.1 $QTRADER_SERVER_NAME"

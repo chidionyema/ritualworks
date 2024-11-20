@@ -198,7 +198,7 @@ grant_permissions_to_vault() {
 
     log "Granting broad permissions to user '$db_user' on all tables, views, sequences, and schemas in the database '$db_name'..."
     # Delay so PostgreSQL tables are fully ready
-    sleep 3
+    sleep 6
     # Grant all privileges on all tables, sequences, and functions in the public schema to the user
     docker exec "$postgres_container" psql -U postgres -d "$db_name" -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA $schema TO \"$db_user\";" || error_exit "Failed to grant permissions on tables."
     docker exec "$postgres_container" psql -U postgres -d "$db_name" -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA $schema TO \"$db_user\";" || error_exit "Failed to grant permissions on sequences."
@@ -214,7 +214,7 @@ grant_permissions_to_vault() {
 create_or_update_vault_user() {
     local db_user="vault"
     local db_password="your_actual_password"  # Change this to the actual password you want for the vault user
-    local postgres_container="ritualworks-postgres_primary-1"  # Replace with your actual PostgreSQL container name
+    local postgres_container="haworks-postgres_primary-1"  # Replace with your actual PostgreSQL container name
     local db_name="your_postgres_db"  # Replace with your PostgreSQL database name
 
     # Wait for PostgreSQL to be ready inside the container
@@ -438,7 +438,7 @@ configure_vault_secrets() {
 # Function to start Vault and Consul services
 start_vault_and_consul() {
     log "Starting Vault and Consul..."
-    docker-compose -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" up -d consul vault || error_exit "Failed to start Vault and Consul"
+    docker-compose -p "haworks" -f "$DOCKER_COMPOSE_FILE" up -d consul vault || error_exit "Failed to start Vault and Consul"
 
     wait_for_vault
 }
@@ -567,7 +567,7 @@ main() {
     fi
 
     # Define essential variables and paths
-    VAULT_CONTAINER_NAME="ritualworks-vault-1"
+    VAULT_CONTAINER_NAME="haworks-vault-1"
     BACKUP_FILE="unseal_keys.json"
     ENCRYPTED_BACKUP_FILE="unseal_keys.json.gpg"
     ENVIRONMENT=${ENVIRONMENT:-"Development"}

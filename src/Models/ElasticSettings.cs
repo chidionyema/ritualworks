@@ -1,4 +1,4 @@
-namespace RitualWorks.Models
+namespace haworks.Models
 {
     public class ElasticSettings
     {

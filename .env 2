@@ -1,0 +1,76 @@
+# General Vault Configuration=
+export VAULT_ADDR="http://127.0.0.1:8200"
+export VAULT_UNSEAL_KEY_1="your-unseal-key-1"
+export VAULT_UNSEAL_KEY_2="your-unseal-key-2"
+export VAULT_UNSEAL_KEY_3="your-unseal-key-3"
+
+# Environment Configuration=
+export ENVIRONMENT="Development"  # Change this to 'staging' or 'prod' as needed
+
+
+# AWS Configuration=
+export AWS_ACCESS_KEY="your-aws-access-key"
+export AWS_SECRET_KEY="your-aws-secret-key"
+export AWS_REGION="your-aws-region"
+
+# RabbitMQ Configuration=
+export RABBITMQ_USER="your-rabbitmq-user"
+
+export RABBITMQ_SERVER_NAME="rabbitmq"
+
+# ElasticSearch Configuration=
+export ELASTIC_PASSWORD="your-elastic-password"
+
+# MinIO Configuration=
+
+export MINIO_ENDPOINT="localhost:9000"
+export MINIO_BUCKET_NAME="your-bucket-name"
+export MINIO_SECURE="false"
+
+HOST_ENTRIES="127.0.0.1 api.local.ritualworks.com
+127.0.0.1 frontend.local.ritualworks.com
+127.0.0.1 prometheus.local.ritualworks.com
+127.0.0.1 grafana.local.ritualworks.com
+127.0.0.1 minio.local.ritualworks.com"
+
+# Recaptcha Configuration=
+export RECAPTCHA_SECRET_KEY="6LcZLxQqAAAAAHQ1YkkdQbVP3cDD7RBLDkrNtoW0"
+
+# Stripe Configuration=
+export STRIPE_SECRET_KEY="sk_test_rFKcXHBjjcSRkHER52H5zclL"
+export STRIPE_PUBLISHABLE_KEY="your_stripe_publishable_key"
+export STRIPE_WEBHOOK_SECRET="your_stripe_webhook_secret"
+
+# Azure Blob Storage Configuration=
+export AZURE_CONNECTION_STRING="UseDevelopmentStorage=true"
+export AZURE_CONTAINER_NAME="your-container-name"
+
+# Local File Storage Configuration=
+export LOCAL_FILE_STORAGE_DIRECTORY="/app/uploads"
+
+# MassTransit RabbitMQ SSL Configuration=
+export MASS_TRANSIT_RABBITMQ_SSL_ENABLED="true"
+export RABBITMQ_CERTIFICATE_PATH="/etc/ssl/certs/rabbitmq.crt"
+export RABBITMQ_CERTIFICATE_PASSPHRASE="your-certificate-passphrase"
+export USE_CERTIFICATE_AS_AUTHENTICATION="true"
+export RABBITMQ_TOKEN="hvs.CAESIPNW_I7VMsG454BdbWhwXpRV6qFsThR0EP07WOvYk8JmGh4KHGh2cy5DNXhpYWRIR3YzYWhyWXBCQzZ3UDdxME4"
+
+export vault="vault"
+export your_actual_password="your_actual_password"
+export POSTGRES_USER="myuser"
+export POSTGRES_DB= "your_postgres_db"
+export VAULT_TOKEN="hvs.CAESIJ2vRv1ZmvjHCLlzWj8uHPu-4VriUDZhZxPxfZyxLYn8Gh4KHGh2cy52U0JYMHFPQUtBYUJaVHp0Sm52ZnBRTEg"
+export POSTGRES_DB="your_postgres_db"
+export POSTGRES_PASSWORD="iLiPrqXb-odv-Yy7sqPe"
+export JWT_KEY="xbEHmLjlMIxnYiCRvcKMpLd+qf4eFCxsFdlndf0vBtI="
+export MINIO_ACCESS_KEY="a0d79f311a91d35a7b6eda2a"
+export MINIO_SECRET_KEY="sbTmXcR12jBhFyHAvlpqC9hWKWp0+A+Y"
+export RABBITMQ_PASSWORD="j6msQpLuVeWrytCSqc/vdw=="
+export POSTGRES_USERNAME="v-root-vault-oFIEHpMSiWNF1nE8UO57-1730116236"
+export POSTGRES_PASSWORD="xBy-FDPIwLWtJRhcba53"
+export JWT_KEY="+GoiquPM+/cb7X3I5CGmBoYqGrqRPIS5vXk4mJZe19k="
+export MINIO_ACCESS_KEY="58e770de9631bfeaaa1315b3"
+export MINIO_SECRET_KEY="jZT9Zj2y/+PbMgHOQLPJBQ3LiOVUnxUt"
+export RABBITMQ_PASSWORD="lOUFhgg3snTRW1tjoOBzdQ=="
+export ADMIN_TOKEN="hvs.Ur5dl7aZkiBNTt5B9qpki2gg"
+export VAULT_ROOT_TOKEN="hvs.1z0meX3o019L2r9z5KEiaQmo"

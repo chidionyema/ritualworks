@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RitualWorks.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4e546a193cc6ca2498b8296d803a7c2040776f43")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4a7adb8748eb2e1445610acd4b9bc42bb668841c")]
 [assembly: System.Reflection.AssemblyProductAttribute("RitualWorks.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RitualWorks.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

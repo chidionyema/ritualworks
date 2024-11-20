@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
-using RitualWorks.Controllers;
-using RitualWorks.Db;
-using RitualWorks.DTOs;
+using haworks.Controllers;
+using haworks.Db;
+using haworks.DTOs;
 using Xunit;
-using UserRegistrationDto = RitualWorks.Controllers.UserRegistrationDto;
-using UserLoginDto = RitualWorks.Controllers.UserLoginDto;
+using UserRegistrationDto = haworks.Controllers.UserRegistrationDto;
+using UserLoginDto = haworks.Controllers.UserLoginDto;
 using Microsoft.Extensions.Logging;
 
 public class AuthenticationControllerTests
@@ -72,7 +72,7 @@ public class AuthenticationControllerTests
     public async Task Register_ShouldReturnOk_WhenRegistrationIsSuccessful()
     {
         // Arrange
-        var registrationDto = new RitualWorks.Controllers.UserRegistrationDto
+        var registrationDto = new haworks.Controllers.UserRegistrationDto
         {
             Username = "testuser",
             Email = "testuser@example.com",

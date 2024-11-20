@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Moq;
-using RitualWorks.Contracts;
-using RitualWorks.Controllers;
-using RitualWorks.Db;
-using RitualWorks.Services;
+using haworks.Contracts;
+using haworks.Controllers;
+using haworks.Db;
+using haworks.Services;
 using Xunit;
 
 public class RitualServiceTests

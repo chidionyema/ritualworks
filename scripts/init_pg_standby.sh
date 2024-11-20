@@ -6,9 +6,9 @@ set -e  # Exit immediately if any command exits with a non-zero status
 VAULT_CONTAINER_NAME="ritualworks-vault-1"
 DOCKER_SUBNET="172.20.0.0/16"
 CERT_DIR="/certs-volume"
-PRIMARY_HOST="ritualworks-postgres_primary-1"
+PRIMARY_HOST="postgres_primary"
 PGDATA="/bitnami/postgresql/data"
-REPMGR_NODE_NAME="ritualworks-postgres_standby-1"
+REPMGR_NODE_NAME="postgres_standby"
 REPMGR_CONF_FILE="/opt/bitnami/repmgr/conf/repmgr.conf"
 REPMGR_USER="repmgr"
 REPMGR_PASSWORD="${REPMGR_PASSWORD:-repmgrpass}"
@@ -61,8 +61,9 @@ wait_for_primary_ready() {
 
 wait_for_primary_ready
 
- #  delay so postgress tables are fully ready
-    sleep 9
+# Delay to ensure PostgreSQL tables are fully ready
+sleep 9
+
 # Clean the data directory
 log "Cleaning the data directory..."
 rm -rf ${PGDATA:?}/*
@@ -76,18 +77,46 @@ conninfo='host=$REPMGR_NODE_NAME user=$REPMGR_USER dbname=repmgr connect_timeout
 data_directory='$PGDATA'
 use_replication_slots=1
 pg_bindir='/opt/bitnami/postgresql/bin'
+
+# Automatic failover settings
+failover=automatic
+promote_command='repmgr standby promote -f $REPMGR_CONF_FILE'
+follow_command='repmgr standby follow -f $REPMGR_CONF_FILE'
+log_level=INFO
 EOF
 
-log "repmgr.conf created successfully."
+log "repmgr.conf with failover settings created successfully."
 
 # Set the PGPASSWORD environment variable for repmgr user
 export PGPASSWORD=$REPMGR_PASSWORD
 
 # Clone the standby node using repmgr
 log "Cloning standby node from the primary..."
-repmgr -h $PRIMARY_HOST -U $REPMGR_USER -d repmgr -f "$REPMGR_CONF_FILE" \
+repmgr -f "$REPMGR_CONF_FILE" \
   standby clone --fast-checkpoint --verbose \
+  --dbname="host=$PRIMARY_HOST user=$REPMGR_USER dbname=repmgr password=$REPMGR_PASSWORD sslmode=require" \
   || error_exit "Failed to clone standby node from primary."
+
+# Modify postgresql.conf to include 'repmgr' in shared_preload_libraries and set primary_conninfo
+POSTGRESQL_CONF_FILE="$PGDATA/postgresql.conf"
+
+# Add 'repmgr' to shared_preload_libraries
+log "Adding 'repmgr' to shared_preload_libraries..."
+sed -i "/^#*\s*shared_preload_libraries\s*=\s*/c\shared_preload_libraries = 'repmgr'" "$POSTGRESQL_CONF_FILE"
+
+# Set primary_conninfo
+log "Setting primary_conninfo in postgresql.conf..."
+echo "primary_conninfo = 'host=$PRIMARY_HOST user=$REPMGR_USER password=$REPMGR_PASSWORD dbname=repmgr sslmode=require'" >> "$POSTGRESQL_CONF_FILE"
+
+# Configure logging
+log "Configuring logging in postgresql.conf..."
+sed -i "/^#*\s*logging_collector\s*=\s*/c\logging_collector = on" "$POSTGRESQL_CONF_FILE"
+sed -i "/^#*\s*log_directory\s*=\s*/c\log_directory = 'pg_log'" "$POSTGRESQL_CONF_FILE"
+sed -i "/^#*\s*log_filename\s*=\s*/c\log_filename = 'postgresql-%a.log'" "$POSTGRESQL_CONF_FILE"
+
+# Create log directory
+mkdir -p "$PGDATA/pg_log"
+chown postgres:postgres "$PGDATA/pg_log"
 
 # Start PostgreSQL server manually
 log "Starting PostgreSQL server..."
@@ -109,9 +138,14 @@ export PGPASSWORD=$POSTGRES_PASSWORD
 log "Registering standby node with the primary..."
 repmgr -f "$REPMGR_CONF_FILE" -S postgres standby register --force --verbose || error_exit "Failed to register standby with primary."
 
+# Start repmgrd
+log "Starting repmgrd for automatic failover..."
+repmgrd -f "$REPMGR_CONF_FILE" --verbose &
+REPMGRD_PID=$!
+
 # Tail the PostgreSQL logs
 log "Tailing PostgreSQL logs..."
-tail -f /opt/bitnami/postgresql/logs/postgresql.log &
+tail -f "$PGDATA/pg_log/postgresql-*.log" &
 
-# Wait for the PostgreSQL server process to end
-wait $PG_PID
+# Wait for the PostgreSQL server and repmgrd processes to end
+wait $PG_PID $REPMGRD_PID

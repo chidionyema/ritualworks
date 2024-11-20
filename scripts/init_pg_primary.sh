@@ -3,18 +3,18 @@
 set -e  # Exit immediately if any command exits with a non-zero status
 
 # Define constants and configuration
-VAULT_CONTAINER_NAME="ritualworks-vault-1"    # Name of the running Vault container
-DOCKER_SUBNET="172.20.0.0/16"                 # Adjust based on your Docker network
-CERT_DIR="/certs-volume"                      # Directory where certificates are stored in the shared volume
-REPMGR_USER="repmgr"                          # Replication manager user
+VAULT_CONTAINER_NAME="ritualworks-vault-1"            # Name of the running Vault container
+DOCKER_SUBNET="172.20.0.0/16"                     # Adjust based on your Docker network
+CERT_DIR="/certs-volume"                          # Directory where certificates are stored in the shared volume
+REPMGR_USER="repmgr"                              # Replication manager user
 REPMGR_PASSWORD="${REPMGR_PASSWORD:-repmgrpass}"  # Default password for repmgr
 
 # Environment variables for creating the user and database
-POSTGRES_USER="${POSTGRES_USER:-myuser}"      # Default user if not set
+POSTGRES_USER="${POSTGRES_USER:-myuser}"          # Default user if not set
 POSTGRES_PASSWORD="${POSTGRES_PASSWORD:-mypassword}"  # Password for the default user
-POSTGRES_DB="${POSTGRES_DB:-your_postgres_db}" # Default database if not set
-VAULT_USER="vault"                            # Vault user for DB secrets
-VAULT_PASSWORD="${VAULT_PASSWORD:-vaultpassword}"  # Password for Vault user
+POSTGRES_DB="${POSTGRES_DB:-your_postgres_db}"    # Default database if not set
+VAULT_USER="vault"                                # Vault user for DB secrets
+VAULT_PASSWORD="${VAULT_PASSWORD:-vaultpassword}" # Password for Vault user
 
 # Helper function to log messages with timestamps
 log() {
@@ -91,17 +91,27 @@ sed -i "/^#*\s*max_wal_senders\s*=\s*/c\max_wal_senders = 10" "$POSTGRESQL_CONF_
 sed -i "/^#*\s*max_replication_slots\s*=\s*/c\max_replication_slots = 10" "$POSTGRESQL_CONF_FILE"
 sed -i "/^#*\s*wal_log_hints\s*=\s*/c\wal_log_hints = on" "$POSTGRESQL_CONF_FILE"
 
+# Enable 'repmgr' in shared_preload_libraries
+log "Adding 'repmgr' to shared_preload_libraries..."
+if grep -q "^#*\s*shared_preload_libraries\s*=" "$POSTGRESQL_CONF_FILE"; then
+    sed -i "/^#*\s*shared_preload_libraries\s*=/c\shared_preload_libraries = 'repmgr'" "$POSTGRESQL_CONF_FILE"
+else
+    echo "shared_preload_libraries = 'repmgr'" >> "$POSTGRESQL_CONF_FILE"
+fi
+
 # Modify pg_hba.conf to enforce SSL connections and allow replication for repmgr
 log "Modifying pg_hba.conf to allow connections..."
-
-# Add the following line to allow password-based connections for the user 'myuser'
-echo "host all myuser $DOCKER_SUBNET md5" >> "$PG_HBA_CONF"
 
 # Allow replication connections from any host in the Docker subnet using SSL
 echo "hostssl replication $REPMGR_USER $DOCKER_SUBNET md5" >> "$PG_HBA_CONF"
 
-# Allow connections from the Docker subnet with md5 authentication
-log "Allowing connections from Docker subnet $DOCKER_SUBNET with md5 authentication..."
+# Allow haproxy_check user to connect over SSL
+echo "hostssl all haproxy_check $DOCKER_SUBNET md5" >> "$PG_HBA_CONF"
+
+# Allow non-SSL connections for haproxy_check
+echo "host all haproxy_check $DOCKER_SUBNET md5" >> "$PG_HBA_CONF"
+
+# Allow connections from the Docker subnet with md5 authentication and SSL
 echo "hostssl all all $DOCKER_SUBNET md5" >> "$PG_HBA_CONF"
 
 # Allow non-SSL connections for Vault (if Vault is connecting without SSL)
@@ -134,7 +144,6 @@ BEGIN
 END
 \$\$;" || error_exit "Failed to create user '$POSTGRES_USER'."
 
-
 log "Checking if database '$POSTGRES_DB' exists..."
 DB_EXISTS=$(psql -U postgres -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$POSTGRES_DB'")
 if [ "$DB_EXISTS" != "1" ]; then
@@ -143,6 +152,7 @@ if [ "$DB_EXISTS" != "1" ]; then
 else
     log "Database '$POSTGRES_DB' already exists. Skipping creation."
 fi
+
 # Set password for postgres superuser
 log "Setting password for postgres user..."
 psql -U postgres -d postgres -c "ALTER USER postgres WITH PASSWORD '$POSTGRES_PASSWORD';" || error_exit "Failed to set password for postgres user."
@@ -150,6 +160,7 @@ psql -U postgres -d postgres -c "ALTER USER postgres WITH PASSWORD '$POSTGRES_PA
 # Grant all privileges on all tables in public schema to the postgres user
 log "Granting privileges on all tables in public schema to $POSTGRES_USER..."
 psql -U postgres -d $POSTGRES_DB -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $POSTGRES_USER;" || error_exit "Failed to grant privileges on tables to $POSTGRES_USER."
+
 # Create repmgr user and database
 log "Creating repmgr user and database..."
 psql -U postgres -d postgres -c "DO \$\$
@@ -159,13 +170,12 @@ BEGIN
     END IF;
 END
 \$\$;" || error_exit "Failed to create repmgr user."
+
 psql -U postgres -tc "SELECT 1 FROM pg_database WHERE datname='repmgr'" | grep -q 1 || \
 psql -U postgres -c "CREATE DATABASE repmgr OWNER $REPMGR_USER;" || error_exit "Failed to create repmgr database."
+
 psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE repmgr TO $REPMGR_USER;" || error_exit "Failed to grant privileges on repmgr database."
 log "repmgr user and database setup completed."
-
-
-
 
 # Create 'vault' user and grant privileges
 log "Creating user '$VAULT_USER' if it does not exist..."
@@ -176,8 +186,25 @@ BEGIN
     END IF;
 END
 \$\$;" || error_exit "Failed to create user '$VAULT_USER'."
+
 log "Granting privileges to user '$VAULT_USER' on database '$POSTGRES_DB'..."
 psql -U postgres -d postgres -c "GRANT ALL PRIVILEGES ON DATABASE $POSTGRES_DB TO $VAULT_USER;" || error_exit "Failed to grant privileges to user '$VAULT_USER' on database '$POSTGRES_DB'."
+
+# Create 'haproxy_check' user and grant necessary permissions
+log "Creating 'haproxy_check' user and granting permissions..."
+psql -U postgres -d postgres -c "DO \$\$
+BEGIN
+    IF NOT EXISTS (SELECT FROM pg_catalog.pg_user WHERE usename = 'haproxy_check') THEN
+        CREATE ROLE haproxy_check WITH LOGIN PASSWORD 'haproxypassword';
+    END IF;
+END
+\$\$;" || error_exit "Failed to create 'haproxy_check' user."
+
+psql -U postgres -d postgres -c "GRANT CONNECT ON DATABASE postgres TO haproxy_check;" || error_exit "Failed to grant CONNECT privilege to 'haproxy_check'."
+
+psql -U postgres -d postgres -c "GRANT EXECUTE ON FUNCTION pg_catalog.pg_is_in_recovery() TO haproxy_check;" || error_exit "Failed to grant EXECUTE on pg_is_in_recovery() to 'haproxy_check'."
+
+log "'haproxy_check' user created and permissions granted successfully."
 
 # Create repmgr.conf dynamically for the primary node
 log "Creating repmgr.conf dynamically for the primary node..."
@@ -188,8 +215,14 @@ conninfo='host=postgres_primary user=$REPMGR_USER dbname=repmgr connect_timeout=
 data_directory='$PGDATA'
 use_replication_slots=1
 pg_bindir='/opt/bitnami/postgresql/bin'
+
+# Automatic failover settings
+failover=automatic
+promote_command='repmgr standby promote -f /opt/bitnami/repmgr/conf/repmgr.conf'
+follow_command='repmgr standby follow -f /opt/bitnami/repmgr/conf/repmgr.conf'
+log_level=INFO
 EOF
-log "repmgr.conf created successfully."
+log "repmgr.conf with failover settings created successfully."
 
 # Register the primary node with repmgr
 log "Registering primary node with repmgr..."
@@ -197,9 +230,14 @@ export PGPASSWORD=$POSTGRES_PASSWORD
 repmgr -f /opt/bitnami/repmgr/conf/repmgr.conf -S postgres primary register --force --verbose || error_exit "Failed to register primary node with repmgr."
 log "Registration of primary node successful."
 
+# Start repmgrd
+log "Starting repmgrd for automatic failover..."
+repmgrd -f /opt/bitnami/repmgr/conf/repmgr.conf --verbose &
+REPMGRD_PID=$!
+
 # Tail the PostgreSQL logs to keep the container running and for visibility
 log "Tailing PostgreSQL logs..."
-tail -f /opt/bitnami/postgresql/logs/postgresql.log &
+tail -f "$PGDATA/pg_log/"*.log &
 
-# Wait for the PostgreSQL server process to end
-wait $PG_PID
+# Wait for the PostgreSQL server and repmgrd processes to end
+wait $PG_PID $REPMGRD_PID

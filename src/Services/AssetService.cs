@@ -9,7 +9,7 @@ using Minio.DataModel;
 using Minio.DataModel.Args;
 using Minio.Exceptions;
 
-namespace RitualWorks.Services
+namespace haworks.Services
 {
     public class AssetService : IAssetService
     {
@@ -18,8 +18,8 @@ namespace RitualWorks.Services
         private static readonly List<string> _allowedImageTypes = new List<string> { ".jpg", ".jpeg", ".png", ".gif" };
         private static readonly List<string> _allowedAssetTypes = new List<string> { ".pdf", ".doc", ".docx", ".zip", ".rar" };
         private const long _maxFileSize = 100 * 1024 * 1024; // 100 MB
-        private readonly string _bucketName = "ritualworks-bucket"; // Replace with your bucket name
-        private readonly string _minioDomain = "minio.local.ritualworks.com"; // Replace with your actual domain
+        private readonly string _bucketName = "haworks-bucket"; // Replace with your bucket name
+        private readonly string _minioDomain = "minio.local.haworks.com"; // Replace with your actual domain
 
         public AssetService(MinioClient minioClient, ILogger<AssetService> logger)
         {

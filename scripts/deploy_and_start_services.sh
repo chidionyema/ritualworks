@@ -27,7 +27,7 @@ DOCKER_COMPOSE_FILE="../docker/compose/docker-compose-postgres.yml"
 # Function to start postgres
 start_postgres() {
     log "Starting postgres..."
-    docker-compose -p "ritualworks" -f "$DOCKER_COMPOSE_FILE" up -d || error_exit "Failed to start PostgreSQL"
+    docker-compose -p "haworks" -f "$DOCKER_COMPOSE_FILE" up -d || error_exit "Failed to start PostgreSQL"
     
     log "Waiting for PostgreSQL to start..."
     sleep 2  # Ensure enough time for PostgreSQL to fully initialize

@@ -1,4 +1,4 @@
-﻿namespace RitualWorks.Settings
+﻿namespace haworks.Settings
 {
     public class BlobSettings
     {

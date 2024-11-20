@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace RitualWorks.Db
+namespace haworks.Db
 {
     public class OrderItem
     {

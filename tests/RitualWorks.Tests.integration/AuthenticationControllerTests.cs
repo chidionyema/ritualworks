@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using RitualWorks.Db;
+using haworks.Db;
 using System.Text.Json;
 using Xunit;
-using RitualWorks.Contracts;
-using RitualWorks.Controllers;
-using static RitualWorks.Controllers.AuthenticationController;
+using haworks.Contracts;
+using haworks.Controllers;
+using static haworks.Controllers.AuthenticationController;
 using Microsoft.AspNetCore.Mvc.Testing;
 using FluentAssertions;
 
-namespace RitualWorks.Tests
+namespace haworks.Tests
 {
     public class AuthResponse
     {

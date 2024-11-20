@@ -5,13 +5,13 @@ using Stripe;
 using Stripe.Checkout;
 using System.IO;
 using System.Threading.Tasks;
-using RitualWorks.Contracts;
-using RitualWorks.Settings;
-using RitualWorks.Db;
+using haworks.Contracts;
+using haworks.Settings;
+using haworks.Db;
 using System;
 using Microsoft.AspNetCore.Authorization;
-using RitualWorks.Models;
-namespace RitualWorks.Controllers
+using haworks.Models;
+namespace haworks.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

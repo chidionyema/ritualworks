@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RitualWorks.Services;
+using haworks.Services;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-namespace RitualWorks.Controllers
+namespace haworks.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

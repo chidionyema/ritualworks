@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using RitualWorks.Db;
+using haworks.Db;
 
 #nullable disable
 
-namespace RitualWorks.Migrations
+namespace haworks.Migrations
 {
-    [DbContext(typeof(RitualWorksContext))]
-    partial class RitualWorksContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(haworksContext))]
+    partial class haworksContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -154,7 +154,7 @@ namespace RitualWorks.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.Category", b =>
+            modelBuilder.Entity("haworks.Db.Category", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -201,7 +201,7 @@ namespace RitualWorks.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.Comment", b =>
+            modelBuilder.Entity("haworks.Db.Comment", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -233,7 +233,7 @@ namespace RitualWorks.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.Order", b =>
+            modelBuilder.Entity("haworks.Db.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -257,7 +257,7 @@ namespace RitualWorks.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.OrderItem", b =>
+            modelBuilder.Entity("haworks.Db.OrderItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -284,7 +284,7 @@ namespace RitualWorks.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.Post", b =>
+            modelBuilder.Entity("haworks.Db.Post", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -315,7 +315,7 @@ namespace RitualWorks.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.Product", b =>
+            modelBuilder.Entity("haworks.Db.Product", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -422,7 +422,7 @@ namespace RitualWorks.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.ProductAsset", b =>
+            modelBuilder.Entity("haworks.Db.ProductAsset", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -446,7 +446,7 @@ namespace RitualWorks.Migrations
                     b.ToTable("ProductAssets");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.ProductImage", b =>
+            modelBuilder.Entity("haworks.Db.ProductImage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -493,7 +493,7 @@ namespace RitualWorks.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.ProductReview", b =>
+            modelBuilder.Entity("haworks.Db.ProductReview", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -570,7 +570,7 @@ namespace RitualWorks.Migrations
                         });
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.Ritual", b =>
+            modelBuilder.Entity("haworks.Db.Ritual", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -634,7 +634,7 @@ namespace RitualWorks.Migrations
                     b.ToTable("Rituals");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.User", b =>
+            modelBuilder.Entity("haworks.Db.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -709,7 +709,7 @@ namespace RitualWorks.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("RitualWorks.Db.User", null)
+                    b.HasOne("haworks.Db.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -718,7 +718,7 @@ namespace RitualWorks.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("RitualWorks.Db.User", null)
+                    b.HasOne("haworks.Db.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -733,7 +733,7 @@ namespace RitualWorks.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RitualWorks.Db.User", null)
+                    b.HasOne("haworks.Db.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -742,37 +742,37 @@ namespace RitualWorks.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("RitualWorks.Db.User", null)
+                    b.HasOne("haworks.Db.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.Comment", b =>
+            modelBuilder.Entity("haworks.Db.Comment", b =>
                 {
-                    b.HasOne("RitualWorks.Db.Post", "Post")
+                    b.HasOne("haworks.Db.Post", "Post")
                         .WithMany("Comments")
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RitualWorks.Db.User", null)
+                    b.HasOne("haworks.Db.User", null)
                         .WithMany("Comments")
                         .HasForeignKey("UserId");
 
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.OrderItem", b =>
+            modelBuilder.Entity("haworks.Db.OrderItem", b =>
                 {
-                    b.HasOne("RitualWorks.Db.Order", "Order")
+                    b.HasOne("haworks.Db.Order", "Order")
                         .WithMany("OrderItems")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RitualWorks.Db.Product", "Product")
+                    b.HasOne("haworks.Db.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -783,16 +783,16 @@ namespace RitualWorks.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.Post", b =>
+            modelBuilder.Entity("haworks.Db.Post", b =>
                 {
-                    b.HasOne("RitualWorks.Db.User", null)
+                    b.HasOne("haworks.Db.User", null)
                         .WithMany("Posts")
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.Product", b =>
+            modelBuilder.Entity("haworks.Db.Product", b =>
                 {
-                    b.HasOne("RitualWorks.Db.Category", "Category")
+                    b.HasOne("haworks.Db.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -801,9 +801,9 @@ namespace RitualWorks.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.ProductAsset", b =>
+            modelBuilder.Entity("haworks.Db.ProductAsset", b =>
                 {
-                    b.HasOne("RitualWorks.Db.Product", "Product")
+                    b.HasOne("haworks.Db.Product", "Product")
                         .WithMany("ProductAssets")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -812,9 +812,9 @@ namespace RitualWorks.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.ProductImage", b =>
+            modelBuilder.Entity("haworks.Db.ProductImage", b =>
                 {
-                    b.HasOne("RitualWorks.Db.Product", "Product")
+                    b.HasOne("haworks.Db.Product", "Product")
                         .WithMany("ProductImages")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -823,9 +823,9 @@ namespace RitualWorks.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.ProductReview", b =>
+            modelBuilder.Entity("haworks.Db.ProductReview", b =>
                 {
-                    b.HasOne("RitualWorks.Db.Product", "Product")
+                    b.HasOne("haworks.Db.Product", "Product")
                         .WithMany("ProductReviews")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -834,9 +834,9 @@ namespace RitualWorks.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.Ritual", b =>
+            modelBuilder.Entity("haworks.Db.Ritual", b =>
                 {
-                    b.HasOne("RitualWorks.Db.User", "Creator")
+                    b.HasOne("haworks.Db.User", "Creator")
                         .WithMany("Rituals")
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -845,22 +845,22 @@ namespace RitualWorks.Migrations
                     b.Navigation("Creator");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.Category", b =>
+            modelBuilder.Entity("haworks.Db.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.Order", b =>
+            modelBuilder.Entity("haworks.Db.Order", b =>
                 {
                     b.Navigation("OrderItems");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.Post", b =>
+            modelBuilder.Entity("haworks.Db.Post", b =>
                 {
                     b.Navigation("Comments");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.Product", b =>
+            modelBuilder.Entity("haworks.Db.Product", b =>
                 {
                     b.Navigation("ProductAssets");
 
@@ -869,7 +869,7 @@ namespace RitualWorks.Migrations
                     b.Navigation("ProductReviews");
                 });
 
-            modelBuilder.Entity("RitualWorks.Db.User", b =>
+            modelBuilder.Entity("haworks.Db.User", b =>
                 {
                     b.Navigation("Comments");
 

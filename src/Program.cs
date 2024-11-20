@@ -7,32 +7,26 @@ using Azure.Storage.Blobs;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using RitualWorks.Db;
-using RitualWorks.Services;
+using haworks.Db;
+using haworks.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using RitualWorks.Contracts;
-using RitualWorks.Repositories;
-using RitualWorks.Settings;
+using haworks.Contracts;
+using haworks.Repositories;
+using haworks.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Net.Http;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.IO;
-using System.Text.Json;
 using Stripe;
 using MassTransit;
 using Minio;
-using RitualWorks.Models;
+using haworks.Models;
 using Serilog;
 using Serilog.Events;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Authentication;
-using System.Data.Common;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 public partial class Program
 {
@@ -78,7 +72,7 @@ public partial class Program
 
         // Add Identity services
         builder.Services.AddIdentity<User, IdentityRole>()
-            .AddEntityFrameworkStores<RitualWorksContext>()
+            .AddEntityFrameworkStores<haworksContext>()
             .AddDefaultTokenProviders();
 
         // Register the connection string provider and the interceptor
@@ -96,7 +90,7 @@ public partial class Program
 
     private static void ConfigureDbContext(WebApplicationBuilder builder)
     {
-        builder.Services.AddDbContext<RitualWorksContext>((serviceProvider, options) =>
+        builder.Services.AddDbContext<haworksContext>((serviceProvider, options) =>
         {
             var connectionStringProvider = serviceProvider.GetRequiredService<IConnectionStringProvider>();
             var interceptor = serviceProvider.GetRequiredService<DynamicCredentialsConnectionInterceptor>();
@@ -235,7 +229,7 @@ public partial class Program
     {
         builder.Services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "RitualWorks API", Version = "v1" });
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "haworks API", Version = "v1" });
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,
@@ -286,7 +280,7 @@ public partial class Program
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "RitualWorks API V1");
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "haworks API V1");
             c.RoutePrefix = "swagger";
         });
 

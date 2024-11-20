@@ -1,9 +1,9 @@
 ﻿using System;
-using RitualWorks.Db;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using haworks.Db;
 
-namespace RitualWorks.Contracts
+namespace haworks.Contracts
 {
     public interface IProductRepository
     {
@@ -13,12 +13,11 @@ namespace RitualWorks.Contracts
         Task AddProductAsync(Product product);
         Task UpdateProductAsync(Product product);
         Task DeleteProductAsync(Guid id);
-        Task AddProductImageAsync(ProductImage productImage);
-        Task AddProductAssetAsync(ProductAsset productAsset);
-        Task<List<Product>> GetProductsByIdsAsync(List<Guid> productIds);
+        Task AddProductImagesAsync(IEnumerable<ProductImage> images);
+        void RemoveProductImages(IEnumerable<ProductImage> images);
+        Task AddProductAssetsAsync(IEnumerable<ProductAsset> assets);
+        void RemoveProductAssets(IEnumerable<ProductAsset> assets);
         Task SaveChangesAsync();
-
-         
+        Task<List<Product>> GetProductsByIdsAsync(List<Guid> productIds);
     }
 }
-

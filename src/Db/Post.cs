@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace RitualWorks.Db
+namespace haworks.Db
 {
     public class Post
     {

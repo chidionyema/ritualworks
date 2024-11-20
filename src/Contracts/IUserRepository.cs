@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using RitualWorks.Db;
+using haworks.Db;
 
-namespace RitualWorks.Contracts
+namespace haworks.Contracts
 {
     public interface IUserRepository
     {

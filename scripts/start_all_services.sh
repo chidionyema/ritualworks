@@ -24,7 +24,7 @@ log "Ensuring correct script directory..."
 cd "$(dirname "$0")" || error_exit "Failed to change directory to the script's location."
 
 # Set the Docker Compose project name
-PROJECT_NAME="${PROJECT_NAME:-ritualworks}"
+PROJECT_NAME="${PROJECT_NAME:-haworks}"
 
 # Function to build backend Docker services
 build_backend_services() {

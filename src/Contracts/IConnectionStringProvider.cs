@@ -1,5 +1,5 @@
 
-namespace RitualWorks.Contracts
+namespace haworks.Contracts
 {
     public interface IConnectionStringProvider
     {

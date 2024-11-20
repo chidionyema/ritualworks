@@ -101,8 +101,8 @@ services:
       - xpack.security.enabled=true
       - xpack.security.transport.ssl.enabled=true
       - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/es-node-1.ritualworks.com.key
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/es-node-1.ritualworks.com.crt
+      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/es-node-1.haworks.com.key
+      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/es-node-1.haworks.com.crt
       - xpack.security.transport.ssl.certificate_authorities=/usr/share/elasticsearch/config/ca.crt
     volumes:
       - es-data-node1:/usr/share/elasticsearch/data
@@ -143,8 +143,8 @@ services:
       - xpack.security.enabled=true
       - xpack.security.transport.ssl.enabled=true
       - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/es-node-2.ritualworks.com.key
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/es-node-2.ritualworks.com.crt
+      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/es-node-2.haworks.com.key
+      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/es-node-2.haworks.com.crt
       - xpack.security.transport.ssl.certificate_authorities=/usr/share/elasticsearch/config/ca.crt
     volumes:
       - es-data-node2:/usr/share/elasticsearch/data

@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq; // Ensure this is included
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using RitualWorks.Contracts;
-using RitualWorks.Db;
-using RitualWorks.Controllers;
-using RitualWorks.Settings;
+using haworks.Contracts;
+using haworks.Db;
+using haworks.Controllers;
+using haworks.Settings;
 
-namespace RitualWorks.Services
+namespace haworks.Services
 {
     public class OrderService
     {

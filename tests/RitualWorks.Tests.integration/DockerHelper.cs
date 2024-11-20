@@ -7,7 +7,7 @@ using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.Extensions.Logging;
 
-namespace RitualWorks.Tests
+namespace haworks.Tests
 {
     public class DockerHelper
     {

@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = RitualWorks.Tests.Unit
-build_property.ProjectDir = /Users/chidionyema/Documents/code/Ritualworks/tests/RitualWorks.Tests.Unit/
+build_property.ProjectDir = /Users/chidionyema/Documents/code/HAworks/tests/RitualWorks.Tests.Unit/
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

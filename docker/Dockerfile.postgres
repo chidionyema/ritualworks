@@ -1,0 +1,15 @@
+FROM bitnami/postgresql-repmgr:latest
+
+# Create a user with UID 1001
+RUN useradd -u 1001 -m -d /home/postgres_user -s /bin/bash postgres_user
+
+# Set permissions for the home directory
+RUN chown -R postgres_user:postgres_user /home/postgres_user
+
+# Set environment variables
+ENV HOME=/home/postgres_user
+ENV USER=postgres_user
+ENV LOGNAME=postgres_user
+
+# Ensure /etc/passwd has the correct entry
+RUN echo "postgres_user:x:1001:1001::/home/postgres_user:/bin/bash" >> /etc/passwd

@@ -6,13 +6,13 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using RitualWorks.Controllers;
-using RitualWorks.Db;
+using haworks.Controllers;
+using haworks.Db;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
-using static RitualWorks.Controllers.AuthenticationController;
+using static haworks.Controllers.AuthenticationController;
 
-namespace RitualWorks.Tests
+namespace haworks.Tests
 {
     [Collection("Integration Tests")]
     public class CheckoutControllerTests : IAsyncLifetime
@@ -202,7 +202,7 @@ namespace RitualWorks.Tests
         private async Task<Guid> InsertTestProduct()
         {
             using var scope = _factory.Services.CreateScope();
-            var context = scope.ServiceProvider.GetRequiredService<RitualWorksContext>();
+            var context = scope.ServiceProvider.GetRequiredService<haworksContext>();
 
             // Create and insert a test product
             var testProduct = new Product

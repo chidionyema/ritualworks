@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using RitualWorks.Db;
+using haworks.Db;
 using Nest;
 using System.Threading.Tasks;
 
-namespace RitualWorks.Services
+namespace haworks.Services
 {
     public class DataIndexer
     {
@@ -15,22 +15,6 @@ namespace RitualWorks.Services
         {
             _client = client;
             _logger = logger;
-        }
-
-        public async Task IndexRitualAsync(Ritual ritual)
-        {
-            try
-            {
-                var response = await _client.IndexDocumentAsync(ritual);
-                if (!response.IsValid)
-                {
-                    _logger.LogError("Failed to index ritual: {0}", response.OriginalException.Message);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error indexing ritual: {0}", ex.Message);
-            }
         }
 
         public async Task IndexProductAsync(Product product)
