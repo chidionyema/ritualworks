@@ -135,6 +135,7 @@ request_cert() {
         echo \"\$response\" | jq -r '.data.certificate' > $shared_cert_file && \
         echo \"\$response\" | jq -r '.data.private_key' > $shared_key_file && \
         chmod 600 $shared_key_file && \
+        chmod 644 $shared_key_file && \
         chown 999:999 $shared_key_file" || error_exit "Failed to request certificate."
 
     log "Certificate for $service saved with SANs in $shared_cert_file and $shared_key_file."

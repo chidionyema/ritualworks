@@ -40,42 +40,6 @@ error_exit() {
     exit 1
 }
 
-# Function to check PostgreSQL server connectivity using psql
-# Parameters:
-#   $1 - Hostname of the PostgreSQL server
-#   $2 - Port of the PostgreSQL server
-#   $3 - PostgreSQL username
-#   $4 - PostgreSQL password
-check_postgres_connectivity() {
-    local host=$1
-    local port=$2
-    local user=$3
-    local password=$4
-
-    log "Checking connectivity to PostgreSQL server at $host:$port with user $user..."
-
-    # Using psql to check the connectivity
-    if PGPASSWORD=$password psql -h $host -p $port -U $user -c '\q' &>/dev/null; then
-        log "Connection to PostgreSQL server at $host:$port is successful."
-    else
-        log "Failed to connect to PostgreSQL server at $host:$port."
-    fi
-}
-
-# Main function to perform the connectivity check
-main() {
-    # Ensure the necessary environment variables are set
-    if [[ -z "$POSTGRES_USERNAME" || -z "$POSTGRES_PASSWORD" ]]; then
-        error_exit "Environment variables POSTGRES_USERNAME and POSTGRES_PASSWORD must be set."
-    fi
-
-    # Check connectivity to PostgreSQL primary and standby servers using the environment variables
-    check_postgres_connectivity "postgres_primary" 5432 "$POSTGRES_USERNAME" "$POSTGRES_PASSWORD"
-    check_postgres_connectivity "postgres_standby" 5432 "$POSTGRES_USERNAME" "$POSTGRES_PASSWORD"
-
-    # Start HAProxy as the created user
-    exec gosu $HAPROXY_USER haproxy -f /usr/local/etc/haproxy/haproxy.cfg
-}
-
-# Run the main function
-main
+# Start HAProxy as the created user
+log "Starting HAProxy service..."
+exec gosu $HAPROXY_USER haproxy -f /usr/local/etc/haproxy/haproxy.cfg || error_exit "Failed to start HAProxy"

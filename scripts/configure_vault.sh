@@ -271,6 +271,26 @@ wait_for_postgres_ready() {
     log "PostgreSQL in container '$container_name' is ready."
 }
 
+create_haproxy_check_user() {
+    local postgres_container="$1"
+    local haproxy_user="haproxy_check"
+    local haproxy_password="haproxy_password"  # Replace with a secure password
+
+    log "Checking if PostgreSQL user '$haproxy_user' exists..."
+
+    user_exists=$(docker exec "$postgres_container" psql -U postgres -d postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='$haproxy_user'")
+
+    if [[ "$user_exists" == "1" ]]; then
+        log "User '$haproxy_user' already exists. Updating password..."
+        docker exec "$postgres_container" psql -U postgres -d postgres -c "ALTER ROLE \"$haproxy_user\" WITH PASSWORD '$haproxy_password';" || error_exit "Failed to update user '$haproxy_user'."
+        log "Password for user '$haproxy_user' updated successfully."
+    else
+        log "Creating user '$haproxy_user' in PostgreSQL..."
+        docker exec "$postgres_container" psql -U postgres -d postgres -c "CREATE ROLE \"$haproxy_user\" WITH LOGIN PASSWORD '$haproxy_password';" || error_exit "Failed to create user '$haproxy_user'."
+        log "User '$haproxy_user' created successfully."
+    fi
+}
+
 # Function to fetch a static secret from Vault by field
 fetch_static_secret() {
     local secret_path=$1
@@ -627,6 +647,9 @@ main() {
     # Enable necessary authentication methods in Vault
     enable_approle_auth
     enable_userpass_auth
+
+     # Create HAProxy check user
+    create_haproxy_check_user "postgres_primary" 
 
     # Create policies with specific capabilities
     create_policy "read-secrets-policy" 'path "secret/data/*" { capabilities = ["read"] }'
