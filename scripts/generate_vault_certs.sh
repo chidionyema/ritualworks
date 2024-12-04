@@ -133,14 +133,16 @@ request_cert() {
     docker exec "$VAULT_CONTAINER_NAME" sh -c "\
         response=\$(vault write -format=json $VAULT_PATH/issue/$role_name common_name=$domain $sans ttl=$ISSUE_TTL) && \
         echo \"\$response\" | jq -r '.data.certificate' > $shared_cert_file && \
-        echo \"\$response\" | jq -r '.data.private_key' > $shared_key_file" || error_exit "Failed to request certificate."
+        echo \"\$response\" | jq -r '.data.private_key' > $shared_key_file && \
+        chmod 600 $shared_key_file && \
+        chown 999:999 $shared_key_file" || error_exit "Failed to request certificate."
 
     log "Certificate for $service saved with SANs in $shared_cert_file and $shared_key_file."
 
     if [[ "$service" == "postgres" ]]; then
         local pem_file="$SHARED_CERT_DIR/${domain}.pem"
         log "Creating PEM file for PostgreSQL at $pem_file"
-        docker exec "$VAULT_CONTAINER_NAME" sh -c "cat $shared_cert_file $shared_key_file > $pem_file" || error_exit "Failed to create PEM file for PostgreSQL."
+        docker exec "$VAULT_CONTAINER_NAME" sh -c "cat $shared_cert_file $shared_key_file > $pem_file && chmod 600 $pem_file && chown 999:999 $pem_file" || error_exit "Failed to create PEM file for PostgreSQL."
         log "PEM file for PostgreSQL created at $pem_file."
     fi
 }

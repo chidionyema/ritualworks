@@ -4,8 +4,9 @@ set -e
 
 # Function to log messages with timestamp
 log() {
-  echo "$(date +'%Y-%m-%d %H:%M:%S') - $1" | tee -a deployment.log
+  echo "$(date +'%Y-%m-%d %H:%M:%S') - $1"
 }
+
 
 # Function to handle errors and exit
 error_exit() {
