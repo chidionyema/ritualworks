@@ -276,6 +276,8 @@ create_haproxy_check_user() {
     local haproxy_user="haproxy_check"
     local haproxy_password="haproxy_password"  # Replace with a secure password
 
+    # Wait for PostgreSQL to be ready inside the container
+    wait_for_postgres_ready "$postgres_container" "postgres"
     log "Checking if PostgreSQL user '$haproxy_user' exists..."
 
     user_exists=$(docker exec "$postgres_container" psql -U postgres -d postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='$haproxy_user'")
@@ -290,6 +292,8 @@ create_haproxy_check_user() {
         log "User '$haproxy_user' created successfully."
     fi
 }
+
+
 
 # Function to fetch a static secret from Vault by field
 fetch_static_secret() {
