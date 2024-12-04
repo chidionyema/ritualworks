@@ -1,94 +1,85 @@
-version: '3.8'
-
 services:
+  etcd:
+    image: quay.io/coreos/etcd:v3.5.5
+    container_name: etcd
+    command:
+      - /usr/local/bin/etcd
+      - --name
+      - etcd0
+      - --data-dir
+      - /etcd-data
+      - --listen-client-urls
+      - http://0.0.0.0:2379
+      - --advertise-client-urls
+      - http://etcd:2379
+    volumes:
+      - etcd-data:/etcd-data
+    networks:
+      - internal_network
+
   postgres_primary:
-    image: bitnami/postgresql-repmgr:latest
-    user: "1001"
+    image: registry.opensource.zalan.do/acid/spilo-14:latest
+    user: postgres
+    container_name: postgres_primary
+    build:
+      context: ../../
+      dockerfile: Dockerfile.postgres
     environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - REPMGR_PRIMARY_ROLE=true
-      - REPMGR_NODE_ID=1
-      - REPMGR_NODE_NAME=postgres-primary-1
-      - REPMGR_NODE_NETWORK_NAME=postgres_primary
-      - REPMGR_PARTNER_NODES=postgres-primary-1,postgres-standby-2
-      - REPMGR_PRIMARY_HOST=postgres_primary
-      - REPMGR_USER=repmgr
-      - REPMGR_PASSWORD=repmgrpass
       - VAULT_ADDR=http://vault:8200
+      - PATRONI_CONFIG=/etc/patroni/patroni-primary.yml
+
     ports:
       - "5432:5432"
     volumes:
-      - ../../data/postgres-primary-data:/bitnami/postgresql
-      - ../../scripts:/scripts
-      - ../../postgres_logs:/opt/bitnami/postgresql/logs
-      - certs-volume:/certs-volume:rw
-      - ../../config:/etc/pgbackrest  # pgBackRest config from host's ../../config
-      - pgbackrest-data:/var/lib/pgbackrest  # Backup data storage
+      - postgres-primary-data:/var/lib/postgresql/data
+      - postgres-primary-config:/home/postgres
+      - certs-volume:/certs-volume
+      - ../../patroni/patroni-primary.yml:/etc/patroni/patroni-primary.yml
     networks:
       - internal_network
+    depends_on:
+      - etcd
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
-    command: ["/bin/bash", "-c", "/scripts/init_pg_primary.sh primary"]
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
 
   postgres_standby:
-    image: bitnami/postgresql-repmgr:latest
-    user: "1001"
-    depends_on:
-      - postgres_primary  # Ensure primary runs before standby
+    image: registry.opensource.zalan.do/acid/spilo-14:latest
+    user: postgres
+    container_name: postgres_standby
+    build:
+      context: ../../
+      dockerfile: Dockerfile.postgres
     environment:
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - REPMGR_PRIMARY_ROLE=false
-      - REPMGR_NODE_ID=2
-      - REPMGR_NODE_NAME=postgres-standby-2
-      - REPMGR_NODE_NETWORK_NAME=postgres_standby
-      - REPMGR_PARTNER_NODES=postgres-primary-1,postgres-standby-2
-      - REPMGR_PRIMARY_HOST=postgres_primary
-      - REPMGR_USER=repmgr
-      - REPMGR_PASSWORD=repmgrpass
+      - VAULT_ADDR=http://vault:8200
+      - PATRONI_CONFIG=/etc/patroni/patroni-standby.yml
+ 
     ports:
       - "5434:5432"
     volumes:
-      - ../../data/postgres-standby-data:/bitnami/postgresql
-      - ../../scripts:/scripts
-      - ../../postgres_logs:/opt/bitnami/postgresql/logs 
+      - postgres-standby-data:/var/lib/postgresql/data
+      - postgres-standby-config:/home/postgres
       - certs-volume:/certs-volume
-      - ../../config:/etc/pgbackrest  # pgBackRest config from host's ../../config
-      - pgbackrest-data:/var/lib/pgbackrest  # Backup data storage
+      - ../../patroni/patroni-standby.yml:/etc/patroni/patroni-standby.yml
     networks:
       - internal_network
+    depends_on:
+      - etcd
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
-    command: ["/bin/bash", "-c", "/scripts/init_pg_standby.sh standby"]
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
 
   pg_dump_backup:
     image: postgres:16-alpine
     depends_on:
       - postgres_primary
     volumes:
-      - ../../backups:/backups  # Directory to store backups
-      - ../../scripts:/scripts  # Directory containing backup scripts
+      - backups:/backups
+      - scripts:/scripts
     environment:
       - PGPASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -101,14 +92,15 @@ services:
 networks:
   internal_network:
     name: internal_network
+    driver: bridge
     external: true
-    ipam:
-      config:
-        - subnet: 172.22.0.0/16
 
 volumes:
-  postgres-primary-data:  # Named volume for primary data
-  postgres-standby-data:  # Named volume for standby data
+  etcd-data:
+  postgres-primary-data:
+  postgres-primary-config:
+  postgres-standby-data:
+  postgres-standby-config:
   certs-volume:
-    external: true
-  pgbackrest-data:  # Backup data volume for pgBackRest
+  backups:
+  scripts:

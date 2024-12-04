@@ -1,0 +1,57 @@
+scope: postgres_cluster
+namespace: /db/
+name: postgres_primary
+
+restapi:
+  listen: 0.0.0.0:8008
+  connect_address: postgres_primary:8008
+
+etcd:
+  hosts: etcd:2379
+
+bootstrap:
+  dcs:
+    ttl: 30
+    loop_wait: 10
+    retry_timeout: 10
+    maximum_lag_on_failover: 1048576
+    synchronous_mode: true
+    synchronous_mode_strict: false
+    postgresql:
+      use_pg_rewind: true
+      parameters:
+        wal_level: replica
+        max_wal_senders: 5
+        max_replication_slots: 5
+        hot_standby: "on"
+        synchronous_standby_names: 'postgres_standby'  # Standby name for sync replication
+  initdb:
+    - encoding: UTF8
+    - locale: en_US.UTF-8
+  create_replica_methods:
+    - basebackup
+post_init:  # Custom initialization scripts
+    - /scripts/custom_init.sh    
+
+postgresql:
+  listen: 0.0.0.0:5432
+  connect_address: postgres_primary:5432
+  data_dir: /var/lib/postgresql/data
+  authentication:
+    replication:
+      username: replicator
+      password: replicatorpass
+    superuser:
+      username: postgres
+      password: ${POSTGRES_PASSWORD}
+  parameters:
+    max_connections: 100
+    shared_buffers: 128MB
+    log_min_messages: WARNING
+    log_connections: "on"
+    log_disconnections: "on"
+
+tags:
+  nofailover: false
+  clonefrom: false
+  nosync: false

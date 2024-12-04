@@ -3,6 +3,7 @@ version: '3.8'
 services:
   vault-agent:
     image: hashicorp/vault:latest
+    user: "${UID}:${GID}"
     environment:
       VAULT_ADDR: http://vault:8200
     volumes:
@@ -19,15 +20,16 @@ services:
         max_attempts: 3
         window: 120s
     privileged: true
-    command: sh -c "chown -R vault:vault /vault/secrets && chmod -R 770 /vault/secrets && vault agent -config=/vault/config/vault-agent-config.hcl"
+    command: sh -c "vault agent -config=/vault/config/vault-agent-config.hcl"
 
   haproxy:
+    user: "${UID}:${GID}"
     build:
       context: ../..
       dockerfile: docker/Dockerfile.haproxy
     volumes:
       - ../../haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
-      - certs-volume:/certs-volume:rw  
+      - certs-volume:/certs-volume:ro  
     ports:
       - "5433:5432"
       - "8404:8404"
@@ -91,25 +93,15 @@ services:
   es-node-1:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
     environment:
-      - cluster.name=my-cluster
-      - node.name=es-node-1
-      - discovery.seed_hosts=es-node-1,es-node-2
-      - cluster.initial_master_nodes=es-node-1,es-node-2
-      - ELASTIC_PASSWORD=your_elastic_password
       - NODE_NAME=es-node-1
+      - ELASTIC_PASSWORD=your_elastic_password
       - ES_JAVA_OPTS=-Djava.security.policy=/usr/share/elasticsearch/config/my-security.policy
-      - xpack.security.enabled=true
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/es-node-1.haworks.com.key
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/es-node-1.haworks.com.crt
-      - xpack.security.transport.ssl.certificate_authorities=/usr/share/elasticsearch/config/ca.crt
     volumes:
       - es-data-node1:/usr/share/elasticsearch/data
       - es-backup:/usr/share/elasticsearch/backup
       - ../../config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ../../config/my-security.policy:/usr/share/elasticsearch/config/my-security.policy
-      - certs-volume:/certs-volume:ro
+      - certs-volume:/certs-volume:rw
       - ../../scripts/es-entrypoint.sh:/usr/share/elasticsearch/config/es-entrypoint.sh:ro
       - ../../config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
       - ../../config/jvm.options:/usr/share/elasticsearch/config/jvm.options
@@ -133,25 +125,15 @@ services:
   es-node-2:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
     environment:
-      - cluster.name=my-cluster
-      - node.name=es-node-2
-      - discovery.seed_hosts=es-node-1,es-node-2
-      - cluster.initial_master_nodes=es-node-1,es-node-2
-      - ELASTIC_PASSWORD=your_elastic_password
       - NODE_NAME=es-node-2
+      - ELASTIC_PASSWORD=your_elastic_password
       - ES_JAVA_OPTS=-Djava.security.policy=/usr/share/elasticsearch/config/my-security.policy
-      - xpack.security.enabled=true
-      - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.key=/usr/share/elasticsearch/config/es-node-2.haworks.com.key
-      - xpack.security.transport.ssl.certificate=/usr/share/elasticsearch/config/es-node-2.haworks.com.crt
-      - xpack.security.transport.ssl.certificate_authorities=/usr/share/elasticsearch/config/ca.crt
     volumes:
       - es-data-node2:/usr/share/elasticsearch/data
       - es-backup:/usr/share/elasticsearch/backup
       - ../../config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
       - ../../config/my-security.policy:/usr/share/elasticsearch/config/my-security.policy
-      - certs-volume:/certs-volume:ro
+      - certs-volume:/certs-volume:rw
       - ../../scripts/es-entrypoint.sh:/usr/share/elasticsearch/config/es-entrypoint.sh:ro
       - ../../config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
       - ../../config/jvm.options:/usr/share/elasticsearch/config/jvm.options
@@ -284,17 +266,22 @@ services:
       - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
       - MINIO_SERVER_CERT=/certs-volume/public.crt
       - MINIO_SERVER_KEY=/certs-volume/private.key
+      - MINIO_SITE_REGION=us-east-1
+      - MINIO_CLUSTER_NAME=ritualworks-minio
     volumes:
       - minio-data1:/data
       - certs-volume:/certs-volume:ro
     networks:
-      - internal_network
+      internal_network:
+        aliases:
+          - minio1
+          - minio1.ritualworks.com
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/ready || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
-    command: server /data --certs-dir /certs-volume
+    command: server https://minio1.ritualworks.com/data https://minio2.ritualworks.com/data --certs-dir /certs-volume
     deploy:
       restart_policy:
         condition: on-failure
@@ -311,17 +298,22 @@ services:
       - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
       - MINIO_SERVER_CERT=/certs-volume/public.crt
       - MINIO_SERVER_KEY=/certs-volume/private.key
+      - MINIO_SITE_REGION=us-east-1
+      - MINIO_CLUSTER_NAME=ritualworks-minio
     volumes:
       - minio-data2:/data
-      - certs-volume:/certs-volume:rw  
+      - certs-volume:/certs-volume:ro
     networks:
-      - internal_network
+      internal_network:
+        aliases:
+          - minio2
+          - minio2.ritualworks.com
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:9001/minio/health/ready || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
-    command: server /data --certs-dir /certs-volume
+    command: server https://minio1.ritualworks.com/data https://minio2.ritualworks.com/data --certs-dir /certs-volume
     deploy:
       restart_policy:
         condition: on-failure
