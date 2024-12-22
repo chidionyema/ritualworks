@@ -1,7 +1,8 @@
 #!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
 
-# Exit immediately if any command exits with a non-zero status
-set -e
+
 
 # Utility function to log messages with timestamps
 log() {
@@ -86,9 +87,6 @@ authenticate_with_root_token() {
     docker exec "$VAULT_CONTAINER_NAME" vault login "$VAULT_ROOT_TOKEN" || error_exit "Failed to authenticate with Vault using root token."
 
     log "Successfully authenticated with Vault using root token."
-
-    # Write the root token to the .env file
-    update_env_variable "VAULT_ROOT_TOKEN" "$VAULT_ROOT_TOKEN"
 }
 
 # Function to enable the AppRole authentication method in Vault
@@ -178,86 +176,7 @@ grant_permissions_to_vault() {
 
     log "Permissions granted successfully."
 }
-create_or_update_replicator_user() {
-    local postgres_container="$1"
-    local replicator_user="replicator"
-    local replicator_password="replicatorpass" # You can replace this with a secure password
 
-    log "Creating or updating replication user '$replicator_user'..."
-
-    user_exists=$(docker exec "$postgres_container" psql -U postgres -d postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='$replicator_user'")
-
-    if [[ "$user_exists" == "1" ]]; then
-        log "User '$replicator_user' already exists. Updating password and replication privileges..."
-        docker exec "$postgres_container" psql -U postgres -d postgres -c "ALTER ROLE \"$replicator_user\" WITH REPLICATION LOGIN PASSWORD '$replicator_password';" || error_exit "Failed to update replicator user."
-        log "Replication user '$replicator_user' updated successfully."
-    else
-        log "Creating replication user '$replicator_user'..."
-        docker exec "$postgres_container" psql -U postgres -d postgres -c "CREATE ROLE \"$replicator_user\" WITH REPLICATION LOGIN PASSWORD '$replicator_password';" || error_exit "Failed to create replicator user."
-        log "Replication user '$replicator_user' created successfully."
-    fi
-}
-update_pg_hba_for_replication() {
-    local postgres_container="$1"
-    local hba_file
-
-    log "Updating pg_hba.conf for replication..."
-
-    # Get the location of pg_hba.conf
-    hba_file=$(docker exec "$postgres_container" psql -U postgres -tAc "SHOW hba_file")
-    if [[ -z "$hba_file" ]]; then
-        error_exit "Failed to retrieve pg_hba.conf location."
-    fi
-
-    # Check if the replication rule already exists
-    docker exec "$postgres_container" grep -q "host replication replicator" "$hba_file" && {
-        log "pg_hba.conf already configured for replication user."
-        return
-    }
-
-    # Add replication rule to pg_hba.conf
-    docker exec "$postgres_container" bash -c "echo 'host replication replicator 0.0.0.0/0 md5' >> $hba_file" || error_exit "Failed to update pg_hba.conf for replication."
-
-    # Reload PostgreSQL configuration
-    docker exec "$postgres_container" psql -U postgres -c "SELECT pg_reload_conf();" || error_exit "Failed to reload PostgreSQL configuration."
-
-    log "pg_hba.conf updated for replication and configuration reloaded successfully."
-}
-
-
-# Function to create or update the Vault user in PostgreSQL
-create_or_update_vault_user() {
-    local db_user="vault"
-    local db_password="your_vault_user_password"  # Replace with the desired password for the 'vault' user
-    local postgres_container="postgres_primary"   # Replace with your actual PostgreSQL container name
-    local db_name="your_database_name"            # Replace with your actual database name
-
-    # Wait for PostgreSQL to be ready inside the container
-    wait_for_postgres_ready "$postgres_container" "postgres"
-
-    log "Checking if PostgreSQL user '$db_user' exists..."
-
-    user_exists=$(docker exec "$postgres_container" psql -U postgres -d postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='$db_user'")
-
-    if [[ "$user_exists" == "1" ]]; then
-        log "User '$db_user' already exists in PostgreSQL. Updating the password and privileges..."
-        docker exec "$postgres_container" psql -U postgres -d postgres -c "ALTER ROLE \"$db_user\" WITH PASSWORD '$db_password' SUPERUSER CREATEROLE;" || error_exit "Failed to update user '$db_user'."
-        log "Password and privileges for user '$db_user' updated successfully."
-    else
-        log "Creating user '$db_user' in PostgreSQL with SUPERUSER and CREATEROLE privileges..."
-        docker exec "$postgres_container" psql -U postgres -d postgres -c "CREATE ROLE \"$db_user\" WITH LOGIN PASSWORD '$db_password' SUPERUSER CREATEROLE;" || error_exit "Failed to create user '$db_user'."
-        log "User '$db_user' created successfully."
-    fi
-
-    # Create the database if it doesn't exist
-    create_database_if_not_exists "$postgres_container" "$db_name"
-
-    # Grant broad permissions on all objects in the database
-    grant_permissions_to_vault "$postgres_container" "$db_user" "$db_name"
-
-    # Return the created/updated username and password for further use
-    echo "$db_user:$db_password"
-}
 
 # Function to wait until PostgreSQL is ready inside the container
 wait_for_postgres_ready() {
@@ -272,11 +191,10 @@ wait_for_postgres_ready() {
 }
 
 create_haproxy_check_user() {
-    local postgres_container="$1"
-    local haproxy_user="haproxy_check"
-    local haproxy_password="haproxy_password"  # Replace with a secure password
+    local postgres_container="$1"  # First parameter: PostgreSQL container name
+    local haproxy_user="$2"        # Second parameter: HAProxy check user
+    local haproxy_password="$3"    # Third parameter: HAProxy check password
 
-    # Wait for PostgreSQL to be ready inside the container
     wait_for_postgres_ready "$postgres_container" "postgres"
     log "Checking if PostgreSQL user '$haproxy_user' exists..."
 
@@ -292,8 +210,6 @@ create_haproxy_check_user() {
         log "User '$haproxy_user' created successfully."
     fi
 }
-
-
 
 # Function to fetch a static secret from Vault by field
 fetch_static_secret() {
@@ -337,79 +253,72 @@ fetch_dynamic_postgres_credentials() {
     log "Dynamic credentials fetched: username=$username, password=$password"
 
     # Write the dynamic credentials to db-creds.json if necessary
-    echo "{\"username\":\"$username\", \"password\":\"$password\"}" > ../vault/secrets/db-creds.json
+    echo "{\"username\":\"$username\", \"password\":\"$password\"}" > /vault/secrets/db-creds.json
 
     echo "$username:$password"
 }
 
-update_pg_hba_conf() {
-    local postgres_container="postgres_primary"  # Replace with your PostgreSQL container name
-    local docker_subnet="172.20.0.0/16"         # Replace with your Docker subnet
-    local hba_file
-
-    log "Updating pg_hba.conf to allow connections from Docker subnet $docker_subnet..."
-
-    # Get the location of pg_hba.conf
-    hba_file=$(docker exec "$postgres_container" psql -U postgres -tAc "SHOW hba_file")
-    if [[ -z "$hba_file" ]]; then
-        error_exit "Failed to retrieve pg_hba.conf location."
-    fi
-
-    # Check if the rule already exists
-    docker exec "$postgres_container" grep -q "$docker_subnet" "$hba_file" && {
-        log "pg_hba.conf already allows connections from $docker_subnet."
-        return
-    }
-
-docker exec -u root postgres_primary bash -c "echo 'host all all 172.20.0.0/16 md5' >> /var/lib/postgresql/data/pg_hba.conf"
 
 
-    # Add the rule to allow connections from the Docker subnet
-    docker exec "$postgres_container" bash -c "echo 'host all all $docker_subnet md5' >> $hba_file" || error_exit "Failed to update pg_hba.conf."
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
 
-    # Reload PostgreSQL configuration
-    docker exec "$postgres_container" psql -U postgres -c "SELECT pg_reload_conf();" || error_exit "Failed to reload PostgreSQL configuration."
-
-    log "pg_hba.conf updated and PostgreSQL reloaded successfully."
+log() {
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $1" >&2
 }
 
-# Function to configure the PostgreSQL database secrets engine and roles in Vault
+error_exit() {
+    log "Error: $1"
+    exit 1
+}
+
 configure_vault_postgresql_roles() {
-    local db_name="your_database_name"  # Replace with your actual database name
-    
+    local db_name="$1"
+    local postgres_password="$2"
+
     log "Configuring Vault PostgreSQL roles..."
-    
+
+    # The escaped creation statements:
+    # Using double quotes around {{name}} and single quotes around {{password}}.
+    # Each double quote for role name is escaped as \"
+    # The password and expiration remain in single quotes.
+    # The entire multi-line command is enclosed in double quotes for the shell variable.
+    escaped_creation_statements="CREATE ROLE \\\"{{name}}\\\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; \
+GRANT CONNECT ON DATABASE your_postgres_db TO \\\"{{name}}\\\"; \
+GRANT USAGE ON SCHEMA public TO \\\"{{name}}\\\"; \
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \\\"{{name}}\\\"; \
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO \\\"{{name}}\\\";"
+
+    # Execute Vault commands inside the container
     docker exec "$VAULT_CONTAINER_NAME" /bin/sh -c "
         export VAULT_ADDR='$VAULT_ADDR'
-    
+        export VAULT_TOKEN='$VAULT_ROOT_TOKEN'
+
         # Enable the database secrets engine if not already enabled
-        if ! vault secrets list -format=json | jq -e '.[\"database/\"]' > /dev/null; then
+        if ! vault secrets list -format=json | jq -e '.\"database/\"' > /dev/null; then
             vault secrets enable database
         fi
-    
+
         # Configure the PostgreSQL connection
         vault write database/config/postgresql \
             plugin_name=postgresql-database-plugin \
-            allowed_roles=\"readonly,vault\" \
-            connection_url=\"postgresql://vault:your_password@postgres_primary:5432/$db_name?sslmode=disable\" \
-            username=\"vault\" \
-            password=\"your_password\"
-    
-        # Define a role for dynamic credentials
+            allowed_roles='vault' \
+            connection_url='postgresql://{{username}}:{{password}}@postgres_primary:5432/$db_name?sslmode=verify-full' \
+            username='postgres' \
+            password='$postgres_password'
+
+        # Define the role with the escaped creation statements exactly as shown
         vault write database/roles/vault \
             db_name=postgresql \
-            creation_statements=\"CREATE ROLE \\\"{{name}}\\\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; \
-            GRANT CONNECT ON DATABASE $db_name TO \\\"{{name}}\\\"; \
-            GRANT USAGE ON SCHEMA public TO \\\"{{name}}\\\"; \
-            GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \\\"{{name}}\\\"; \
-            ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO \\\"{{name}}\\\";\" \
-            default_ttl=\"1h\" \
-            max_ttl=\"24h\"
+            creation_statements=\"$escaped_creation_statements\" \
+            default_ttl='1h' \
+            max_ttl='24h'
     " || error_exit "Failed to configure Vault PostgreSQL roles."
+
+    log "Vault PostgreSQL roles configured successfully."
 }
 
-
-# Function to create an AppRole and store its credentials
 create_approle_and_store_credentials() {
     local role_name="$1"
     local policies="$2"
@@ -419,19 +328,12 @@ create_approle_and_store_credentials() {
     log "Creating AppRole $role_name with policies: $policies..."
 
     # Create the AppRole
-    docker exec "$VAULT_CONTAINER_NAME" vault write auth/approle/role/$role_name policies=$policies || error_exit "Failed to create AppRole $role_name"
+    docker exec "$VAULT_CONTAINER_NAME" vault write auth/approle/role/$role_name policies="$policies" || error_exit "Failed to create AppRole $role_name"
 
     log "AppRole $role_name created successfully."
 
-    # Check if the role_id_file directory exists and is writable
-    if [[ ! -d "$(dirname "$role_id_file")" || ! -w "$(dirname "$role_id_file")" ]]; then
-        error_exit "Directory $(dirname "$role_id_file") does not exist or is not writable"
-    fi
-
-    # Check if the secret_id_file directory exists and is writable
-    if [[ ! -d "$(dirname "$secret_id_file")" || ! -w "$(dirname "$secret_id_file")" ]]; then
-        error_exit "Directory $(dirname "$secret_id_file") does not exist or is not writable"
-    fi
+    # Ensure the directory for storing secrets exists inside the container
+    docker exec "$VAULT_CONTAINER_NAME" sh -c "mkdir -p $(dirname "$role_id_file") && mkdir -p $(dirname "$secret_id_file")" || error_exit "Failed to create directory for secrets in container"
 
     # Retrieve and store the role_id
     log "Retrieving role_id for AppRole $role_name..."
@@ -442,8 +344,10 @@ create_approle_and_store_credentials() {
         error_exit "Failed to retrieve role_id for AppRole $role_name"
     fi
 
-    echo "$role_id" > "$role_id_file"
-    log "role_id saved to $role_id_file"
+    # Write role_id to the shared volume
+    echo "$role_id" | docker exec -i "$VAULT_CONTAINER_NAME" sh -c "cat > $role_id_file"
+    docker exec "$VAULT_CONTAINER_NAME" chmod 600 "$role_id_file" || error_exit "Failed to set permissions for $role_id_file"
+    log "role_id saved to $role_id_file with secure permissions"
 
     # Generate and store the secret_id
     log "Generating secret_id for AppRole $role_name..."
@@ -453,25 +357,15 @@ create_approle_and_store_credentials() {
     if [[ -z "$secret_id" ]]; then
         error_exit "Failed to generate secret_id for AppRole $role_name"
     fi
+  
+    # Write secret_id to the shared volume
+    echo "$secret_id" | docker exec -i "$VAULT_CONTAINER_NAME" sh -c "cat > $secret_id_file"
+    docker exec "$VAULT_CONTAINER_NAME" chmod 600 "$secret_id_file" || error_exit "Failed to set permissions for $secret_id_file"
+    log "secret_id saved to $secret_id_file with secure permissions"
 
-    echo "$secret_id" > "$secret_id_file"
-    log "secret_id saved to $secret_id_file"
-
-    # Check if the files are created successfully and have appropriate permissions
-    if [[ ! -f "$role_id_file" ]]; then
-        error_exit "role_id_file $role_id_file was not created"
-    fi
-
-    if [[ ! -f "$secret_id_file" ]]; then
-        error_exit "secret_id_file $secret_id_file was not created"
-    fi
-
-    # Set permissions to ensure files are secure (readable only by the owner)
-    chmod 644 "$role_id_file" || error_exit "Failed to set permissions for $role_id_file"
-    chmod 644 "$secret_id_file" || error_exit "Failed to set permissions for $secret_id_file"
-
-    log "Permissions set to 600 for both role_id_file and secret_id_file"
+    log "AppRole credentials (role_id and secret_id) have been successfully created and stored securely."
 }
+
 
 # Function to configure Vault secrets
 configure_vault_secrets() {
@@ -512,7 +406,7 @@ wait_for_vault() {
 
     log "Waiting for Vault to become ready..."
     while true; do
-        http_status=$(docker exec "$VAULT_CONTAINER_NAME" curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8200/v1/sys/health || true)
+        http_status=$(docker exec "$VAULT_CONTAINER_NAME" curl -s -o /dev/null -w "%{http_code}" https://127.0.0.1:8200/v1/sys/health || true)
         if [[ "$http_status" =~ ^(200|429|501|503)$ ]]; then
             log "Vault is now responding with HTTP status code $http_status."
             break
@@ -620,7 +514,6 @@ check_vault_status() {
     fi
 }
 
-# Main function to manage Vault configuration
 main() {
     # Ensure the ENCRYPTION_PASSPHRASE environment variable is set
     if [[ -z "$ENCRYPTION_PASSPHRASE" ]]; then
@@ -632,10 +525,25 @@ main() {
     BACKUP_FILE="unseal_keys.json"
     ENCRYPTED_BACKUP_FILE="unseal_keys.json.gpg"
     ENVIRONMENT=${ENVIRONMENT:-"Development"}
-    VAULT_ADDR=${VAULT_ADDR:-"http://127.0.0.1:8200"}
+    VAULT_ADDR=${VAULT_ADDR:-"https://127.0.0.1:8200"}
     DOCKER_COMPOSE_FILE="../docker/compose/docker-compose-vault.yml"
-    VAULT_POSTGRES_ADMIN_PASSWORD="your_postgres_admin_password"  # Set this to your PostgreSQL admin password
-    DOCKER_SUBNET="172.20.0.0/16"
+
+    # Automatically retrieve the Docker subnet
+    DOCKER_NETWORK_NAME="internal_network"
+    DOCKER_SUBNET=$(docker network inspect "$DOCKER_NETWORK_NAME" | jq -r '.[0].IPAM.Config[0].Subnet')
+
+    if [[ -z "$DOCKER_SUBNET" ]]; then
+        error_exit "Failed to retrieve Docker subnet for network $DOCKER_NETWORK_NAME"
+    fi
+    log "Docker subnet for network $DOCKER_NETWORK_NAME is $DOCKER_SUBNET"
+
+    # PostgreSQL and Vault credentials
+    POSTGRES_CONTAINER="postgres_primary"
+    POSTGRES_USER="postgres"
+    POSTGRES_PASSWORD="your_actual_password"  # Replace with the actual password for 'postgres' user
+    VAULT_DB_USER="vault"
+    VAULT_DB_PASSWORD="your_vault_password"     # Replace with the password for 'vault' user
+    POSTGRES_DB_NAME="your_postgres_db"         # Replace with your actual database name
 
     # Start Vault and Consul services
     start_vault_and_consul
@@ -652,44 +560,30 @@ main() {
     enable_approle_auth
     enable_userpass_auth
 
-     # Create HAProxy check user
-    create_haproxy_check_user "postgres_primary" 
-
     # Create policies with specific capabilities
     create_policy "read-secrets-policy" 'path "secret/data/*" { capabilities = ["read"] }'
 
     log "All policies, groups, roles, users, and tokens created successfully."
 
-    # Ensure the vault user is created or updated in PostgreSQL and fetch credentials
-    vault_creds=$(create_or_update_vault_user)
-    vault_username=$(echo "$vault_creds" | cut -d':' -f1)
-    vault_password=$(echo "$vault_creds" | cut -d':' -f2)
+
+    wait_for_postgres_ready "postgres_primary" "postgres"
 
     # Configure Vault database secrets engine roles and static secrets
-    configure_vault_postgresql_roles
+    configure_vault_postgresql_roles "$POSTGRES_DB_NAME" "$POSTGRES_PASSWORD"
 
     # Configure Vault secrets
     configure_vault_secrets
-
-    # Create or update the replication user
-    create_or_update_replicator_user "postgres_primary"
-
-    # Update pg_hba.conf for replication
-    update_pg_hba_for_replication "postgres_primary"
-
 
     # Create policies for PostgreSQL
     create_policy "vault-read-secrets-policy" 'path "database/creds/vault" { capabilities = ["read"] }'
 
     # Create AppRole for Vault and store credentials
-    create_approle_and_store_credentials "vault" "vault-read-secrets-policy" "../vault/config/role_id" "../vault/secrets/secret_id"
-    update_pg_hba_conf
-    
-    log "Updating environment variables..."
-    # update_env_file "$env_vars"
+    create_approle_and_store_credentials "vault" "vault-read-secrets-policy" "/vault/secrets/role_id" "/vault/secrets/secret_id"
+
 
     log "Process complete."
 }
+
 
 # Execute the main function with command-line arguments
 main "$@"

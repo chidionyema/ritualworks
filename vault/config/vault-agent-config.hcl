@@ -4,10 +4,15 @@ pid_file = "/var/run/vault-agent-pid"
 auto_auth {
   method "approle" {
     config = {
-      role_id_file_path = "/vault/config/role_id"
+      role_id_file_path = "/vault/secrets/role_id"
       secret_id_file_path = "/vault/secrets/secret_id"
+      ca_cert = "/vault/certs/ca.crt"
+      client_cert = "/vault/certs/agent.crt"
+      client_key = "/vault/certs/agent.key"
+      vault_addr = "https://vault:8200"
     }
   }
+
 
   sink "file" {
     config = {

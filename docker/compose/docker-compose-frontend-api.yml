@@ -15,7 +15,7 @@ services:
       dockerfile: docker/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USERNAME};Password=${POSTGRES_PASSWORD}
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USERNAME};Password=${POSTGRES_PASSWORD};SSL Mode=Require
       - Elasticsearch__Uri=http://elasticsearch:9200
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - RabbitMq__Host=rabbitmq
@@ -23,8 +23,7 @@ services:
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
   
     volumes:
-      - uploads:/app/uploads
-      - ../../vault/secrets:/vault/secrets
+      - vault-secrets:/vault/secrets
       - ../../app_logs:/logs
       - certs-volume:/certs-volume:rw  
 
@@ -38,20 +37,21 @@ services:
       retries: 5
     depends_on:
       - setup_dns
-      - db_migrations
-
+      - db_migrations 
+    
   db_migrations:
     build:
       context: ../../
       dockerfile: docker/Dockerfile.migrations
     environment:
-      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USERNAME};Password=${POSTGRES_PASSWORD};SSL Mode=Disable
+      - ConnectionStrings__DefaultConnection=Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
       - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
-      - POSTGRES_USERNAME=${POSTGRES_USERNAME}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=your_actual_password
+      - POSTGRES_DB=your_postgres_db
+      - POSTGRES_HOST=postgres_primary
     volumes:
-      - uploads:/app/uploads
-      -  ../../vault/secrets:/vault/secrets
+      - vault-secrets:/vault/secrets
     command: ["database", "update"]
     networks:
       - internal_network
@@ -147,10 +147,10 @@ networks:
         - subnet: 172.23.0.0/16
 
 volumes:
-  uploads:
-  postgres-creds:
   grafana-data:
     driver: local
   certs-volume:
+    external: true
+  vault-secrets:
     external: true
   

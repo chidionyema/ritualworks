@@ -1,55 +1,178 @@
 #!/bin/bash
 
-# Vault and Docker Services Deployment Script
-# This script automates the deployment of Vault, certificate generation, and service startup.
+set -e  # Exit immediately if any command fails
 
-set -e  # Exit immediately if a command exits with a non-zero status
-
-# Logging function to include timestamps in logs
+# Logging function
 log() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $1"
 }
 
-# Error handler for logging errors and exiting the script
+# Error handler
 error_exit() {
     log "Error: $1"
     exit 1
 }
 
-# Function to start all services
+# Start all services function
 start_services() {
     log "Starting all services..."
     ./start_all_services.sh || error_exit "Service startup failed."
 }
 
 DOCKER_COMPOSE_FILE="../docker/compose/docker-compose-postgres.yml"
+DOCKER_VOLUME="certs-volume"
+CERTS_DIR="/certs"
+SERVICES=("postgres" "redis" "rabbitmq-node1" "es-node-1" "minio1" "local.haworks.com" "vault" "consul")
 
-# Function to start postgres
-start_postgres() {
-    log "Starting postgres..."
-    docker-compose -p "haworks" -f "$DOCKER_COMPOSE_FILE" up -d || error_exit "Failed to start PostgreSQL"
-    
-    log "Waiting for PostgreSQL to start..."
-    sleep 2  # Ensure enough time for PostgreSQL to fully initialize
+generate_certificates() {
+    log "Generating TLS certificates for Vault, Consul, and other services..."
+
+    docker run --rm \
+        -v "${DOCKER_VOLUME}:/certs-volume" \
+        -w "/certs-volume" \
+        alpine sh -c '
+            set -e
+            apk update
+            apk add --no-cache openssl
+
+            # Generate CA key and certificate if not already present
+            if [ ! -f ca.key ] || [ ! -f ca.crt ]; then
+                echo "Generating CA key and certificate..."
+                openssl genrsa -out ca.key 4096
+                openssl req -x509 -new -nodes -key ca.key -sha256 -days 3650 \
+                    -subj "/CN=MyRootCA" \
+                    -out ca.crt
+                echo "CA key and certificate generated."
+            else
+                echo "CA key and certificate already exist. Skipping generation."
+            fi
+
+            # Special handling for MinIO: Generate shared public.crt and private.key
+            shared_cert_file="/certs-volume/public.crt"
+            shared_key_file="/certs-volume/private.key"
+
+            if [ ! -f "$shared_cert_file" ] || [ ! -f "$shared_key_file" ]; then
+                echo "Generating shared certificate for MinIO services..."
+                CONFIG_FILE="/certs-volume/minio.cnf"
+
+                # Create OpenSSL configuration for MinIO
+                cat > "$CONFIG_FILE" <<EOF
+[ req ]
+default_bits        = 2048
+prompt              = no
+distinguished_name  = dn
+req_extensions      = v3_req
+
+[ dn ]
+CN                  = minio
+
+[ v3_req ]
+keyUsage            = digitalSignature, keyEncipherment
+extendedKeyUsage    = serverAuth, clientAuth
+subjectAltName      = @alt_names
+
+[ alt_names ]
+DNS.1               = minio1
+DNS.2               = minio2
+DNS.3               = localhost
+IP.1                = 127.0.0.1
+EOF
+
+                # Generate private key for MinIO
+                openssl genrsa -out "$shared_key_file" 2048
+                echo "Private key for MinIO generated: $shared_key_file"
+
+                # Generate CSR for MinIO
+                openssl req -new -key "$shared_key_file" -config "$CONFIG_FILE" -out "/certs-volume/minio.csr"
+                echo "CSR for MinIO generated: /certs-volume/minio.csr"
+
+                # Sign the CSR to generate the public certificate
+                openssl x509 -req -in "/certs-volume/minio.csr" -CA ca.crt -CAkey ca.key -CAcreateserial \
+                    -days 365 -sha256 -extensions v3_req -extfile "$CONFIG_FILE" -out "$shared_cert_file"
+                echo "Public certificate for MinIO generated: $shared_cert_file"
+
+                # Set permissions for shared MinIO certificates
+                chmod 644 "$shared_cert_file"
+                chmod 600 "$shared_key_file"
+                echo "Shared certificate for MinIO services successfully generated."
+            else
+                echo "Shared certificate for MinIO already exists."
+            fi
+
+            # Standard certificate generation for other services
+            SERVICES="postgres redis rabbitmq-node1 es-node-1 local.haworks.com vault consul agent"
+
+            for service in $SERVICES; do
+                echo "Generating certificate for $service..."
+
+                CONFIG_FILE="${service}.cnf"
+                cat > "$CONFIG_FILE" <<EOF
+[ req ]
+default_bits        = 2048
+prompt              = no
+distinguished_name  = dn
+req_extensions      = v3_req
+
+[ dn ]
+CN                  = $service
+
+[ v3_req ]
+keyUsage            = digitalSignature, keyEncipherment
+extendedKeyUsage    = serverAuth, clientAuth
+subjectAltName      = @alt_names
+
+[ alt_names ]
+DNS.1               = $service
+DNS.2               = $service.ritualworks.com
+DNS.3               = localhost
+IP.1                = 127.0.0.1
+EOF
+
+                # Additional SANs for PostgreSQL
+                if [ "$service" = "postgres" ]; then
+                    echo "Adding additional SANs for PostgreSQL..."
+                    echo "DNS.4 = postgres_primary" >> "$CONFIG_FILE"
+                    echo "DNS.5 = postgres_replica" >> "$CONFIG_FILE"
+                fi
+
+                # Generate private key and CSR
+                openssl genrsa -out "${service}.key" 2048
+                openssl req -new -key "${service}.key" -config "$CONFIG_FILE" -out "${service}.csr"
+                echo "CSR for $service generated: ${service}.csr"
+
+                # Sign the CSR with the CA
+                openssl x509 -req -in "${service}.csr" -CA ca.crt -CAkey ca.key -CAcreateserial \
+                    -days 365 -sha256 -extensions v3_req -extfile "$CONFIG_FILE" -out "${service}.crt"
+                echo "Public certificate for $service generated: ${service}.crt"
+
+                # Set permissions
+                if [ "$service" = "postgres" ]; then
+                    chmod 640 "${service}.key"
+                    chmod 644 "${service}.crt"
+                else
+                    chmod 644 "${service}.key"
+                    chmod 644 "${service}.crt"
+                fi
+
+                chown root:root "${service}.key" "${service}.crt"
+                echo "Certificate for $service generated successfully."
+            done
+
+            # Set permissions for CA files
+            chmod 644 ca.crt
+            echo "All certificates generated successfully."
+        ' || error_exit "Failed to generate certificates for Vault and Consul."
+
+    log "Certificates successfully generated and stored in ${DOCKER_VOLUME}."
 }
 
-# Function to generate certificates for Vault with retry logic
-generate_vault_certs() {
-    local RETRIES=5
-    local DELAY=5
 
-    log "Generating Vault certificates..."
-    for i in $(seq 1 $RETRIES); do
-        if ./generate_vault_certs.sh; then
-            log "Vault certificates generated successfully."
-            return 0
-        else
-            log "Certificate generation failed (Attempt $i/$RETRIES). Retrying in ${DELAY}s..."
-            sleep $DELAY
-        fi
-    done
-
-    error_exit "Certificate generation for Vault failed after $RETRIES attempts."
+# Start Postgres function
+start_postgres() {
+    log "Starting PostgreSQL..."
+    docker-compose -p "haworks" -f "$DOCKER_COMPOSE_FILE" up -d || error_exit "Failed to start PostgreSQL."
+    log "Waiting for PostgreSQL to start..."
+    sleep 5
 }
 
 # Main script execution
@@ -59,12 +182,12 @@ log "Initializing Vault and Docker services deployment..."
 log "Creating Docker networks..."
 ./create_networks.sh || error_exit "Failed to create Docker networks."
 
-# Step 2: Deploy Vault
+# Step 2: Generate certificates
+generate_certificates
+
+# Step 3: Deploy Vault
 log "Deploying Vault server..."
 ./install_vault_server.sh || error_exit "Vault deployment failed."
-
-# Step 3: Generate certificates for Vault with retry mechanism
-generate_vault_certs
 
 # Step 4: Configure Vault and PostgreSQL
 log "Configuring Vault and PostgreSQL..."

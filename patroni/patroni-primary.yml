@@ -25,13 +25,16 @@ bootstrap:
         max_replication_slots: 5
         hot_standby: "on"
         synchronous_standby_names: 'postgres_standby'  # Standby name for sync replication
+      pg_hba:
+        - host all all 0.0.0.0/0 md5
+        - host replication replicator 0.0.0.0/0 md5    
   initdb:
     - encoding: UTF8
     - locale: en_US.UTF-8
   create_replica_methods:
     - basebackup
 post_init:  # Custom initialization scripts
-    - /scripts/custom_init.sh    
+    - /script/post_init.sh    
 
 postgresql:
   listen: 0.0.0.0:5432

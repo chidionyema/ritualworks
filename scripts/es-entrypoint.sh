@@ -8,20 +8,12 @@ cp /certs-volume/ca.crt /usr/share/elasticsearch/config/ca.crt || {
   echo "Error: Could not copy ca.crt"
   exit 1
 }
-cp /certs-volume/es-node-1.ritualworks.com.crt /usr/share/elasticsearch/config/es-node-1.ritualworks.com.crt || {
-  echo "Error: Could not copy es-node-1.ritualworks.com.crt"
+cp /certs-volume/es-node-1.crt /usr/share/elasticsearch/config/es-node-1.crt || {
+  echo "Error: Could not copy es-node-1.crt"
   exit 1
 }
-cp /certs-volume/es-node-1.ritualworks.com.key /usr/share/elasticsearch/config/es-node-1.ritualworks.com.key || {
-  echo "Error: Could not copy es-node-1.ritualworks.com.key"
-  exit 1
-}
-cp /certs-volume/es-node-2.ritualworks.com.crt /usr/share/elasticsearch/config/es-node-2.ritualworks.com.crt || {
-  echo "Error: Could not copy es-node-2.ritualworks.com.crt"
-  exit 1
-}
-cp /certs-volume/es-node-2.ritualworks.com.key /usr/share/elasticsearch/config/es-node-2.ritualworks.com.key || {
-  echo "Error: Could not copy es-node-2.ritualworks.com.key"
+cp /certs-volume/es-node-1.key /usr/share/elasticsearch/config/es-node-1.key || {
+  echo "Error: Could not copy es-node-1.key"
   exit 1
 }
 
@@ -37,3 +29,10 @@ chmod 600 /usr/share/elasticsearch/config/*.key || {
 
 # Execute the original entrypoint script
 exec /usr/local/bin/docker-entrypoint.sh "$@"
+
+
+es-node-1.key
+es-node-1.crt
+
+
+

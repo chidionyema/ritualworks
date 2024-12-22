@@ -15,7 +15,7 @@ error_exit() {
 
 # Define essential variables and paths
 VAULT_CONTAINER_NAME="haworks-vault-1"
-VAULT_ADDR=${VAULT_ADDR:-"http://127.0.0.1:8200"}
+VAULT_ADDR=${VAULT_ADDR:-"https://127.0.0.1:8200"}
 BACKUP_FILE="unseal_keys.json"
 ENCRYPTED_BACKUP_FILE="unseal_keys.json.gpg"
 ENVIRONMENT=${ENVIRONMENT:-$(echo "${ASPNETCORE_ENVIRONMENT:-dev}" | tr '[:upper:]' '[:lower:]')}
@@ -29,15 +29,30 @@ start_vault_and_consul() {
     wait_for_vault
 }
 
-# Function to wait for Vault readiness
+install_ca_certificate() {
+    log "Installing root CA certificate into trusted store..."
+
+    # Ensure the Vault container is built and accessible
+    docker-compose -p "haworks" -f "$DOCKER_COMPOSE_FILE" up -d vault
+
+    # Copy the CA certificate to the trusted store and update it
+    docker exec "$VAULT_CONTAINER_NAME" sh -c "
+        cp /certs-volume/ca.crt /usr/local/share/ca-certificates/ca.crt &&
+        update-ca-certificates
+    " || error_exit "Failed to install CA certificate."
+
+    log "Root CA certificate installed successfully."
+}
+
 wait_for_vault() {
     local timeout=60  # Maximum time to wait in seconds
     local interval=5  # Time between checks in seconds
     local elapsed=0
 
-    log "Waiting for Vault to become ready..."
+    log "Waiting for Vault to become ready over HTTPS..."
     while true; do
-        http_status=$(docker exec "$VAULT_CONTAINER_NAME" curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8200/v1/sys/health || true)
+        # Use HTTPS and the --insecure option to bypass TLS verification if using self-signed certs
+        http_status=$(docker exec "$VAULT_CONTAINER_NAME" curl -k -s -o /dev/null -w "%{http_code}" https://127.0.0.1:8200/v1/sys/health || true)
         if [[ "$http_status" =~ ^(200|429|501|503)$ ]]; then
             log "Vault is now responding with HTTP status code $http_status."
             break
@@ -49,6 +64,7 @@ wait_for_vault() {
         elapsed=$((elapsed + interval))
     done
 }
+
 
 # Function to encrypt the backup file
 encrypt_backup_file() {
@@ -154,6 +170,7 @@ main() {
         error_exit "The ENCRYPTION_PASSPHRASE environment variable is not set."
     fi
 
+    install_ca_certificate
     start_vault_and_consul
     check_vault_status
 }

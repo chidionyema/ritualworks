@@ -1,15 +1,44 @@
-FROM bitnami/postgresql-repmgr:latest
+# Use the official PostgreSQL 14 image as the base
+FROM postgres:14
 
-# Create a user with UID 1001
-RUN useradd -u 1001 -m -d /home/postgres_user -s /bin/bash postgres_user
+# Install necessary packages
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        python3-pip \
+        python3-setuptools \
+        python3-wheel \
+        python3-psycopg2 \
+        libpq-dev \
+        openssl \
+        iputils-ping \
+        wget && \
+    wget https://github.com/etcd-io/etcd/releases/download/v3.5.5/etcd-v3.5.5-linux-amd64.tar.gz && \
+    tar xvf etcd-v3.5.5-linux-amd64.tar.gz && \
+    mv etcd-v3.5.5-linux-amd64/etcdctl /usr/local/bin/ && \
+    chmod +x /usr/local/bin/etcdctl && \
+    rm -rf etcd-v3.5.5-linux-amd64.tar.gz etcd-v3.5.5-linux-amd64 && \
+    rm -rf /var/lib/apt/lists/*
 
-# Set permissions for the home directory
-RUN chown -R postgres_user:postgres_user /home/postgres_user
+# Install Patroni with a specified version known to support etcd v3
+# For example, Patroni 2.1.2 supports etcd v3.
+RUN pip3 install --no-cache-dir "patroni[etcd]==2.1.2"
 
-# Set environment variables
-ENV HOME=/home/postgres_user
-ENV USER=postgres_user
-ENV LOGNAME=postgres_user
+# Create a directory for Patroni configuration
+RUN mkdir -p /etc/patroni
 
-# Ensure /etc/passwd has the correct entry
-RUN echo "postgres_user:x:1001:1001::/home/postgres_user:/bin/bash" >> /etc/passwd
+# Copy entrypoint script from the scripts directory
+COPY scripts/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Copy post_init script
+COPY scripts/post_init.sh /scripts/post_init.sh
+RUN chmod +x /scripts/post_init.sh
+
+# Ensure the container runs as the postgres user
+USER postgres
+
+# Set the entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# Expose PostgreSQL and Patroni REST API ports
+EXPOSE 5432 8008

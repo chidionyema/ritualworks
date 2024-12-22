@@ -10,8 +10,7 @@ ISSUE_TTL="${ISSUE_TTL:-72h}"
 ROLE_NAME_RITUALWORKS="ritualworks-role"
 ROLE_NAME_HAWORKS="haworks-role"
 SHARED_CERT_DIR="/certs-volume"
-
-SERVICES=("postgres" "redis" "rabbitmq-node1" "rabbitmq-node2" "es-node-1" "es-node-2" "minio1" "minio2" "local.haworks.com")
+SERVICES=("postgres" "redis" "rabbitmq-node1" "es-node-1"  "minio1"  "local.haworks.com")
 
 log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
@@ -82,11 +81,13 @@ create_vault_roles() {
     docker exec "$VAULT_CONTAINER_NAME" vault write "$VAULT_PATH/roles/$ROLE_NAME_RITUALWORKS" \
         allowed_domains="ritualworks.com" \
         allow_subdomains=true \
+        use_csr_sans=true \
         max_ttl="$ISSUE_TTL" || error_exit "Failed to create or update Vault role for ritualworks.com."
 
     log "Creating Vault role $ROLE_NAME_HAWORKS for haworks.com..."
     docker exec "$VAULT_CONTAINER_NAME" vault write "$VAULT_PATH/roles/$ROLE_NAME_HAWORKS" \
         allowed_domains="haworks.com" \
+        use_csr_sans=true \
         allow_subdomains=true \
         max_ttl="$ISSUE_TTL" || error_exit "Failed to create or update Vault role for haworks.com."
 }
@@ -94,59 +95,60 @@ create_vault_roles() {
 request_cert() {
     local service="$1"
     local domain=""
-    local sans=""
+    local alt_names=""
     local role_name=""
 
+    # Determine the domain and role based on the service
     if [[ "$service" == "local.haworks.com" ]]; then
+        # Haworks domain
         domain="local.haworks.com"
         role_name="$ROLE_NAME_HAWORKS"
-        sans="san=DNS:local.haworks.com"
+    elif [[ "$service" == "etcd" ]]; then
+        # Etcd in ritualworks.com domain
+        domain="etcd.ritualworks.com"
+        role_name="$ROLE_NAME_RITUALWORKS"
+
     else
+        # All other services in ritualworks.com domain
         domain="${service}.ritualworks.com"
         role_name="$ROLE_NAME_RITUALWORKS"
-        case "$service" in
-            "rabbitmq-node1"|"rabbitmq-node2")
-                sans="san=DNS:rabbitmq-node1.ritualworks.com,DNS:rabbitmq-node2.ritualworks.com"
-                ;;
-            "es-node-1"|"es-node-2")
-                sans="san=DNS:es-node-1.ritualworks.com,DNS:es-node-2.ritualworks.com"
-                ;;
-            "minio1"|"minio2")
-                sans="san=DNS:minio1.ritualworks.com,DNS:minio2.ritualworks.com"
-                ;;
-            *)
-                sans="san=DNS:${domain}"
-                ;;
-        esac
     fi
 
     local shared_cert_file="$SHARED_CERT_DIR/${domain}.crt"
     local shared_key_file="$SHARED_CERT_DIR/${domain}.key"
 
+    # Special handling for minio: shared cert files
     if [[ "$service" == "minio1" || "$service" == "minio2" ]]; then
         shared_cert_file="$SHARED_CERT_DIR/public.crt"
         shared_key_file="$SHARED_CERT_DIR/private.key"
     fi
 
-    log "Requesting certificate for $domain with SANs: $sans using role $role_name"
+    log "Requesting certificate for $domain (alt_names: $alt_names) using role $role_name"
 
+    # Build the vault command
+    local vault_cmd="vault write -format=json $VAULT_PATH/issue/$role_name common_name=$domain ttl=$ISSUE_TTL"
+    if [[ -n "$alt_names" ]]; then
+        vault_cmd="$vault_cmd alt_names=\"$alt_names\""
+    fi
+
+    # Execute the vault command inside the container
     docker exec "$VAULT_CONTAINER_NAME" sh -c "\
-        response=\$(vault write -format=json $VAULT_PATH/issue/$role_name common_name=$domain $sans ttl=$ISSUE_TTL) && \
+        response=\$($vault_cmd) && \
         echo \"\$response\" | jq -r '.data.certificate' > $shared_cert_file && \
         echo \"\$response\" | jq -r '.data.private_key' > $shared_key_file && \
         chmod 600 $shared_key_file && \
-        chmod 644 $shared_key_file && \
-        chown 999:999 $shared_key_file" || error_exit "Failed to request certificate."
+        chmod 644 $shared_cert_file && \
+        chown root:root $shared_cert_file $shared_key_file" \
+    || error_exit "Failed to request certificate for $domain."
 
-    log "Certificate for $service saved with SANs in $shared_cert_file and $shared_key_file."
+  docker exec "$VAULT_CONTAINER_NAME" sh -c "\
+    if [[ \"$service\" == \"postgres\" ]]; then \
+        chown 1001:1001 \"$shared_cert_file\" \"$shared_key_file\"; \
+    fi"
 
-    if [[ "$service" == "postgres" ]]; then
-        local pem_file="$SHARED_CERT_DIR/${domain}.pem"
-        log "Creating PEM file for PostgreSQL at $pem_file"
-        docker exec "$VAULT_CONTAINER_NAME" sh -c "cat $shared_cert_file $shared_key_file > $pem_file && chmod 600 $pem_file && chown 999:999 $pem_file" || error_exit "Failed to create PEM file for PostgreSQL."
-        log "PEM file for PostgreSQL created at $pem_file."
-    fi
+    log "Certificate for $service saved to $shared_cert_file and $shared_key_file."
 }
+
 
 export_root_ca() {
     local ca_cert_file="$SHARED_CERT_DIR/ca.crt"
@@ -168,7 +170,6 @@ main() {
     fi
 
     authenticate_with_root_token
-
     enable_pki_engine
     configure_pki_engine
     generate_root_ca
@@ -180,7 +181,7 @@ main() {
         request_cert "$service"
     done
 
-    log "Certificates have been successfully generated and stored."
+    log "Certificates have been successfully generated and stored again."
 }
 
 main

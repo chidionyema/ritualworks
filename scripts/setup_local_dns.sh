@@ -13,7 +13,8 @@ if [ -z "$HOST_ENTRIES" ]; then
 127.0.0.1 frontend.local.haworks.com
 127.0.0.1 prometheus.local.haworks.com
 127.0.0.1 grafana.local.haworks.com
-127.0.0.1 minio.local.haworks.com"
+127.0.0.1 minio.local.haworks.com
+172.20.0.5 etcd.ritualworks.com"  # Add etcd.ritualworks.com with its internal IP
 fi
 
 # Backup the original /etc/hosts file if not already backed up

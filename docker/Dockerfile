@@ -31,5 +31,4 @@ COPY --from=build /root/.dotnet /root/.dotnet
 COPY --from=build /root/.nuget /root/.nuget
 ENV PATH="$PATH:/root/.dotnet/tools"
 
-# Directly fetch role_id and secret_id from files and set them as environment variables
 ENTRYPOINT ["/bin/bash", "-c", "dotnet haworks.dll"]

@@ -67,4 +67,5 @@ create_networks
 # Create the certs-volume shared volume
 create_volume "certs-volume"
 
+create_volume "vault-secrets"
 log "Docker setup completed successfully."
