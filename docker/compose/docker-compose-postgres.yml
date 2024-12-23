@@ -12,23 +12,118 @@ services:
       POSTGRESQL_REPLICATION_USER: repl_user
       POSTGRESQL_REPLICATION_PASSWORD: replsecurepassword
       POSTGRESQL_DATABASE: your_postgres_db
-      POSTGRESQL_ENABLE_SSL: "true"  
-      POSTGRESQL_SSL_CERT_FILE: /certs-volume/postgres.ritualworks.com.crt
-      POSTGRESQL_SSL_KEY_FILE: /certs-volume/postgres.ritualworks.com.key
+      POSTGRESQL_ENABLE_SSL: "true"
+      POSTGRESQL_SSL_CERT_FILE: /certs-volume/postgres.crt
+      POSTGRESQL_SSL_KEY_FILE: /certs-volume/postgres.key
     ports:
       - "5432:5432"
     networks:
       - internal_network
     volumes:
       - primary_data:/bitnami/postgresql
-      - certs-volume:/certs-volume:rw  
+      - certs-volume:/certs-volume:rw
       - ../../config/postgresql.conf:/bitnami/postgresql/conf/postgresql.conf:ro
-
+      - ../../db-backup:/pgbackrest_repo
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h localhost -p 5432 -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
+
+  pgbackrest_init:
+    build:
+      context: ../
+      dockerfile: Dockerfile.pgbackrest
+    container_name: pgbackrest_init
+    depends_on:
+      postgres_primary:
+        condition: service_healthy
+    entrypoint: |
+      /bin/bash -c '
+      until pg_isready -h postgres_primary -p 5432 -U postgres; do
+        echo "Waiting for PostgreSQL to be ready...";
+        sleep 2;
+      done;
+      pgbackrest \
+        --stanza=main \
+        --pg1-path=/bitnami/postgresql/data \
+        --pg1-port=5432 \
+        --pg1-user=postgres \
+        --repo1-path=/pgbackrest_repo \
+        --log-level-console=info \
+        stanza-create
+      '
+    environment:
+      PGPASSWORD: "your_actual_password"
+      PGHOST: "postgres_primary" 
+    networks:
+      - internal_network
+    volumes:
+      - primary_data:/bitnami/postgresql:ro
+      - ../../db-backup:/pgbackrest_repo
+      - certs-volume:/certs-volume:rw
+
+  pgbackrest:
+    build:
+      context: ../
+      dockerfile: Dockerfile.pgbackrest
+    container_name: pgbackrest
+    depends_on:
+      - pgbackrest_init
+    restart: always
+    entrypoint: ["pgbackrest"]
+    command:
+      [
+        "--stanza=main",
+        "--pg1-path=/bitnami/postgresql/data",
+        "--pg1-port=5432",
+        "--pg1-user=postgres",
+        "--repo1-path=/pgbackrest_repo",
+        "--repo1-retention-full=2", # Retain 2 full backups
+        "backup"
+      ]
+    environment:
+      PGPASSWORD: "your_actual_password"
+      PGHOST: "postgres_primary" 
+    networks:
+      - internal_network
+    volumes:
+      - primary_data:/bitnami/postgresql:ro
+      - ../../db-backup:/pgbackrest_repo
+      - certs-volume:/certs-volume:rw
+
+  pgbackrest_scheduler:
+    build:
+      context: ../
+      dockerfile: Dockerfile.pgbackrest
+    container_name: pgbackrest_scheduler
+    depends_on:
+      - pgbackrest_init
+    restart: always
+    entrypoint: |
+      /bin/bash -c '
+      while true; do
+        echo "Starting pgBackRest backup at $(date)";
+        pgbackrest \
+          --stanza=main \
+          --pg1-path=/bitnami/postgresql/data \
+          --pg1-port=5432 \
+          --pg1-user=postgres \
+          --repo1-path=/pgbackrest_repo \
+          --repo1-retention-full=2 \
+          backup || echo "Backup failed at $(date)";
+        sleep 86400;
+      done
+      '
+    environment:
+      PGPASSWORD: "your_actual_password"
+      PGHOST: "postgres_primary" 
+    networks:
+      - internal_network
+    volumes:
+      - primary_data:/bitnami/postgresql:ro
+      - ../../db-backup:/pgbackrest_repo
+      - certs-volume:/certs-volume:rw
 
 networks:
   internal_network:

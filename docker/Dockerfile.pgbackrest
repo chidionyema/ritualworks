@@ -1,0 +1,26 @@
+# Use a minimal base image
+FROM debian:bullseye-slim
+
+# Install necessary dependencies and pgBackRest
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        wget \
+        gnupg \
+        lsb-release \
+        pgbackrest \
+        ca-certificates \
+        openssh-client && \  # Added openssh-client
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+    
+
+
+# (Optional) Configure pgBackRest if needed
+# COPY pgbackrest.conf /etc/pgbackrest.conf
+
+# Expose PostgreSQL port (if needed)
+EXPOSE 5432
+
+# Use a default entry point
+CMD ["bash"]

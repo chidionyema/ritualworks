@@ -65,7 +65,7 @@ build_backend_services "$COMPOSE_BACKEND_FILE"
 
 # Add a delay before starting the frontend services to allow backend services to stabilize
 log "Delaying startup of frontend services to ensure backend services are ready..."
-sleep 3  # Adjust the delay time as necessary
+sleep 13  # Adjust the delay time as necessary
 
 # Start and scale frontend services (scale the 'app' service to 3 instances)
 start_and_scale_frontend_services "$COMPOSE_FRONTEND_FILE" 3

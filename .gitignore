@@ -39,6 +39,7 @@ docker/compose/.env.bak
 docker/compose/.env
 data/
 backups
+db-backup
 app_logs
 nginx_logs
 postgres_logs
