@@ -68,8 +68,7 @@ namespace haworks.Services
             }
 
             var jsonContent = File.ReadAllText(credentialsFilePath);
-            Console.WriteLine($"Loaded JSON content: {jsonContent}");
-
+    
             using var jsonDocument = JsonDocument.Parse(jsonContent);
             var rootElement = jsonDocument.RootElement;
 

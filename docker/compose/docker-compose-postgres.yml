@@ -30,6 +30,30 @@ services:
       timeout: 5s
       retries: 5
 
+  postgres_replica:
+    image: bitnami/postgresql:15
+    container_name: postgres_replica
+  
+    environment:
+      POSTGRESQL_REPLICATION_MODE: slave
+      POSTGRESQL_MASTER_HOST: postgres_primary
+      POSTGRESQL_MASTER_PORT_NUMBER: 5432
+      POSTGRESQL_REPLICATION_USER: repl_user
+      POSTGRESQL_REPLICATION_PASSWORD: replsecurepassword
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_PASSWORD: your_actual_password
+      POSTGRESQL_DATABASE: your_postgres_db
+    ports:
+      - "5433:5432"
+    depends_on:
+      - postgres_primary
+    networks:
+      - internal_network
+    volumes:
+      - replica_data:/bitnami/postgresql
+      - certs-volume:/certs-volume:rw
+  
+
   pgbackrest_init:
     build:
       context: ../
@@ -70,7 +94,7 @@ services:
     container_name: pgbackrest
     depends_on:
       - pgbackrest_init
-    restart: always
+
     entrypoint: ["pgbackrest"]
     command:
       [
@@ -103,6 +127,7 @@ services:
     entrypoint: |
       /bin/bash -c '
       while true; do
+        sleep 8640;
         echo "Starting pgBackRest backup at $(date)";
         pgbackrest \
           --stanza=main \
@@ -125,6 +150,32 @@ services:
       - ../../db-backup:/pgbackrest_repo
       - certs-volume:/certs-volume:rw
 
+  pgpool:
+    image: bitnami/pgpool:4
+    container_name: pgpool
+    restart: always
+    environment:
+      PGPOOL_BACKEND_NODES: "0:postgres_primary:5432,1:postgres_replica:5432"
+      PGPOOL_SR_CHECK_USER: "postgres"
+      PGPOOL_SR_CHECK_PASSWORD: "your_actual_password"
+      PGPOOL_ADMIN_USERNAME: "admin"
+      PGPOOL_ADMIN_PASSWORD: "admin_password"
+      PGPOOL_POSTGRES_USERNAME: "postgres"
+      PGPOOL_POSTGRES_PASSWORD: "your_actual_password"
+      PGPOOL_ENABLE_LOAD_BALANCING: "yes"
+      PGPOOL_HEALTH_CHECK_PERIOD: "10" # Delay between health checks
+      PGPOOL_HEALTH_CHECK_TIMEOUT: "20" # Timeout for health checks
+      PGPOOL_HEALTH_CHECK_MAX_RETRIES: "10" # Max retries before marking backend as down
+      PGPOOL_LOG_MIN_MESSAGES: "debug5"
+
+    networks:
+      - internal_network
+    ports:
+      - "5434:5432" # Pgpool-II listens on this port
+    depends_on:
+      - postgres_primary
+      - postgres_replica
+
 networks:
   internal_network:
     name: internal_network
@@ -132,5 +183,6 @@ networks:
 
 volumes:
   primary_data:
+  replica_data:
   certs-volume:
     external: true
