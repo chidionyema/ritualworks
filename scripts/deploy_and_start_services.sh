@@ -75,6 +75,7 @@ subjectAltName      = @alt_names
 DNS.1               = minio1
 DNS.2               = minio2
 DNS.3               = localhost
+DNS.4               = minio.local.haworks.com
 IP.1                = 127.0.0.1
 EOF
 

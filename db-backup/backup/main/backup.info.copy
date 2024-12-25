@@ -3,17 +3,19 @@ backrest-format=5
 backrest-version="2.54.0"
 
 [backup:current]
-20241224-002130F={"backrest-format":5,"backrest-version":"2.54.0","backup-archive-start":"000000010000000000000005","backup-archive-stop":"000000010000000000000006","backup-error":false,"backup-info-repo-size":4041890,"backup-info-repo-size-delta":4041890,"backup-info-size":30429653,"backup-info-size-delta":30429653,"backup-lsn-start":"0/5000090","backup-lsn-stop":"0/6000100","backup-timestamp-start":1734999690,"backup-timestamp-stop":1734999698,"backup-type":"full","db-id":1,"option-archive-check":true,"option-archive-copy":false,"option-backup-standby":false,"option-checksum-page":false,"option-compress":true,"option-hardlink":false,"option-online":true}
+20241224-174653F={"backrest-format":5,"backrest-version":"2.54.0","backup-archive-start":"000000010000000000000009","backup-archive-stop":"000000010000000000000009","backup-error":false,"backup-info-repo-size":4098524,"backup-info-repo-size-delta":4098524,"backup-info-size":31420885,"backup-info-size-delta":31420885,"backup-lsn-start":"0/9000028","backup-lsn-stop":"0/9000138","backup-timestamp-start":1735062413,"backup-timestamp-stop":1735062422,"backup-type":"full","db-id":1,"option-archive-check":true,"option-archive-copy":false,"option-backup-standby":false,"option-checksum-page":false,"option-compress":true,"option-hardlink":false,"option-online":true}
+20241224-174653F_20241224-174948I={"backrest-format":5,"backrest-version":"2.54.0","backup-archive-start":"00000001000000000000000C","backup-archive-stop":"00000001000000000000000C","backup-error":false,"backup-info-repo-size":4099587,"backup-info-repo-size-delta":93559,"backup-info-size":31420885,"backup-info-size-delta":631042,"backup-lsn-start":"0/C000028","backup-lsn-stop":"0/C000100","backup-prior":"20241224-174653F","backup-reference":["20241224-174653F"],"backup-timestamp-start":1735062588,"backup-timestamp-stop":1735062589,"backup-type":"incr","db-id":1,"option-archive-check":true,"option-archive-copy":false,"option-backup-standby":false,"option-checksum-page":false,"option-compress":true,"option-hardlink":false,"option-online":true}
+20241224-174653F_20241224-180914I={"backrest-format":5,"backrest-version":"2.54.0","backup-archive-start":"000000010000000000000012","backup-archive-stop":"000000010000000000000012","backup-error":false,"backup-info-repo-size":4099577,"backup-info-repo-size-delta":109463,"backup-info-size":31453655,"backup-info-size-delta":794884,"backup-lsn-start":"0/12000028","backup-lsn-stop":"0/12000100","backup-prior":"20241224-174653F_20241224-174948I","backup-reference":["20241224-174653F","20241224-174653F_20241224-174948I"],"backup-timestamp-start":1735063754,"backup-timestamp-stop":1735063756,"backup-type":"incr","db-id":1,"option-archive-check":true,"option-archive-copy":false,"option-backup-standby":false,"option-checksum-page":false,"option-compress":true,"option-hardlink":false,"option-online":true}
 
 [db]
 db-catalog-version=202209061
 db-control-version=1300
 db-id=1
-db-system-id=7451766882103734329
+db-system-id=7452032082917433400
 db-version="15"
 
 [db:history]
-1={"db-catalog-version":202209061,"db-control-version":1300,"db-system-id":7451766882103734329,"db-version":"15"}
+1={"db-catalog-version":202209061,"db-control-version":1300,"db-system-id":7452032082917433400,"db-version":"15"}
 
 [backrest]
-backrest-checksum="25fa1a6970412253a1e438bff090ea6b3e4389dc"
+backrest-checksum="c24c84274eb661a9902d85867791cb72b6b813b8"

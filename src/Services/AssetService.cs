@@ -71,6 +71,8 @@ namespace haworks.Services
             var sanitizedFileName = SanitizeFileName(file.FileName);
             var objectName = $"{username}/{type}/{sanitizedFileName}";
 
+            await EnsureBucketExistsAsync(_bucketName);
+
             try
             {
                 _logger.LogInformation("Uploading file to MinIO: {ObjectName}", objectName);
@@ -78,11 +80,13 @@ namespace haworks.Services
                 var putObjectArgs = new PutObjectArgs()
                     .WithBucket(_bucketName)
                     .WithObject(objectName)
-                    .WithStreamData(file.OpenReadStream()) // Directly using the IFormFile stream
+                    .WithStreamData(file.OpenReadStream())
                     .WithObjectSize(file.Length)
-                    .WithContentType(GetContentType(sanitizedFileName)); // Use inferred content type
+                    .WithContentType(GetContentType(sanitizedFileName));
+                    
 
                 await _minioClient.PutObjectAsync(putObjectArgs);
+                
             }
             catch (MinioException ex)
             {
@@ -90,11 +94,51 @@ namespace haworks.Services
                 throw new Exception("Failed to upload to MinIO.", ex);
             }
 
-            // Construct the accessible URL
             var resultUrl = $"https://{_minioDomain}/{_bucketName}/{objectName}";
-
             _logger.LogInformation("File uploaded successfully. Accessible at: {ResultUrl}", resultUrl);
             return resultUrl;
+        }
+
+        public async Task<string> GetPreSignedUrlAsync(string filePath, int expiryInSeconds = 3600)
+        {
+            try
+            {
+                var presignedGetObjectArgs = new PresignedGetObjectArgs()
+                    .WithBucket(_bucketName)
+                    .WithObject(filePath)
+                    .WithExpiry(expiryInSeconds);
+
+                var preSignedUrl = await _minioClient.PresignedGetObjectAsync(presignedGetObjectArgs);
+                _logger.LogInformation("Generated pre-signed URL: {PreSignedUrl}", preSignedUrl);
+                return preSignedUrl;
+            }
+            catch (MinioException ex)
+            {
+                _logger.LogError(ex, "Error generating pre-signed URL: {Message}", ex.Message);
+                throw new Exception("Failed to generate pre-signed URL.", ex);
+            }
+        }
+
+        private async Task EnsureBucketExistsAsync(string bucketName)
+        {
+            try
+            {
+                bool found = await _minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName));
+                if (!found)
+                {
+                    _logger.LogInformation("Bucket does not exist. Creating: {BucketName}", bucketName);
+                    await _minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucketName));
+                }
+                else
+                {
+                    _logger.LogInformation("Bucket already exists: {BucketName}", bucketName);
+                }
+            }
+            catch (MinioException ex)
+            {
+                _logger.LogError(ex, "Error ensuring bucket exists: {Message}", ex.Message);
+                throw;
+            }
         }
 
         private string GetContentType(string fileName)
@@ -113,16 +157,12 @@ namespace haworks.Services
 
         private string SanitizeFileName(string fileName)
         {
-            // Remove or replace any unwanted characters to ensure the filename is URL-safe
             foreach (char c in Path.GetInvalidFileNameChars())
             {
                 fileName = fileName.Replace(c, '_');
             }
 
-            // Additionally, replace spaces and other common problematic characters
-            fileName = fileName.Replace(" ", "_").Replace("(", "").Replace(")", "");
-
-            return fileName;
+            return fileName.Replace(" ", "_").Replace("(", "").Replace(")", "");
         }
     }
 }

@@ -43,6 +43,9 @@ services:
       POSTGRESQL_USERNAME: postgres
       POSTGRESQL_PASSWORD: your_actual_password
       POSTGRESQL_DATABASE: your_postgres_db
+      POSTGRESQL_ENABLE_SSL: "true"
+      POSTGRESQL_SSL_CERT_FILE: /certs-volume/postgres.crt
+      POSTGRESQL_SSL_KEY_FILE: /certs-volume/postgres.key
     ports:
       - "5433:5432"
     depends_on:
@@ -79,7 +82,9 @@ services:
       '
     environment:
       PGPASSWORD: "your_actual_password"
-      PGHOST: "postgres_primary" 
+      PGHOST: "postgres_primary"
+      PGSSLROOTCERT: "/certs-volume/ca.crt"
+      PGSSLMODE: "verify-full"
     networks:
       - internal_network
     volumes:
@@ -108,7 +113,9 @@ services:
       ]
     environment:
       PGPASSWORD: "your_actual_password"
-      PGHOST: "postgres_primary" 
+      PGHOST: "postgres_primary"
+      PGSSLROOTCERT: "/certs-volume/ca.crt"
+      PGSSLMODE: "verify-full"
     networks:
       - internal_network
     volumes:
@@ -143,6 +150,8 @@ services:
     environment:
       PGPASSWORD: "your_actual_password"
       PGHOST: "postgres_primary" 
+      PGSSLROOTCERT: "/certs-volume/ca.crt"
+      PGSSLMODE: "verify-full"
     networks:
       - internal_network
     volumes:
@@ -165,9 +174,14 @@ services:
       PGPOOL_ENABLE_LOAD_BALANCING: "yes"
       PGPOOL_HEALTH_CHECK_PERIOD: "10" # Delay between health checks
       PGPOOL_HEALTH_CHECK_TIMEOUT: "20" # Timeout for health checks
-      PGPOOL_HEALTH_CHECK_MAX_RETRIES: "10" # Max retries before marking backend as down
+      PGPOOL_HEALTH_CHECK_MAX_RETRIES: "5" # Max retries before marking backend as down
       PGPOOL_LOG_MIN_MESSAGES: "debug5"
+      PGPOOL_ENABLE_TLS: "yes"
+      PGPOOL_TLS_CERT_FILE: "/certs-volume/postgres.crt"
+      PGPOOL_TLS_KEY_FILE: "/certs-volume/postgres.key"
 
+    volumes:
+      - certs-volume:/certs-volume:rw
     networks:
       - internal_network
     ports:

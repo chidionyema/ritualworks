@@ -32,12 +32,12 @@ namespace haworks.Services
                 {
                     _logger.LogInformation("Refreshing database credentials.");
 
-                    _connectionStringProvider.UpdateConnectionString();
+                    await  _connectionStringProvider.UpdateConnectionStringAsync();
 
                     _logger.LogInformation("Database credentials refreshed.");
 
                     // Get the lease duration and adjust the interval
-                    int leaseDuration = _connectionStringProvider.GetLeaseDuration();
+                    int leaseDuration = await _connectionStringProvider.GetLeaseDurationAsync();
                     checkInterval = TimeSpan.FromSeconds(leaseDuration * 0.8); // Refresh at 80% of TTL
 
                     _logger.LogInformation("Next credential refresh in {Interval} seconds.", checkInterval.TotalSeconds);

@@ -88,17 +88,21 @@ public partial class Program
         AddCredentialRefreshService(builder);
     }
 
-    private static void ConfigureDbContext(WebApplicationBuilder builder)
-    {
+   private static void ConfigureDbContext(WebApplicationBuilder builder)
+   {
         builder.Services.AddDbContext<haworksContext>((serviceProvider, options) =>
         {
             var connectionStringProvider = serviceProvider.GetRequiredService<IConnectionStringProvider>();
             var interceptor = serviceProvider.GetRequiredService<DynamicCredentialsConnectionInterceptor>();
 
-            options.UseNpgsql(connectionStringProvider.GetConnectionString());
-            options.AddInterceptors(interceptor);
+            // Ensure the connection string is ready synchronously
+            var connectionString = connectionStringProvider.GetConnectionStringAsync().GetAwaiter().GetResult();
+
+            options.UseNpgsql(connectionString); // Configure with the preloaded connection string
+            options.AddInterceptors(interceptor); // Add the custom interceptor
         });
     }
+
 
     private static void ConfigureServices(WebApplicationBuilder builder)
     {

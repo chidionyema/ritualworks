@@ -1,6 +1,8 @@
-using haworks.Contracts;
 using System.Data.Common;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using haworks.Contracts;
 
 public class DynamicCredentialsConnectionInterceptor : DbConnectionInterceptor
 {
@@ -11,12 +13,17 @@ public class DynamicCredentialsConnectionInterceptor : DbConnectionInterceptor
         _connectionStringProvider = connectionStringProvider;
     }
 
-    public override InterceptionResult ConnectionOpening(
+    public override async ValueTask<InterceptionResult> ConnectionOpeningAsync(
         DbConnection connection,
         ConnectionEventData eventData,
-        InterceptionResult result)
+        InterceptionResult result,
+        CancellationToken cancellationToken = default)
     {
-        connection.ConnectionString = _connectionStringProvider.GetConnectionString();
-        return base.ConnectionOpening(connection, eventData, result);
+        // Retrieve the connection string asynchronously
+        var connectionString = await _connectionStringProvider.GetConnectionStringAsync();
+        connection.ConnectionString = connectionString;
+
+        // Call the base method to continue the interception process
+        return await base.ConnectionOpeningAsync(connection, eventData, result, cancellationToken);
     }
 }

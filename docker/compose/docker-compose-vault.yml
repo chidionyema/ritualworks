@@ -67,6 +67,7 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
+        
 
 networks:
   internal_network:

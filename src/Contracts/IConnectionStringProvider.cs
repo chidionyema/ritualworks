@@ -1,10 +1,11 @@
+using System.Threading.Tasks;
 
 namespace haworks.Contracts
 {
     public interface IConnectionStringProvider
     {
-        int GetLeaseDuration();
-        string GetConnectionString();
-        void UpdateConnectionString();
+        Task<int> GetLeaseDurationAsync();
+        Task<string> GetConnectionStringAsync();
+        Task UpdateConnectionStringAsync();
     }
 }
