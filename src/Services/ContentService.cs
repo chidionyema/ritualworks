@@ -11,17 +11,17 @@ using Minio.Exceptions;
 
 namespace haworks.Services
 {
-    public class AssetService : IAssetService
+    public class ContentService : IContentService
     {
         private readonly MinioClient _minioClient;
-        private readonly ILogger<AssetService> _logger;
+        private readonly ILogger<ContentService> _logger;
         private static readonly List<string> _allowedImageTypes = new List<string> { ".jpg", ".jpeg", ".png", ".gif" };
         private static readonly List<string> _allowedAssetTypes = new List<string> { ".pdf", ".doc", ".docx", ".zip", ".rar" };
         private const long _maxFileSize = 100 * 1024 * 1024; // 100 MB
         private readonly string _bucketName = "haworks-bucket"; // Replace with your bucket name
         private readonly string _minioDomain = "minio.local.haworks.com"; // Replace with your actual domain
 
-        public AssetService(MinioClient minioClient, ILogger<AssetService> logger)
+        public ContentService(MinioClient minioClient, ILogger<ContentService> logger)
         {
             _minioClient = minioClient ?? throw new ArgumentNullException(nameof(minioClient));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using haworks.Contracts;
@@ -20,19 +21,22 @@ namespace haworks.Controllers
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IProductRepository _productRepository;
-        private readonly IAssetService _assetService;
+        private readonly IContentRepository _contentRepository;
+        private readonly IContentService _assetService;
         private readonly ILogger<ProductsController> _logger;
         private readonly IMapper _mapper;
 
         public ProductsController(
             ICategoryRepository categoryRepository,
             IProductRepository productRepository,
-            IAssetService assetService,
+            IContentRepository contentRepository,
+            IContentService assetService,
             ILogger<ProductsController> logger,
             IMapper mapper)
         {
             _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
+            _contentRepository = contentRepository ?? throw new ArgumentNullException(nameof(contentRepository));
             _assetService = assetService ?? throw new ArgumentNullException(nameof(assetService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -52,20 +56,13 @@ namespace haworks.Controllers
         public async Task<ActionResult<ProductDto>> GetProduct(Guid id)
         {
             var product = await _productRepository.GetProductByIdAsync(id);
-
             if (product == null)
                 return NotFound();
 
+            var content = await _contentRepository.GetContentsByEntityIdAsync(id, "Product");
             var productDto = _mapper.Map<ProductDto>(product);
+            productDto.Contents = _mapper.Map<List<ContentDto>>(content);
             return Ok(productDto);
-        }
-
-        [HttpGet("categories/{categoryId}")]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByCategory(Guid categoryId, int page = 1, int pageSize = 10)
-        {
-            var products = await _productRepository.GetProductsByCategoryAsync(categoryId, page, pageSize);
-            var productDtos = _mapper.Map<List<ProductDto>>(products);
-            return Ok(productDtos);
         }
 
         [HttpPost]
@@ -87,24 +84,15 @@ namespace haworks.Controllers
 
                 // Add the product to the database
                 await _productRepository.AddProductAsync(product);
-                await _productRepository.SaveChangesAsync(); // Save to get the generated product.Id
-
-                // Handle image uploads
-                if (productCreateDto.Images != null && productCreateDto.Images.Count > 0)
-                {
-                    var uploadedImages = await UploadProductImages(productCreateDto.Images, product.Id, productCreateDto.Name);
-                    await _productRepository.AddProductImagesAsync(uploadedImages);
-                }
-
-                // Handle asset uploads
-                if (productCreateDto.Assets != null && productCreateDto.Assets.Count > 0)
-                {
-                    var uploadedAssets = await UploadProductAssets(productCreateDto.Assets, product.Id, productCreateDto.Name);
-                    await _productRepository.AddProductAssetsAsync(uploadedAssets);
-                }
-
-                // Save all changes
                 await _productRepository.SaveChangesAsync();
+
+                // Handle content uploads
+                var contents = await UploadContent(productCreateDto, product.Id);
+                if (contents.Any())
+                {
+                    await _contentRepository.AddContentsAsync(contents);
+                    await _contentRepository.SaveChangesAsync();
+                }
 
                 var productDto = _mapper.Map<ProductDto>(product);
                 return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, productDto);
@@ -124,7 +112,6 @@ namespace haworks.Controllers
                 return BadRequest(ModelState);
 
             var product = await _productRepository.GetProductByIdAsync(id);
-
             if (product == null)
                 return NotFound();
 
@@ -135,28 +122,16 @@ namespace haworks.Controllers
             // Map the updated values onto the existing product entity
             _mapper.Map(productCreateDto, product);
 
-            // Handle image uploads
-            if (productCreateDto.Images != null && productCreateDto.Images.Count > 0)
-            {
-                // Delete existing images
-                _productRepository.RemoveProductImages(product.ProductImages);
+            // Update content
+            var existingContents = await _contentRepository.GetContentsByEntityIdAsync(product.Id, "Product");
+            _contentRepository.RemoveContents(existingContents);
 
-                var uploadedImages = await UploadProductImages(productCreateDto.Images, product.Id, productCreateDto.Name);
-                await _productRepository.AddProductImagesAsync(uploadedImages);
-            }
-
-            // Handle asset uploads
-            if (productCreateDto.Assets != null && productCreateDto.Assets.Count > 0)
-            {
-                // Delete existing assets
-                _productRepository.RemoveProductAssets(product.ProductAssets);
-
-                var uploadedAssets = await UploadProductAssets(productCreateDto.Assets, product.Id, productCreateDto.Name);
-                await _productRepository.AddProductAssetsAsync(uploadedAssets);
-            }
+            var updatedContents = await UploadContent(productCreateDto, product.Id);
+            await _contentRepository.AddContentsAsync(updatedContents);
 
             await _productRepository.UpdateProductAsync(product);
             await _productRepository.SaveChangesAsync();
+            await _contentRepository.SaveChangesAsync();
 
             var updatedProductDto = _mapper.Map<ProductDto>(product);
             return Ok(updatedProductDto);
@@ -167,13 +142,12 @@ namespace haworks.Controllers
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
             var product = await _productRepository.GetProductByIdAsync(id);
-
             if (product == null)
                 return NotFound();
 
-            // Delete associated images and assets
-            _productRepository.RemoveProductImages(product.ProductImages);
-            _productRepository.RemoveProductAssets(product.ProductAssets);
+            // Delete associated content
+            var contents = await _contentRepository.GetContentsByEntityIdAsync(product.Id, "Product");
+            _contentRepository.RemoveContents(contents);
 
             await _productRepository.DeleteProductAsync(id);
             await _productRepository.SaveChangesAsync();
@@ -181,70 +155,53 @@ namespace haworks.Controllers
             return NoContent();
         }
 
-        [HttpGet("categories")]
-        public async Task<ActionResult<IEnumerable<CategoryDto>>> GetCategories()
-        {
-            var categories = await _categoryRepository.GetCategoriesAsync();
-            var categoryDtos = _mapper.Map<List<CategoryDto>>(categories);
-            return Ok(categoryDtos);
-        }
-
-        [HttpPost("categories")]
-        [Authorize]
-        public async Task<ActionResult<CategoryDto>> CreateCategory([FromBody] CategoryDto categoryDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var category = _mapper.Map<Category>(categoryDto);
-
-            await _categoryRepository.AddCategoryAsync(category);
-            await _categoryRepository.SaveChangesAsync();
-
-            var createdCategoryDto = _mapper.Map<CategoryDto>(category);
-            return CreatedAtAction(nameof(GetCategories), new { id = category.Id }, createdCategoryDto);
-        }
-
         #endregion
 
         #region Helper Methods
 
-        private async Task<List<ProductImage>> UploadProductImages(List<IFormFile> images, Guid productId, string username)
+        private async Task<List<Content>> UploadContent(ProductCreateDto productCreateDto, Guid productId)
         {
-            var uploadedImages = new List<ProductImage>();
+            var contents = new List<Content>();
 
-            foreach (var image in images)
+            // Upload images
+            if (productCreateDto.Images != null)
             {
-                var imageUrl = await _assetService.UploadFileAsync(image, productId, username);
-                var productImage = new ProductImage
+                foreach (var image in productCreateDto.Images)
                 {
-                    Url = imageUrl,
-                    BlobName = Path.GetFileName(imageUrl),
-                    ProductId = productId
-                };
-                uploadedImages.Add(productImage);
+                    var imageUrl = await _assetService.UploadFileAsync(image, productId, productCreateDto.Name);
+                    contents.Add(new Content
+                    {
+                        Id = Guid.NewGuid(),
+                        EntityId = productId,
+                        EntityType = "Product",
+                        ContentType = ContentType.Image,
+                        Url = imageUrl,
+                        BlobName = Path.GetFileName(imageUrl),
+                        CreatedAt = DateTime.UtcNow
+                    });
+                }
             }
 
-            return uploadedImages;
-        }
-
-        private async Task<List<ProductAsset>> UploadProductAssets(List<IFormFile> assets, Guid productId, string username)
-        {
-            var uploadedAssets = new List<ProductAsset>();
-
-            foreach (var asset in assets)
+            // Upload assets
+            if (productCreateDto.Assets != null)
             {
-                var assetUrl = await _assetService.UploadFileAsync(asset, productId, username);
-                var productAsset = new ProductAsset
+                foreach (var asset in productCreateDto.Assets)
                 {
-                    AssetUrl = assetUrl,
-                    BlobName = Path.GetFileName(assetUrl),
-                    ProductId = productId
-                };
-                uploadedAssets.Add(productAsset);
+                    var assetUrl = await _assetService.UploadFileAsync(asset, productId, productCreateDto.Name);
+                    contents.Add(new Content
+                    {
+                        Id = Guid.NewGuid(),
+                        EntityId = productId,
+                        EntityType = "Product",
+                        ContentType = ContentType.Asset,
+                        Url = assetUrl,
+                        BlobName = Path.GetFileName(assetUrl),
+                        CreatedAt = DateTime.UtcNow
+                    });
+                }
             }
 
-            return uploadedAssets;
+            return contents;
         }
 
         #endregion

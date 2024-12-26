@@ -33,5 +33,5 @@ listener "tcp" {
 template {
   source      = "/vault/config/db-credentials-template.hcl"
   destination = "/vault/secrets/db-creds.json"
-  command     = ""  # Optionally specify a command to run when the template is rendered
+  command     = "sh /vault/scripts/update_pgpool_credentials.sh"
 }

@@ -5,8 +5,7 @@ namespace haworks.Db
 {
     public class Product : AuditableEntity
     {
-        // Constructor for creating a product with all main properties
-        public Product(Guid id, string name, string description, decimal price, Guid categoryId) : base(id) // Call the base constructor with ID
+        public Product(Guid id, string name, string description, decimal price, Guid categoryId) : base(id)
         {
             Name = name;
             Description = description;
@@ -14,8 +13,7 @@ namespace haworks.Db
             CategoryId = categoryId;
         }
 
-        // Constructor for creating a new product without specifying ID
-        public Product(string name, string description, decimal price, Guid categoryId) : base() // Call the parameterless base constructor
+        public Product(string name, string description, decimal price, Guid categoryId) : base()
         {
             Name = name;
             Description = description;
@@ -23,12 +21,9 @@ namespace haworks.Db
             CategoryId = categoryId;
         }
 
-        // Protected constructor for EF or internal use
-        public Product() : base() // Call the parameterless base constructor
-        {
-        }
+        public Product() : base() { }
 
-        public Guid Id { get; set; } // Optionally, keep this settable for compatibility with EF
+        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public decimal Price { get; set; }
@@ -36,13 +31,13 @@ namespace haworks.Db
         public bool IsNew { get; set; }
         public int Stock { get; set; }
         public bool InStock { get; set; }
-        public List<ProductImage>? ProductImages { get; set; }
-        public List<ProductAsset>? ProductAssets { get; set; }
-        public List<ProductReview>? ProductReviews { get; set; }
         public string? Brand { get; set; } = string.Empty;
         public string? Type { get; set; } = string.Empty;
         public Guid CategoryId { get; set; }
         public Category? Category { get; set; }
-        public string? BlobName { get; internal set; }
+        public List<Content>? Contents { get; set; } // Navigation property for related content
+        public List<ProductReview>? ProductReviews { get; set; }
+
+        
     }
 }

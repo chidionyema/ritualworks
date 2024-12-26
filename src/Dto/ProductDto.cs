@@ -16,7 +16,7 @@
             public string Brand { get; set; }
             public string Type { get; set; }
             public Guid CategoryId { get; set; }
-            public List<ProductImageDto> ProductImages { get; set; }
-            public List<ProductAssetDto> ProductAssets { get; set; }
+            public List<ContentDto> Contents { get; set; }
+  
         }
  }

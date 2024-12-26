@@ -134,6 +134,7 @@ EOF
                     echo "Adding additional SANs for PostgreSQL..."
                     echo "DNS.4 = postgres_primary" >> "$CONFIG_FILE"
                     echo "DNS.5 = postgres_replica" >> "$CONFIG_FILE"
+                    echo "DNS.6 = pgpool" >> "$CONFIG_FILE"
                 fi
 
                 # Generate private key and CSR

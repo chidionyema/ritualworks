@@ -6,9 +6,11 @@ using System.Linq; // Ensure this is included
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using haworks.Contracts;
-using haworks.Db;
 using haworks.Controllers;
-using haworks.Settings;
+using haworks.Db;
+using haworks.Models;
+using Minio;
+using Minio.DataModel;
 
 namespace haworks.Services
 {
@@ -16,15 +18,15 @@ namespace haworks.Services
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
-        private readonly BlobServiceClient _blobServiceClient;
-        private readonly BlobSettings _blobSettings;
+        private readonly MinioClient _minioClient;
+        private readonly MinioSettings _minioSettings;
 
-        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, BlobServiceClient blobServiceClient, IOptions<BlobSettings> blobSettings)
+        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, MinioClient minioClient, MinioSettings minioSettings)
         {
             _orderRepository = orderRepository;
             _productRepository = productRepository;
-            _blobServiceClient = blobServiceClient;
-            _blobSettings = blobSettings.Value;
+            _minioClient = minioClient;
+            _minioSettings = minioSettings ?? throw new ArgumentNullException(nameof(minioSettings));
         }
 
         public async Task<string> CreateOrderAsync(Guid userId, List<CheckoutItem> items)
@@ -33,14 +35,14 @@ namespace haworks.Services
             {
                 UserId = userId.ToString(),
                 OrderDate = DateTime.UtcNow,
-                TotalAmount = items.Sum(item => item.Price * item.Quantity), // Ensure System.Linq is included
+                TotalAmount = items.Sum(item => item.Price * item.Quantity),
                 Status = OrderStatus.Pending,
                 OrderItems = items.Select(item => new OrderItem
                 {
                     ProductId = item.ProductId,
-                    Quantity = (int)item.Quantity, // Cast from long to int if needed
+                    Quantity = (int)item.Quantity,
                     Price = item.Price
-                }).ToList() // Ensure System.Linq is included
+                }).ToList()
             };
 
             await _orderRepository.CreateOrderAsync(order);
@@ -63,17 +65,35 @@ namespace haworks.Services
             var downloadLinks = new List<string>();
             foreach (var orderItem in order.OrderItems)
             {
-                var product = await _productRepository.GetProductByIdAsync(orderItem.ProductId) ?? throw new InvalidOperationException("Product not found.");
-                var blobContainerClient = _blobServiceClient.GetBlobContainerClient(_blobSettings.ContainerName);
-                var blobClient = blobContainerClient.GetBlobClient(product.BlobName);
+                var product = await _productRepository.GetProductByIdAsync(orderItem.ProductId) 
+                              ?? throw new InvalidOperationException("Product not found.");
 
-                if (!await blobClient.ExistsAsync())
+                // Get digital content (assets) for the product
+                var digitalContents = product.Contents?
+                    .Where(content => content.ContentType == ContentType.Asset)
+                    .ToList() ?? new List<Content>();
+
+                foreach (var content in digitalContents)
                 {
-                    throw new InvalidOperationException("Digital asset not found.");
-                }
+                    var objectName = content.BlobName;
 
-                var downloadLink = blobClient.GenerateSasUri(BlobSasPermissions.Read, DateTimeOffset.UtcNow.AddHours(1)).ToString();
-                downloadLinks.Add(downloadLink);
+                  /*  // Check if the object exists in the bucket
+                    var objectStat = await _minioClient.StatObjectAsync(
+                        new StatObjectArgs()
+                            .WithBucket(_minioSettings.BucketName)
+                            .WithObject(objectName)
+                    );
+
+                    // Generate a pre-signed URL for the object
+                    var downloadLink = await _minioClient.PresignedGetObjectAsync(
+                        new PresignedGetObjectArgs()
+                            .WithBucket(_minioSettings.BucketName)
+                            .WithObject(objectName)
+                            .WithExpiry(60 * 60) // 1 hour expiry
+                    );
+*/
+                   // downloadLinks.Add(downloadLink);
+                }
             }
 
             return downloadLinks;

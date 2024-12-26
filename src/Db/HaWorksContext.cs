@@ -9,16 +9,14 @@ namespace haworks.Db
 {
     public class haworksContext : IdentityDbContext<User>
     {
-
         public DbSet<Post> Posts { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<ProductImage> ProductImages { get; set; }
-        public DbSet<ProductAsset> ProductAssets { get; set; }
         public DbSet<ProductReview> ProductReviews { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Content> Contents { get; set; } // New Content DbSet
 
         public haworksContext(DbContextOptions<haworksContext> options)
             : base(options)
@@ -31,19 +29,9 @@ namespace haworks.Db
 
             // Configure entity relationships and constraints
             modelBuilder.Entity<Product>()
-                .HasMany(p => p.ProductImages)
-                .WithOne(pi => pi.Product)
-                .HasForeignKey(pi => pi.ProductId);
-
-            modelBuilder.Entity<Product>()
-                .HasMany(p => p.ProductAssets)
-                .WithOne(pi => pi.Product)
-                .HasForeignKey(pi => pi.ProductId);
-
-            modelBuilder.Entity<Product>()
                 .HasMany(p => p.ProductReviews)
-                .WithOne(pi => pi.Product)
-                .HasForeignKey(pi => pi.ProductId);
+                .WithOne(pr => pr.Product)
+                .HasForeignKey(pr => pr.ProductId);
 
             modelBuilder.Entity<Category>()
                 .HasMany(c => c.Products)
@@ -60,20 +48,25 @@ namespace haworks.Db
                 .WithMany()
                 .HasForeignKey(oi => oi.ProductId);
 
-            modelBuilder.Entity<User>();
-     
             modelBuilder.Entity<Post>()
                 .HasMany(p => p.Comments)
                 .WithOne(c => c.Post)
                 .HasForeignKey(c => c.PostId);
 
-            // Seed initial categories and products with explicit, valid GUIDs
+            // Configure Content entity
+            modelBuilder.Entity<Content>(entity =>
+            {
+                entity.Property(c => c.ContentType).HasConversion<string>(); // Enum stored as string
+                entity.HasIndex(c => new { c.EntityId, c.EntityType }).HasDatabaseName("IX_EntityContent");
+            });
+
+            // Seed initial categories, products, and content
             var category1Id = Guid.NewGuid();
             var category2Id = Guid.NewGuid();
             var category3Id = Guid.NewGuid();
 
             SeedCategories(modelBuilder, category1Id, category2Id, category3Id);
-            SeedProducts(modelBuilder, category1Id, category2Id, category3Id);
+            SeedProductsAndContent(modelBuilder, category1Id, category2Id, category3Id);
         }
 
         private void SeedCategories(ModelBuilder modelBuilder, Guid category1Id, Guid category2Id, Guid category3Id)
@@ -88,7 +81,7 @@ namespace haworks.Db
             modelBuilder.Entity<Category>().HasData(categories);
         }
 
-        private void SeedProducts(ModelBuilder modelBuilder, Guid category1Id, Guid category2Id, Guid category3Id)
+        private void SeedProductsAndContent(ModelBuilder modelBuilder, Guid category1Id, Guid category2Id, Guid category3Id)
         {
             var product1Id = Guid.NewGuid();
             var product2Id = Guid.NewGuid();
@@ -142,45 +135,61 @@ namespace haworks.Db
 
             modelBuilder.Entity<Product>().HasData(products);
 
-            var productImages = new List<ProductImage>
+            // Seed content data
+            modelBuilder.Entity<Content>().HasData(new List<Content>
             {
-                new ProductImage { Id = Guid.NewGuid(), Url = "https://via.placeholder.com/300", ProductId = product1Id },
-                new ProductImage { Id = Guid.NewGuid(), Url = "https://via.placeholder.com/300", ProductId = product2Id },
-                new ProductImage { Id = Guid.NewGuid(), Url = "https://via.placeholder.com/300", ProductId = product3Id }
-            };
-
-            modelBuilder.Entity<ProductImage>().HasData(productImages);
-
-            var productReviews = new List<ProductReview>
-            {
-                new ProductReview { Id = Guid.NewGuid(), User = "Alice", Comment = "Great product!", Rating = 5, ProductId = product1Id },
-                new ProductReview { Id = Guid.NewGuid(), User = "Bob", Comment = "Good value for money.", Rating = 4, ProductId = product1Id },
-                new ProductReview { Id = Guid.NewGuid(), User = "Charlie", Comment = "Excellent quality!", Rating = 5, ProductId = product2Id },
-                new ProductReview { Id = Guid.NewGuid(), User = "Dana", Comment = "Satisfactory.", Rating = 3, ProductId = product2Id },
-                new ProductReview { Id = Guid.NewGuid(), User = "Eve", Comment = "Could be better.", Rating = 3, ProductId = product3Id },
-                new ProductReview { Id = Guid.NewGuid(), User = "Frank", Comment = "Not worth the price.", Rating = 2, ProductId = product3Id }
-            };
-
-            modelBuilder.Entity<ProductReview>().HasData(productReviews);
+                new Content
+                {
+                    Id = Guid.NewGuid(),
+                    EntityId = product1Id,
+                    EntityType = "Product",
+                    ContentType = ContentType.Image,
+                    Url = "https://via.placeholder.com/300",
+                    BlobName = "product1-image1.jpg",
+                    CreatedAt = DateTime.UtcNow
+                },
+                new Content
+                {
+                    Id = Guid.NewGuid(),
+                    EntityId = product1Id,
+                    EntityType = "Product",
+                    ContentType = ContentType.Asset,
+                    Url = "https://via.placeholder.com/asset1",
+                    BlobName = "product1-asset1.pdf",
+                    CreatedAt = DateTime.UtcNow
+                },
+                new Content
+                {
+                    Id = Guid.NewGuid(),
+                    EntityId = product2Id,
+                    EntityType = "Product",
+                    ContentType = ContentType.Image,
+                    Url = "https://via.placeholder.com/300",
+                    BlobName = "product2-image1.jpg",
+                    CreatedAt = DateTime.UtcNow
+                }
+            });
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-                foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
+            foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
+            {
+                if (entry.State == EntityState.Added)
                 {
-                    if (entry.State == EntityState.Added)
-                    {
-                        entry.Entity.CreatedDate = DateTime.UtcNow;
-                        entry.Entity.CreatedBy = ""; // Provide a suitable default value
-                    }
-                    else if (entry.State == EntityState.Modified)
-                    {
-                        entry.Entity.LastModifiedDate = DateTime.UtcNow;
-                        entry.Entity.LastModifiedBy = ""; // Provide a suitable default value
-                    }
+                    entry.Entity.CreatedDate = DateTime.UtcNow;
+                    entry.Entity.CreatedBy = ""; // Provide a suitable default value
                 }
-                return base.SaveChangesAsync(cancellationToken);
+                else if (entry.State == EntityState.Modified)
+                {
+                    entry.Entity.LastModifiedDate = DateTime.UtcNow;
+                    entry.Entity.LastModifiedBy = ""; // Provide a suitable default value
+                }
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
         }
+
         public override int SaveChanges()
         {
             var result = base.SaveChanges();

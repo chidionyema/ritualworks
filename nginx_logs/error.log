@@ -747,3 +747,334 @@
 2024/12/25 10:49:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
 2024/12/25 10:49:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
 2024/12/25 10:49:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 11:32:16 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 11:32:16 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 11:32:16 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 11:32:16 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 11:32:16 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 11:32:16 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 11:32:16 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 11:32:16 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 13:03:06 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 13:03:06 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 13:03:06 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 13:03:06 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 13:03:06 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 13:03:06 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 13:03:06 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 13:03:06 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 13:12:36 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 13:12:36 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 13:12:36 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 13:12:36 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 13:12:36 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 13:12:36 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 13:12:36 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 13:12:36 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 13:30:10 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 13:30:10 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 13:30:10 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 13:30:10 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 13:30:10 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 13:30:10 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 13:30:10 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 13:30:10 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 13:52:16 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 13:52:16 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 13:52:16 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 13:52:16 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 13:52:16 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 13:52:16 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 13:52:16 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 13:52:16 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 14:11:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 14:11:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 14:11:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 14:11:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 14:11:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 14:11:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 14:11:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 14:11:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 14:25:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 14:25:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 14:25:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 14:25:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 14:25:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 14:25:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 14:25:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 14:25:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 14:33:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 14:33:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 14:33:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 14:33:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 14:33:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 14:33:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 14:33:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 14:33:00 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 15:12:49 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 15:12:49 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 15:12:49 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 15:12:49 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 15:12:49 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/conf.d/upstreams.conf:12
+2024/12/25 15:24:04 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 15:24:04 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 15:24:04 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 15:24:04 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 15:24:04 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/conf.d/upstreams.conf:12
+2024/12/25 15:45:02 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 15:45:02 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 15:45:02 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 15:45:02 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 15:45:02 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/conf.d/upstreams.conf:12
+2024/12/25 15:49:26 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 15:49:26 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 15:49:26 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 15:49:26 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 15:49:26 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 15:49:26 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 15:49:26 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 15:49:26 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 16:04:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 16:04:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 16:04:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 16:04:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 16:04:50 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 16:04:50 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 16:04:50 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 16:04:50 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 16:29:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 16:29:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 16:29:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 16:29:15 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 16:29:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 16:29:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 16:29:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 16:29:15 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 16:40:37 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 16:40:37 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 16:40:37 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 16:40:37 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 16:40:37 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 16:40:37 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 16:40:37 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 16:40:37 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 16:52:13 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 16:52:13 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 16:52:13 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 16:52:13 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 16:52:13 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 16:52:13 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 16:52:13 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 16:52:13 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:00:08 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 17:00:08 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 17:00:08 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 17:00:08 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 17:00:08 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:00:08 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:00:08 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 17:00:08 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:17:59 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 17:17:59 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 17:17:59 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 17:17:59 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 17:17:59 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/conf.d/upstreams.conf:12
+2024/12/25 17:19:22 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 17:19:22 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 17:19:22 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 17:19:22 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 17:19:22 [emerg] 1#1: host not found in upstream "prometheus:9090" in /etc/nginx/conf.d/upstreams.conf:12
+2024/12/25 17:23:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 17:23:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 17:23:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 17:23:00 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 17:23:00 [emerg] 1#1: host not found in upstream "minio1:9000" in /etc/nginx/conf.d/upstreams.conf:22
+2024/12/25 17:25:38 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 17:25:38 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 17:25:38 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 17:25:38 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 17:25:38 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:25:38 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:25:38 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 17:25:38 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:30:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 17:30:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 17:30:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 17:30:33 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 17:30:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:30:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:30:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 17:30:33 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:33:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 17:33:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 17:33:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 17:33:14 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 17:33:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:33:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:33:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 17:33:14 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:42:04 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 17:42:04 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 17:42:04 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 17:42:04 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 17:42:04 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:42:04 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 17:42:04 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 17:42:04 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 18:09:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 18:09:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 18:09:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 18:09:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 18:09:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 18:09:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 18:09:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 18:09:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 18:34:36 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 18:34:36 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 18:34:36 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 18:34:36 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 18:34:36 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 18:34:36 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 18:34:36 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 18:34:36 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 18:49:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 18:49:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 18:49:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 18:49:07 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 18:49:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 18:49:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 18:49:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 18:49:07 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 19:27:45 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 19:27:45 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 19:27:45 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 19:27:45 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 19:27:45 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 19:27:45 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 19:27:45 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 19:27:45 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 19:35:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 19:35:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 19:35:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 19:35:48 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 19:35:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 19:35:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 19:35:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 19:35:48 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 19:44:26 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 19:44:26 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 19:44:26 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 19:44:26 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 19:44:26 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 19:44:26 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 19:44:26 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 19:44:26 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 19:57:37 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 19:57:37 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 19:57:37 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 19:57:37 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 19:57:37 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 19:57:37 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 19:57:37 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 19:57:37 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 20:18:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 20:18:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 20:18:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 20:18:53 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 20:18:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 20:18:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 20:18:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 20:18:53 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 20:43:13 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 20:43:13 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 20:43:13 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 20:43:13 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 20:43:13 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 20:43:13 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 20:43:13 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 20:43:13 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 20:52:47 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 20:52:47 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 20:52:47 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 20:52:47 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 20:52:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 20:52:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 20:52:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 20:52:47 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 21:11:36 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 21:11:36 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 21:11:36 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 21:11:36 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 21:11:36 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 21:11:36 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 21:11:36 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 21:11:36 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 21:15:12 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 21:15:12 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 21:15:12 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 21:15:12 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 21:15:12 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 21:15:12 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 21:15:12 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 21:15:12 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 22:33:02 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 22:33:02 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 22:33:02 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 22:33:02 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 22:33:02 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 22:33:02 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 22:33:02 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 22:33:02 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 22:43:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 22:43:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 22:43:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 22:43:50 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 22:43:50 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 22:43:50 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 22:43:50 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 22:43:50 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 23:00:40 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 23:00:40 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 23:00:40 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 23:00:40 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 23:00:40 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 23:00:40 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 23:00:40 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 23:00:40 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 23:57:29 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/25 23:57:29 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/25 23:57:29 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/25 23:57:29 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/25 23:57:29 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 23:57:29 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/25 23:57:29 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/25 23:57:29 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/26 00:22:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/26 00:22:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/26 00:22:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/26 00:22:41 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/26 00:22:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/26 00:22:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/26 00:22:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/26 00:22:41 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/26 08:49:24 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/26 08:49:24 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/26 08:49:24 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/26 08:49:24 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/26 08:49:24 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/26 08:49:24 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/26 08:49:24 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/26 08:49:24 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/26 09:19:57 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/26 09:19:57 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/26 09:19:57 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/26 09:19:57 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/26 09:19:57 [emerg] 1#1: host not found in upstream "app:8080" in /etc/nginx/conf.d/upstreams.conf:6
+2024/12/26 09:23:01 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/api.conf:12
+2024/12/26 09:23:01 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/grafana.conf:12
+2024/12/26 09:23:01 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/minio.conf:12
+2024/12/26 09:23:01 [warn] 1#1: the "listen ... http2" directive is deprecated, use the "http2" directive instead in /etc/nginx/conf.d/prometheus.conf:12
+2024/12/26 09:23:01 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/26 09:23:01 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"
+2024/12/26 09:23:01 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/public.crt"
+2024/12/26 09:23:01 [warn] 1#1: "ssl_stapling" ignored, issuer certificate not found for certificate "/certs-volume/local.haworks.com.crt"

@@ -304,7 +304,7 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE O
         vault write database/config/postgresql \
             plugin_name=postgresql-database-plugin \
             allowed_roles='vault' \
-            connection_url='postgresql://{{username}}:{{password}}@postgres_primary:5432/$db_name?sslmode=verify-full' \
+            connection_url="postgresql://postgres:your_actual_password@pgpool:5432/$db_name?sslmode=verify-full" \
             username='postgres' \
             password='$postgres_password'
 

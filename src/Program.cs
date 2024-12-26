@@ -103,7 +103,6 @@ public partial class Program
         });
     }
 
-
     private static void ConfigureServices(WebApplicationBuilder builder)
     {
         builder.Services.AddControllers();
@@ -167,7 +166,9 @@ public partial class Program
         builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
         builder.Services.AddScoped<IOrderRepository, OrderRepository>();
         builder.Services.AddScoped<OrderService>();
-        builder.Services.AddScoped<IAssetService, AssetService>();
+        builder.Services.AddScoped<IContentService, ContentService>();
+        builder.Services.AddScoped<IContentRepository, ContentRepository>();
+
     }
 
     private static void AddMassTransit(WebApplicationBuilder builder)

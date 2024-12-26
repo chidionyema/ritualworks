@@ -2,3 +2,4 @@
 FROM hashicorp/vault:latest
 # Install OpenSSL, jq, and curl
 RUN apk add --no-cache openssl jq curl  # Add curl to the installation list
+

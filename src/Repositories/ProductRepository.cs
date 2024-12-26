@@ -20,8 +20,7 @@ namespace haworks.Repositories
         public async Task<IEnumerable<Product>> GetProductsAsync(int page, int pageSize)
         {
             return await _context.Products
-                .Include(p => p.ProductImages)
-                .Include(p => p.ProductAssets)
+                .Include(p => p.Category)
                 .OrderBy(p => p.Name)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -31,16 +30,14 @@ namespace haworks.Repositories
         public async Task<Product> GetProductByIdAsync(Guid id)
         {
             return await _context.Products
-                .Include(p => p.ProductImages)
-                .Include(p => p.ProductAssets)
+                .Include(p => p.Category)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(Guid categoryId, int page, int pageSize)
         {
             return await _context.Products
-                .Include(p => p.ProductImages)
-                .Include(p => p.ProductAssets)
+                .Include(p => p.Category)
                 .Where(p => p.CategoryId == categoryId)
                 .OrderBy(p => p.Name)
                 .Skip((page - 1) * pageSize)
@@ -63,6 +60,12 @@ namespace haworks.Repositories
             var product = await _context.Products.FindAsync(id);
             if (product != null)
             {
+                // Remove associated content
+                var relatedContent = await _context.Contents
+                    .Where(c => c.EntityId == id && c.EntityType == nameof(Product))
+                    .ToListAsync();
+
+                _context.Contents.RemoveRange(relatedContent);
                 _context.Products.Remove(product);
             }
         }
@@ -84,24 +87,21 @@ namespace haworks.Repositories
             await _context.Categories.AddAsync(category);
         }
 
-        public async Task AddProductImagesAsync(IEnumerable<ProductImage> images)
+        public async Task AddContentAsync(IEnumerable<Content> contents)
         {
-            await _context.ProductImages.AddRangeAsync(images);
+            await _context.Contents.AddRangeAsync(contents);
         }
 
-        public void RemoveProductImages(IEnumerable<ProductImage> images)
+        public void RemoveContent(IEnumerable<Content> contents)
         {
-            _context.ProductImages.RemoveRange(images);
+            _context.Contents.RemoveRange(contents);
         }
 
-        public async Task AddProductAssetsAsync(IEnumerable<ProductAsset> assets)
+        public async Task<List<Content>> GetContentByProductIdAsync(Guid productId, ContentType contentType)
         {
-            await _context.ProductAssets.AddRangeAsync(assets);
-        }
-
-        public void RemoveProductAssets(IEnumerable<ProductAsset> assets)
-        {
-            _context.ProductAssets.RemoveRange(assets);
+            return await _context.Contents
+                .Where(c => c.EntityId == productId && c.EntityType == nameof(Product) && c.ContentType == contentType)
+                .ToListAsync();
         }
 
         public async Task<List<Product>> GetProductsByIdsAsync(List<Guid> productIds)

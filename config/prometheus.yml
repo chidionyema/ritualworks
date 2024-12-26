@@ -5,7 +5,7 @@ global:
 scrape_configs:
   - job_name: 'postgres_primary'
     static_configs:
-      - targets: ['postgres_primary:5432']
+      - targets: ['postgres_exporter_primary:9187']
   - job_name: 'postgres_standby'
     static_configs:
       - targets: ['postgres_standby:5434']
@@ -14,7 +14,7 @@ scrape_configs:
       - targets: ['haproxy:8404']
   - job_name: 'redis-master'
     static_configs:
-      - targets: ['redis-master:6379']
+      - targets: ['redis_exporter:9121']
   - job_name: 'redis-replica'
     static_configs:
       - targets: ['redis-replica:6380']
@@ -23,7 +23,7 @@ scrape_configs:
       - targets: ['es-node-1:9200', 'es-node-2:9200']
   - job_name: 'rabbitmq'
     static_configs:
-      - targets: ['rabbitmq-node1:15672', 'rabbitmq-node2:15672']
+      - targets: ['rabbitmq_exporter:9419']
   - job_name: 'minio'
     static_configs:
       - targets: ['minio1:9000', 'minio2:9000']
