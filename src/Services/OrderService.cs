@@ -11,6 +11,7 @@ using haworks.Db;
 using haworks.Models;
 using Minio;
 using Minio.DataModel;
+using haworks.Dto;
 
 namespace haworks.Services
 {
@@ -21,27 +22,30 @@ namespace haworks.Services
         private readonly MinioClient _minioClient;
         private readonly MinioSettings _minioSettings;
 
-        public OrderService(IOrderRepository orderRepository, IProductRepository productRepository, MinioClient minioClient, MinioSettings minioSettings)
-        {
-            _orderRepository = orderRepository;
-            _productRepository = productRepository;
-            _minioClient = minioClient;
-            _minioSettings = minioSettings ?? throw new ArgumentNullException(nameof(minioSettings));
-        }
+        public OrderService(
+        IOrderRepository orderRepository,
+        IProductRepository productRepository,
+        MinioClient minioClient,
+        IOptions<MinioSettings> minioSettings)
+    {
+        _orderRepository = orderRepository;
+        _productRepository = productRepository;
+        _minioClient = minioClient;
+        _minioSettings = minioSettings?.Value ?? throw new ArgumentNullException(nameof(minioSettings));
+    }
 
         public async Task<string> CreateOrderAsync(Guid userId, List<CheckoutItem> items)
         {
             var order = new Order
             {
                 UserId = userId.ToString(),
-                OrderDate = DateTime.UtcNow,
-                TotalAmount = items.Sum(item => item.Price * item.Quantity),
+                TotalAmount = items.Sum(item => item.UnitPrice * item.Quantity),
                 Status = OrderStatus.Pending,
                 OrderItems = items.Select(item => new OrderItem
                 {
                     ProductId = item.ProductId,
                     Quantity = (int)item.Quantity,
-                    Price = item.Price
+                    UnitPrice = item.UnitPrice
                 }).ToList()
             };
 

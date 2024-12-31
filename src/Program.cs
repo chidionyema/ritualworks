@@ -1,5 +1,3 @@
-// Program.cs
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +12,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using haworks.Contracts;
 using haworks.Repositories;
-using haworks.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -27,7 +24,17 @@ using Serilog;
 using Serilog.Events;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Authentication;
-
+using StackExchange.Redis;
+using System.Net.Http;
+using System.Linq;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Http;
+using System.Threading.RateLimiting;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
+using System.IO;
 public partial class Program
 {
     public static async Task Main(string[] args)
@@ -70,15 +77,68 @@ public partial class Program
     {
         builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-        // Add Identity services
-        builder.Services.AddIdentity<User, IdentityRole>()
-            .AddEntityFrameworkStores<haworksContext>()
-            .AddDefaultTokenProviders();
+        builder.Services.AddHttpClient<IPaymentClient, PaymentClient>(client =>
+        {
+            client.BaseAddress = new Uri("https://api.local.ritualworks.com");
+        }).AddHttpMessageHandler<JwtAuthenticationDelegatingHandler>();
+
+        builder.Services.AddMemoryCache();
+
+        ConfigureRateLimiting(builder);
+
+        builder.Services.AddStackExchangeRedisCache(options =>
+        {
+            var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+            var configurationOptions = ConfigurationOptions.Parse(redisConnectionString);
+
+            // Ensure no duplicate port assignments
+            configurationOptions.EndPoints.Clear();
+            var redisHost = "redis-master";
+            var redisPort = configurationOptions.Ssl ? 6380 : 6379;
+            configurationOptions.EndPoints.Add(redisHost, redisPort);
+
+            // Debugging
+            Console.WriteLine("Configured Redis EndPoints:");
+            foreach (var endpoint in configurationOptions.EndPoints)
+            {
+                Console.WriteLine(endpoint.ToString());
+            }
+
+            // SSL/TLS Handling
+            if (configurationOptions.Ssl)
+            {
+                var redisTlsConfig = builder.Configuration.GetSection("RedisTls");
+                if (redisTlsConfig.Exists())
+                {
+                    var certPath = redisTlsConfig["CertificatePath"];
+                    var keyPath = redisTlsConfig["PrivateKeyPath"];
+                    configurationOptions.CertificateSelection += (sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) =>
+                    {
+                        var clientCert = System.IO.File.ReadAllText(certPath);
+                        var privateKey = System.IO.File.ReadAllText(keyPath);
+                        return X509Certificate2.CreateFromPem(clientCert, privateKey);
+                    };
+                }
+            }
+
+            options.ConfigurationOptions = configurationOptions;
+        });
+
+
+
+
+
 
         // Register the connection string provider and the interceptor
         builder.Services.AddSingleton<IConnectionStringProvider, ConnectionStringProvider>();
         builder.Services.AddSingleton<DynamicCredentialsConnectionInterceptor>();
         builder.Services.AddHostedService<CredentialRefreshService>();
+
+
+        // Add Identity services
+        builder.Services.AddIdentity<User, IdentityRole>()
+            .AddEntityFrameworkStores<haworksContext>()
+            .AddDefaultTokenProviders();
 
         ConfigureDbContext(builder);
         ConfigureServices(builder);
@@ -88,37 +148,51 @@ public partial class Program
         AddCredentialRefreshService(builder);
     }
 
-   private static void ConfigureDbContext(WebApplicationBuilder builder)
-   {
+    private static void ConfigureRateLimiting(WebApplicationBuilder builder)
+    {
+        builder.Services.AddRateLimiter(options =>
+        {
+            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(context =>
+            {
+                return RateLimitPartition.GetFixedWindowLimiter(
+                    partitionKey: "Global",
+                    factory: partition => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 20,
+                        Window = TimeSpan.FromSeconds(60),
+                        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                        QueueLimit = 5
+                    });
+            });
+
+            options.OnRejected = async (context, cancellationToken) =>
+            {
+                context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+                await context.HttpContext.Response.WriteAsync("Rate limit exceeded.", cancellationToken);
+            };
+        });
+    }
+
+    private static void ConfigureDbContext(WebApplicationBuilder builder)
+    {
         builder.Services.AddDbContext<haworksContext>((serviceProvider, options) =>
         {
             var connectionStringProvider = serviceProvider.GetRequiredService<IConnectionStringProvider>();
             var interceptor = serviceProvider.GetRequiredService<DynamicCredentialsConnectionInterceptor>();
 
-            // Ensure the connection string is ready synchronously
             var connectionString = connectionStringProvider.GetConnectionStringAsync().GetAwaiter().GetResult();
 
-            options.UseNpgsql(connectionString); // Configure with the preloaded connection string
-            options.AddInterceptors(interceptor); // Add the custom interceptor
+            options.UseNpgsql(connectionString);
+            options.AddInterceptors(interceptor);
         });
     }
 
     private static void ConfigureServices(WebApplicationBuilder builder)
     {
         builder.Services.AddControllers();
-        ConfigureBlobService(builder);
         ConfigureJwtAuthentication(builder);
         ConfigureStripe(builder);
         AddRepositoryAndServiceDependencies(builder);
-    }
-
-    private static void ConfigureBlobService(WebApplicationBuilder builder)
-    {
-        builder.Services.AddSingleton(x =>
-        {
-            var blobSettings = x.GetRequiredService<IOptions<BlobSettings>>().Value;
-            return new BlobServiceClient(blobSettings.ConnectionString);
-        });
     }
 
     private static void ConfigureJwtAuthentication(WebApplicationBuilder builder)
@@ -163,12 +237,12 @@ public partial class Program
     {
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
+        builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
         builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
         builder.Services.AddScoped<IOrderRepository, OrderRepository>();
         builder.Services.AddScoped<OrderService>();
         builder.Services.AddScoped<IContentService, ContentService>();
         builder.Services.AddScoped<IContentRepository, ContentRepository>();
-
     }
 
     private static void AddMassTransit(WebApplicationBuilder builder)
@@ -176,7 +250,6 @@ public partial class Program
         builder.Services.AddMassTransit(x =>
         {
             x.SetKebabCaseEndpointNameFormatter();
-            // x.AddConsumer<MyConsumer>();
 
             x.UsingRabbitMq((context, cfg) =>
             {
@@ -218,11 +291,10 @@ public partial class Program
 
     private static void AddMinioClient(WebApplicationBuilder builder)
     {
-        // Register MinioClient as a singleton
         var minioConfig = builder.Configuration.GetSection("MinIO").Get<MinioSettings>();
-        builder.Services.AddSingleton<MinioClient>(sp =>
+        builder.Services.AddSingleton(sp =>
         {
-            return (MinioClient)new MinioClient()
+            return new MinioClient()
                 .WithEndpoint(minioConfig.Endpoint)
                 .WithCredentials(minioConfig.AccessKey, minioConfig.SecretKey)
                 .WithSSL(minioConfig.Secure)
@@ -243,13 +315,12 @@ public partial class Program
                 Type = SecuritySchemeType.ApiKey,
                 Scheme = "Bearer"
             });
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement {
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
                 {
-                    new OpenApiSecurityScheme {
-                        Reference = new OpenApiReference {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
                     },
                     new string[] { }
                 }
@@ -281,7 +352,7 @@ public partial class Program
         app.UseCors("Allow3001");
         app.UseAuthentication();
         app.UseAuthorization();
-
+        app.UseRateLimiter();
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {
@@ -291,5 +362,28 @@ public partial class Program
 
         app.MapControllers();
         await Task.CompletedTask;
+    }
+}
+
+public class JwtAuthenticationDelegatingHandler : DelegatingHandler
+{
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public JwtAuthenticationDelegatingHandler(IHttpContextAccessor httpContextAccessor)
+    {
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    {
+        var accessToken = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"]
+            .FirstOrDefault()?.Split(" ").Last();
+
+        if (!string.IsNullOrEmpty(accessToken))
+        {
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+        }
+
+        return await base.SendAsync(request, cancellationToken);
     }
 }

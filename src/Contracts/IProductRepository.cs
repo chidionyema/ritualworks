@@ -13,14 +13,8 @@ namespace haworks.Contracts
         Task<IEnumerable<Product>> GetProductsByCategoryAsync(Guid categoryId, int page, int pageSize);
         Task AddProductAsync(Product product);
         Task UpdateProductAsync(Product product);
+        Task UpdateProductStockAsync(Guid productId, int quantity);
         Task DeleteProductAsync(Guid id);
-
-        // Content-related methods (generic for images and assets)
-        Task AddContentAsync(IEnumerable<Content> contents);
-        void RemoveContent(IEnumerable<Content> contents);
-        Task<List<Content>> GetContentByProductIdAsync(Guid productId, ContentType contentType);
-
-        // Miscellaneous methods
         Task SaveChangesAsync();
         Task<List<Product>> GetProductsByIdsAsync(List<Guid> productIds);
     }

@@ -39,7 +39,7 @@ services:
     volumes:
       - vault-secrets:/vault/secrets
       - ../../vault/config:/vault/config
-      - ../../scripts:/vault/scripts
+      - ../../vault/scripts:/vault/scripts
       - vault-data:/vault/file                 # Persistent volume for Vault data
       - certs-volume:/certs-volume:rw          # Persistent data directory for Vault
 
@@ -60,7 +60,7 @@ services:
       - consul-data:/data/consul            # Back up the Consul data volume
       - vault-data:/data/vault              # Back up the Vault data volume
       - ../../backups:/backups  
-      - ../../scripts:/vault/scripts                # Local directory to store the backups
+      - ../../vault/scripts:/vault/scripts                # Local directory to store the backups
     networks:
       - internal_network
     entrypoint: ["/bin/sh", "-c", "/vault/scripts/backup_script.sh"]

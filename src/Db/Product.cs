@@ -9,7 +9,7 @@ namespace haworks.Db
         {
             Name = name;
             Description = description;
-            Price = price;
+            UnitPrice = price;
             CategoryId = categoryId;
         }
 
@@ -17,7 +17,7 @@ namespace haworks.Db
         {
             Name = name;
             Description = description;
-            Price = price;
+            UnitPrice = price;
             CategoryId = categoryId;
         }
 
@@ -26,11 +26,12 @@ namespace haworks.Db
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public decimal Price { get; set; }
+        public decimal UnitPrice { get; set; }
         public double Rating { get; set; }
-        public bool IsNew { get; set; }
+        public bool IsListed { get; set; }
+        public bool IsFeatured { get; set; }
         public int Stock { get; set; }
-        public bool InStock { get; set; }
+        public bool IsInStock { get; set; }
         public string? Brand { get; set; } = string.Empty;
         public string? Type { get; set; } = string.Empty;
         public Guid CategoryId { get; set; }

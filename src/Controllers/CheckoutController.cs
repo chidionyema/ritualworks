@@ -1,178 +1,160 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using haworks.Dto;
 using haworks.Contracts;
 using haworks.Db;
+using haworks.Repositories;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace haworks.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class CheckoutController : ControllerBase
     {
         private readonly ILogger<CheckoutController> _logger;
+        private readonly IPaymentClient _paymentClient;
         private readonly IOrderRepository _orderRepository;
         private readonly IProductRepository _productRepository;
-        private readonly IHttpClientFactory _httpClientFactory;
 
         public CheckoutController(
             ILogger<CheckoutController> logger,
+            IPaymentClient paymentClient,
             IOrderRepository orderRepository,
-            IProductRepository productRepository,
-            IHttpClientFactory httpClientFactory)
+            IProductRepository productRepository)
         {
             _logger = logger;
+            _paymentClient = paymentClient;
             _orderRepository = orderRepository;
             _productRepository = productRepository;
-            _httpClientFactory = httpClientFactory;
         }
 
-        [HttpPost("create-session")]
-        public async Task<IActionResult> CreateCheckoutSession([FromBody] List<CheckoutItem> items)
+        [HttpPost("start")]
+       // [EnableRateLimiting("DefaultPolicy")]
+        public async Task<IActionResult> StartCheckout([FromBody] StartCheckoutRequest request)
         {
-            if (items == null || !items.Any())
+            if (request == null || request.Items?.Any() != true)
             {
-                _logger.LogWarning("CreateCheckoutSession called with no items.");
-                return BadRequest("No items in the checkout.");
+                _logger.LogWarning("StartCheckout failed: No items provided.");
+                return BadRequest(new { message = "No items provided." });
             }
+
+            await using var transaction = await _orderRepository.BeginTransactionAsync();
 
             try
             {
-                var productIds = items.Select(i => i.ProductId).ToList();
-                var products = await _productRepository.GetProductsByIdsAsync(productIds);
+                // Identify the user
+                var userId = User.Identity?.IsAuthenticated == true
+                    ? User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? "unknown"
+                    : "guest";
 
-                if (products.Count != items.Count)
+                // Generate a unique idempotency key
+                var idempotencyKey = GenerateIdempotencyKey(userId, request);
+
+                // Check for an existing order with the same idempotency key
+                var existingOrder = await _orderRepository.GetOrderByIdempotencyKeyAsync(idempotencyKey);
+                if (existingOrder != null)
                 {
-                    _logger.LogWarning("Some products in the checkout are invalid.");
-                    return BadRequest("Some products are invalid.");
+                    _logger.LogInformation("Order already processed for IdempotencyKey: {IdempotencyKey}", idempotencyKey);
+
+                    // Fetch the existing payment intent
+                   // var existingPayment = await _paymentClient.GetPaymentIntentAsync(existingOrder.Id);
+                    await transaction.CommitAsync();
+                    return Ok(new
+                    {
+                        orderId = existingOrder.Id,
+                       // clientSecret = existingPayment.ClientSecret
+                    });
                 }
 
-                foreach (var item in items)
+                // Verify inventory and prices
+                foreach (var item in request.Items)
                 {
-                    var product = products.FirstOrDefault(p => p.Id == item.ProductId);
-                    if (product == null || product.Price != item.Price)
+                    var product = await _productRepository.GetProductByIdAsync(item.ProductId);
+
+                    if (product == null)
                     {
-                        _logger.LogWarning($"Invalid price for product {item.Name}.");
-                        return BadRequest($"Invalid price for product {item.Name}.");
+                        return BadRequest(new { message = $"Product with ID {item.ProductId} does not exist." });
                     }
 
-                    // Check for sufficient stock
                     if (product.Stock < item.Quantity)
                     {
-                        _logger.LogWarning($"Insufficient stock for product {item.Name}. Requested: {item.Quantity}, Available: {product.Stock}");
-                        return BadRequest($"Insufficient stock for product {item.Name}.");
+                        return BadRequest(new { message = $"Product {product.Name} is out of stock." });
                     }
-                }
 
-                // Derive the domain dynamically from the incoming request
-                var domain = $"{Request.Scheme}://{Request.Host}";
-
-                // Prepare the request payload for creating a checkout session
-                var sessionPayload = new
-                {
-                    payment_method_types = new[] { "card" },
-                    line_items = items.Select(item => new
+                    if (product.UnitPrice != item.UnitPrice)
                     {
-                        price_data = new
-                        {
-                            currency = "usd",
-                            product_data = new
-                            {
-                                name = item.Name
-                            },
-                            unit_amount = (long)(item.Price * 100) // Stripe expects amounts in cents
-                        },
-                        quantity = item.Quantity
-                    }).ToList(),
-                    mode = "payment",
-                    success_url = $"{domain}/success?session_id={{CHECKOUT_SESSION_ID}}",
-                    cancel_url = $"{domain}/cancel"
-                };
+                        return BadRequest(new { message = $"Price of {product.Name} has changed. Please update your cart." });
+                    }
 
-                var client = _httpClientFactory.CreateClient();
-
-                var requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://api.stripe.com/v1/checkout/sessions")
-                {
-                    Content = new StringContent(JsonSerializer.Serialize(sessionPayload), Encoding.UTF8, "application/json")
-                };
-                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Bearer", Environment.GetEnvironmentVariable("STRIPE_SECRET_KEY"));
-
-                // Log the request headers
-                _logger.LogInformation("Request Headers:");
-                foreach (var header in requestMessage.Headers)
-                {
-                    _logger.LogInformation($"Header: {header.Key} = {string.Join(", ", header.Value)}");
+                    // Update stock with optimistic locking
+                    await _productRepository.UpdateProductStockAsync(item.ProductId, item.Quantity);
                 }
 
-                // Log the request content
-                var content = await requestMessage.Content.ReadAsStringAsync();
-                _logger.LogInformation($"Request Content: {content}");
+                // Calculate total amount
+                var totalAmount = request.Items.Sum(i => i.UnitPrice * i.Quantity);
 
-                var response = await client.SendAsync(requestMessage);
-
-                if (!response.IsSuccessStatusCode)
+                // Create order
+                var order = new Order(
+                    id: Guid.NewGuid(),
+                    totalAmount: totalAmount,
+                    status: OrderStatus.Pending,
+                    userId: userId)
                 {
-                    _logger.LogError($"Stripe API error occurred: {response.StatusCode} - {await response.Content.ReadAsStringAsync()}");
-                    return StatusCode(500, "Payment processing error. Please try again later.");
-                }
-
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                var stripeSession = JsonSerializer.Deserialize<StripeCheckoutSession>(jsonResponse);
-
-                // Create order in the system
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                if (string.IsNullOrEmpty(userId))
-                {
-                    _logger.LogWarning("User ID could not be found in the claims.");
-                    return Unauthorized("User authentication failed.");
-                }
-
-                var order = new Order
-                {
-                    Id = Guid.NewGuid(),
-                    OrderDate = DateTime.UtcNow,
-                    UserId = userId,
-                    OrderItems = items.Select(i => new OrderItem
+                    IdempotencyKey = idempotencyKey,
+                    OrderItems = request.Items.Select(i => new OrderItem
                     {
+                        Id = Guid.NewGuid(),
                         ProductId = i.ProductId,
-                        Quantity = (int)i.Quantity
-                    }).ToList(),
-                    TotalAmount = items.Sum(i => i.Price * i.Quantity),
-                    Status = OrderStatus.Pending,
+                        Quantity = i.Quantity,
+                        UnitPrice = i.UnitPrice
+                    }).ToList()
                 };
 
                 await _orderRepository.CreateOrderAsync(order);
+                _logger.LogInformation("Order created successfully with ID: {OrderId}", order.Id);
 
-                _logger.LogInformation($"Checkout session created successfully for User {userId} with Order ID {order.Id}.");
-                return Ok(new { id = stripeSession?.Id });
+                // Create payment intent request
+                var paymentIntentRequest = new CreatePaymentIntentRequest
+                {
+                    OrderId = order.Id,
+                    Items = request.Items,
+                    TotalAmount = totalAmount,
+                    UserInfo = new UserInfo
+                    {
+                        UserId = userId,
+                        IsGuest = userId == "guest"
+                    }
+                };
+
+                // Call the PaymentClient
+                var paymentIntentResponse = await _paymentClient.CreatePaymentIntentAsync(paymentIntentRequest);
+
+                await transaction.CommitAsync();
+
+                return Ok(new
+                {
+                    orderId = order.Id,
+                    clientSecret = paymentIntentResponse.ClientSecret
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while creating the checkout session.");
-                return StatusCode(500, "An internal server error occurred. Please try again later.");
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Error starting checkout");
+                return StatusCode(500, new { message = "Internal server error. Please try again later." });
             }
         }
-    }
 
-    public class StripeCheckoutSession
-    {
-        public string Id { get; set; } = string.Empty;
-    }
-
-    // DTO class for items in the checkout
-    public class CheckoutItem
-    {
-        public Guid ProductId { get; set; }
-        public long Quantity { get; set; }
-        public decimal Price { get; set; }
-        public string Name { get; set; } = string.Empty;
+        private string GenerateIdempotencyKey(string userId, StartCheckoutRequest request)
+        {
+            var keyBase = $"{userId}:{request.Items.Sum(i => i.ProductId.GetHashCode() + i.Quantity)}:{DateTime.UtcNow.Date}";
+            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(keyBase));
+        }
     }
 }

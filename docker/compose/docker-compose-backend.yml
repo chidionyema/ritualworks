@@ -22,6 +22,209 @@ services:
     privileged: true
     command: sh -c "vault agent -log-level=debug -config=/vault/config/vault-agent-config.hcl"
 
+  # Redis Exporter for monitoring Redis performance metrics
+  redis_exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: redis_exporter
+    ports:
+      - "9121:9121"
+
+  # Redis Master Node
+  redis-master:
+    container_name: redis-master
+    image: redis:latest
+    command: ["redis-server", "/etc/redis/redis.conf", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-master-data:/data
+      - ../../redis/config/redis.conf:/etc/redis/redis.conf
+      - certs-volume:/certs-volume:ro
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--tls", "--cert", "/certs-volume/redis.crt", "--key", "/certs-volume/redis.key", "--cacert", "/certs-volume/ca.crt", "-h", "127.0.0.1", "-p", "6379", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+        
+
+  # Elasticsearch Node 1
+  es-node-1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
+    environment:
+      - NODE_NAME=es-node-1
+      - ELASTIC_PASSWORD=your_elastic_password
+      - ES_JAVA_OPTS=-Djava.security.policy=/usr/share/elasticsearch/config/my-security.policy
+    volumes:
+      - es-data-node1:/usr/share/elasticsearch/data
+      - es-backup:/usr/share/elasticsearch/backup
+      - ../../elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+      - ../../elasticsearch/config/my-security.policy:/usr/share/elasticsearch/config/my-security.policy
+      - certs-volume:/certs-volume:rw
+      - ../../elasticsearch/scripts/es-entrypoint.sh:/usr/share/elasticsearch/config/es-entrypoint.sh:ro
+      - ../../elasticsearch/config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
+      - ../../elasticsearch/config/jvm.options:/usr/share/elasticsearch/config/jvm.options
+      - ../../elasticsearch/logs:/usr/share/elasticsearch/logs
+      - ../../elasticsearch/heapdumps:/var/lib/elasticsearch/heapdumps
+    entrypoint: ["/usr/share/elasticsearch/config/es-entrypoint.sh"]
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f https://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  # RabbitMQ Exporter
+  rabbitmq_exporter:
+    image: kbudde/rabbitmq-exporter
+    container_name: rabbitmq_exporter
+    ports:
+      - "9419:9419"
+
+  # RabbitMQ Node 1
+  rabbitmq-node1:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "5671:5671"
+    hostname: rabbitmq-node1
+    networks:
+      internal_network:
+        aliases:
+          - rabbitmq-node1
+    volumes:
+      - rabbitmq-data-node1:/var/lib/rabbitmq
+      - certs-volume:/etc/ssl/certs:ro
+      - ../../rabbit/config/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie:ro
+      - ../../rabbit/config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "rabbitmqctl --erlang-cookie $(cat /var/lib/rabbitmq/.erlang.cookie) status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    command: >
+      /bin/bash -c "
+      rabbitmq-server;
+      while ! rabbitmqctl wait /var/lib/rabbitmq/mnesia/rabbit@rabbitmq-node1.pid --timeout 60; do
+        echo 'Waiting for RabbitMQ server to start...';
+        sleep 1;
+      done;
+      echo 'RabbitMQ server started.';
+
+      rabbitmqctl add_user rabbit_user ${RABBITMQ_DEFAULT_PASS};
+      rabbitmqctl set_user_tags rabbit_user administrator;
+      rabbitmqctl set_permissions -p / rabbit_user '.*' '.*' '.*';
+      rabbitmqctl set_policy ha-all '.*' '{\"ha-mode\":\"all\"}' --apply-to queues;
+      "
+    environment:
+      - RABBITMQ_DEFAULT_USER=rabbit_user
+      - RABBITMQ_DEFAULT_PASS=password
+      - RABBITMQ_NODENAME=rabbit@rabbitmq-node1
+      - RABBITMQ_CONFIG_FILE=/etc/rabbitmq/rabbitmq.conf
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  # MinIO Storage Node
+  minio1:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+    environment:
+      - MINIO_ROOT_USER=test
+      - MINIO_ROOT_PASSWORD=tester123
+      - MINIO_SERVER_CERT=/certs-volume/public.crt
+      - MINIO_SERVER_KEY=/certs-volume/private.key
+      - MINIO_SITE_REGION=us-east-1
+      - MINIO_CLUSTER_NAME=ritualworks-minio
+    volumes:
+      - minio-data1:/data
+      - certs-volume:/certs-volume:ro
+    networks:
+      internal_network:
+        aliases:
+          - minio1
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f https://localhost:9000/minio/health/ready || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    entrypoint: /bin/sh
+    command: >
+      -c "
+      minio server /data --certs-dir /certs-volume &
+
+      echo 'Waiting for MinIO to be ready...' &&
+      until curl -s https://localhost:9000/minio/health/ready >/dev/null; do
+        sleep 5;
+      done &&
+      echo 'Configuring MinIO for buckets and policies...' &&
+
+      mc alias set local https://localhost:9000 test tester123 --insecure &&
+
+      mc mb local/public-images --insecure --ignore-existing &&
+      mc mb local/private-assets --insecure --ignore-existing &&
+
+      echo '{
+        \"Version\": \"2012-10-17\",
+        \"Statement\": [
+          {
+            \"Effect\": \"Allow\",
+            \"Action\": [
+              \"s3:ListBucket\",
+              \"s3:PutObject\",
+              \"s3:GetObject\",
+              \"s3:DeleteObject\"
+            ],
+            \"Resource\": [
+              \"arn:aws:s3:::*\"
+            ]
+          }
+        ]
+      }' > /tmp/readwrite-policy.json &&
+      mc admin policy create local readwrite /tmp/readwrite-policy.json --insecure &&
+
+      echo '{
+        \"Version\": \"2012-10-17\",
+        \"Statement\": [
+          {
+            \"Effect\": \"Allow\",
+            \"Principal\": \"*\",
+            \"Action\": [\"s3:GetObject\"],
+            \"Resource\": [\"arn:aws:s3:::public-images/*\"]
+          }
+        ]
+      }' > /tmp/public-images-policy.json &&
+      mc anonymous set-json /tmp/public-images-policy.json local/public-images --insecure &&
+
+      echo 'MinIO configuration completed.'
+      "
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+ # Optional HAProxy load balancer for service routing
   # haproxy:
   #   user: "${UID}:${GID}"
   #   build:
@@ -43,35 +246,7 @@ services:
   #       max_attempts: 3
   #       window: 120s
 
-  redis_exporter:
-    image: oliver006/redis_exporter:latest
-    container_name: redis_exporter
-    ports:
-      - "9121:9121"
-
-  redis-master:
-    image: redis:latest
-    command: ["redis-server", "/etc/redis/redis.conf", "--appendonly", "yes"]
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis-master-data:/data
-      - ../../config/redis.conf:/etc/redis/redis.conf
-      - certs-volume:/certs-volume:ro
-    networks:
-      - internal_network
-    healthcheck:
-      test: ["CMD", "redis-cli", "--tls", "--cert", "/certs-volume/redis.crt", "--key", "/certs-volume/redis.key", "--cacert", "/certs-volume/ca.crt", "-h", "127.0.0.1", "-p", "6379", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
+  # Optional Redis replica for high availability
   # redis-replica:
   #   image: redis:latest
   #   command: ["redis-server", "/etc/redis/redis.conf", "--replicaof", "redis-master", "6379"]
@@ -94,39 +269,8 @@ services:
   #       delay: 10s
   #       max_attempts: 3
   #       window: 120s
-
-  es-node-1:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
-    environment:
-      - NODE_NAME=es-node-1
-      - ELASTIC_PASSWORD=your_elastic_password
-      - ES_JAVA_OPTS=-Djava.security.policy=/usr/share/elasticsearch/config/my-security.policy
-    volumes:
-      - es-data-node1:/usr/share/elasticsearch/data
-      - es-backup:/usr/share/elasticsearch/backup
-      - ../../config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
-      - ../../config/my-security.policy:/usr/share/elasticsearch/config/my-security.policy
-      - certs-volume:/certs-volume:rw
-      - ../../scripts/es-entrypoint.sh:/usr/share/elasticsearch/config/es-entrypoint.sh:ro
-      - ../../config/log4j2.properties:/usr/share/elasticsearch/config/log4j2.properties
-      - ../../config/jvm.options:/usr/share/elasticsearch/config/jvm.options
-      - ../../elasticsearch/logs:/usr/share/elasticsearch/logs
-      - ../../elasticsearch/heapdumps:/var/lib/elasticsearch/heapdumps
-    entrypoint: ["/usr/share/elasticsearch/config/es-entrypoint.sh"]
-    networks:
-      - internal_network
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f https://localhost:9200/_cluster/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
+   
+    # Optional Elasticsearch Node 2 for cluster setup
   # es-node-2:
   #   image: docker.elastic.co/elasticsearch/elasticsearch:8.4.3
   #   environment:
@@ -158,237 +302,6 @@ services:
   #       delay: 10s
   #       max_attempts: 3
   #       window: 120s
-  
-  rabbitmq_exporter:
-    image: kbudde/rabbitmq-exporter
-    container_name: rabbitmq_exporter
-    ports:
-      - "9419:9419"
-
-  rabbitmq-node1:
-    image: rabbitmq:3-management
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-      - "5671:5671"
-    hostname: rabbitmq-node1
-    networks:
-      internal_network:
-        aliases:
-          - rabbitmq-node1
-    volumes:
-      - rabbitmq-data-node1:/var/lib/rabbitmq
-      - certs-volume:/etc/ssl/certs:ro
-      - ../../config/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie:ro
-      - ../../config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro 
-    healthcheck:
-      test: ["CMD-SHELL", "rabbitmqctl --erlang-cookie $(cat /var/lib/rabbitmq/.erlang.cookie) status"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    command: >
-      /bin/bash -c "
-      rabbitmq-server;
-      while ! rabbitmqctl wait /var/lib/rabbitmq/mnesia/rabbit@rabbitmq-node1.pid --timeout 60; do
-        echo 'Waiting for RabbitMQ server to start...'
-        sleep 1
-      done;
-      echo 'RabbitMQ server started.';
-      
-      rabbitmqctl add_user rabbit_user ${RABBITMQ_DEFAULT_PASS};
-      rabbitmqctl set_user_tags rabbit_user administrator;
-      rabbitmqctl set_permissions -p / rabbit_user '.*' '.*' '.*';
-      rabbitmqctl set_policy ha-all '.*' '{\"ha-mode\":\"all\"}' --apply-to queues;
-      "
-    environment:
-      - RABBITMQ_DEFAULT_USER=rabbit_user
-      - RABBITMQ_DEFAULT_PASS=password
-      - RABBITMQ_NODENAME=rabbit@rabbitmq-node1
-      - RABBITMQ_CONFIG_FILE=/etc/rabbitmq/rabbitmq.conf 
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
-  minio1:
-    image: minio/minio:latest
-    ports:
-      - "9000:9000"
-    environment:
-      - MINIO_ROOT_USER=test
-      - MINIO_ROOT_PASSWORD=tester123
-      - MINIO_SERVER_CERT=/certs-volume/public.crt
-      - MINIO_SERVER_KEY=/certs-volume/private.key
-      - MINIO_SITE_REGION=us-east-1
-      - MINIO_CLUSTER_NAME=ritualworks-minio
-    volumes:
-      - minio-data1:/data
-      - certs-volume:/certs-volume:ro
-    networks:
-      internal_network:
-        aliases:
-          - minio1
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:9000/minio/health/ready || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    entrypoint: ["/bin/sh", "-c"]
-    command: >
-      "
-      minio server /data --certs-dir /certs-volume &
-      echo 'Waiting for MinIO to be ready...' &&
-      until curl -s https://localhost:9000/minio/health/ready --insecure >/dev/null; do sleep 5; done &&
-      echo 'Configuring MinIO bucket policies...' &&
-
-      mc alias set local https://localhost:9000 test tester123 --insecure &&
-      mc mb local/haworks-bucket --insecure --ignore-existing &&
-
-      echo '{
-        \"Version\": \"2012-10-17\",
-        \"Statement\": [
-          {
-            \"Effect\": \"Allow\",
-            \"Action\": [
-              \"s3:ListBucket\",
-              \"s3:PutObject\",
-              \"s3:GetObject\",
-              \"s3:DeleteObject\"
-            ],
-            \"Resource\": [
-              \"arn:aws:s3:::*\"
-            ]
-          }
-        ]
-      }' > /tmp/readwrite-policy.json &&
-      mc admin policy create local readwrite /tmp/readwrite-policy.json --insecure &&
-
-      echo '{
-        \"Version\": \"2012-10-17\",
-        \"Statement\": [
-          {
-            \"Effect\": \"Allow\",
-            \"Principal\": \"*\",
-            \"Action\": [\"s3:GetObject\", \"s3:PutObject\"],
-            \"Resource\": \"arn:aws:s3:::haworks-bucket/*/productimages/*\"
-          },
-          {
-            \"Effect\": \"Deny\",
-            \"Principal\": \"*\",
-            \"Action\": \"s3:GetObject\",
-            \"Resource\": \"arn:aws:s3:::haworks-bucket/*/productassets/*\"
-          }
-        ]
-      }' > /tmp/bucket-policy.json &&
-      mc alias set anonymous https://localhost:9000  "$MINIO_ACCESS_KEY"  "$MINIO_SECRET_KEY" --api S3v4  --insecure &&
-      mc anonymous set-json /tmp/bucket-policy.json local/haworks-bucket --insecure &&
-
-      wait
-      "
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-
-      
-
-  # rabbitmq-node2:
-  #   image: rabbitmq:3-management
-  #   ports:
-  #     - "5673:5672"
-  #     - "15673:15672"
-  #     - "5674:5671"
-  #   hostname: rabbitmq-node2
-  #   depends_on:
-  #     - rabbitmq-node1
-  #   networks:
-  #     internal_network:
-  #       aliases:
-  #         - rabbitmq-node2
-  #   volumes:
-  #     - rabbitmq-data-node2:/var/lib/rabbitmq
-  #     - certs-volume:/etc/ssl/certs:ro
-  #     - ../../config/.erlang.cookie:/var/lib/rabbitmq/.erlang.cookie:ro
-  #     - ../../config/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro 
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "rabbitmqctl --erlang-cookie $(cat /var/lib/rabbitmq/.erlang.cookie) status"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
-  #   command: >
-  #     /bin/bash -c "
-  #     rabbitmq-server;
-  #     while ! rabbitmqctl wait /var/lib/rabbitmq/mnesia/rabbit@rabbitmq-node2.pid --timeout 60; do
-  #       echo 'Waiting for RabbitMQ server to start...'
-  #       sleep 1
-  #     done;
-  #     echo 'RabbitMQ server started.';
-      
-  #     while ! rabbitmqctl -n rabbit@rabbitmq-node1 --erlang-cookie $(cat /var/lib/rabbitmq/.erlang.cookie) ping; do
-  #       echo 'Waiting for rabbitmq-node1...'
-  #       sleep 5
-  #     done;
-
-  #     echo 'rabbitmq-node1 is ready. Joining the cluster...';
-  #     rabbitmqctl stop_app;
-  #     rabbitmqctl reset;
-  #     rabbitmqctl join_cluster rabbit@rabbitmq-node1;
-  #     rabbitmqctl start_app;
-  #     rabbitmqctl await_online_nodes 2 --timeout 60;
-  #     "
-  #   environment:
-  #     - RABBITMQ_DEFAULT_USER=rabbit_user
-  #     - RABBITMQ_DEFAULT_PASS=password
-  #     - RABBITMQ_NODENAME=rabbit@rabbitmq-node2
-  #     - RABBITMQ_CONFIG_FILE=/etc/rabbitmq/rabbitmq.conf 
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
-  #       delay: 10s
-  #       max_attempts: 3
-  #       window: 120s
-
-  
-
-
-
-
-
-  # minio2:
-  #   image: minio/minio:latest
-  #   ports:
-  #     - "9001:9000"
-  #   environment:
-  #     - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
-  #     - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
-  #     - MINIO_SERVER_CERT=/certs-volume/public.crt
-  #     - MINIO_SERVER_KEY=/certs-volume/private.key
-  #     - MINIO_SITE_REGION=us-east-1
-  #     - MINIO_CLUSTER_NAME=ritualworks-minio
-  #   volumes:
-  #     - minio-data2:/data
-  #     - certs-volume:/certs-volume:ro
-  #   networks:
-  #     internal_network:
-  #       aliases:
-  #         - minio2
-  #         - minio2.ritualworks.com
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "curl -f http://localhost:9001/minio/health/ready || exit 1"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
-  #   command: server https://minio1.ritualworks.com/data https://minio2.ritualworks.com/data --certs-dir /certs-volume
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
-  #       delay: 10s
-  #       max_attempts: 3
-  #       window: 120s
 
 networks:
   internal_network:
@@ -411,4 +324,4 @@ volumes:
   vault-secrets:
     external: true
   vault-sink:
-    external: true  
+    external: true

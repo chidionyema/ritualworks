@@ -1,9 +1,10 @@
 ﻿using haworks.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.EntityFrameworkCore.Design;
-using Newtonsoft.Json;
-using System.IO;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
+
 namespace haworks.Db
 {
     public class haworksContextFactory : IDesignTimeDbContextFactory<haworksContext>
@@ -21,14 +22,18 @@ namespace haworks.Db
 
         public haworksContext CreateDbContext(string[] args)
         {
-            string connectionString;
-            connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection") 
-                    ?? throw new InvalidOperationException("Connection string not found in environment variables.");
-                Console.WriteLine($"[Debug] Connection string from environment variable: {connectionString}");
+            string connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+                ?? throw new InvalidOperationException("Connection string not found in environment variables.");
+
+            Console.WriteLine($"[Debug] Connection string from environment variable: {connectionString}");
 
             // Create DbContextOptions
             var optionsBuilder = new DbContextOptionsBuilder<haworksContext>();
-            optionsBuilder.UseNpgsql(connectionString);
+            optionsBuilder
+                .UseNpgsql(connectionString)
+               // .UseSnakeCaseNamingConvention()
+                .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))
+                .EnableDetailedErrors(); // Fixed: Removed extra closing parenthesis
 
             // Create and return the context
             return new haworksContext(optionsBuilder.Options);

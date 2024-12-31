@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using haworks.Contracts;
-using haworks.Dto;
 using haworks.Db;
-using haworks.Services;
+using haworks.Dto;
+using haworks.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,31 +17,26 @@ namespace haworks.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly ICategoryRepository _categoryRepository;
         private readonly IProductRepository _productRepository;
-        private readonly IContentRepository _contentRepository;
-        private readonly IContentService _assetService;
+        private readonly ICategoryRepository _categoryRepository;
         private readonly ILogger<ProductsController> _logger;
         private readonly IMapper _mapper;
 
         public ProductsController(
-            ICategoryRepository categoryRepository,
             IProductRepository productRepository,
-            IContentRepository contentRepository,
-            IContentService assetService,
+            ICategoryRepository categoryRepository,
             ILogger<ProductsController> logger,
             IMapper mapper)
         {
-            _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
-            _contentRepository = contentRepository ?? throw new ArgumentNullException(nameof(contentRepository));
-            _assetService = assetService ?? throw new ArgumentNullException(nameof(assetService));
+            _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        #region Product Endpoints
-
+        /// <summary>
+        /// List all products with paging
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts(int page = 1, int pageSize = 10)
         {
@@ -52,6 +45,9 @@ namespace haworks.Controllers
             return Ok(productDtos);
         }
 
+        /// <summary>
+        /// Retrieve a single product by Id
+        /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDto>> GetProduct(Guid id)
         {
@@ -59,41 +55,42 @@ namespace haworks.Controllers
             if (product == null)
                 return NotFound();
 
-            var content = await _contentRepository.GetContentsByEntityIdAsync(id, "Product");
+            // Map to DTO
             var productDto = _mapper.Map<ProductDto>(product);
-            productDto.Contents = _mapper.Map<List<ContentDto>>(content);
+
+            // OPTIONAL: If you want to also retrieve content references (like images/assets),
+            // you can do that in a separate call to IContentRepository or by calling /api/content/list.
+            // For example:
+            // var contents = await _contentRepository.GetContentsByEntityIdAsync(id, "Product");
+            // productDto.Contents = _mapper.Map<List<ContentDto>>(contents);
+
             return Ok(productDto);
         }
 
+        /// <summary>
+        /// Create a new product. Notice we're NOT handling images/assets here.
+        /// The user can call ContentController to upload images/assets after the product is created.
+        /// </summary>
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ProductDto>> CreateProduct([FromForm] ProductCreateDto productCreateDto)
+        public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] ProductCreateDto productCreateDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                // Ensure the category exists
+                // 1. Check Category
                 var category = await _categoryRepository.GetCategoryByIdAsync(productCreateDto.CategoryId);
                 if (category == null)
                     return BadRequest("Invalid category ID.");
 
-                // Map the incoming DTO to a Product entity
-                var product = _mapper.Map<Product>(productCreateDto);
-
-                // Add the product to the database
+                // 2. Map & Create Product
+                var product = _mapper.Map<haworks.Db.Product>(productCreateDto);
+                product.Id = Guid.NewGuid(); // Ensure new ID
                 await _productRepository.AddProductAsync(product);
-                await _productRepository.SaveChangesAsync();
 
-                // Handle content uploads
-                var contents = await UploadContent(productCreateDto, product.Id);
-                if (contents.Any())
-                {
-                    await _contentRepository.AddContentsAsync(contents);
-                    await _contentRepository.SaveChangesAsync();
-                }
-
+                // 3. Return
                 var productDto = _mapper.Map<ProductDto>(product);
                 return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, productDto);
             }
@@ -104,9 +101,13 @@ namespace haworks.Controllers
             }
         }
 
+        /// <summary>
+        /// Update an existing product's data (not content).
+        /// Content is managed separately by ContentController.
+        /// </summary>
         [HttpPut("{id}")]
         [Authorize]
-        public async Task<ActionResult<ProductDto>> UpdateProduct(Guid id, [FromForm] ProductCreateDto productCreateDto)
+        public async Task<ActionResult<ProductDto>> UpdateProduct(Guid id, [FromBody] ProductCreateDto productCreateDto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -122,21 +123,23 @@ namespace haworks.Controllers
             // Map the updated values onto the existing product entity
             _mapper.Map(productCreateDto, product);
 
-            // Update content
-            var existingContents = await _contentRepository.GetContentsByEntityIdAsync(product.Id, "Product");
-            _contentRepository.RemoveContents(existingContents);
-
-            var updatedContents = await UploadContent(productCreateDto, product.Id);
-            await _contentRepository.AddContentsAsync(updatedContents);
-
-            await _productRepository.UpdateProductAsync(product);
-            await _productRepository.SaveChangesAsync();
-            await _contentRepository.SaveChangesAsync();
-
-            var updatedProductDto = _mapper.Map<ProductDto>(product);
-            return Ok(updatedProductDto);
+            try
+            {
+                await _productRepository.UpdateProductAsync(product);
+                var updatedDto = _mapper.Map<ProductDto>(product);
+                return Ok(updatedDto);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating product with ID {ProductId}", id);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
+            }
         }
 
+        /// <summary>
+        /// Delete a product by its ID. Also consider removing associated content
+        /// by calling ContentController or IContentRepository if needed.
+        /// </summary>
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteProduct(Guid id)
@@ -145,65 +148,22 @@ namespace haworks.Controllers
             if (product == null)
                 return NotFound();
 
-            // Delete associated content
-            var contents = await _contentRepository.GetContentsByEntityIdAsync(product.Id, "Product");
-            _contentRepository.RemoveContents(contents);
+            // Potentially also delete content records from ContentRepository
+            // e.g. var contents = await _contentRepository.GetContentsByEntityIdAsync(id, "Product");
+            // _contentRepository.RemoveContents(contents);
+            // _contentRepository.SaveChangesAsync(); 
+            // Or let ContentController handle that in a separate request.
 
-            await _productRepository.DeleteProductAsync(id);
-            await _productRepository.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        #endregion
-
-        #region Helper Methods
-
-        private async Task<List<Content>> UploadContent(ProductCreateDto productCreateDto, Guid productId)
-        {
-            var contents = new List<Content>();
-
-            // Upload images
-            if (productCreateDto.Images != null)
+            try
             {
-                foreach (var image in productCreateDto.Images)
-                {
-                    var imageUrl = await _assetService.UploadFileAsync(image, productId, productCreateDto.Name);
-                    contents.Add(new Content
-                    {
-                        Id = Guid.NewGuid(),
-                        EntityId = productId,
-                        EntityType = "Product",
-                        ContentType = ContentType.Image,
-                        Url = imageUrl,
-                        BlobName = Path.GetFileName(imageUrl),
-                        CreatedAt = DateTime.UtcNow
-                    });
-                }
+                await _productRepository.DeleteProductAsync(id);
+                return NoContent();
             }
-
-            // Upload assets
-            if (productCreateDto.Assets != null)
+            catch (Exception ex)
             {
-                foreach (var asset in productCreateDto.Assets)
-                {
-                    var assetUrl = await _assetService.UploadFileAsync(asset, productId, productCreateDto.Name);
-                    contents.Add(new Content
-                    {
-                        Id = Guid.NewGuid(),
-                        EntityId = productId,
-                        EntityType = "Product",
-                        ContentType = ContentType.Asset,
-                        Url = assetUrl,
-                        BlobName = Path.GetFileName(assetUrl),
-                        CreatedAt = DateTime.UtcNow
-                    });
-                }
+                _logger.LogError(ex, "Error deleting product with ID {ProductId}", id);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error.");
             }
-
-            return contents;
         }
-
-        #endregion
     }
 }

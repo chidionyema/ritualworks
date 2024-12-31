@@ -1,34 +1,27 @@
-# Use the SDK image for building and publishing the app
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# Use the official .NET SDK image for building
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+
 WORKDIR /src
 
 # Copy project file and restore dependencies
 COPY ["src/haworks.csproj", "./"]
 RUN dotnet --version && dotnet restore "./haworks.csproj"
 
-# Copy the rest of the source code and build the project
+# Copy the rest of the source code
 COPY src/. .
 
-# Run dotnet build and capture errors
-RUN dotnet build "haworks.csproj" -c Release -o /app/build > build.log 2>&1 || (cat build.log && false)
+# Build the project
+RUN dotnet build "haworks.csproj" -c Release -o /app/build
 
-# If the build succeeds, proceed to publish
+# Publish the application to a folder for runtime
 RUN dotnet publish "haworks.csproj" -c Release -o /app/publish
 
-# Install EF Core tools
-RUN dotnet tool install --global dotnet-ef --version 8.0.0
-ENV PATH="$PATH:/root/.dotnet/tools"
-
-# Final stage/image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+# Use the ASP.NET runtime image for running the app
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 
-# Copy published output from build stage
+# Copy published output from the build stage
 COPY --from=build /app/publish .
 
-# Ensure the global tools are available in the final image
-COPY --from=build /root/.dotnet /root/.dotnet
-COPY --from=build /root/.nuget /root/.nuget
-ENV PATH="$PATH:/root/.dotnet/tools"
-
-ENTRYPOINT ["/bin/bash", "-c", "dotnet haworks.dll"]
+# Set the entrypoint for the application
+ENTRYPOINT ["dotnet", "haworks.dll"]

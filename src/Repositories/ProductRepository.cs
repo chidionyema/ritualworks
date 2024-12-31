@@ -3,117 +3,219 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Distributed;
 using haworks.Contracts;
 using haworks.Db;
+using haworks.Repositories.Base;
 
 namespace haworks.Repositories
 {
-    public class ProductRepository : IProductRepository
+    public class ProductRepository : BaseRepository<Product, haworksContext>, IProductRepository
     {
-        private readonly haworksContext _context;
+        // Cache keys
+        private const string PRODUCTS_LIST_KEY = "products_list_p{0}_s{1}";
+        private const string PRODUCT_KEY = "product_{0}";
+        private const string CATEGORY_PRODUCTS_KEY = "category_{0}_products_p{1}_s{2}";
+        private const string PRODUCTS_BY_IDS_KEY = "products_by_ids_{0}";
 
-        public ProductRepository(haworksContext context)
+        public ProductRepository(
+            haworksContext context,
+            ILogger<ProductRepository> logger,
+            IMemoryCache memoryCache,
+            IDistributedCache distributedCache)
+            : base(context, logger, memoryCache, distributedCache)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<IEnumerable<Product>> GetProductsAsync(int page, int pageSize)
         {
-            return await _context.Products
-                .Include(p => p.Category)
-                .OrderBy(p => p.Name)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+            page = NormalizePage(page);
+            pageSize = NormalizePageSize(pageSize);
+            string cacheKey = string.Format(PRODUCTS_LIST_KEY, page, pageSize);
+
+            return await GetFromCacheAsync<IEnumerable<Product>>(cacheKey, async () =>
+            {
+                return await Context.Products
+                    .AsNoTracking()
+                    .Include(p => p.Category)
+                    .Include(p => p.Contents.Where(c => c.EntityType == nameof(Product)))
+                    .OrderBy(p => p.Name)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+            }) ?? Enumerable.Empty<Product>();
         }
 
-        public async Task<Product> GetProductByIdAsync(Guid id)
+        public async Task<Product?> GetProductByIdAsync(Guid id)
         {
-            return await _context.Products
-                .Include(p => p.Category)
-                .FirstOrDefaultAsync(p => p.Id == id);
+            string cacheKey = string.Format(PRODUCT_KEY, id);
+
+            return await GetFromCacheAsync<Product>(cacheKey, async () =>
+            {
+                return await Context.Products
+                    .AsNoTracking()
+                    .Include(p => p.Category)
+                    .Include(p => p.Contents.Where(c => c.EntityType == nameof(Product)))
+                    .FirstOrDefaultAsync(p => p.Id == id);
+            });
         }
 
         public async Task<IEnumerable<Product>> GetProductsByCategoryAsync(Guid categoryId, int page, int pageSize)
         {
-            return await _context.Products
-                .Include(p => p.Category)
-                .Where(p => p.CategoryId == categoryId)
-                .OrderBy(p => p.Name)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-        }
+            page = NormalizePage(page);
+            pageSize = NormalizePageSize(pageSize);
+            string cacheKey = string.Format(CATEGORY_PRODUCTS_KEY, categoryId, page, pageSize);
 
-        public async Task AddProductAsync(Product product)
-        {
-            await _context.Products.AddAsync(product);
-        }
-
-        public async Task UpdateProductAsync(Product product)
-        {
-            _context.Products.Update(product);
-        }
-
-        public async Task DeleteProductAsync(Guid id)
-        {
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
+            return await GetFromCacheAsync<IEnumerable<Product>>(cacheKey, async () =>
             {
-                // Remove associated content
-                var relatedContent = await _context.Contents
-                    .Where(c => c.EntityId == id && c.EntityType == nameof(Product))
+                return await Context.Products
+                    .AsNoTracking()
+                    .Include(p => p.Category)
+                    .Include(p => p.Contents.Where(c => c.EntityType == nameof(Product)))
+                    .Where(p => p.CategoryId == categoryId)
+                    .OrderBy(p => p.Name)
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
                     .ToListAsync();
-
-                _context.Contents.RemoveRange(relatedContent);
-                _context.Products.Remove(product);
-            }
-        }
-
-        public async Task<IEnumerable<Category>> GetCategoriesAsync()
-        {
-            return await _context.Categories
-                .OrderBy(c => c.Name)
-                .ToListAsync();
-        }
-
-        public async Task<Category> GetCategoryByIdAsync(Guid id)
-        {
-            return await _context.Categories.FindAsync(id);
-        }
-
-        public async Task AddCategoryAsync(Category category)
-        {
-            await _context.Categories.AddAsync(category);
-        }
-
-        public async Task AddContentAsync(IEnumerable<Content> contents)
-        {
-            await _context.Contents.AddRangeAsync(contents);
-        }
-
-        public void RemoveContent(IEnumerable<Content> contents)
-        {
-            _context.Contents.RemoveRange(contents);
-        }
-
-        public async Task<List<Content>> GetContentByProductIdAsync(Guid productId, ContentType contentType)
-        {
-            return await _context.Contents
-                .Where(c => c.EntityId == productId && c.EntityType == nameof(Product) && c.ContentType == contentType)
-                .ToListAsync();
+            }) ?? Enumerable.Empty<Product>();
         }
 
         public async Task<List<Product>> GetProductsByIdsAsync(List<Guid> productIds)
         {
-            return await _context.Products
-                .Where(p => productIds.Contains(p.Id))
-                .ToListAsync();
+            string cacheKey = string.Format(PRODUCTS_BY_IDS_KEY, string.Join("-", productIds.OrderBy(id => id)));
+
+            return await GetFromCacheAsync<List<Product>>(cacheKey, async () =>
+            {
+                return await Context.Products
+                    .AsNoTracking()
+                    .Include(p => p.Contents.Where(c => c.EntityType == nameof(Product)))
+                    .Where(p => productIds.Contains(p.Id))
+                    .ToListAsync();
+            }) ?? new List<Product>();
         }
 
-        public async Task SaveChangesAsync()
+        public async Task AddProductAsync(Product product)
         {
-            await _context.SaveChangesAsync();
+            if (product == null) throw new ArgumentNullException(nameof(product));
+
+            try
+            {
+                Logger.LogInformation("Adding a new product: {ProductName}.", product.Name);
+                await Context.Products.AddAsync(product);
+                await SaveChangesAsync();
+
+                await SetCacheValuesAsync(string.Format(PRODUCT_KEY, product.Id), product);
+                await InvalidateListCachesAsync(product.CategoryId);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "An error occurred while adding a new product: {ProductName}.", product.Name);
+                throw new ApplicationException($"An error occurred while adding the product: {product.Name}.", ex);
+            }
+        }
+
+        public async Task UpdateProductAsync(Product product)
+        {
+            if (product == null) throw new ArgumentNullException(nameof(product));
+
+            try
+            {
+                Logger.LogInformation("Updating product with ID {ProductId}.", product.Id);
+                Context.Products.Attach(product);
+                Context.Entry(product).State = EntityState.Modified;
+                await SaveChangesAsync();
+
+                await SetCacheValuesAsync(string.Format(PRODUCT_KEY, product.Id), product);
+                await InvalidateListCachesAsync(product.CategoryId);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "An error occurred while updating product with ID {ProductId}.", product.Id);
+                throw new ApplicationException($"An error occurred while updating the product with ID {product.Id}.", ex);
+            }
+        }
+
+        public async Task UpdateProductStockAsync(Guid productId, int quantity)
+        {
+            using var transaction = await Context.Database.BeginTransactionAsync();
+            try
+            {
+                var product = await Context.Products.FirstOrDefaultAsync(p => p.Id == productId);
+
+                if (product == null)
+                    throw new InvalidOperationException($"Product with ID {productId} not found.");
+
+                if (product.Stock < quantity)
+                    throw new InvalidOperationException($"Insufficient stock for Product ID {productId}.");
+
+                product.Stock -= quantity;
+
+                Context.Entry(product).OriginalValues["RowVersion"] = product.RowVersion; // Handle concurrency
+                Context.Products.Update(product);
+
+                await SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                Logger.LogInformation("Stock updated successfully for Product ID: {ProductId}", productId);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                await transaction.RollbackAsync();
+                Logger.LogWarning("Concurrency conflict detected while updating stock for Product ID: {ProductId}", productId);
+                throw new InvalidOperationException("The product stock was updated by another operation. Please try again.");
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                Logger.LogError(ex, "An error occurred while updating product stock for Product ID: {ProductId}", productId);
+                throw new ApplicationException($"An error occurred while updating stock for Product ID: {productId}.", ex);
+            }
+        }
+
+        public async Task DeleteProductAsync(Guid id)
+        {
+            using var transaction = await Context.Database.BeginTransactionAsync();
+            try
+            {
+                var product = await Context.Products
+                    .Include(p => p.Contents.Where(c => c.EntityType == nameof(Product)))
+                    .FirstOrDefaultAsync(p => p.Id == id);
+
+                if (product == null)
+                {
+                    Logger.LogWarning("Product with ID {ProductId} not found.", id);
+                    throw new InvalidOperationException($"Product with ID {id} not found.");
+                }
+
+                Logger.LogInformation("Deleting product with ID {ProductId}.", id);
+                Context.Products.Remove(product);
+                await SaveChangesAsync();
+
+                await RemoveFromCacheAsync(string.Format(PRODUCT_KEY, id));
+                await InvalidateListCachesAsync(product.CategoryId);
+
+                await transaction.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                Logger.LogError(ex, "An error occurred while deleting product with ID {ProductId}.", id);
+                throw new ApplicationException($"An error occurred while deleting the product with ID {id}.", ex);
+            }
+        }
+
+        private async Task InvalidateListCachesAsync(Guid? categoryId = null)
+        {
+            var keysToRemove = new List<string> { PRODUCTS_LIST_KEY, PRODUCTS_BY_IDS_KEY };
+
+            if (categoryId.HasValue)
+            {
+                keysToRemove.Add(string.Format(CATEGORY_PRODUCTS_KEY, categoryId.Value, "*", "*"));
+            }
+
+            await RemoveFromCacheAsync(keysToRemove);
         }
     }
 }

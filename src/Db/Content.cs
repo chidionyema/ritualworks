@@ -2,8 +2,12 @@ using System;
 
 namespace haworks.Db
 {
-    public class Content
+    public class Content : AuditableEntity
     {
+        public Content() : base() // Explicitly calling the parameterless base constructor
+        {
+            Id = Guid.NewGuid(); // Ensure a valid GUID is always assigned
+        }
         public Guid Id { get; set; }
         public Guid EntityId { get; set; } // Generic reference to any entity (e.g., Product, Category)
         public string EntityType { get; set; } = string.Empty; // E.g., "Product", "Category"

@@ -129,12 +129,15 @@ DNS.3               = localhost
 IP.1                = 127.0.0.1
 EOF
 
-                # Additional SANs for PostgreSQL
+                # Additional SANs for specific services
                 if [ "$service" = "postgres" ]; then
                     echo "Adding additional SANs for PostgreSQL..."
                     echo "DNS.4 = postgres_primary" >> "$CONFIG_FILE"
                     echo "DNS.5 = postgres_replica" >> "$CONFIG_FILE"
                     echo "DNS.6 = pgpool" >> "$CONFIG_FILE"
+                elif [ "$service" = "redis" ]; then
+                    echo "Adding additional SANs for Redis..."
+                    echo "DNS.4 = redis-master" >> "$CONFIG_FILE"
                 fi
 
                 # Generate private key and CSR
@@ -168,7 +171,6 @@ EOF
     log "Certificates successfully generated and stored in ${DOCKER_VOLUME}."
 }
 
-
 # Start Postgres function
 start_postgres() {
     log "Starting PostgreSQL..."
@@ -189,12 +191,12 @@ generate_certificates
 
 # Step 3: Deploy Vault
 log "Deploying Vault server..."
-./install_vault_server.sh || error_exit "Vault deployment failed."
+../vault/scripts/install_vault_server.sh || error_exit "Vault deployment failed."
 
 # Step 4: Configure Vault and PostgreSQL
 log "Configuring Vault and PostgreSQL..."
 start_postgres
-./configure_vault.sh || error_exit "Vault configuration failed."
+../vault/scripts/configure_vault.sh || error_exit "Vault configuration failed."
 
 # Step 5: Start all services
 start_services

@@ -8,6 +8,7 @@ namespace haworks.Services
     public interface IContentService
     {
         Task<string> UploadFileAsync(IFormFile? file, Guid productId , string username);
-        bool ValidateFile(IFormFile file, out string validationError, out string fileType);
+        bool ValidateFile(IFormFile file, out string error, out bool isImage);
+        Task<string> GetPreSignedUrlAsync(string filePath, int expiryInSeconds = 3600);
     }
 }

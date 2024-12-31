@@ -39,7 +39,7 @@ namespace haworks.Services
                         Id = product.Id,
                         Name = product.Name,
                         Description = product.Description,
-                        Price = product.Price,
+                        Price = product.UnitPrice,
                         Stock = product.Stock,
                         CategoryId = product.CategoryId,
                       //  ImageUrls = product.ProductImages?.Select(pi => pi.Url).ToList() // Map ProductImage to List of URLs

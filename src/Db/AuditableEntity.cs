@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace haworks.Db
 {
@@ -7,23 +8,25 @@ namespace haworks.Db
         Guid Id { get; }
     }
 
-    public class AuditableEntity : IEntityWithGuid
+    public abstract class AuditableEntity : IEntityWithGuid
     {
         protected AuditableEntity()
         {
             Id = Guid.NewGuid();
-            CreatedDate = DateTime.UtcNow;
+            CreatedAt = DateTime.UtcNow;
         }
-
 
         protected AuditableEntity(Guid id)
         {
             Id = id;
-            CreatedDate = DateTime.UtcNow;
+            CreatedAt = DateTime.UtcNow;
         }
         public Guid Id { get; protected set; }
+   
+       [ConcurrencyCheck]
+        public int RowVersion { get; set; }     
         public string? CreatedBy { get; set; } 
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedAt { get; set; }
         public string? LastModifiedBy { get; set; }
         public DateTime? LastModifiedDate { get; set; }
     }

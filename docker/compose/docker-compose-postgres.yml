@@ -23,10 +23,10 @@ services:
     volumes:
       - primary_data:/bitnami/postgresql
       - certs-volume:/certs-volume:rw
-      - ../../config/postgresql.conf:/bitnami/postgresql/conf/postgresql.conf:ro
+      - ../../pgpool/config/postgresql.conf:/bitnami/postgresql/conf/postgresql.conf:ro
       - ../../db-backup:/pgbackrest_repo
-      - ./custom_pg_hba.conf:/opt/bitnami/postgresql/pg_hba.conf:ro
-      - ../../scripts/create_replication_slot_1.sh:/docker-entrypoint-initdb.d/create_replication_slot.sh:ro
+      - ../../pgpool/config/custom_pg_hba.conf:/opt/bitnami/postgresql/pg_hba.conf:ro
+      - ../../pgpool/scripts/create_replication_slot_1.sh:/docker-entrypoint-initdb.d/create_replication_slot.sh:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h localhost -p 5432 -U postgres"]
       interval: 10s
@@ -59,9 +59,9 @@ services:
     volumes:
       - replica_data:/bitnami/postgresql
       - certs-volume:/certs-volume:rw
-      - ../../config/postgresql.conf:/bitnami/postgresql/conf/postgresql.conf:ro
-      - ./custom_pg_hba.conf:/opt/bitnami/postgresql/pg_hba.conf:ro
-      - ../../scripts/create_replication_slot_2.sh:/docker-entrypoint-initdb.d/create_replication_slot.sh:ro
+      - ../../pgpool/config/postgresql.conf:/bitnami/postgresql/conf/postgresql.conf:ro
+      - ../../pgpool/config/custom_pg_hba.conf:/opt/bitnami/postgresql/pg_hba.conf:ro
+      - ../../pgpool/scripts/create_replication_slot_2.sh:/docker-entrypoint-initdb.d/create_replication_slot.sh:ro
  
   pgpool:
     image: bitnami/pgpool:4
@@ -91,9 +91,9 @@ services:
       
     volumes:
       - certs-volume:/certs-volume:ro
-      - ./pgpool_run:/var/run/pgpool
-      - ./pool_hba.conf:/opt/bitnami/pgpool/pg_hba.conf:ro
-      - ../../scripts:/scripts
+      - ../../pgpool/pgpool_run:/var/run/pgpool
+      - ../../pgpool/config/pool_hba.conf:/opt/bitnami/pgpool/pg_hba.conf:ro
+      - ../../pgpool/scripts:/scripts
     networks:
       - internal_network
     ports:
@@ -125,7 +125,7 @@ services:
       - postgres_primary
       - postgres_replica
     volumes:
-      - ../../scripts:/scripts
+      - ../../pgpool/scripts:/scripts
     networks:
       - internal_network
     environment:
