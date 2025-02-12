@@ -1,257 +1,267 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
-using System.IdentityModel.Tokens.Jwt;
-using System;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using haworks.Db;
-using Microsoft.Extensions.Configuration;
-using System.Threading.Tasks;
-using System.Security.Claims;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Http;
+﻿// src/contexts/AuthContext.tsx
+import React, {
+  createContext,
+  useContext,
+  ReactNode,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
+import { useRouter } from 'next/router';
+import { signIn, signOut } from 'next-auth/react';
+import { loadStripe } from '@stripe/stripe-js';
 
-namespace haworks.Controllers
-{
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AuthenticationController : ControllerBase
-    {
-        private readonly UserManager<User> _userManager;
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<AuthenticationController> _logger;
-
-        public AuthenticationController(UserManager<User> userManager, IConfiguration configuration, ILogger<AuthenticationController> logger)
-        {
-            _userManager = userManager;
-            _configuration = configuration;
-            _logger = logger;
-        }
-
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserRegistrationDto registrationDto)
-        {
-            if (registrationDto == null || string.IsNullOrEmpty(registrationDto.Password))
-            {
-                return BadRequest("Invalid registration details");
-            }
-
-            var user = new User
-            {
-                UserName = registrationDto.Username,
-                Email = registrationDto.Email
-            };
-
-            var result = await _userManager.CreateAsync(user, registrationDto.Password);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
-
-            var token = GenerateToken(user.UserName, user.Id, DateTime.Now.AddHours(3));
-            SetJwtCookie(token);
-
-            return Ok(new { message = "User registered successfully", token = new JwtSecurityTokenHandler().WriteToken(token), userId = user.Id });
-        }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] UserLoginDto loginDto)
-        {
-            if (loginDto == null || string.IsNullOrEmpty(loginDto.Password))
-            {
-                return BadRequest("Invalid login details");
-            }
-
-            var user = await _userManager.FindByNameAsync(loginDto.Username);
-            if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
-            {
-                return Unauthorized("Invalid username or password");
-            }
-
-            var token = GenerateToken(user.UserName, user.Id, DateTime.Now.AddHours(1));
-            SetJwtCookie(token);
-
-            var userResponse = new
-            {
-                id = user.Id,
-                username = user.UserName,
-                email = user.Email
-            };
-
-            return Ok(new { message = "Login successful", user = userResponse, token = new JwtSecurityTokenHandler().WriteToken(token) });
-        }
-
-        [HttpPost("logout")]
-        public IActionResult Logout()
-        {
-            Response.Cookies.Delete("jwt");
-            return Ok(new { message = "Logged out successfully" });
-        }
-
-        [HttpGet("verify-token")]
-        public IActionResult VerifyToken()
-        {
-        // Retrieve the token from the 'Authorization' header
-        var authHeader = Request.Headers["Authorization"].ToString();
-
-        if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
-        {
-            return Unauthorized("Token is missing or malformed");
-        }
-
-        var token = authHeader.Substring("Bearer ".Length).Trim();
-
-        try
-        {
-            var principal = GetPrincipalFromToken(token);
-            if (principal == null)
-            {
-                return Unauthorized("Invalid token");
-            }
-
-            var userName = principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
-            var userId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            return Ok(new { userName, userId });
-        }
-        catch (SecurityTokenException)
-        {
-            return Unauthorized("Invalid token");
-        }
-    }
-
-
-        [HttpPost("refresh-token")]
-        public IActionResult RefreshToken()
-        {
-            var authHeader = Request.Headers["Authorization"].ToString();
-
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
-            {
-                return Unauthorized("Token is missing or malformed");
-            }
-
-            var token = authHeader.Substring("Bearer ".Length).Trim();
-            if (string.IsNullOrEmpty(token))
-            {
-                return Unauthorized("Token is missing");
-            }
-
-            var principal = GetPrincipalFromExpiredToken(token);
-            var newToken = GenerateToken(principal.Claims, DateTime.UtcNow.AddHours(1));
-            SetJwtCookie(newToken);
-
-            return Ok(new { token = new JwtSecurityTokenHandler().WriteToken(newToken) });
-        }
-
-        private ClaimsPrincipal GetPrincipalFromToken(string token)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = _configuration["Jwt:Issuer"],
-                ValidAudience = _configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!))
-            }, out var validatedToken);
-
-            return principal;
-        }
-
-        private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = false, // Here we are saying that we don't care about the token's expiration date
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = _configuration["Jwt:Issuer"],
-                ValidAudience = _configuration["Jwt:Audience"],
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!))
-            }, out var validatedToken);
-
-            return principal;
-        }
-
-        private JwtSecurityToken GenerateToken(string? userName, string? userId, DateTime expiration, List<Claim>? additionalClaims = null)
-        {
-            var authClaims = new List<Claim>
-            {
-                new(JwtRegisteredClaimNames.Sub, userName ?? string.Empty),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            if (!string.IsNullOrEmpty(userId))
-            {
-                authClaims.Add(new Claim(ClaimTypes.NameIdentifier, userId));
-            }
-
-            if (additionalClaims != null)
-            {
-                authClaims.AddRange(additionalClaims);
-            }
-
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                expires: expiration,
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-            );
-
-            return token;
-        }
-
-        private JwtSecurityToken GenerateToken(IEnumerable<Claim> claims, DateTime expiration)
-        {
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: expiration,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-            );
-
-            return token;
-        }
-
-        private void SetJwtCookie(JwtSecurityToken token)
-        {
-            bool isDevelopment = _configuration["ASPNETCORE_ENVIRONMENT"]?.ToLower() == "development";
-
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = !isDevelopment,
-                SameSite = SameSiteMode.None,
-                Expires = token.ValidTo
-            };
-            Response.Cookies.Append("jwt", tokenString, cookieOptions);
-        }
-
-        public class UserRegistrationDto
-        {
-            public string Username { get; set; } = string.Empty;
-            public string Email { get; set; } = string.Empty;
-            public string Password { get; set; } = string.Empty;
-        }
-
-        public class UserLoginDto
-        {
-            public string Username { get; set; } = string.Empty;
-            public string Password { get; set; } = string.Empty;
-        }
-    }
+interface User {
+  id: string;
+  userName: string;
+  email: string;
+  isSubscribed: boolean;
 }
+
+type AuthContextType = {
+  user: User | null;
+  token: string | null;
+  isSubscribed: boolean;
+  login: (credentials: { username: string; password: string }) => Promise<void>;
+  register: (user: {
+    username: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    captchaToken: string;
+  }) => Promise<void>;
+  logout: () => Promise<void>;
+  subscribe: (priceId: string) => Promise<void>;
+  loginError: string | null;
+  isLoginLoading: boolean;
+  isAuthLoading: boolean;
+  refreshSubscriptionStatus: () => Promise<void>;
+  loginWithProvider: (provider: string) => Promise<void>;
+};
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function AuthProvider({ children }: { children: ReactNode }): JSX.Element {
+  // Retrieve the base URL from the environment variable.
+  // If not set, default to the hardcoded URL.
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://api.local.ritualworks.com/api";
+
+  // Helper function to construct the full endpoint.
+  // If baseUrl already ends with '/api', don't add another '/api'.
+  const buildEndpoint = (path: string): string => {
+    if (baseUrl.endsWith('/api')) {
+      return `${baseUrl}/${path}`;
+    } else {
+      return `${baseUrl}/api/${path}`;
+    }
+  };
+
+  const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [isSubscribed, setIsSubscribed] = useState<boolean>(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [isLoginLoading, setIsLoginLoading] = useState<boolean>(false);
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
+  const router = useRouter();
+
+  const refreshSubscriptionStatus = useCallback(async () => {
+    if (!user) return;
+    try {
+      const endpoint = buildEndpoint('Subscription/status');
+      console.log('Refreshing subscription status from:', endpoint);
+      // Include credentials so cookies are sent.
+      const res = await fetch(endpoint, { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        setIsSubscribed(data.isSubscribed);
+        setUser((currentUser) =>
+          currentUser ? { ...currentUser, isSubscribed: data.isSubscribed } : null
+        );
+      } else {
+        console.error('Failed to refresh subscription status:', res.statusText);
+      }
+    } catch (error) {
+      console.error('Error refreshing subscription status:', error);
+    }
+  }, [user, baseUrl]);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      setIsAuthLoading(true);
+      try {
+        // Use the 'verify-token' endpoint (adjusted to match your API route)
+        const endpoint = buildEndpoint('Authentication/verify-token');
+        console.log('Checking auth from:', endpoint);
+        // Include credentials so the cookie is sent.
+        const res = await fetch(endpoint, { credentials: 'include' });
+        if (res.ok) {
+          const session = await res.json();
+          if (session.UserId) {
+            // Assume your verify-token endpoint returns UserId, UserName, Email, etc.
+            setUser({
+              id: session.UserId,
+              userName: session.UserName,
+              email: session.Email,
+              isSubscribed: session.isSubscribed || false,
+            });
+            await refreshSubscriptionStatus();
+          }
+        } else if (res.status === 401) {
+          // No active session; first-time visitors will fall here.
+          console.log("No active session found (unauthorized).");
+        } else {
+          console.error("Unexpected response while checking auth:", res.status);
+        }
+      } catch (error) {
+        console.error('Error checking authentication:', error);
+      } finally {
+        setIsAuthLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [refreshSubscriptionStatus, baseUrl]);
+
+  const login = useCallback(
+    async ({ username, password }: { username: string; password: string }) => {
+      setIsLoginLoading(true);
+      setLoginError(null);
+      try {
+        const result = await signIn('credentials', {
+          username,
+          password,
+          redirect: false,
+          callbackUrl: (router.query.redirect as string) || '/resources',
+        });
+        if (result?.error) {
+          setLoginError(result.error);
+        } else {
+          // Successful login, NextAuth.js handles the session.
+        }
+      } catch (error) {
+        setLoginError('An unexpected error occurred during login.');
+        console.error('Login error:', error);
+      } finally {
+        setIsLoginLoading(false);
+      }
+    },
+    [router]
+  );
+
+  const logout = useCallback(async () => {
+    try {
+      await signOut({ callbackUrl: '/login', redirect: true });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  }, []);
+
+  const subscribe = useCallback(
+    async (priceId: string) => {
+      try {
+        const endpoint = buildEndpoint('Subscription/create-checkout-session');
+        console.log('Creating checkout session at:', endpoint);
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            priceId: priceId,
+            redirectPath: router.asPath,
+          }),
+          credentials: 'include',
+        });
+
+        if (res.ok) {
+          const { sessionId } = await res.json();
+          const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '');
+          if (stripe) {
+            await stripe.redirectToCheckout({ sessionId });
+          } else {
+            console.error('Stripe failed to load');
+          }
+        } else {
+          const errorData = await res.json();
+          const errorMessage = errorData.message || 'Failed to create checkout session';
+          console.error('Subscription error:', errorData);
+          alert(errorMessage);
+        }
+      } catch (error) {
+        console.error('Error creating checkout session:', error);
+        alert('Failed to start subscription. Please check your connection and try again.');
+      }
+    },
+    [router, baseUrl]
+  );
+
+  const register = useCallback(
+    async (userData: {
+      username: string;
+      email: string;
+      password: string;
+      confirmPassword: string;
+      captchaToken: string;
+    }) => {
+      try {
+        const endpoint = buildEndpoint('Authentication/register');
+        console.log('Registering user at:', endpoint);
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(userData),
+          credentials: 'include',
+        });
+
+        if (res.ok) {
+          router.push('/login');
+        } else {
+          const errorData = await res.json();
+          const errorMessage = errorData.message || 'Registration failed. Please try again.';
+          console.error('Registration failed:', errorData);
+          alert(errorMessage);
+        }
+      } catch (error) {
+        console.error('Registration error:', error);
+        alert('An unexpected error occurred during registration.');
+      }
+    },
+    [router, baseUrl]
+  );
+
+  const loginWithProvider = async (provider: string) => {
+    try {
+      const result = await signIn(provider, {
+        callbackUrl: '/resources',
+      });
+      if (result?.error) {
+        console.error('Social login error:', result.error);
+      }
+    } catch (error) {
+      console.error('Social login error:', error);
+    }
+  };
+
+  const value: AuthContextType = {
+    user,
+    token,
+    isSubscribed,
+    login,
+    register,
+    logout,
+    subscribe,
+    loginError,
+    isLoginLoading,
+    isAuthLoading,
+    refreshSubscriptionStatus,
+    loginWithProvider,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};

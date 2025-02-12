@@ -21,11 +21,12 @@ namespace haworks.Repositories
         }
 
         public async Task<Order?> GetOrderByIdempotencyKeyAsync(string idempotencyKey)
-         {
+        {
             return await _context.Orders
-            .AsNoTracking()
-            .FirstOrDefaultAsync(o => o.IdempotencyKey == idempotencyKey);
+                .AsNoTracking()
+                .FirstOrDefaultAsync(o => o.IdempotencyKey == idempotencyKey);
         }
+
         public async Task<IEnumerable<Order>> GetOrdersAsync()
         {
             try
@@ -33,7 +34,7 @@ namespace haworks.Repositories
                 _logger.LogInformation("Fetching all orders with no tracking.");
                 return await _context.Orders
                     .AsNoTracking()
-                    .Include(o => o.OrderItems)
+                    .Include(o => o.OrderItems!) // Using the null-forgiving operator
                     .ThenInclude(oi => oi.Product)
                     .ToListAsync();
             }
@@ -44,14 +45,15 @@ namespace haworks.Repositories
             }
         }
 
-        public async Task<Order> GetOrderByIdAsync(Guid id)
+        // Option A: Change return type to Task<Order?> if null is acceptable.
+        public async Task<Order?> GetOrderByIdAsync(Guid id)
         {
             try
             {
                 _logger.LogInformation("Fetching order with ID: {OrderId} using no tracking.", id);
                 var order = await _context.Orders
                     .AsNoTracking()
-                    .Include(o => o.OrderItems)
+                    .Include(o => o.OrderItems!)
                         .ThenInclude(oi => oi.Product)
                     .FirstOrDefaultAsync(o => o.Id == id);
 
@@ -118,7 +120,6 @@ namespace haworks.Repositories
         {
             return await _context.Database.BeginTransactionAsync();
         }
-
 
         public async Task SaveChangesAsync()
         {

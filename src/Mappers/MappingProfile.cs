@@ -6,18 +6,23 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        // Map Product to ProductDto, including Contents
+        // Product -> ProductDto
         CreateMap<Product, ProductDto>()
-            .ForMember(dest => dest.Contents, opt => opt.MapFrom(src => src.Contents));
+            .ForMember(dest => dest.Contents, opt => opt.MapFrom(src => src.Contents))
+            // Map metadata as well
+            .ForMember(dest => dest.Metadata, opt => opt.MapFrom(src => src.Metadata));
 
-        // Map ProductCreateDto to Product, ignoring Contents (handled separately)
-        CreateMap<ProductCreateDto, Product>()
-            .ForMember(dest => dest.Contents, opt => opt.Ignore());
+        // Content -> ContentDto
+        CreateMap<Content, ContentDto>().ReverseMap();
 
-        // Map Category to CategoryDto
+        // NEW: ProductMetadata -> ProductMetadataDto
+        CreateMap<ProductMetadata, ProductMetadataDto>().ReverseMap();
+
+        // Category -> CategoryDto
         CreateMap<Category, CategoryDto>().ReverseMap();
 
-        // Map Content to ContentDto
-        CreateMap<Content, ContentDto>().ReverseMap();
+        // ProductCreateDto -> Product
+        CreateMap<ProductCreateDto, Product>()
+            .ForMember(dest => dest.Contents, opt => opt.Ignore());
     }
 }

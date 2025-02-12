@@ -4,6 +4,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using System;
+using System.IO;
+using Microsoft.Extensions.Configuration;
+using Haworks.Services;
 
 namespace haworks.Db
 {
@@ -22,18 +25,26 @@ namespace haworks.Db
 
         public haworksContext CreateDbContext(string[] args)
         {
-            string connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
-                ?? throw new InvalidOperationException("Connection string not found in environment variables.");
+            // Initialize configuration
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
 
-            Console.WriteLine($"[Debug] Connection string from environment variable: {connectionString}");
+            // Initialize VaultService
+            var vaultService = new VaultService(config);
+
+            // Retrieve the database connection string from Vault
+            string connectionString = vaultService.GetDatabaseConnectionString().Result;
+
+            Console.WriteLine($"[Debug] Connection string retrieved from Vault: {connectionString}");
 
             // Create DbContextOptions
             var optionsBuilder = new DbContextOptionsBuilder<haworksContext>();
             optionsBuilder
                 .UseNpgsql(connectionString)
-               // .UseSnakeCaseNamingConvention()
                 .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))
-                .EnableDetailedErrors(); // Fixed: Removed extra closing parenthesis
+                .EnableDetailedErrors();
 
             // Create and return the context
             return new haworksContext(optionsBuilder.Options);

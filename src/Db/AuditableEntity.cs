@@ -5,7 +5,7 @@ namespace haworks.Db
 {
     public interface IEntityWithGuid
     {
-        Guid Id { get; }
+        Guid Id { get; set; }
     }
 
     public abstract class AuditableEntity : IEntityWithGuid
@@ -21,11 +21,12 @@ namespace haworks.Db
             Id = id;
             CreatedAt = DateTime.UtcNow;
         }
-        public Guid Id { get; protected set; }
-   
-       [ConcurrencyCheck]
-        public int RowVersion { get; set; }     
-        public string? CreatedBy { get; set; } 
+
+        public Guid Id { get; set; }
+
+        // [ConcurrencyCheck]
+        // public int RowVersion { get; set; }     
+        public string? CreatedBy { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? LastModifiedBy { get; set; }
         public DateTime? LastModifiedDate { get; set; }

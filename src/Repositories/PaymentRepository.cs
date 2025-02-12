@@ -44,7 +44,12 @@ namespace haworks.Repositories
                 throw new RepositoryException($"Error retrieving payment record with ID {paymentId}", ex);
             }
         }
-
+        public async Task<Payment> GetPaymentByStripeSessionIdAsync(string sessionId)
+        {
+            // Implementation to retrieve payment by Stripe session ID
+            return await _context.Payments
+                .FirstOrDefaultAsync(p => p.StripeSessionId == sessionId);
+        }
         public async Task<Payment?> GetPaymentByOrderIdAsync(Guid orderId)
         {
             if (orderId == Guid.Empty)

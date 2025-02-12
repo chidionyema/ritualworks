@@ -51,19 +51,12 @@ namespace haworks.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProductDto>> GetProduct(Guid id)
         {
-            var product = await _productRepository.GetProductByIdAsync(id);
+            var product = await _productRepository.GetProductByIdAsync(id, true, true, true);
             if (product == null)
                 return NotFound();
 
             // Map to DTO
             var productDto = _mapper.Map<ProductDto>(product);
-
-            // OPTIONAL: If you want to also retrieve content references (like images/assets),
-            // you can do that in a separate call to IContentRepository or by calling /api/content/list.
-            // For example:
-            // var contents = await _contentRepository.GetContentsByEntityIdAsync(id, "Product");
-            // productDto.Contents = _mapper.Map<List<ContentDto>>(contents);
-
             return Ok(productDto);
         }
 

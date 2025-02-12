@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using haworks.Contracts;
 using haworks.Db;
@@ -15,7 +16,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
-using System.Text.Json;
 
 namespace haworks.Controllers
 {
@@ -23,28 +23,25 @@ namespace haworks.Controllers
     [Route("api/[controller]")]
     public class ContentController : ControllerBase
     {
-        private readonly haworksContext _db; // We can inline purchase logic here
+        private readonly haworksContext _db;
         private readonly IContentRepository _contentRepository;
         private readonly IContentService _contentService;
         private readonly ILogger<ContentController> _logger;
-        private readonly IConnectionMultiplexer _redis; // For chunk sessions if needed
+        private readonly IConnectionMultiplexer _redis;
 
         public ContentController(
             haworksContext db,
             IContentRepository contentRepository,
             IContentService contentService,
             ILogger<ContentController> logger,
-            IConnectionMultiplexer redis = null
-        )
+            IConnectionMultiplexer redis = null)
         {
             _db = db ?? throw new ArgumentNullException(nameof(db));
             _contentRepository = contentRepository ?? throw new ArgumentNullException(nameof(contentRepository));
             _contentService = contentService ?? throw new ArgumentNullException(nameof(contentService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _redis = redis; // can be null if chunk approach not used
+            _redis = redis; // may be null if chunk approach is not used
         }
-
-        // ============= Single request upload (2-bucket) ==============
 
         [HttpPost("upload")]
         [Authorize]
@@ -74,7 +71,6 @@ namespace haworks.Controllers
 
                     var url = await _contentService.UploadFileAsync(file, entityId, userId);
 
-                    // Use isImage (bool) to determine the ContentType
                     var cType = isImage ? ContentType.Image : ContentType.Asset;
 
                     newContents.Add(new Content
@@ -86,8 +82,8 @@ namespace haworks.Controllers
                         Url = url,
                         BlobName = Path.GetFileName(url),
                         CreatedAt = DateTime.UtcNow
-                    });                               
-                } 
+                    });
+                }
 
                 if (newContents.Any())
                 {
@@ -112,8 +108,6 @@ namespace haworks.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error uploading content");
             }
         }
-
-        // ============= Chunk approach for large files ==============
 
         [HttpPost("chunked-init")]
         [Authorize]
@@ -174,6 +168,8 @@ namespace haworks.Controllers
                 return BadRequest("Session not found or expired.");
 
             var data = JsonSerializer.Deserialize<ChunkSessionRedis>(raw);
+            if (data == null)
+                return BadRequest("Failed to parse chunk session data.");
             if (data.IsComplete)
                 return BadRequest("Session is already complete.");
 
@@ -197,7 +193,6 @@ namespace haworks.Controllers
             }
 
             data.ReceivedChunks.Add(chunkIndex);
-
             var updated = JsonSerializer.Serialize(data);
             await db.StringSetAsync(key, updated, TimeSpan.FromHours(12));
 
@@ -220,9 +215,10 @@ namespace haworks.Controllers
                 return BadRequest("Session not found or expired in Redis.");
 
             var data = JsonSerializer.Deserialize<ChunkSessionRedis>(raw);
+            if (data == null)
+                return BadRequest("Failed to parse session data.");
             if (data.IsComplete)
                 return BadRequest("Session is already complete.");
-
             if (data.ReceivedChunks.Count != data.TotalChunks)
                 return BadRequest("Not all chunks are uploaded yet.");
 
@@ -230,10 +226,9 @@ namespace haworks.Controllers
             if (!Directory.Exists(chunkFolder))
                 return BadRequest("Chunk folder missing.");
 
-            // Reassemble
             var chunkFiles = Directory.GetFiles(chunkFolder, "*.chunk").OrderBy(f => f).ToList();
             if (chunkFiles.Count != data.TotalChunks)
-                return BadRequest("Mismatch chunk file count vs totalChunks.");
+                return BadRequest("Mismatch between chunk file count and totalChunks.");
 
             var assembledPath = Path.Combine(chunkFolder, "assembled.tmp");
             try
@@ -255,15 +250,11 @@ namespace haworks.Controllers
             if (fi.Length != data.TotalSize)
                 return BadRequest("Assembled file size mismatch totalSize.");
 
-            // Convert to IFormFile
             var finalFormFile = new PhysicalFileFormFile(assembledPath, data.FileName, fi.Length);
             if (!_contentService.ValidateFile(finalFormFile, out var err, out var _))
                 return BadRequest($"Assembled file invalid: {err}");
 
-            // Upload final to correct bucket
             var url = await _contentService.UploadFileAsync(finalFormFile, data.EntityId, "chunkuser");
-
-            // Build DB record
             var cType = contentType.Equals("Image", StringComparison.OrdinalIgnoreCase)
                 ? ContentType.Image
                 : ContentType.Asset;
@@ -282,7 +273,6 @@ namespace haworks.Controllers
 
             data.IsComplete = true;
             await db.KeyDeleteAsync(key);
-
             Directory.Delete(chunkFolder, true);
 
             return Ok(new
@@ -295,11 +285,6 @@ namespace haworks.Controllers
             });
         }
 
-        // ============= Additional Endpoints ==============
-
-        /// <summary>
-        /// Let the user see the content items for a product
-        /// </summary>
         [HttpGet("list")]
         public async Task<ActionResult<List<ContentDto>>> ListContent(Guid entityId, string entityType = "Product")
         {
@@ -315,46 +300,36 @@ namespace haworks.Controllers
             return Ok(dtos);
         }
 
-        /// <summary>
-        /// Only authorized users can delete content
-        /// </summary>
         [HttpDelete("{contentId}")]
         [Authorize]
         public async Task<IActionResult> DeleteContent(Guid contentId)
         {
             var content = await _contentRepository.GetContentByIdAsync(contentId);
-            if (content == null) return NotFound();
+            if (content == null)
+                return NotFound();
             _contentRepository.RemoveContent(content);
             await _contentRepository.SaveChangesAsync();
             return NoContent();
         }
 
-        /// <summary>
-        /// If user wants to get a short-living presigned URL for a private asset
-        /// We also inline-check if the user purchased the product in Orders -> OrderItems
-        /// </summary>
         [HttpGet("{contentId}/presigned-url")]
         [Authorize]
         public async Task<ActionResult<string>> GetPresignedUrl(Guid contentId, int expiryInSeconds = 300)
         {
             var content = await _contentRepository.GetContentByIdAsync(contentId);
-            if (content == null) return NotFound();
+            if (content == null)
+                return NotFound();
 
-            // If it's an image => we can just return the direct URL (public-images)
             if (content.ContentType == ContentType.Image)
-            {
                 return Ok(content.Url);
-            }
 
-            // If it's an asset => check if user purchased
             if (content.ContentType == ContentType.Asset)
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 bool paid = await UserHasPurchasedAsset(userId, content.EntityId);
-                if (!paid) return Forbid();
+                if (!paid)
+                    return Forbid();
 
-                // parse bucketName/objectName from content.Url
-                // e.g. "https://minio.local.haworks.com/private-assets/username/productassets/..."
                 var baseUrl = "https://minio.local.haworks.com/";
                 if (!content.Url.StartsWith(baseUrl))
                     return BadRequest("URL not recognized for presigned approach.");
@@ -366,12 +341,11 @@ namespace haworks.Controllers
             return BadRequest("Unknown content type");
         }
 
-        // ======= Inline Purchase Check Logic =======
         private async Task<bool> UserHasPurchasedAsset(string userId, Guid productId)
         {
-            if (string.IsNullOrEmpty(userId)) return false;
+            if (string.IsNullOrEmpty(userId))
+                return false;
 
-            // We assume there's an Order with "UserId" and "Status=Completed"
             var hasPurchase = await _db.Orders
                 .Where(o => o.UserId == userId && o.Status == OrderStatus.Completed)
                 .SelectMany(o => o.OrderItems)
@@ -380,7 +354,6 @@ namespace haworks.Controllers
             return hasPurchase;
         }
 
-        // chunk session
         private string GetRedisKey(Guid sessionId) => $"chunkSession:{sessionId}";
         private string GetChunkFolder(Guid sessionId)
         {
@@ -389,22 +362,22 @@ namespace haworks.Controllers
         }
     }
 
-    // Minimal chunk classes
+    // Minimal chunk DTOs
     public class ChunkInitResponse
     {
         public Guid SessionId { get; set; }
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty; // Default value to avoid null warning.
     }
 
     public class ChunkSessionRedis
     {
         public Guid SessionId { get; set; }
         public Guid EntityId { get; set; }
-        public string EntityType { get; set; }
-        public string FileName { get; set; }
+        public string EntityType { get; set; } = string.Empty;
+        public string FileName { get; set; } = string.Empty;
         public long TotalSize { get; set; }
         public int TotalChunks { get; set; }
-        public HashSet<int> ReceivedChunks { get; set; }
+        public HashSet<int> ReceivedChunks { get; set; } = new HashSet<int>();
         public bool IsComplete { get; set; }
     }
 }

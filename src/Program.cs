@@ -35,6 +35,8 @@ using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using System.IO;
+using Haworks.Services;
+using Stripe.Checkout;
 public partial class Program
 {
     public static async Task Main(string[] args)
@@ -76,15 +78,11 @@ public partial class Program
     public static async Task ConfigureServicesAsync(WebApplicationBuilder builder)
     {
         builder.Services.AddAutoMapper(typeof(MappingProfile));
-
-        builder.Services.AddHttpClient<IPaymentClient, PaymentClient>(client =>
-        {
-            client.BaseAddress = new Uri("https://api.local.ritualworks.com");
-        }).AddHttpMessageHandler<JwtAuthenticationDelegatingHandler>();
-
+       
         builder.Services.AddMemoryCache();
 
         ConfigureRateLimiting(builder);
+        /*
 
         builder.Services.AddStackExchangeRedisCache(options =>
         {
@@ -124,15 +122,17 @@ public partial class Program
             options.ConfigurationOptions = configurationOptions;
         });
 
+        */
 
-
-
-
+        builder.Services.AddSingleton<PaymentIntentService>();
+        builder.Services.AddSingleton<SessionService>(provider =>
+    {
+        return new SessionService(); // You can also provide custom configuration here if needed
+    });
 
         // Register the connection string provider and the interceptor
-        builder.Services.AddSingleton<IConnectionStringProvider, ConnectionStringProvider>();
+       // builder.Services.AddSingleton<IConnectionStringProvider, ConnectionStringProvider>();
         builder.Services.AddSingleton<DynamicCredentialsConnectionInterceptor>();
-        builder.Services.AddHostedService<CredentialRefreshService>();
 
 
         // Add Identity services
@@ -142,10 +142,11 @@ public partial class Program
 
         ConfigureDbContext(builder);
         ConfigureServices(builder);
+        /*
         AddMassTransit(builder);
         AddMinioClient(builder);
+        */
         AddSwagger(builder);
-        AddCredentialRefreshService(builder);
     }
 
     private static void ConfigureRateLimiting(WebApplicationBuilder builder)
@@ -172,20 +173,16 @@ public partial class Program
             };
         });
     }
-
     private static void ConfigureDbContext(WebApplicationBuilder builder)
     {
         builder.Services.AddDbContext<haworksContext>((serviceProvider, options) =>
         {
-            var connectionStringProvider = serviceProvider.GetRequiredService<IConnectionStringProvider>();
-            var interceptor = serviceProvider.GetRequiredService<DynamicCredentialsConnectionInterceptor>();
-
-            var connectionString = connectionStringProvider.GetConnectionStringAsync().GetAwaiter().GetResult();
-
-            options.UseNpgsql(connectionString);
-            options.AddInterceptors(interceptor);
-        });
+            var vault = serviceProvider.GetRequiredService<VaultService>();
+            options.UseNpgsql(vault.GetDatabaseConnectionString().Result)
+                .AddInterceptors(new DynamicCredentialsConnectionInterceptor(vault));
+        }); // <-- Added closing parenthesis and semicolon here
     }
+
 
     private static void ConfigureServices(WebApplicationBuilder builder)
     {
@@ -240,9 +237,11 @@ public partial class Program
         builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
         builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
         builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-        builder.Services.AddScoped<OrderService>();
         builder.Services.AddScoped<IContentService, ContentService>();
         builder.Services.AddScoped<IContentRepository, ContentRepository>();
+        builder.Services.AddScoped<IPaymentService, haworks.Services.PaymentService>();
+        builder.Services.AddSingleton<VaultService>();
+
     }
 
     private static void AddMassTransit(WebApplicationBuilder builder)
@@ -328,10 +327,6 @@ public partial class Program
         });
     }
 
-    private static void AddCredentialRefreshService(WebApplicationBuilder builder)
-    {
-        builder.Services.AddHostedService<CredentialRefreshService>();
-    }
 
     public static async Task ConfigurePipeline(WebApplication app)
     {
@@ -365,25 +360,4 @@ public partial class Program
     }
 }
 
-public class JwtAuthenticationDelegatingHandler : DelegatingHandler
-{
-    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public JwtAuthenticationDelegatingHandler(IHttpContextAccessor httpContextAccessor)
-    {
-        _httpContextAccessor = httpContextAccessor;
-    }
-
-    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-    {
-        var accessToken = _httpContextAccessor.HttpContext?.Request.Headers["Authorization"]
-            .FirstOrDefault()?.Split(" ").Last();
-
-        if (!string.IsNullOrEmpty(accessToken))
-        {
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-        }
-
-        return await base.SendAsync(request, cancellationToken);
-    }
-}

@@ -15,6 +15,16 @@
             [Required]
             public UserInfo UserInfo { get; set; } = new UserInfo();
     } 
+       public class CreatePaymentIntentResponse
+       {
+            public string SessionId { get; set; }
+       }
+       public class ConfirmPaymentRequest
+       {
+            public string SessionId { get; set; } // The Stripe Checkout Session ID
+            public Guid OrderId { get; set; }    // The Order ID generated during checkout
+       }
+
 }
 
 

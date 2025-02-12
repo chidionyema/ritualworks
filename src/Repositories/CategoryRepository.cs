@@ -2,94 +2,123 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using haworks.Contracts;
-using haworks.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Memory;
+// using Microsoft.Extensions.Caching.Distributed;  // Distributed cache is commented out
+using haworks.Contracts;
+using haworks.Db;
+using haworks.Repositories.Base;
 
 namespace haworks.Repositories
 {
-    public class CategoryRepository : ICategoryRepository
+    public class CategoryRepository : BaseRepository<Category, haworksContext>, ICategoryRepository
     {
-        private readonly haworksContext _context;
-        private readonly ILogger<CategoryRepository> _logger;
+        // Cache keys
+        private const string CATEGORY_LIST_KEY = "categories_list";
+        private const string CATEGORY_KEY = "category_{0}";
 
-        public CategoryRepository(haworksContext context, ILogger<CategoryRepository> logger)
+        public CategoryRepository(
+            haworksContext context,
+            ILogger<CategoryRepository> logger,
+            IMemoryCache memoryCache,
+            /*IDistributedCache distributedCache*/ object distributedCachePlaceholder = null)
+            : base(context, logger, memoryCache, distributedCachePlaceholder)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<IEnumerable<Category>> GetCategoriesAsync()
         {
-            try
+            string cacheKey = CATEGORY_LIST_KEY;
+
+            return await GetFromCacheAsync<IEnumerable<Category>>(cacheKey, async () =>
             {
-                _logger.LogInformation("Fetching all categories with no tracking.");
-                return await _context.Categories
-                    .AsNoTracking() // Use no tracking for read-only operations
+                Logger.LogInformation("Fetching all categories from the database.");
+                return await Context.Categories
+                    .AsNoTracking()
                     .OrderBy(c => c.Name)
                     .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while fetching categories.");
-                throw;
-            }
+            }) ?? Enumerable.Empty<Category>();
         }
 
         public async Task<Category> GetCategoryByIdAsync(Guid id)
         {
-            try
+            string cacheKey = string.Format(CATEGORY_KEY, id);
+
+            return await GetFromCacheAsync<Category>(cacheKey, async () =>
             {
-                _logger.LogInformation("Fetching category with ID: {CategoryId} using no tracking.", id);
-                var category = await _context.Categories
-                    .AsNoTracking() // Use no tracking for read-only operations
+                Logger.LogInformation("Fetching category with ID {CategoryId} from the database.", id);
+                return await Context.Categories
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(c => c.Id == id);
-
-                if (category == null)
-                {
-                    _logger.LogWarning("Category with ID {CategoryId} not found.", id);
-                }
-
-                return category;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while fetching category with ID {CategoryId}.", id);
-                throw;
-            }
+            });
         }
 
         public async Task AddCategoryAsync(Category category)
         {
+            if (category == null) throw new ArgumentNullException(nameof(category));
+
             try
             {
-                if (category == null)
-                {
-                    throw new ArgumentNullException(nameof(category), "Category cannot be null.");
-                }
+                Logger.LogInformation("Adding a new category: {CategoryName}.", category.Name);
+                await Context.Categories.AddAsync(category);
+                await SaveChangesAsync();
 
-                _logger.LogInformation("Adding a new category: {CategoryName}.", category.Name);
-                await _context.Categories.AddAsync(category);
+                // Update cache
+                await SetCacheValuesAsync(string.Format(CATEGORY_KEY, category.Id), category);
+                await RemoveFromCacheAsync(CATEGORY_LIST_KEY); // Invalidate list cache
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while adding a new category.");
+                Logger.LogError(ex, "An error occurred while adding a new category.");
                 throw;
             }
         }
 
-        public async Task SaveChangesAsync()
+        public async Task UpdateCategoryAsync(Category category)
         {
+            if (category == null) throw new ArgumentNullException(nameof(category));
+
             try
             {
-                _logger.LogInformation("Saving changes to the database.");
-                await _context.SaveChangesAsync();
-                _logger.LogInformation("Database changes saved successfully.");
+                Logger.LogInformation("Updating category with ID {CategoryId}.", category.Id);
+                Context.Categories.Attach(category);
+                Context.Entry(category).State = EntityState.Modified;
+                await SaveChangesAsync();
+
+                // Update cache
+                await SetCacheValuesAsync(string.Format(CATEGORY_KEY, category.Id), category);
+                await RemoveFromCacheAsync(CATEGORY_LIST_KEY); // Invalidate list cache
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while saving changes to the database.");
+                Logger.LogError(ex, "An error occurred while updating the category with ID {CategoryId}.", category.Id);
+                throw;
+            }
+        }
+
+        public async Task DeleteCategoryAsync(Guid id)
+        {
+            try
+            {
+                Logger.LogInformation("Deleting category with ID {CategoryId}.", id);
+                var category = await Context.Categories.FindAsync(id);
+                if (category == null)
+                {
+                    Logger.LogWarning("Category with ID {CategoryId} not found.", id);
+                    return;
+                }
+
+                Context.Categories.Remove(category);
+                await SaveChangesAsync();
+
+                // Remove cache entries
+                await RemoveFromCacheAsync(string.Format(CATEGORY_KEY, id));
+                await RemoveFromCacheAsync(CATEGORY_LIST_KEY); // Invalidate list cache
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "An error occurred while deleting the category with ID {CategoryId}.", id);
                 throw;
             }
         }

@@ -9,7 +9,7 @@ namespace haworks.Contracts
     {
         // Product-related methods
         Task<IEnumerable<Product>> GetProductsAsync(int page, int pageSize);
-        Task<Product> GetProductByIdAsync(Guid id);
+        Task<Product?> GetProductByIdAsync(Guid id, bool includeCategory = false, bool includeContents = false, bool includeMetadata = false);
         Task<IEnumerable<Product>> GetProductsByCategoryAsync(Guid categoryId, int page, int pageSize);
         Task AddProductAsync(Product product);
         Task UpdateProductAsync(Product product);

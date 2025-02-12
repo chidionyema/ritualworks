@@ -23,8 +23,12 @@ namespace haworks.Db
 
         public Product() : base() { }
 
-        public Guid Id { get; set; }
+        public Guid? AuthorProfileId { get; set; }
+        public UserProfile? AuthorProfile { get; set; }
         public string Name { get; set; } = string.Empty;
+        public string Headline { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;
+        public string ShortDescription { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public decimal UnitPrice { get; set; }
         public double Rating { get; set; }
@@ -38,7 +42,8 @@ namespace haworks.Db
         public Category? Category { get; set; }
         public List<Content>? Contents { get; set; } // Navigation property for related content
         public List<ProductReview>? ProductReviews { get; set; }
-
+        public List<ProductMetadata>? Metadata { get; set; }
+        
         
     }
 }

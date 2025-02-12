@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Caching.Distributed;
 using haworks.Contracts;
 using haworks.Db;
 using haworks.Repositories.Base;
@@ -23,9 +21,9 @@ namespace haworks.Repositories
         public ProductRepository(
             haworksContext context,
             ILogger<ProductRepository> logger,
-            IMemoryCache memoryCache,
-            IDistributedCache distributedCache)
-            : base(context, logger, memoryCache, distributedCache)
+            Microsoft.Extensions.Caching.Memory.IMemoryCache memoryCache,
+            /*IDistributedCache distributedCache*/ object distributedCachePlaceholder = null)
+            : base(context, logger, memoryCache, distributedCachePlaceholder)
         {
         }
 
@@ -48,17 +46,33 @@ namespace haworks.Repositories
             }) ?? Enumerable.Empty<Product>();
         }
 
-        public async Task<Product?> GetProductByIdAsync(Guid id)
+        public async Task<Product?> GetProductByIdAsync(Guid id,
+                                                         bool includeCategory = false,
+                                                         bool includeContents = false,
+                                                         bool includeMetadata = false)
         {
             string cacheKey = string.Format(PRODUCT_KEY, id);
 
             return await GetFromCacheAsync<Product>(cacheKey, async () =>
             {
-                return await Context.Products
-                    .AsNoTracking()
-                    .Include(p => p.Category)
-                    .Include(p => p.Contents.Where(c => c.EntityType == nameof(Product)))
-                    .FirstOrDefaultAsync(p => p.Id == id);
+                var query = Context.Products.AsNoTracking().Where(p => p.Id == id);
+
+                if (includeCategory)
+                {
+                    query = query.Include(p => p.Category);
+                }
+
+                if (includeContents)
+                {
+                    query = query.Include(p => p.Contents.Where(c => c.EntityType == nameof(Product)));
+                }
+
+                if (includeMetadata)
+                {
+                    query = query.Include(p => p.Metadata);
+                }
+
+                return await query.FirstOrDefaultAsync();
             });
         }
 
@@ -143,18 +157,13 @@ namespace haworks.Repositories
             try
             {
                 var product = await Context.Products.FirstOrDefaultAsync(p => p.Id == productId);
-
                 if (product == null)
                     throw new InvalidOperationException($"Product with ID {productId} not found.");
-
                 if (product.Stock < quantity)
                     throw new InvalidOperationException($"Insufficient stock for Product ID {productId}.");
 
                 product.Stock -= quantity;
-
-                Context.Entry(product).OriginalValues["RowVersion"] = product.RowVersion; // Handle concurrency
                 Context.Products.Update(product);
-
                 await SaveChangesAsync();
                 await transaction.CommitAsync();
 
