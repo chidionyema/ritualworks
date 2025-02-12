@@ -10,6 +10,7 @@ using haworks.Controllers;
 using haworks.Db;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using haworks.Dto;
 using static haworks.Controllers.AuthenticationController;
 
 namespace haworks.Tests
@@ -91,7 +92,7 @@ namespace haworks.Tests
 
             var items = new List<CheckoutItem>
             {
-                new CheckoutItem { ProductId = testProductId, Quantity = 1, Price = 9.99M, Name = "Test Product" }
+                new CheckoutItem { ProductId = testProductId, Quantity = 1, UnitPrice = 9.99M, Name = "Test Product" }
             };
 
             // Act
@@ -138,7 +139,7 @@ namespace haworks.Tests
 
             var items = new List<CheckoutItem>
             {
-                new CheckoutItem { ProductId = Guid.NewGuid(), Quantity = 1, Price = 9.99M, Name = "Non-existent Product" }
+                new CheckoutItem { ProductId = Guid.NewGuid(), Quantity = 1, UnitPrice = 9.99M, Name = "Non-existent Product" }
             };
 
             // Act
@@ -185,7 +186,7 @@ namespace haworks.Tests
 
             var items = new List<CheckoutItem>
             {
-                new CheckoutItem { ProductId = testProductId, Quantity = 100, Price = 9.99M, Name = "Test Product" } // Exceeds available stock
+                new CheckoutItem { ProductId = testProductId, Quantity = 100, UnitPrice = 9.99M, Name = "Test Product" } // Exceeds available stock
             };
 
             // Act
@@ -210,9 +211,8 @@ namespace haworks.Tests
                 Id = Guid.NewGuid(),
                 Name = "Test Product",
                 Description = "This is a test product.",
-                Price = 9.99M,
+                UnitPrice = 9.99M,
                 Stock = 10,
-                CreatedDate = DateTime.UtcNow,
                 Category = context.Categories.FirstOrDefault() ?? new Category { Id = Guid.NewGuid(), Name = "Test Category" }
             };
 

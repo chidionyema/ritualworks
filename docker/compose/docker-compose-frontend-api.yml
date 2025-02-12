@@ -6,6 +6,7 @@ services:
       context: ../../
       dockerfile: docker/Dockerfile.setup_dns
     network_mode: host
+    container_name: app
     command: bash /setup_local_dns.sh
     restart: "no"
 
@@ -15,18 +16,16 @@ services:
       dockerfile: docker/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
-       - ConnectionStrings__DefaultConnection=Host=pgpool;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
+      - ConnectionStrings__DefaultConnection=Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
       - Elasticsearch__Uri=http://elasticsearch:9200
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - RabbitMq__Host=rabbitmq
       - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
-  
     volumes:
-      - vault-secrets:/vault/secrets
+      - ../../vault/secrets:/vault/secrets
       - ../../app_logs:/logs
       - certs-volume:/certs-volume:rw  
-
     networks:
       - internal_network
       - external_network
@@ -38,21 +37,27 @@ services:
     depends_on:
       - setup_dns
       - db_migrations 
-    
+    extra_hosts:
+      - "api.local.ritualworks.com:127.0.0.1"
+
   db_migrations:
     build:
       context: ../../
       dockerfile: docker/Dockerfile.migrations
     environment:
-      - ConnectionStrings__DefaultConnection=Host=pgpool;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
+      - ConnectionStrings__DefaultConnection=Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
       - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
       - POSTGRES_USERNAME=postgres
       - POSTGRES_PASSWORD=your_actual_password
       - POSTGRES_DB=your_postgres_db
       - POSTGRES_HOST=postgres_primary
     volumes:
-      - vault-secrets:/vault/secrets
-    command: ["database", "update"]
+      - ../../vault/secrets:/vault/secrets
+      - ../../scripts:/scripts
+      - certs-volume:/certs-volume:rw
+    entrypoint: ["/bin/bash", "-c"]
+    command: "/scripts/db_migrations.sh"
+
     networks:
       - internal_network
 
@@ -153,4 +158,3 @@ volumes:
     external: true
   vault-secrets:
     external: true
-  

@@ -13,6 +13,8 @@ RUN dotnet restore "./haworks.csproj"
 # Copy the entire source code into the container
 COPY src/. ./
 
+
+
 # Install Entity Framework Core tools globally
 RUN dotnet tool install --global dotnet-ef --version 9.0.0
 

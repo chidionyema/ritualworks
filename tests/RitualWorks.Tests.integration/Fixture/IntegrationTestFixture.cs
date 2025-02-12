@@ -16,28 +16,31 @@ using haworks.Db;
 using Xunit;
 using System.Linq;
 using Microsoft.AspNetCore.TestHost;
+
 namespace haworks.Tests
 {
     public class IntegrationTestFixture : IAsyncLifetime
     {
         private readonly DockerHelper _postgresHelper;
-        private readonly DockerHelper _rabbitMqHelper;
-        private readonly DockerHelper _minioHelper;
         private readonly ILogger<DockerHelper> _logger;
 
-        // Connection string built from environment variables
+        // Connection string built from configuration
         private readonly string _connectionString;
 
         public IntegrationTestFixture()
         {
-            // Read environment variables for connection string components
-            var dbHost = "localhost";
-            var dbPort = "5432";
-            var dbName = "test_db";
-            var dbUser = "myuser";
-            var dbPassword = "mypassword";
+            // Load configuration from appsettings.json in the test project
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(GetTestConfigPath())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
 
-            // Construct the connection string using the environment variables
+            var dbHost = configuration["Database:Host"] ?? "localhost"; // Use config or default
+            var dbPort = configuration["Database:Port"] ?? "5432";
+            var dbName = configuration["Database:Name"] ?? "test_db";
+            var dbUser = configuration["Database:User"] ?? "myuser";
+            var dbPassword = configuration["Database:Password"] ?? "mypassword";
+
             _connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPassword};";
 
             var loggerFactory = LoggerFactory.Create(builder =>
@@ -48,25 +51,13 @@ namespace haworks.Tests
 
             _postgresHelper = new DockerHelper(
                 _logger,
-                imageName: "postgres:13",
-                containerName: "postgres_test_container",
+                imageName: configuration["Docker:PostgresImage"] ?? "postgres:13", // Load image name from config
+                containerName: configuration["Docker:PostgresContainerName"] ?? "postgres_test_container", // Load container name from config
                 postStartCallback: async (port) =>
                 {
                     await EnsureDatabaseExistsAsync(port);
                     await SetupDatabaseAsync(port);
                 }
-            );
-
-            _rabbitMqHelper = new DockerHelper(
-                _logger,
-                imageName: "rabbitmq:3-management",
-                containerName: "rabbitmq_test_container"
-            );
-
-            _minioHelper = new DockerHelper(
-                _logger,
-                imageName: "minio/minio",
-                containerName: "minio_test_container"
             );
         }
 
@@ -74,21 +65,12 @@ namespace haworks.Tests
         {
             // Start PostgreSQL container
             await _postgresHelper.StartContainer(
-                hostPort: 5432,
+                hostPort: int.Parse(Configuration["Docker:PostgresHostPort"] ?? "5432"), // Load ports from config
                 containerPort: 5432,
-                environmentVariables: new List<string> { "POSTGRES_USER=myuser", "POSTGRES_PASSWORD=mypassword" });
-
-            // Start RabbitMQ container
-            await _rabbitMqHelper.StartContainer(
-                hostPort: 5672,
-                containerPort: 5672,
-                environmentVariables: new List<string> { "RABBITMQ_DEFAULT_USER=guest", "RABBITMQ_DEFAULT_PASS=guest" });
-
-            // Start MinIO container
-            await _minioHelper.StartContainer(
-                hostPort: 9000,
-                containerPort: 9000,
-                environmentVariables: new List<string> { "MINIO_ACCESS_KEY=minio", "MINIO_SECRET_KEY=minio123" });
+                environmentVariables: new List<string> {
+                    $"POSTGRES_USER={Configuration["Database:User"] ?? "myuser"}",
+                    $"POSTGRES_PASSWORD={Configuration["Database:Password"] ?? "mypassword"}"
+                });
         }
 
         // Method to create a new WebApplicationFactory per test class
@@ -109,9 +91,12 @@ namespace haworks.Tests
 
                     builder.ConfigureTestServices(services =>
                     {
-                        // Use a unique database name per test class
-                        var uniqueDbName = "test_db_" + Guid.NewGuid();
-                        var connectionString = $"Host=localhost;Port=5432;Database={uniqueDbName};Username=myuser;Password=mypassword;";
+                        // Use a unique database name per test class - NOTE: While we generate a unique name, we are still connecting
+                        // to the same 'test_db' instance within Docker, just using a different logical name within EF Core.
+                        // For true isolation, we would need to dynamically create and drop databases in Docker, which adds complexity.
+                        // For now, we are using table truncation in ResetDatabaseAsync for isolation within the 'test_db'.
+                        var uniqueDbName = "test_db_" + Guid.NewGuid(); // Logical unique name -  Not fully isolated DB in Docker without more complex setup.
+                        var connectionString = _connectionString; // Re-use the base connection string - connects to the 'test_db'
 
                         services.AddEntityFrameworkNpgsql()
                             .AddDbContext<haworksContext>(options =>
@@ -137,7 +122,7 @@ namespace haworks.Tests
 
                     builder.ConfigureServices(services =>
                     {
-                        services.AddSingleton<IStartupFilter>(new StartupFilter());
+                        services.AddSingleton<IStartupFilter>(new StartupFilter()); // TODO: Clarify the purpose of StartupFilter if still needed.
                     });
                 });
         }
@@ -147,8 +132,7 @@ namespace haworks.Tests
             try
             {
                 await _postgresHelper.StopContainer();
-                await _rabbitMqHelper.StopContainer();
-                await _minioHelper.StopContainer();
+                await _postgresHelper.RemoveContainer(); // Ensure container is removed on DisposeAsync for cleanup
             }
             catch (Exception ex)
             {
@@ -158,7 +142,7 @@ namespace haworks.Tests
 
         private async Task EnsureDatabaseExistsAsync(int port)
         {
-            var adminConnectionString = $"Host=localhost;Port={port};Username=myuser;Password=mypassword;Database=postgres;";
+            var adminConnectionString = $"Host=localhost;Port={port};Username=postgres;Password=mypassword;Database=postgres;"; // Connect to 'postgres' DB for admin tasks
 
             try
             {
@@ -188,7 +172,7 @@ namespace haworks.Tests
 
         private async Task SetupDatabaseAsync(int port)
         {
-            _logger.LogInformation($"Attempting to connect to PostgreSQL with user 'myuser'.");
+            _logger.LogInformation($"Attempting to connect to PostgreSQL with user '{Configuration["Database:User"] ?? "myuser"}'.");
 
             try
             {
@@ -196,9 +180,9 @@ namespace haworks.Tests
                 await connection.OpenAsync();
                 _logger.LogInformation("Successfully connected to PostgreSQL.");
 
-                var setupQuery = @"
-                    GRANT ALL PRIVILEGES ON DATABASE test_db TO myuser;
-                    ALTER USER myuser CREATEDB;";
+                var setupQuery = $@"
+                    GRANT ALL PRIVILEGES ON DATABASE test_db TO ""{Configuration["Database:User"] ?? "myuser"}"";
+                    ALTER USER ""{Configuration["Database:User"] ?? "myuser"}"" CREATEDB;";
 
                 await using (var cmd = new NpgsqlCommand(setupQuery, connection))
                 {
@@ -237,6 +221,35 @@ namespace haworks.Tests
             }
 
             await context.SaveChangesAsync();
+        }
+
+
+        public async Task ResetDatabaseAsync()
+        {
+            _logger.LogInformation("Resetting database by truncating tables...");
+            try
+            {
+                await using var connection = new NpgsqlConnection(_connectionString);
+                await connection.OpenAsync();
+
+                // Truncate tables to reset database - Adjust table names if needed to match your schema
+                var truncateQuery = @"
+                    TRUNCATE TABLE ""AspNetUsers"" CASCADE;
+                    TRUNCATE TABLE ""RefreshTokens"" CASCADE;
+                    -- Add other tables you want to truncate for test isolation if necessary
+                ";
+
+                await using (var cmd = new NpgsqlCommand(truncateQuery, connection))
+                {
+                    await cmd.ExecuteNonQueryAsync();
+                }
+                _logger.LogInformation("Database reset completed by truncating tables.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error resetting database: {ex.Message}");
+                throw; // Re-throw to fail test setup if database reset fails
+            }
         }
 
         private string GetProjectPath()
@@ -283,6 +296,18 @@ namespace haworks.Tests
             }
 
             return testConfigPath;
+        }
+
+        // Access Configuration for test settings
+        public IConfiguration Configuration
+        {
+            get
+            {
+                var builder = new ConfigurationBuilder()
+                    .SetBasePath(GetTestConfigPath())
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                return builder.Build();
+            }
         }
     }
 

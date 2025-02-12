@@ -68,4 +68,7 @@ create_networks
 create_volume "certs-volume"
 
 create_volume "vault-secrets"
+
+create_volume "pgpool-config"
+
 log "Docker setup completed successfully."

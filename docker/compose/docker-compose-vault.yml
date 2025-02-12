@@ -37,7 +37,7 @@ services:
     ports:
       - "8200:8200"
     volumes:
-      - vault-secrets:/vault/secrets
+      - ../../vault/secrets:/vault/secrets
       - ../../vault/config:/vault/config
       - ../../vault/scripts:/vault/scripts
       - vault-data:/vault/file                 # Persistent volume for Vault data
@@ -89,3 +89,4 @@ volumes:
     external: true
   vault-secrets:
     external: true
+

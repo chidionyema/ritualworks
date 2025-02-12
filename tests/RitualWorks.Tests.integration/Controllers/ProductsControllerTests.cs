@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using haworks.Controllers;
 using haworks.Db;
+using haworks.Dto;
 using Xunit;
 
 namespace haworks.Tests
@@ -74,10 +75,18 @@ namespace haworks.Tests
             {
                 Name = "Test Product",
                 Description = "Test Description",
-                Price = 9.99M,
+                UnitPrice = 9.99M,
                 Stock = 10,
                 CategoryId = createdCategory.Id,
-                ImageUrls = new List<string> { "http://example.com/image.jpg" }
+                Contents = new List<ContentDto>
+                {
+                    new ContentDto
+                    {
+                        Url = "http://example.com/image.jpg",
+                        BlobName = "image.jpg",
+                        ContentType = ContentType.Image
+                    }
+                }
             };
 
             var response = await _client.PostAsJsonAsync("/api/products", productDto);
@@ -101,10 +110,18 @@ namespace haworks.Tests
             {
                 Name = "Test Product",
                 Description = "Test Description",
-                Price = 9.99M,
+                UnitPrice = 9.99M,
                 Stock = 10,
                 CategoryId = createdCategory.Id,
-                ImageUrls = new List<string> { "http://example.com/image.jpg" }
+                Contents = new List<ContentDto>
+                {
+                    new ContentDto
+                    {
+                        Url = "http://example.com/image.jpg",
+                        BlobName = "image.jpg",
+                        ContentType = ContentType.Image
+                    }
+                }
             };
             var createResponse = await _client.PostAsJsonAsync("/api/products", createProductDto);
             createResponse.EnsureSuccessStatusCode();
@@ -136,10 +153,18 @@ namespace haworks.Tests
             {
                 Name = "Test Product",
                 Description = "Test Description",
-                Price = 9.99M,
+                UnitPrice = 9.99M,
                 Stock = 10,
                 CategoryId = createdCategory.Id,
-                ImageUrls = new List<string> { "http://example.com/image.jpg" }
+                Contents = new List<ContentDto>
+                {
+                    new ContentDto
+                    {
+                        Url = "http://example.com/image.jpg",
+                        BlobName = "image.jpg",
+                        ContentType = ContentType.Image
+                    }
+                }
             };
 
             var productResponse = await _client.PostAsJsonAsync("/api/products", productDto);
@@ -160,7 +185,7 @@ namespace haworks.Tests
             var invalidProductDto = new ProductDto
             {
                 Name = "", // Invalid: empty name
-                Price = -10, // Invalid: negative price
+                UnitPrice = -10, // Invalid: negative price
                 CategoryId = Guid.Empty // Invalid: empty GUID
             };
 
@@ -198,19 +223,28 @@ namespace haworks.Tests
                 {
                     Name = name,
                     Description = "Test Description",
-                    Price = 9.99M,
+                    UnitPrice = 9.99M,
                     Stock = 10,
                     CategoryId = createdCategory.Id,
-                    ImageUrls = new List<string> { "http://example.com/image.jpg" }
+                    Contents = new List<ContentDto>
+                    {
+                        new ContentDto
+                        {
+                            Url = "http://example.com/image.jpg",
+                            BlobName = "image.jpg",
+                            ContentType = ContentType.Image
+                        }
+                    }
                 };
 
-                await _client.PostAsJsonAsync("/api/products", productDto);
+                var response = await _client.PostAsJsonAsync("/api/products", productDto);
+                response.EnsureSuccessStatusCode();
             }
 
             // Retrieve the second page of products, expecting items sorted alphabetically
-            var response = await _client.GetAsync("/api/products?page=2&pageSize=10");
-            response.EnsureSuccessStatusCode();
-            var products = await response.Content.ReadFromJsonAsync<IEnumerable<ProductDto>>();
+            var responsePage = await _client.GetAsync("/api/products?page=2&pageSize=10");
+            responsePage.EnsureSuccessStatusCode();
+            var products = await responsePage.Content.ReadFromJsonAsync<IEnumerable<ProductDto>>();
 
             // Assert the page contains the correct number of items
             Assert.Equal(10, products.Count());

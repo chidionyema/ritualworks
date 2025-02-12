@@ -166,9 +166,10 @@ configure_vault_postgresql_roles() {
     # The entire multi-line command is enclosed in double quotes for the shell variable.
     escaped_creation_statements="CREATE ROLE \\\"{{name}}\\\" WITH LOGIN PASSWORD '{{password}}' VALID UNTIL '{{expiration}}'; \
     GRANT CONNECT ON DATABASE your_postgres_db TO \\\"{{name}}\\\"; \
-    GRANT USAGE ON SCHEMA public TO \\\"{{name}}\\\"; \
+    GRANT USAGE, CREATE ON SCHEMA public TO \\\"{{name}}\\\"; \
     GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO \\\"{{name}}\\\"; \
     ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO \\\"{{name}}\\\";"
+
 
     # Execute Vault commands inside the container
     docker exec "$VAULT_CONTAINER_NAME" /bin/sh -c "
@@ -181,19 +182,19 @@ configure_vault_postgresql_roles() {
         fi
 
         # Configure the PostgreSQL connection
-        vault write database/config/postgresql \
-            plugin_name=postgresql-database-plugin \
-            allowed_roles='vault' \
-            connection_url="postgresql://postgres:your_actual_password@pgpool:5432/$db_name?sslmode=verify-full" \
-            username='postgres' \
-            password='$postgres_password'
+       vault write database/config/postgresql \
+        plugin_name=postgresql-database-plugin \
+        allowed_roles='vault' \
+        connection_url="postgresql://postgres:your_actual_password@postgres_primary:5432/your_postgres_db?sslmode=verify-full" \
+        username='postgres' \
+        password='your_actual_password'
 
         # Define the role with the escaped creation statements exactly as shown
         vault write database/roles/vault \
             db_name=postgresql \
             creation_statements=\"$escaped_creation_statements\" \
-            default_ttl='1h' \
-            max_ttl='24h'
+            default_ttl='100m' \
+            max_ttl='100m'
     " || error_exit "Failed to configure Vault PostgreSQL roles."
 
     log "Vault PostgreSQL roles configured successfully."

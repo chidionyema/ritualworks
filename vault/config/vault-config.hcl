@@ -21,8 +21,7 @@ listener "tcp" {
   tls_key_file  = "/certs-volume/vault.key"
   tls_client_ca_file = "/certs-volume/ca.crt"
   tls_disable   = "false"          # Disabling TLS (use only in development)
-  verify_incoming = false
-  verify_outgoing = false
+
 }
 
 # Vault API and cluster configuration

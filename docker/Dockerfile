@@ -23,5 +23,9 @@ WORKDIR /app
 # Copy published output from the build stage
 COPY --from=build /app/publish .
 
-# Set the entrypoint for the application
-ENTRYPOINT ["dotnet", "haworks.dll"]
+# Copy the entrypoint script into the image
+COPY /scripts/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Set the entrypoint to the script instead of directly launching dotnet haworks.dll
+ENTRYPOINT ["/app/entrypoint.sh"]

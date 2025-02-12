@@ -1,229 +1,555 @@
-﻿using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using Moq;
-using haworks.Controllers;
-using haworks.Db;
-using haworks.DTOs;
-using Xunit;
-using UserRegistrationDto = haworks.Controllers.UserRegistrationDto;
-using UserLoginDto = haworks.Controllers.UserLoginDto;
 using Microsoft.Extensions.Logging;
+using haworks.Controllers;
+using haworks.Models;
+using haworks.Dto;
+using haworks.Db;
+using Moq;
+using Xunit;
+using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System;
+using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 
-public class AuthenticationControllerTests
+namespace haworks.UnitTests.Controllers
 {
-    private readonly Mock<UserManager<User>> _userManagerMock;
-    private readonly Mock<IConfiguration> _configurationMock;
-
-    private readonly Mock<ILogger<AuthenticationController>> _loggerMock;
-    private readonly AuthenticationController _authenticationController;
-
-    public AuthenticationControllerTests()
+    public class AuthenticationControllerTests
     {
-        _userManagerMock = new Mock<UserManager<User>>(
-            Mock.Of<IUserStore<User>>(), null, null, null, null, null, null, null, null);
+        private readonly Mock<UserManager<User>> _userManagerMock;
+        private readonly Mock<IConfiguration> _configurationMock;
+        private readonly Mock<ILogger<AuthenticationController>> _loggerMock;
+        private readonly Mock<haworksContext> _contextMock;
+        private readonly AuthenticationController _controller;
 
-        _configurationMock = new Mock<IConfiguration>();
-        _loggerMock = new Mock<ILogger<AuthenticationController>>();
-        _configurationMock.SetupGet(x => x["Jwt:Key"]).Returns("your-128-bit-secret-key-here12345678");
-        _configurationMock.SetupGet(x => x["Jwt:Issuer"]).Returns("http://localhost:5000");
-        _configurationMock.SetupGet(x => x["Jwt:Audience"]).Returns("your-audience");
-
-        _authenticationController = new AuthenticationController(_userManagerMock.Object, _configurationMock.Object, _loggerMock.Object);
-    }
-
-    [Fact]
-    public async Task Register_ShouldReturnBadRequest_WhenRegistrationDtoIsNull()
-    {
-        // Act
-        var result = await _authenticationController.Register(null);
-
-        // Assert
-        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Invalid registration details", badRequestResult.Value);
-    }
-
-    [Fact]
-    public async Task Register_ShouldReturnBadRequest_WhenPasswordIsEmpty()
-    {
-        // Arrange
-        var registrationDto = new UserRegistrationDto
+        public AuthenticationControllerTests()
         {
-            Username = "testuser",
-            Email = "testuser@example.com",
-            Password = ""
-        };
+            _userManagerMock = new Mock<UserManager<User>>(MockBehavior.Strict); // Strict mock to ensure all setups are defined
+            _configurationMock = new Mock<IConfiguration>(MockBehavior.Strict);
+            _loggerMock = new Mock<ILogger<AuthenticationController>>(MockBehavior.Strict);
+            _contextMock = new Mock<haworksContext>(); // MockBehavior.Loose for DbContext - can be refined if needed
 
-        // Act
-        var result = await _authenticationController.Register(registrationDto);
+            // Setup Configuration Mock - Minimal for JWT settings
+            _configurationMock.Setup(config => config["Jwt:Issuer"]).Returns("testIssuer");
+            _configurationMock.Setup(config => config["Jwt:Audience"]).Returns("testAudience");
+            _configurationMock.Setup(config => config["Jwt:PrivateKey"]).Returns(GenerateTestPrivateKey()); // Implement GenerateTestPrivateKey
+            _configurationMock.Setup(config => config["ASPNETCORE_ENVIRONMENT"]).Returns("Development"); //Default environment
 
-        // Assert
-        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Invalid registration details", badRequestResult.Value);
-    }
+            _controller = new AuthenticationController(_userManagerMock.Object, _configurationMock.Object, _loggerMock.Object, _contextMock.Object);
 
-    [Fact]
-    public async Task Register_ShouldReturnOk_WhenRegistrationIsSuccessful()
-    {
-        // Arrange
-        var registrationDto = new haworks.Controllers.UserRegistrationDto
+            //Mock ControllerContext for HttpContext Access (Cookie setting etc.)
+            _controller.ControllerContext = new ControllerContext()
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+        }
+
+        private string GenerateTestPrivateKey()
         {
-            Username = "testuser",
-            Email = "testuser@example.com",
-            Password = "Test@123"
-        };
+            using var rsa = RSA.Create();
+            return rsa.ExportToPem();
+        }
 
-        var user = new User
+
+        #region Register Tests
+
+        [Fact]
+        public async Task Register_ValidInput_ReturnsOk()
         {
-            UserName = registrationDto.Username,
-            Email = registrationDto.Email
-        };
+            // Arrange
+            var registrationDto = new UserRegistrationDto { Username = "testuser", Email = "test@example.com", Password = "Password123!" };
+            var user = new User { UserName = registrationDto.Username, Email = registrationDto.Email };
+            IdentityResult successResult = IdentityResult.Success;
 
-        _userManagerMock.Setup(um => um.CreateAsync(It.IsAny<User>(), registrationDto.Password))
-            .ReturnsAsync(IdentityResult.Success);
+            _userManagerMock.Setup(um => um.CreateAsync(It.IsAny<User>(), registrationDto.Password)).ReturnsAsync(successResult);
+            _loggerMock.Setup(logger => logger.LogInformation(It.IsAny<string>(), It.IsAny<object[]>())); // Expect info log for success
 
-        // Act
-        var result = await _authenticationController.Register(registrationDto);
+            // Act
+            var result = await _controller.Register(registrationDto);
 
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        Assert.Equal("User registered successfully", okResult.Value);
-    }
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            dynamic responseObject = okResult.Value!;
+            Assert.NotNull(responseObject.Token);
+            Assert.NotNull(responseObject.UserId);
+            Assert.NotNull(responseObject.Expires);
+            Assert.Equal(200, okResult.StatusCode);
+        }
 
-    [Fact]
-    public async Task Register_ShouldReturnBadRequest_WhenRegistrationFails()
-    {
-        // Arrange
-        var registrationDto = new UserRegistrationDto
+
+        [Fact]
+        public async Task Register_InvalidInput_ReturnsBadRequest()
         {
-            Username = "testuser",
-            Email = "testuser@example.com",
-            Password = "Test@123"
-        };
+            // Arrange
+            var registrationDto = new UserRegistrationDto { Username = null, Email = "invalid-email", Password = "short" }; // Invalid DTO
+            _controller.ModelState.AddModelError("Username", "Username is required");
+            _controller.ModelState.AddModelError("Email", "Invalid email format");
+            _controller.ModelState.AddModelError("Password", "Password must be at least 8 characters");
 
-        var user = new User
+            _loggerMock.Setup(logger => logger.LogWarning(It.IsAny<string>(), It.IsAny<object[]>())); // Expect warning log for invalid input
+
+            // Act
+            var result = await _controller.Register(registrationDto);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<SerializableError>(badRequestResult.Value);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+
+
+        [Fact]
+        public async Task Register_UserManagerFails_ReturnsBadRequestWithIdentityErrors()
         {
-            UserName = registrationDto.Username,
-            Email = registrationDto.Email
-        };
+            // Arrange
+            var registrationDto = new UserRegistrationDto { Username = "testuser", Email = "test@example.com", Password = "Password123!" };
+            IdentityResult errorResult = IdentityResult.Failed(new IdentityError { Description = "Error creating user" });
 
-        var identityErrors = new IdentityError[]
+            _userManagerMock.Setup(um => um.CreateAsync(It.IsAny<User>(), registrationDto.Password)).ReturnsAsync(errorResult);
+            _loggerMock.Setup(logger => logger.LogWarning(It.IsAny<string>(), It.IsAny<object[]>())); // Expect warning log for registration failure
+
+            // Act
+            var result = await _controller.Register(registrationDto);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsAssignableFrom<object[]>(badRequestResult.Value); // IdentityError[] is boxed as object[]
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+
+        #endregion
+
+        #region Login Tests
+
+        [Fact]
+        public async Task Login_ValidCredentials_ReturnsOkWithTokenUserAndCookie()
         {
-            new IdentityError { Description = "Password is too weak" }
-        };
+            // Arrange
+            var loginDto = new UserLoginDto { Username = "testuser", Password = "Password123!" };
+            var user = new User { Id = "testuserid", UserName = loginDto.Username, Email = "test@example.com" };
 
-        _userManagerMock.Setup(um => um.CreateAsync(It.IsAny<User>(), registrationDto.Password))
-            .ReturnsAsync(IdentityResult.Failed(identityErrors));
+            _userManagerMock.Setup(um => um.FindByNameAsync(loginDto.Username)).ReturnsAsync(user);
+            _userManagerMock.Setup(um => um.CheckPasswordAsync(user, loginDto.Password)).ReturnsAsync(true);
 
-        // Act
-        var result = await _authenticationController.Register(registrationDto);
+            _contextMock.Setup(ctx => ctx.Subscriptions.AnyAsync(It.Is<System.Linq.Expressions.Expression<Func<Subscription, bool>>>(e => e.Compile()(new Subscription() { UserId = user.Id, Status = SubscriptionStatus.Active })) , default)).ReturnsAsync(true); // Mock subscription status as active
 
-        // Assert
-        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal(identityErrors, badRequestResult.Value);
-    }
+            _loggerMock.Setup(logger => logger.LogInformation(It.IsAny<string>(), It.IsAny<object[]>())); // Expect info log for successful login
 
-    [Fact]
-    public async Task Login_ShouldReturnBadRequest_WhenLoginDtoIsNull()
-    {
-        // Act
-        var result = await _authenticationController.Login(null);
+            // Act
+            var result = await _controller.Login(loginDto);
 
-        // Assert
-        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
-        Assert.Equal("Invalid login details", badRequestResult.Value);
-    }
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            dynamic responseObject = okResult.Value!;
+            Assert.NotNull(responseObject.Token);
+            Assert.NotNull(responseObject.User);
+            Assert.NotNull(responseObject.Expires);
+            Assert.Equal(user.Id, responseObject.User.Id);
+            Assert.Equal(user.UserName, responseObject.User.UserName);
+            Assert.Equal(user.Email, responseObject.User.Email);
+            Assert.True(responseObject.User.isSubscribed); // Verify subscription status is returned
+            Assert.Equal(200, okResult.StatusCode);
 
-    [Fact]
-    public async Task Login_ShouldReturnUnauthorized_WhenUserNotFound()
-    {
-        // Arrange
-        var loginDto = new UserLoginDto
+            var cookie = _controller.ControllerContext.HttpContext.Response.Cookies.SingleOrDefault(c => c.Key == "jwt");
+            Assert.NotNull(cookie); // Check JWT cookie is set
+            Assert.True(cookie.Value.Options.HttpOnly);
+            Assert.True(cookie.Value.Options.Secure);
+            Assert.Equal(SameSiteMode.Strict, cookie.Value.Options.SameSite);
+
+        }
+
+
+        [Fact]
+        public async Task Login_InvalidInput_ReturnsBadRequest()
         {
-            Username = "testuser",
-            Password = "Test@123"
-        };
+            // Arrange
+            var loginDto = new UserLoginDto { Username = null, Password = "short" };
+            _controller.ModelState.AddModelError("Username", "Username is required");
+            _controller.ModelState.AddModelError("Password", "Password is required");
+            _loggerMock.Setup(logger => logger.LogWarning(It.IsAny<string>(), It.IsAny<object[]>())); // Expect warning log for invalid input
 
-        _userManagerMock.Setup(um => um.FindByNameAsync(loginDto.Username))
-            .ReturnsAsync((User)null);
+            // Act
+            var result = await _controller.Login(loginDto);
 
-        // Act
-        var result = await _authenticationController.Login(loginDto);
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.IsType<SerializableError>(badRequestResult.Value);
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
 
-        // Assert
-        Assert.IsType<UnauthorizedResult>(result);
-    }
-
-    [Fact]
-    public async Task Login_ShouldReturnUnauthorized_WhenPasswordIsIncorrect()
-    {
-        // Arrange
-        var loginDto = new UserLoginDto
+        [Fact]
+        public async Task Login_InvalidCredentials_ReturnsUnauthorizedWithJsonError()
         {
-            Username = "testuser",
-            Password = "Test@123"
-        };
+            // Arrange
+            var loginDto = new UserLoginDto { Username = "testuser", Password = "wrongpassword" };
+            User? nullUser = null; // Simulate user not found
 
-        var user = new User
+            _userManagerMock.Setup(um => um.FindByNameAsync(loginDto.Username)).ReturnsAsync(nullUser); // User not found
+            _loggerMock.Setup(logger => logger.LogWarning(It.IsAny<string>(), It.IsAny<object[]>())); // Expect warning log for failed login
+
+            // Act
+            var result = await _controller.Login(loginDto);
+
+            // Assert
+            var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            dynamic responseObject = unauthorizedResult.Value!;
+            Assert.Equal("Invalid credentials", responseObject.message); // Check JSON error message
+            Assert.Equal(401, unauthorizedResult.StatusCode);
+        }
+
+
+        #endregion
+
+        #region Logout Tests
+
+        [Fact]
+        public void Logout_ReturnsOkAndDeletesCookie()
         {
-            UserName = loginDto.Username,
-            Email = "testuser@example.com"
-        };
+            // Arrange
+            _loggerMock.Setup(logger => logger.LogInformation(It.IsAny<string>(), It.IsAny<object[]>())); // Expect info log for logout
 
-        _userManagerMock.Setup(um => um.FindByNameAsync(loginDto.Username))
-            .ReturnsAsync(user);
+            // Act
+            var result = _controller.Logout();
 
-        _userManagerMock.Setup(um => um.CheckPasswordAsync(user, loginDto.Password))
-            .ReturnsAsync(false);
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            dynamic responseObject = okResult.Value!;
+            Assert.Equal("Logged out successfully", responseObject.Message);
+            Assert.Equal(200, okResult.StatusCode);
+            var cookie = _controller.ControllerContext.HttpContext.Response.Cookies.SingleOrDefault(c => c.Key == "jwt");
+            Assert.Null(cookie); // Check JWT cookie is deleted
+        }
 
-        // Act
-        var result = await _authenticationController.Login(loginDto);
+        #endregion
 
-        // Assert
-        Assert.IsType<UnauthorizedResult>(result);
-    }
+        #region VerifyToken Tests
 
-    [Fact]
-    public async Task Login_ShouldReturnOk_WithToken_WhenCredentialsAreCorrect()
-    {
-        // Arrange
-        var loginDto = new UserLoginDto
+        [Fact]
+        public void VerifyToken_ValidTokenInHeader_ReturnsOkWithUserInfo()
         {
-            Username = "testuser",
-            Password = "Test@123"
-        };
+            // Arrange
+            var userName = "testuser";
+            var userId = "testuserid";
+            var tokenString = GenerateTestToken(userName, userId);
 
-        var user = new User
+            _controller.ControllerContext.HttpContext.Request.Headers["Authorization"] = $"Bearer {tokenString}";
+            _loggerMock.Setup(logger => logger.LogDebug(It.IsAny<string>(), It.IsAny<object[]>())); // Expect debug log for token verification
+
+            // Act
+            var result = _controller.VerifyToken();
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            dynamic responseObject = okResult.Value!;
+            Assert.Equal(userName, responseObject.UserName);
+            Assert.Equal(userId, responseObject.UserId);
+            Assert.Equal(200, okResult.StatusCode);
+        }
+
+        [Fact]
+        public void VerifyToken_NoTokenInHeader_ReturnsUnauthorizedWithJsonError()
         {
-            UserName = loginDto.Username,
-            Email = "testuser@example.com"
-        };
+            // Arrange
+            _loggerMock.Setup(logger => logger.LogWarning(It.IsAny<string>(), It.IsAny<object[]>())); // Expect warning log for no token
 
-        _userManagerMock.Setup(um => um.FindByNameAsync(loginDto.Username))
-            .ReturnsAsync(user);
+            // Act
+            var result = _controller.VerifyToken();
 
-        _userManagerMock.Setup(um => um.CheckPasswordAsync(user, loginDto.Password))
-            .ReturnsAsync(true);
+            // Assert
+            var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            dynamic responseObject = unauthorizedResult.Value!;
+            Assert.Equal("Invalid token", responseObject.message); // Check JSON error message
+            Assert.Equal(401, unauthorizedResult.StatusCode);
+        }
 
-        _configurationMock.Setup(c => c["Jwt:Key"]).Returns("your-128-bit-secret-key-here12345678");
-        _configurationMock.Setup(c => c["Jwt:Issuer"]).Returns("http://localhost:5000");
-        _configurationMock.Setup(c => c["Jwt:Audience"]).Returns("your-audience");
+        [Fact]
+        public void VerifyToken_InvalidToken_ReturnsUnauthorizedWithJsonError()
+        {
+            // Arrange
+            var invalidToken = "invalid.jwt.token";
+            _controller.ControllerContext.HttpContext.Request.Headers["Authorization"] = $"Bearer {invalidToken}";
+            _loggerMock.Setup(logger => logger.LogWarning(It.IsAny<string>(), It.IsAny<object[]>())); // Expect warning log for invalid token
 
-        // Act
-        var result = await _authenticationController.Login(loginDto);
+            // Act
+            var result = _controller.VerifyToken();
 
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var tokenResult = okResult.Value.GetType().GetProperty("token")?.GetValue(okResult.Value, null);
-        var expirationResult = okResult.Value.GetType().GetProperty("expiration")?.GetValue(okResult.Value, null);
+            // Assert
+            var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            dynamic responseObject = unauthorizedResult.Value!;
+            Assert.Equal("Token validation failed", responseObject.message); // Check JSON error message
+            Assert.Equal(401, unauthorizedResult.StatusCode);
+        }
 
-        Assert.NotNull(tokenResult);
-        Assert.True(DateTime.UtcNow.AddHours(2) < (DateTime)expirationResult && (DateTime)expirationResult < DateTime.UtcNow.AddHours(4));
+
+        #endregion
+
+        #region RefreshToken Tests
+
+        [Fact]
+        public async Task RefreshToken_ValidTokens_ReturnsOkWithNewTokens()
+        {
+            // Arrange
+            var accessToken = GenerateTestToken("testuser", "testuserid");
+            var refreshTokenString = "validRefreshToken";
+            var refreshTokenEntity = new RefreshToken { UserId = "testuserid", Token = refreshTokenString, Expires = DateTime.UtcNow.AddDays(1) };
+            var refreshTokenRequest = new RefreshTokenRequest { AccessToken = accessToken, RefreshToken = refreshTokenString };
+
+            _contextMock.Setup(ctx => ctx.RefreshTokens.FirstOrDefaultAsync(It.IsAny<System.Linq.Expressions.Expression<Func<RefreshToken, bool>>>(), default)).ReturnsAsync(refreshTokenEntity);
+            _contextMock.Setup(ctx => ctx.RefreshTokens.Remove(refreshTokenEntity));
+            _contextMock.Setup(ctx => ctx.SaveChangesAsync(default)).ReturnsAsync(1); // Simulate successful SaveChanges
+
+            _loggerMock.Setup(logger => logger.LogInformation(It.IsAny<string>(), It.IsAny<object[]>())); // Expect info log for token refresh
+
+            // Act
+            var result = await _controller.RefreshToken(refreshTokenRequest);
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            dynamic responseObject = okResult.Value!;
+            Assert.NotNull(responseObject.AccessToken);
+            Assert.NotNull(responseObject.RefreshToken);
+            Assert.NotNull(responseObject.Expires);
+            Assert.Equal(200, okResult.StatusCode);
+            _contextMock.Verify(ctx => ctx.RefreshTokens.Remove(refreshTokenEntity), Times.Once); // Verify refresh token is removed
+            _contextMock.Verify(ctx => ctx.SaveChangesAsync(default), Times.Once); // Verify SaveChanges is called
+
+        }
+
+
+        [Fact]
+        public async Task RefreshToken_InvalidAccessToken_ReturnsUnauthorizedWithJsonError()
+        {
+            // Arrange
+            var invalidAccessToken = "invalid.access.token";
+            var refreshTokenRequest = new RefreshTokenRequest { AccessToken = invalidAccessToken, RefreshToken = "refreshToken" };
+            _loggerMock.Setup(logger => logger.LogWarning(It.IsAny<string>(), It.IsAny<object[]>())); // Expect warning log for invalid access token
+
+            // Act
+            var result = await _controller.RefreshToken(refreshTokenRequest);
+
+            // Assert
+            var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            dynamic responseObject = unauthorizedResult.Value!;
+            Assert.Equal("Invalid token", responseObject.message); // Check JSON error message
+            Assert.Equal(401, unauthorizedResult.StatusCode);
+        }
+
+
+        [Fact]
+        public async Task RefreshToken_InvalidRefreshToken_ReturnsUnauthorizedWithJsonError()
+        {
+            // Arrange
+            var accessToken = GenerateTestToken("testuser", "testuserid");
+            var refreshTokenRequest = new RefreshTokenRequest { AccessToken = accessToken, RefreshToken = "invalidRefreshToken" };
+            RefreshToken? nullRefreshToken = null; // Simulate refresh token not found
+
+            _contextMock.Setup(ctx => ctx.RefreshTokens.FirstOrDefaultAsync(It.IsAny<System.Linq.Expressions.Expression<Func<RefreshToken, bool>>>(), default)).ReturnsAsync(nullRefreshToken);
+            _loggerMock.Setup(logger => logger.LogWarning(It.IsAny<string>(), It.IsAny<object[]>())); // Expect warning log for invalid refresh token
+
+            // Act
+            var result = await _controller.RefreshToken(refreshTokenRequest);
+
+            // Assert
+            var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
+            dynamic responseObject = unauthorizedResult.Value!;
+            Assert.Equal("Invalid refresh token", responseObject.message); // Check JSON error message
+            Assert.Equal(401, unauthorizedResult.StatusCode);
+        }
+
+
+        #endregion
+
+        #region Microsoft External Login Tests
+
+        [Fact]
+        public void LoginMicrosoft_ChallengeResult()
+        {
+            // Arrange
+            var redirectUrl = "/signin-microsoft"; // Expected Redirect URI from Challenge
+            var mockUrlHelper = new Mock<IUrlHelper>();
+            mockUrlHelper.Setup(u => u.Action(It.IsAny<UrlActionContext>())).Returns(redirectUrl);
+            _controller.Url = mockUrlHelper.Object;
+
+            // Act
+            var result = _controller.LoginMicrosoft();
+
+            // Assert
+            var challengeResult = Assert.IsType<ChallengeResult>(result);
+            Assert.Equal(MicrosoftAccountDefaults.AuthenticationScheme, challengeResult.AuthenticationSchemes.First());
+            Assert.Equal(redirectUrl, challengeResult.Properties.RedirectUri);
+            Assert.Equal(MicrosoftAccountDefaults.AuthenticationScheme, challengeResult.Properties.Items["scheme"]); // Check Scheme in Properties
+
+        }
+
+
+        [Fact]
+        public async Task MicrosoftCallback_SuccessfulAuthExistingUser_ReturnsOkWithTokensUserAndCookie()
+        {
+            // Arrange
+            var email = "existinguser@example.com";
+            var user = new User { Id = "existinguserid", UserName = "ExistingUser", Email = email };
+            var authResultMock = new Mock<AuthenticateResult>();
+            authResultMock.Setup(ar => ar.Succeeded).Returns(true);
+            authResultMock.Setup(ar => ar.Principal).Returns(new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Email, email)
+            }, MicrosoftAccountDefaults.AuthenticationScheme)));
+
+
+            _userManagerMock.Setup(um => um.FindByEmailAsync(email)).ReturnsAsync(user);
+            _contextMock.Setup(ctx => ctx.Subscriptions.AnyAsync(It.Is<System.Linq.Expressions.Expression<Func<Subscription, bool>>>(e => e.Compile()(new Subscription() { UserId = user.Id, Status = SubscriptionStatus.Active })), default)).ReturnsAsync(true); // Mock subscription status active
+            _loggerMock.Setup(logger => logger.LogInformation(It.IsAny<string>(), It.IsAny<object[]>())); // Expect info log for successful external login
+
+            _controller.ControllerContext.HttpContext.RequestServices = Mock.Of<IServiceProvider>(s =>
+                Mock.Get(s).Setup(provider => provider.GetService(typeof(IAuthenticationService)))
+                           .Returns(Mock.Of<IAuthenticationService>(authServiceMock =>
+                                        Mock.Get(authServiceMock).Setup(auth => authServiceMock.AuthenticateAsync(It.IsAny<HttpContext>(), MicrosoftAccountDefaults.AuthenticationScheme))
+                                        .ReturnsAsync(authResultMock.Object)
+                                    )
+                           ).Object
+            );
+
+
+            // Act
+            var result = await _controller.MicrosoftCallback();
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            dynamic responseObject = okResult.Value!;
+            Assert.NotNull(responseObject.AccessToken);
+            Assert.NotNull(responseObject.RefreshToken);
+            Assert.NotNull(responseObject.Expires);
+            Assert.NotNull(responseObject.User);
+            Assert.Equal(user.Id, responseObject.User.Id);
+            Assert.Equal(user.UserName, responseObject.User.UserName);
+            Assert.Equal(user.Email, responseObject.User.Email);
+            Assert.True(responseObject.User.isSubscribed); // Verify subscription status is returned
+            Assert.Equal(200, okResult.StatusCode);
+
+            var cookie = _controller.ControllerContext.HttpContext.Response.Cookies.SingleOrDefault(c => c.Key == "jwt");
+            Assert.NotNull(cookie); // Check JWT cookie is set
+
+        }
+
+        [Fact]
+        public async Task MicrosoftCallback_SuccessfulAuthNewUser_ReturnsOkWithTokensUserAndCookie()
+        {
+            // Arrange
+            var email = "newuser@example.com";
+            User? nullUser = null; // Simulate user not found initially
+            var newUser = new User { Id = "newuserid", UserName = email, Email = email };
+            var identityResultSuccess = IdentityResult.Success;
+
+
+            var authResultMock = new Mock<AuthenticateResult>();
+            authResultMock.Setup(ar => ar.Succeeded).Returns(true);
+            authResultMock.Setup(ar => ar.Principal).Returns(new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Email, email)
+            }, MicrosoftAccountDefaults.AuthenticationScheme)));
+
+
+            _userManagerMock.Setup(um => um.FindByEmailAsync(email)).ReturnsAsync(nullUser); // User not found initially
+            _userManagerMock.Setup(um => um.CreateAsync(It.IsAny<User>())).ReturnsAsync(identityResultSuccess); // Simulate successful user creation
+            _contextMock.Setup(ctx => ctx.Subscriptions.AnyAsync(It.Is<System.Linq.Expressions.Expression<Func<Subscription, bool>>>(e => e.Compile()(new Subscription() { UserId = newUser.Id, Status = SubscriptionStatus.Active })), default)).ReturnsAsync(false); // Mock subscription status inactive
+            _loggerMock.Setup(logger => logger.LogInformation(It.IsAny<string>(), It.IsAny<object[]>())); // Expect info log for successful external login
+
+            _controller.ControllerContext.HttpContext.RequestServices = Mock.Of<IServiceProvider>(s =>
+                Mock.Get(s).Setup(provider => provider.GetService(typeof(IAuthenticationService)))
+                           .Returns(Mock.Of<IAuthenticationService>(authServiceMock =>
+                                        Mock.Get(authServiceMock).Setup(auth => authServiceMock.AuthenticateAsync(It.IsAny<HttpContext>(), MicrosoftAccountDefaults.AuthenticationScheme))
+                                        .ReturnsAsync(authResultMock.Object)
+                                    )
+                           ).Object
+            );
+
+            // Act
+            var result = await _controller.MicrosoftCallback();
+
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            dynamic responseObject = okResult.Value!;
+            Assert.NotNull(responseObject.AccessToken);
+            Assert.NotNull(responseObject.RefreshToken);
+            Assert.NotNull(responseObject.Expires);
+            Assert.NotNull(responseObject.User);
+            Assert.Equal(newUser.Id, responseObject.User.Id);
+            Assert.Equal(newUser.UserName, responseObject.User.UserName);
+            Assert.Equal(newUser.Email, responseObject.User.Email);
+            Assert.False(responseObject.User.isSubscribed); // Verify subscription status is returned
+            Assert.Equal(200, okResult.StatusCode);
+
+            var cookie = _controller.ControllerContext.HttpContext.Response.Cookies.SingleOrDefault(c => c.Key == "jwt");
+            Assert.NotNull(cookie); // Check JWT cookie is set
+        }
+
+
+        [Fact]
+        public async Task MicrosoftCallback_ExternalAuthFails_ReturnsBadRequestWithJsonError()
+        {
+            // Arrange
+            var authResultMock = new Mock<AuthenticateResult>();
+            authResultMock.Setup(ar => ar.Succeeded).Returns(false);
+            authResultMock.Setup(ar => ar.Failure).Returns(new Exception("External auth failed"));
+            _loggerMock.Setup(logger => logger.LogWarning(It.IsAny<string>(), It.IsAny<object[]>())); // Expect warning log for failed external auth
+
+            _controller.ControllerContext.HttpContext.RequestServices = Mock.Of<IServiceProvider>(s =>
+               Mock.Get(s).Setup(provider => provider.GetService(typeof(IAuthenticationService)))
+                          .Returns(Mock.Of<IAuthenticationService>(authServiceMock =>
+                                       Mock.Get(authServiceMock).Setup(auth => authServiceMock.AuthenticateAsync(It.IsAny<HttpContext>(), MicrosoftAccountDefaults.AuthenticationScheme))
+                                       .ReturnsAsync(authResultMock.Object)
+                                   )
+                          ).Object
+           );
+
+
+            // Act
+            var result = await _controller.MicrosoftCallback();
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            dynamic responseObject = badRequestResult.Value!;
+            Assert.Equal("External authentication failed", responseObject.message); // Check JSON error message
+            Assert.Equal(400, badRequestResult.StatusCode);
+        }
+
+
+        #endregion
+
+
+        private string GenerateTestToken(string userName, string userId)
+        {
+            var rsa = RSA.Create();
+            rsa.ImportFromPem(_configurationMock.Object["Jwt:PrivateKey"]);
+            var rsaSecurityKey = new RsaSecurityKey(rsa);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, userId),
+                    new Claim(JwtRegisteredClaimNames.Sub, userName),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()),
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(15),
+                Issuer = _configurationMock.Object["Jwt:Issuer"],
+                Audience = _configurationMock.Object["Jwt:Audience"],
+                SigningCredentials = new SigningCredentials(rsaSecurityKey, SecurityAlgorithms.RsaSsaPssSha256)
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+
     }
 }

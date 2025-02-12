@@ -1,47 +1,38 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-
-<PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <IsPackable>false</IsPackable>
-    <PreserveCompilationContext>true</PreserveCompilationContext>
-</PropertyGroup>
+  <PropertyGroup>
+      <TargetFramework>net9.0</TargetFramework>
+      <IsPackable>false</IsPackable>
+      <PreserveCompilationContext>true</PreserveCompilationContext>
+  </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Storage.Blobs" Version="12.20.0" />
-    <PackageReference Include="coverlet.collector" Version="6.0.0" />
-    <PackageReference Include="Docker.DotNet" Version="3.125.15" />
-    <PackageReference Include="FluentAssertions" Version="6.12.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Core" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.6">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageReference Include="Moq" Version="4.20.70" />
-    <PackageReference Include="Npgsql" Version="8.0.3" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.Net.Http.Json" Version="8.0.0" />
-    <PackageReference Include="xunit" Version="2.8.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.1">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+      <PackageReference Include="Azure.Storage.Blobs" Version="12.20.0" />
+      <PackageReference Include="coverlet.collector" Version="6.0.0" />
+      <PackageReference Include="Docker.DotNet" Version="3.125.15" />
+      <PackageReference Include="FluentAssertions" Version="6.12.0" />
+      <PackageReference Include="IdentityServer4" Version="4.1.2" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
+      <PackageReference Include="Microsoft.Net.Http.Headers" Version="9.0.1" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+      <PackageReference Include="Moq" Version="4.20.70" />
+      <PackageReference Include="Npgsql" Version="9.0.0" />
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
+      <PackageReference Include="System.Net.Http.Json" Version="9.0.0" />
+      <PackageReference Include="xunit" Version="2.8.1" />
+      <PackageReference Include="xunit.runner.visualstudio" Version="2.8.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="Xunit" />
+      <Using Include="Xunit" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\haworks.csproj">
-      <ReferenceSourceTarget></ReferenceSourceTarget>
-    </ProjectReference>
+      <ProjectReference Include="..\..\src\haworks.csproj" />
   </ItemGroup>
+
 </Project>

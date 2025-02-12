@@ -56,7 +56,7 @@ COMPOSE_FRONTEND_FILE="../docker/compose/docker-compose-frontend-api.yml"
 # ============================
 
 # Build backend services
-build_backend_services "$COMPOSE_BACKEND_FILE"
+# build_backend_services "$COMPOSE_BACKEND_FILE"
 
 
 # ============================
@@ -68,6 +68,6 @@ log "Delaying startup of frontend services to ensure backend services are ready.
 sleep 13  # Adjust the delay time as necessary
 
 # Start and scale frontend services (scale the 'app' service to 3 instances)
-start_and_scale_frontend_services "$COMPOSE_FRONTEND_FILE" 3
+start_and_scale_frontend_services "$COMPOSE_FRONTEND_FILE" 2
 
 log "Deployment completed successfully. All services are up and running."

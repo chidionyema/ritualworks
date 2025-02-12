@@ -17,19 +17,23 @@ namespace haworks.Tests
         private readonly Func<int, Task> _postStartCallback;
         private DockerClient _dockerClient;
         private string _containerId;
+        private readonly TimeSpan _healthCheckTimeout; // Make timeout configurable
 
-        public string ContainerName => _containerName; // Expose the container name
+        public string ContainerName => _containerName;
 
-        public DockerHelper(ILogger<DockerHelper> logger, string imageName, string containerName, Func<int, Task> postStartCallback = null)
+        // Constructor to accept health check timeout
+        public DockerHelper(ILogger<DockerHelper> logger, string imageName, string containerName, Func<int, Task> postStartCallback = null, TimeSpan? healthCheckTimeout = null)
         {
             _logger = logger;
             _imageName = imageName;
             _containerName = containerName;
             _postStartCallback = postStartCallback;
             _dockerClient = new DockerClientConfiguration(new Uri("unix:///var/run/docker.sock")).CreateClient();
+            _healthCheckTimeout = healthCheckTimeout ?? TimeSpan.FromMinutes(5); // Default timeout if not provided
         }
 
-        // Method to return the DockerClient instance
+        // Method to return the DockerClient instance - Consider if this is really needed for external use.
+        // If not needed, consider removing to better encapsulate Docker interactions within DockerHelper.
         public DockerClient GetDockerClient()
         {
             return _dockerClient;
@@ -100,9 +104,9 @@ namespace haworks.Tests
             }
             catch (Exception ex)
             {
-                // Log the error and allow the container to keep running
+                // Improved error handling: Re-throw exception to signal container start failure.
                 _logger.LogError($"Error starting container {_containerName}: {ex.Message}");
-                // DO NOT stop or remove the container here
+                throw new Exception($"Failed to start Docker container '{_containerName}'. See logs for details.", ex);
             }
         }
 
@@ -110,10 +114,9 @@ namespace haworks.Tests
         {
             _logger.LogInformation("Waiting for the container to become healthy...");
 
-            var timeout = TimeSpan.FromMinutes(5); // Adjust as needed
             var startTime = DateTime.UtcNow;
 
-            while (DateTime.UtcNow - startTime < timeout)
+            while (DateTime.UtcNow - startTime < _healthCheckTimeout) // Use configurable timeout
             {
                 var containerStatus = await _dockerClient.Containers.InspectContainerAsync(_containerId);
                 if (containerStatus.State.Health?.Status == "healthy" || containerStatus.State.Status == "running")
@@ -125,8 +128,8 @@ namespace haworks.Tests
                 await Task.Delay(1000); // Wait 1 second before checking again
             }
 
-            _logger.LogWarning($"Container {_containerName} did not become healthy within the allotted time.");
-            // Instead of stopping, log and allow the container to keep running
+            _logger.LogWarning($"Container {_containerName} did not become healthy within the allotted time ({_healthCheckTimeout}).");
+            // Log a warning, but let the test fixture decide how to handle it (e.g., fail test or proceed with caution).
         }
 
         public async Task StopContainer()
