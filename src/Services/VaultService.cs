@@ -12,7 +12,12 @@ using Polly;
 
 namespace Haworks.Services
 {
-    public class VaultService
+     public interface IVaultService
+    {
+        Task<string> GetDatabaseConnectionString();
+        Task StartCredentialRenewal(CancellationToken cancellationToken);
+    }
+    public class VaultService : IVaultService
     {
         private readonly IVaultClient _client;
         private VaultSharp.V1.SecretsEngines.UsernamePasswordCredentials _currentCredentials;
@@ -29,7 +34,7 @@ namespace Haworks.Services
             _client = new VaultClient(vaultSettings);
         }
 
-        public async Task<string> GetDatabaseConnectionString()
+        public virtual async Task<string> GetDatabaseConnectionString()
         {
             // Fetch new credentials if none exist or if they are about to expire
             if (_currentCredentials == null || IsLeaseAboutToExpire())

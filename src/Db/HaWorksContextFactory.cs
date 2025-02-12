@@ -1,52 +1,74 @@
-﻿using haworks.Contracts;
-using Microsoft.EntityFrameworkCore;
-using Npgsql.EntityFrameworkCore.PostgreSQL;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.IO;
-using Microsoft.Extensions.Configuration;
-using Haworks.Services;
 
 namespace haworks.Db
 {
     public class haworksContextFactory : IDesignTimeDbContextFactory<haworksContext>
     {
-        private readonly IConnectionStringProvider _connectionStringProvider;
-
-        // Constructor for runtime DI
-        public haworksContextFactory(IConnectionStringProvider connectionStringProvider)
-        {
-            _connectionStringProvider = connectionStringProvider;
-        }
-
-        // Fallback constructor for design-time operations
-        public haworksContextFactory() { }
-
         public haworksContext CreateDbContext(string[] args)
         {
-            // Initialize configuration
+            // Build configuration from the current directory.
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile("appsettings.Development.json", optional: true)
+                .AddEnvironmentVariables()
                 .Build();
 
-            // Initialize VaultService
-            var vaultService = new VaultService(config);
+            // Determine the current environment.
+            string env = config["ASPNETCORE_ENVIRONMENT"] ?? "Development";
+            string connectionString = string.Empty;
 
-            // Retrieve the database connection string from Vault
-            string connectionString = vaultService.GetDatabaseConnectionString().Result;
+            if (env.Equals("Development", StringComparison.OrdinalIgnoreCase))
+            {
+                // For local development (and migrations), use the default connection string.
+                connectionString = config.GetConnectionString("DefaultConnection");
+                Console.WriteLine($"[Debug] Environment is '{env}'. Using default connection string from configuration.");
+            }
+            else
+            {
+                // In production (or non‑Development), attempt to retrieve the connection string via Vault.
+                // Check for the existence of the vault files.
+                var roleIdPath = config["Vault:RoleIdPath"];
+                var secretIdPath = config["Vault:SecretIdPath"];
 
-            Console.WriteLine($"[Debug] Connection string retrieved from Vault: {connectionString}");
+                if (!string.IsNullOrEmpty(roleIdPath) && File.Exists(roleIdPath) &&
+                    !string.IsNullOrEmpty(secretIdPath) && File.Exists(secretIdPath))
+                {
+                    try
+                    {
+                        // Initialize your VaultService (assumed to be implemented elsewhere).
+                        var vaultService = new Haworks.Services.VaultService(config);
+                        connectionString = vaultService.GetDatabaseConnectionString().Result;
+                        Console.WriteLine("[Debug] Retrieved connection string from Vault.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[Error] Failed to retrieve connection string from Vault: {ex.Message}");
+                        // Fall back to default connection string.
+                        connectionString = config.GetConnectionString("DefaultConnection");
+                        Console.WriteLine("[Debug] Using default connection string from configuration as fallback.");
+                    }
+                }
+                else
+                {
+                    // Fallback if vault files are missing.
+                    connectionString = config.GetConnectionString("DefaultConnection");
+                    Console.WriteLine("[Debug] Vault files not found. Using default connection string from configuration.");
+                }
+            }
 
-            // Create DbContextOptions
+            // Configure the DbContext options.
             var optionsBuilder = new DbContextOptionsBuilder<haworksContext>();
             optionsBuilder
                 .UseNpgsql(connectionString)
                 .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))
                 .EnableDetailedErrors();
 
-            // Create and return the context
             return new haworksContext(optionsBuilder.Options);
         }
     }

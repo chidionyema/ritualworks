@@ -237,10 +237,11 @@ public partial class Program
         builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
         builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
         builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-        builder.Services.AddScoped<IContentService, ContentService>();
-        builder.Services.AddScoped<IContentRepository, ContentRepository>();
+       // builder.Services.AddScoped<IContentService, ContentService>();
+       // builder.Services.AddScoped<IContentRepository, ContentRepository>();
         builder.Services.AddScoped<IPaymentService, haworks.Services.PaymentService>();
-        builder.Services.AddSingleton<VaultService>();
+   
+         builder.Services.AddSingleton<IVaultService, VaultService>();
 
     }
 

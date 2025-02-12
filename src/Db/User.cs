@@ -4,7 +4,7 @@ namespace haworks.Db
 {
      public class User : IdentityUser
     {
-        public string CheckoutSessionId { get; set; }
-        public string StripeCustomerId { get; set; }
+        public string? CheckoutSessionId { get; set; }
+        public string? StripeCustomerId { get; set; }
     }
 }
