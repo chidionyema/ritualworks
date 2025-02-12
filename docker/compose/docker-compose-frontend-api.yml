@@ -25,6 +25,7 @@ services:
     volumes:
       - ../../vault/secrets:/vault/secrets
       - ../../app_logs:/logs
+      - ../../scripts:/scripts
       - certs-volume:/certs-volume:rw  
     networks:
       - internal_network
