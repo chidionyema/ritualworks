@@ -2,13 +2,45 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet;
 using Docker.DotNet.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Npgsql;
+using haworks.Db;
+using Polly;
+using Polly.Retry;
+using Xunit;
+using Microsoft.AspNetCore.TestHost;
+using Haworks.Services;
+using System.Net;
+using System.Net.Http;
+using StackExchange.Redis;
 
 namespace Haworks.Tests
 {
+    // A simple pass-through delegating handler.
+    public class PassThroughHandler : DelegatingHandler
+    {
+        public PassThroughHandler(HttpMessageHandler innerHandler)
+        {
+            InnerHandler = innerHandler;
+        }
+        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            return base.SendAsync(request, cancellationToken);
+        }
+    }
+
     public class DockerHelper
     {
         private readonly ILogger<DockerHelper> _logger;
@@ -36,7 +68,15 @@ namespace Haworks.Tests
             return _dockerClient;
         }
 
-        public async Task StartContainer(int hostPort, int containerPort, List<string> environmentVariables, List<string> command = null)
+        /// <summary>
+        /// Starts a container. A HealthConfig is required.
+        /// </summary>
+        public async Task StartContainer(
+            int hostPort,
+            int containerPort,
+            List<string> environmentVariables,
+            List<string> command,
+            HealthConfig healthCheck)  // Health check is now required.
         {
             try
             {
@@ -64,11 +104,10 @@ namespace Haworks.Tests
                 }
                 else
                 {
-                    // Retrieve the dbUser from the environment variables
+                    // Retrieve dbUser from environment variables if needed.
                     var dbUser = environmentVariables.FirstOrDefault(e => e.StartsWith("POSTGRES_USER="))?
                         .Split('=')[1] ?? "myuser";
 
-                    // Create container parameters with a health check.
                     var createParams = new CreateContainerParameters
                     {
                         Image = _imageName,
@@ -78,18 +117,11 @@ namespace Haworks.Tests
                         {
                             PortBindings = new Dictionary<string, IList<PortBinding>>
                             {
-                                // Map container port (5432) to hostPort.
+                                // Map container port to hostPort.
                                 [$"{containerPort}/tcp"] = new List<PortBinding> { new PortBinding { HostPort = hostPort.ToString() } }
-                            },
+                            }
                         },
-                        // Configure the Docker health check for PostgreSQL.
-                        Healthcheck = new HealthConfig
-                        {
-                            Test = new List<string> { "CMD-SHELL", $"pg_isready -U {dbUser}" },
-                            Interval = TimeSpan.FromSeconds(5),    // 5 seconds
-                            Timeout = TimeSpan.FromSeconds(1),     // 1 second
-                            Retries = 5,
-                        },
+                        Healthcheck = healthCheck,
                         Cmd = command
                     };
 
@@ -107,9 +139,6 @@ namespace Haworks.Tests
                     _logger.LogInformation($"Executing post-start callback on port {hostPort}...");
                     await _postStartCallback(hostPort);
                 }
-
-                // Optionally, if you want to support dynamic host port assignment:
-                // if (hostPort == 0) { ... retrieve the assigned host port from inspection ... }
 
                 // Wait for container health using our configurable timeout.
                 await WaitForContainerToBeHealthy();
@@ -178,4 +207,5 @@ namespace Haworks.Tests
             }
         }
     }
+
 }

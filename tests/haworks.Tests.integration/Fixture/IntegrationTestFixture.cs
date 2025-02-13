@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Docker.DotNet;
 using Docker.DotNet.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
@@ -22,31 +23,24 @@ using Polly.Retry;
 using Xunit;
 using Microsoft.AspNetCore.TestHost;
 using Haworks.Services;
-using System.Net;
-using System.Net.Http;
+using StackExchange.Redis;
 
 namespace Haworks.Tests
 {
-    // A simple pass-through delegating handler.
-    public class PassThroughHandler : DelegatingHandler
-    {
-        public PassThroughHandler(HttpMessageHandler innerHandler)
-        {
-            InnerHandler = innerHandler;
-        }
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            return base.SendAsync(request, cancellationToken);
-        }
-    }
-
     public class IntegrationTestFixture : IAsyncLifetime
     {
         private readonly DockerHelper _postgresHelper;
+        private readonly DockerHelper _redisHelper;
         private readonly ILogger<DockerHelper> _logger;
         private const int DockerPostgresPort = 5433;
+        private const int DockerRedisPort = 6380;
         private readonly string _connectionString;
         private readonly AsyncRetryPolicy _retryPolicy;
+        private readonly IConfiguration _configuration;
+
+        // Health-check values are defined as long (in nanoseconds)
+        public HealthConfig PostgresHealthCheck { get; }
+        public HealthConfig RedisHealthCheck { get; }
 
         public IntegrationTestFixture()
         {
@@ -55,6 +49,8 @@ namespace Haworks.Tests
                 .SetBasePath(GetTestConfigPath())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .Build();
+
+            _configuration = configuration;
 
             var dbHost = configuration["Database:Host"] ?? "localhost";
             var dbPort = DockerPostgresPort.ToString();
@@ -76,6 +72,26 @@ namespace Haworks.Tests
                         _logger.LogWarning($"Retry {attempt} due to {exception.Message}. Waiting {delay.TotalSeconds} seconds...");
                     });
 
+           PostgresHealthCheck = new HealthConfig
+        {
+            Test = new List<string> { "CMD-SHELL", $"pg_isready -U {configuration["Database:User"] ?? "myuser"}" },
+            Interval = TimeSpan.FromSeconds(2),
+            Timeout = TimeSpan.FromSeconds(1),
+            Retries = 5,
+            StartPeriod = 0L
+        };
+
+        RedisHealthCheck = new HealthConfig
+        {
+            Test = new List<string> { "CMD-SHELL", "redis-cli ping | grep PONG" },
+            Interval = TimeSpan.FromSeconds(2),
+            Timeout = TimeSpan.FromSeconds(5),
+            Retries = 5,
+            StartPeriod = TimeSpan.FromSeconds(10).Ticks
+        };
+
+
+            // Initialize Postgres helper.
             _postgresHelper = new DockerHelper(
                 _logger,
                 imageName: configuration["Docker:PostgresImage"] ?? "postgres:13",
@@ -84,6 +100,19 @@ namespace Haworks.Tests
                 {
                     await EnsureDatabaseExistsAsync(port);
                     await SetupDatabaseAsync(port);
+                }
+            );
+
+            // Initialize Redis helper.
+            _redisHelper = new DockerHelper(
+                _logger,
+                imageName: configuration["Docker:RedisImage"] ?? "redis:latest",
+                containerName: configuration["Docker:RedisContainerName"] ?? "redis_test_container",
+                postStartCallback: async (port) =>
+                {
+                    // Build the connection string for Redis using the host port.
+                    var redisConnectionString = $"localhost:{port},abortConnect=false";
+                    await WaitForRedisAsync(redisConnectionString);
                 }
             );
         }
@@ -104,6 +133,7 @@ namespace Haworks.Tests
 
         public async Task InitializeAsync()
         {
+            // Start Postgres container.
             await _postgresHelper.StartContainer(
                 hostPort: int.Parse(Configuration["Docker:PostgresHostPort"] ?? DockerPostgresPort.ToString()),
                 containerPort: 5432,
@@ -111,7 +141,19 @@ namespace Haworks.Tests
                 {
                     $"POSTGRES_USER={Configuration["Database:User"] ?? "myuser"}",
                     $"POSTGRES_PASSWORD={Configuration["Database:Password"] ?? "mypassword"}"
-                }
+                },
+                command: new List<string>(),         // Pass an empty command list.
+                healthCheck: PostgresHealthCheck       // Pass the health-check.
+            );
+
+            // Start Redis container.
+           var RedisHostPort = int.Parse(_configuration["Docker:RedisHostPort"] ?? DockerRedisPort.ToString());
+            await _redisHelper.StartContainer(
+                hostPort: RedisHostPort,
+                containerPort: 6379,
+                environmentVariables: new List<string>(),
+                command: new List<string>(),
+                healthCheck: RedisHealthCheck
             );
         }
 
@@ -121,6 +163,9 @@ namespace Haworks.Tests
             {
                 await _postgresHelper.StopContainer();
                 await _postgresHelper.RemoveContainer();
+
+                await _redisHelper.StopContainer();
+                await _redisHelper.RemoveContainer();
             }
             catch (Exception ex)
             {
@@ -149,7 +194,48 @@ namespace Haworks.Tests
             }
             throw new Exception("Failed to connect to PostgreSQL after multiple retries.");
         }
+    private async Task WaitForRedisAsync(string connectionString, int maxRetries = 10, int delayMilliseconds = 2000, TimeSpan timeout = default)
+    {
+        timeout = timeout == default? TimeSpan.FromSeconds(30): timeout;
+        var options = ConfigurationOptions.Parse(connectionString);
+        options.AbortOnConnectFail = false;
 
+        using var cts = new CancellationTokenSource(timeout);
+
+        for (int retries = 0; retries < maxRetries; retries++)
+        {
+            try
+            {
+                using var redis = await ConnectionMultiplexer.ConnectAsync(options); // Correct usage
+                if (redis.IsConnected)
+                {
+                    _logger.LogInformation("Successfully connected to Redis.");
+                    return;
+                }
+                else
+                {
+                    _logger.LogWarning("Redis is not connected, retrying...");
+                }
+            }
+            catch (RedisConnectionException ex)
+            {
+                _logger.LogWarning($"Redis connection failed (attempt {retries + 1}/{maxRetries}): {ex.Message}");
+            }
+            catch (OperationCanceledException ex) when (ex.CancellationToken == cts.Token)
+            {
+                _logger.LogError($"Redis connection timed out after {timeout.TotalSeconds} seconds.");
+                throw new Exception($"Failed to connect to Redis after multiple retries within the timeout of {timeout.TotalSeconds} seconds.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Redis connection failed (attempt {retries + 1}/{maxRetries}): {ex.Message}");
+            }
+
+            await Task.Delay(delayMilliseconds);
+        }
+
+        throw new Exception("Failed to connect to Redis after multiple retries.");
+    }
         private async Task EnsureDatabaseExistsAsync(int port)
         {
             var dbUser = Configuration["Database:User"] ?? "myuser";
@@ -278,15 +364,16 @@ namespace Haworks.Tests
                 {
                     // Set environment to "Test" so that cookie logic sets Secure = false.
                     builder.UseEnvironment("Test");
-                     builder.ConfigureAppConfiguration(config => 
-                {
-                    config.AddInMemoryCollection(new Dictionary<string, string>
+                    builder.ConfigureAppConfiguration(config =>
                     {
-                        ["Jwt:Key"] = Configuration["Jwt:Key"],
-                        ["Jwt:Issuer"] = Configuration["Jwt:Issuer"],
-                        ["Jwt:Audience"] = Configuration["Jwt:Audience"]
+                        config.AddInMemoryCollection(new Dictionary<string, string>
+                        {
+                            ["Jwt:Key"] = Configuration["Jwt:Key"],
+                            ["Jwt:Issuer"] = Configuration["Jwt:Issuer"],
+                            ["Jwt:Audience"] = Configuration["Jwt:Audience"],
+                            ["Redis:ConnectionString"] = $"localhost:{DockerRedisPort},abortConnect=false"
+                        });
                     });
-                });
 
                     var appPath = GetApplicationPath();
                     var testPath = GetTestConfigPath();
@@ -317,6 +404,16 @@ namespace Haworks.Tests
                         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
                         services.AddSingleton<VaultService, FakeVaultService>();
                         services.AddSingleton<IVaultService, FakeVaultService>();
+
+                         services.AddSingleton<IConnectionMultiplexer>(sp =>
+                        {
+                            var config = sp.GetRequiredService<IConfiguration>();
+                            // Ensure your configuration includes the correct key; here we assume "Redis:ConnectionString"
+                            var redisConnectionString = config["Redis:ConnectionString"] ?? $"localhost:{DockerRedisPort},abortConnect=false";
+                            var options = ConfigurationOptions.Parse(redisConnectionString);
+                            options.AbortOnConnectFail = false;
+                            return ConnectionMultiplexer.Connect(options);
+    });
 
                         var sp = services.BuildServiceProvider();
                         using (var scope = sp.CreateScope())

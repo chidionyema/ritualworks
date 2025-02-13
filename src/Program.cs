@@ -122,12 +122,18 @@ public partial class Program
             }
 
             options.ConfigurationOptions = configurationOptions;
-        });
+          
+            var redis = ConnectionMultiplexer.Connect(configurationOptions);
 
-        var redis = ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis")!);
-        builder.Services.AddDataProtection()
+
+             builder.Services.AddDataProtection()
             .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys")
             .SetApplicationName("HAWorks"); 
+
+            
+        });
+
+       
 
         builder.Services.AddSingleton<PaymentIntentService>();
         builder.Services.AddSingleton<SessionService>(provider =>

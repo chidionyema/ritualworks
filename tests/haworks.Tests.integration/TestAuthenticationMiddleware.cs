@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace Haworks.Tests
 {
-    // Middleware to simulate authentication during testing
+    // Middleware to simulate authentication during testing - No changes needed here for ISystemClock warning
     public class TestAuthenticationMiddleware
     {
         private readonly RequestDelegate _next;
@@ -19,11 +20,11 @@ namespace Haworks.Tests
         }
 
         public async Task InvokeAsync(HttpContext context)
-        { 
+        {
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
-                new Claim(ClaimTypes.Name, "testuser") // Ensure this claim is included
+                new Claim(ClaimTypes.Name, "testuser")
             };
             var identity = new ClaimsIdentity(claims, "Test");
             var principal = new ClaimsPrincipal(identity);
@@ -33,32 +34,30 @@ namespace Haworks.Tests
         }
     }
 
-    // Custom authentication handler for testing
+    // Custom authentication handler for testing using TimeProvider.
     public class TestAuthHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         public TestAuthHandler(
             IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
-            UrlEncoder encoder,
-            ISystemClock clock)
-            : base(options, logger, encoder, clock)
+            UrlEncoder encoder) // Removed ISystemClock from constructor parameters
+            : base(options, logger, encoder) // Updated base constructor
         {
         }
+
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
-                new Claim(ClaimTypes.Name, "testuser") // Add this line to include the Name claim
+                new Claim(ClaimTypes.Name, "testuser")
             };
             var identity = new ClaimsIdentity(claims, "Test");
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, "Test");
 
-            var result = AuthenticateResult.Success(ticket);
-
-            return Task.FromResult(result);
+            return Task.FromResult(AuthenticateResult.Success(ticket));
         }
     }
 }
