@@ -1,32 +1,34 @@
- 
- using System;
- using System.ComponentModel.DataAnnotations; 
+using System;
+using System.ComponentModel.DataAnnotations; 
 
- namespace haworks.Dto
+namespace haworks.Dto
 { 
     public class CreatePaymentIntentRequest
     {  
-            [Required]
-            public Guid OrderId { get; set; }
-            [Required]
-            public CheckoutItem[] Items { get; set; } = Array.Empty<CheckoutItem>();
-            [Required]
-            public decimal TotalAmount { get; set; } 
-            [Required]
-            public UserInfo UserInfo { get; set; } = new UserInfo();
+        [Required]
+        public Guid OrderId { get; set; }
+        
+        [Required]
+        public CheckoutItem[] Items { get; set; } = Array.Empty<CheckoutItem>();
+        
+        [Required]
+        public decimal TotalAmount { get; set; } 
+        
+        [Required]
+        public UserInfo UserInfo { get; set; } = new UserInfo();
     } 
-       public class CreatePaymentIntentResponse
-       {
-            public string SessionId { get; set; }
-       }
-       public class ConfirmPaymentRequest
-       {
-            public string SessionId { get; set; } // The Stripe Checkout Session ID
-            public Guid OrderId { get; set; }    // The Order ID generated during checkout
-       }
-
+    
+    public class CreatePaymentIntentResponse
+    {
+        // Initialized with a default empty string to ensure it's never null.
+        public string SessionId { get; set; } = string.Empty;
+    }
+    
+    public class ConfirmPaymentRequest
+    {
+        // Initialized with a default empty string to ensure it's never null.
+        public string SessionId { get; set; } = string.Empty; // The Stripe Checkout Session ID
+        
+        public Guid OrderId { get; set; }    // The Order ID generated during checkout
+    }
 }
-
-
-
-

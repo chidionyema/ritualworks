@@ -31,6 +31,6 @@ namespace haworks.Db
         // Optimistic concurrency token.
         [Timestamp]
         [ConcurrencyCheck]
-        public byte[] RowVersion { get; set; }
+        public byte[] RowVersion { get; set; } = Array.Empty<byte>(); // Initialized to a non-null value
     }
 }

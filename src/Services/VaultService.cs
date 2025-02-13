@@ -7,27 +7,30 @@ using VaultSharp;
 using VaultSharp.V1.AuthMethods;
 using VaultSharp.V1.AuthMethods.AppRole;
 using VaultSharp.V1.SecretsEngines.Database;
-using VaultSharp.V1.SecretsEngines.Database.Models; // Using the VaultSharp model
+using VaultSharp.V1.SecretsEngines.Database.Models;
 using Polly;
 
 namespace Haworks.Services
 {
-     public interface IVaultService
+    public interface IVaultService
     {
         Task<string> GetDatabaseConnectionString();
         Task StartCredentialRenewal(CancellationToken cancellationToken);
     }
+
     public class VaultService : IVaultService
     {
         private readonly IVaultClient _client;
-        private VaultSharp.V1.SecretsEngines.UsernamePasswordCredentials _currentCredentials;
+        // Initialize _currentCredentials with null-forgiving operator as it will be set later.
+        private VaultSharp.V1.SecretsEngines.UsernamePasswordCredentials _currentCredentials = null!;
         private DateTime _leaseObtainedTime;
         private int _leaseDurationSeconds; // Track lease duration separately
 
         public VaultService(IConfiguration config)
         {
-            var roleId = File.ReadAllText(config["Vault:RoleIdPath"]);
-            var secretId = File.ReadAllText(config["Vault:SecretIdPath"]);
+            // Use the null-forgiving operator (!) to indicate these configuration values are expected to be non-null.
+            var roleId = File.ReadAllText(config["Vault:RoleIdPath"]!);
+            var secretId = File.ReadAllText(config["Vault:SecretIdPath"]!);
 
             var authMethod = new AppRoleAuthMethodInfo(roleId, secretId);
             var vaultSettings = new VaultClientSettings(config["Vault:Address"], authMethod);

@@ -18,12 +18,11 @@ namespace haworks.Repositories.Base
         protected readonly TContext Context;
         protected readonly ILogger Logger;
         protected readonly IMemoryCache MemoryCache;
-        // Commented out distributed cache for now
-        // protected readonly IDistributedCache DistributedCache;
+        protected readonly IDistributedCache DistributedCache; // Distributed cache enabled
 
         // Cache settings
         protected readonly TimeSpan MemoryCacheDuration = TimeSpan.FromMinutes(10);
-        // protected readonly TimeSpan DistributedCacheDuration = TimeSpan.FromHours(24);
+        protected readonly TimeSpan DistributedCacheDuration = TimeSpan.FromHours(24);
 
         private static readonly JsonSerializerOptions JsonSerializerOptions = new JsonSerializerOptions
         {
@@ -31,16 +30,16 @@ namespace haworks.Repositories.Base
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
-        protected BaseRepository(
+        public BaseRepository(
             TContext context,
             ILogger logger,
             IMemoryCache memoryCache,
-            /*IDistributedCache distributedCache*/ object distributedCachePlaceholder = null)
+            IDistributedCache distributedCache)
         {
             Context = context ?? throw new ArgumentNullException(nameof(context));
             Logger = logger ?? throw new ArgumentNullException(nameof(logger));
             MemoryCache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
-            // DistributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
+            DistributedCache = distributedCache ?? throw new ArgumentNullException(nameof(distributedCache));
         }
 
         protected async Task<T?> GetFromCacheAsync<T>(string cacheKey, Func<Task<T?>> getDatabaseValue)
@@ -54,8 +53,7 @@ namespace haworks.Repositories.Base
                     return memoryValue;
                 }
 
-                /*
-                // Distributed cache code is commented out for now:
+                // Attempt to retrieve from distributed cache
                 string? cachedData = await DistributedCache.GetStringAsync(cacheKey);
                 if (!string.IsNullOrEmpty(cachedData))
                 {
@@ -64,18 +62,14 @@ namespace haworks.Repositories.Base
                     Logger.LogInformation("Value retrieved from distributed cache for key {CacheKey}.", cacheKey);
                     return value;
                 }
-                */
 
-                // Get value from database
+                // Get value from the database
                 var dbValue = await getDatabaseValue();
                 if (dbValue != null)
                 {
-                    // Optionally cache in memory
+                    // Cache in memory and distributed cache
                     MemoryCache.Set(cacheKey, dbValue, MemoryCacheDuration);
-                    /*
-                    // Optionally, if you later want to cache in distributed cache, uncomment:
                     await SetCacheValuesAsync(cacheKey, dbValue);
-                    */
                 }
 
                 return dbValue;
@@ -91,8 +85,6 @@ namespace haworks.Repositories.Base
         {
             try
             {
-                /*
-                // Distributed cache code commented out:
                 var options = new DistributedCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = DistributedCacheDuration
@@ -100,8 +92,7 @@ namespace haworks.Repositories.Base
 
                 string serializedData = JsonSerializer.Serialize(value, JsonSerializerOptions);
                 await DistributedCache.SetStringAsync(key, serializedData, options);
-                */
-                // Use memory cache only:
+                // Also set in memory cache
                 MemoryCache.Set(key, value, MemoryCacheDuration);
             }
             catch (Exception ex)
@@ -115,10 +106,7 @@ namespace haworks.Repositories.Base
         {
             try
             {
-                /*
-                // Commented out distributed cache removal:
                 await DistributedCache.RemoveAsync(key);
-                */
                 MemoryCache.Remove(key);
             }
             catch (Exception ex)

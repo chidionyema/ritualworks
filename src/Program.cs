@@ -16,7 +16,6 @@ using haworks.Repositories;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Threading.Tasks;
 using Stripe;
 using MassTransit;
 using Minio;
@@ -33,13 +32,13 @@ using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Http;
 using System.Threading.RateLimiting;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.DataProtection;
 using System.Net.Security;
 using System.IO;
 using Haworks.Services;
 using Stripe.Checkout;
+using System.Threading.Tasks;
 public partial class Program
 {
     public static async Task Main(string[] args)
@@ -81,15 +80,14 @@ public partial class Program
     public static async Task ConfigureServicesAsync(WebApplicationBuilder builder)
     {
         builder.Services.AddAutoMapper(typeof(MappingProfile));
-       
         builder.Services.AddMemoryCache();
 
         ConfigureRateLimiting(builder);
         
-
         builder.Services.AddStackExchangeRedisCache(options =>
         {
-            var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+            // Use the null-forgiving operator since we assume the connection string is set.
+            var redisConnectionString = builder.Configuration.GetConnectionString("Redis")!;
             var configurationOptions = ConfigurationOptions.Parse(redisConnectionString);
 
             // Ensure no duplicate port assignments
@@ -115,8 +113,9 @@ public partial class Program
                     var keyPath = redisTlsConfig["PrivateKeyPath"];
                     configurationOptions.CertificateSelection += (sender, targetHost, localCertificates, remoteCertificate, acceptableIssuers) =>
                     {
-                        var clientCert = System.IO.File.ReadAllText(certPath);
-                        var privateKey = System.IO.File.ReadAllText(keyPath);
+                        // Add null-forgiving operators to indicate these values aren’t null.
+                        var clientCert = System.IO.File.ReadAllText(certPath!);
+                        var privateKey = System.IO.File.ReadAllText(keyPath!);
                         return X509Certificate2.CreateFromPem(clientCert, privateKey);
                     };
                 }
@@ -125,22 +124,18 @@ public partial class Program
             options.ConfigurationOptions = configurationOptions;
         });
 
-        var redis = ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis"));
+        var redis = ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis")!);
         builder.Services.AddDataProtection()
             .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys")
-            .SetApplicationName("HAWorks"); // Use a unique name for your application key ring.
-
+            .SetApplicationName("HAWorks"); 
 
         builder.Services.AddSingleton<PaymentIntentService>();
         builder.Services.AddSingleton<SessionService>(provider =>
-    {
-        return new SessionService(); // You can also provide custom configuration here if needed
-    });
+        {
+            return new SessionService();
+        });
 
-        // Register the connection string provider and the interceptor
-       // builder.Services.AddSingleton<IConnectionStringProvider, ConnectionStringProvider>();
         builder.Services.AddSingleton<DynamicCredentialsConnectionInterceptor>();
-
 
         // Add Identity services
         builder.Services.AddIdentity<User, IdentityRole>()
@@ -154,6 +149,9 @@ public partial class Program
         AddMinioClient(builder);
         */
         AddSwagger(builder);
+
+        // Added to remove CS1998 warning – ensuring an await is present.
+        await Task.CompletedTask;
     }
 
     private static void ConfigureRateLimiting(WebApplicationBuilder builder)
@@ -180,6 +178,7 @@ public partial class Program
             };
         });
     }
+    
     private static void ConfigureDbContext(WebApplicationBuilder builder)
     {
         builder.Services.AddDbContext<haworksContext>((serviceProvider, options) =>
@@ -187,14 +186,12 @@ public partial class Program
             var vault = serviceProvider.GetRequiredService<VaultService>();
             options.UseNpgsql(vault.GetDatabaseConnectionString().Result)
                 .AddInterceptors(new DynamicCredentialsConnectionInterceptor(vault));
-        }); // <-- Added closing parenthesis and semicolon here
+        }); 
     }
 
-
     private static void ConfigureServices(WebApplicationBuilder builder)
-    {  // Configure data protection to persist keys to a mounted volume
-       
-        builder.Services.AddControllers();
+    { 
+         builder.Services.AddControllers();
         ConfigureJwtAuthentication(builder);
         ConfigureStripe(builder);
         AddRepositoryAndServiceDependencies(builder);
@@ -235,7 +232,8 @@ public partial class Program
     private static void ConfigureStripe(WebApplicationBuilder builder)
     {
         builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
-        StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretKey"];
+        // Use the null-forgiving operator to signal that "SecretKey" is expected to be non-null.
+        StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe")["SecretKey"]!;
     }
 
     private static void AddRepositoryAndServiceDependencies(WebApplicationBuilder builder)
@@ -249,20 +247,18 @@ public partial class Program
         builder.Services.AddScoped<SubscriptionSessionStrategy>();
         builder.Services.AddScoped<StripeWebhookService>();
 
-   // Register domain services
+        // Register domain services
         builder.Services.AddScoped<IPaymentProcessingService, PaymentProcessingService>();
         builder.Services.AddScoped<ISubscriptionProcessingService, SubscriptionProcessingService>();
 
-
-
         builder.Services.AddScoped<StripeWebhookService>();
 
-       // builder.Services.AddScoped<IContentService, ContentService>();
-       // builder.Services.AddScoped<IContentRepository, ContentRepository>();;
-         // Add these lines to your services configuration
-        builder.Services.AddSingleton<ITelemetryService, ConsoleTelemetryService>();    
-         builder.Services.AddSingleton<IVaultService, VaultService>();
+        // builder.Services.AddScoped<IContentService, ContentService>();
+        // builder.Services.AddScoped<IContentRepository, ContentRepository>();
 
+        // Add these lines to your services configuration
+        builder.Services.AddSingleton<ITelemetryService, ConsoleTelemetryService>();    
+        builder.Services.AddSingleton<IVaultService, VaultService>();
     }
 
     private static void AddMassTransit(WebApplicationBuilder builder)
@@ -273,11 +269,12 @@ public partial class Program
 
             x.UsingRabbitMq((context, cfg) =>
             {
-                var rabbitMqHost = builder.Configuration["MassTransit:RabbitMq:Host"];
-                var rabbitMqUsername = builder.Configuration["MassTransit:RabbitMq:Username"];
-                var rabbitMqPassword = builder.Configuration["MassTransit:RabbitMq:Password"];
+                // Use null-forgiving operators on configuration values that must be set.
+                var rabbitMqHost = builder.Configuration["MassTransit:RabbitMq:Host"]!;
+                var rabbitMqUsername = builder.Configuration["MassTransit:RabbitMq:Username"]!;
+                var rabbitMqPassword = builder.Configuration["MassTransit:RabbitMq:Password"]!;
 
-                var rabbitMqSslEnabled = bool.Parse(builder.Configuration["MassTransit:RabbitMq:Ssl:Enabled"]);
+                var rabbitMqSslEnabled = bool.Parse(builder.Configuration["MassTransit:RabbitMq:Ssl:Enabled"]!);
                 var rabbitMqServerName = builder.Configuration["MassTransit:RabbitMq:Ssl:ServerName"];
 
                 var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
@@ -302,7 +299,8 @@ public partial class Program
 
                 cfg.PrefetchCount = 16;
                 cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromSeconds(5)));
-                cfg.UseInMemoryOutbox();
+                // Updated to use the recommended overload.
+                cfg.UseInMemoryOutbox(context);
 
                 cfg.ConfigureEndpoints(context);
             });
@@ -348,7 +346,6 @@ public partial class Program
         });
     }
 
-
     public static async Task ConfigurePipeline(WebApplication app)
     {
         if (app.Environment.IsDevelopment())
@@ -380,5 +377,3 @@ public partial class Program
         await Task.CompletedTask;
     }
 }
-
-

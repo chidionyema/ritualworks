@@ -10,10 +10,9 @@ namespace haworks.Db
         public Order(Guid id) : base(id) { }
 
         // Add a constructor to initialize properties during creation
-        public Order(Guid id,  decimal totalAmount, OrderStatus status, string? userId = null) 
+        public Order(Guid id, decimal totalAmount, OrderStatus status, string? userId = null) 
             : base(id)
         {
-    
             TotalAmount = totalAmount;
             Status = status;
             UserId = userId ?? string.Empty;
@@ -21,13 +20,12 @@ namespace haworks.Db
         }
 
         public string UserId { get; set; } = string.Empty;  
-        public string IdempotencyKey { get; set; }
+        public string IdempotencyKey { get; set; } = string.Empty;
         public ICollection<OrderItem>? OrderItems { get; set; }
         public decimal TotalAmount { get; set; }
         public OrderStatus Status { get; set; } 
         public bool IsPaymentComplete { get; set; } 
 
         public Payment? Payment { get; set; } // Navigation property (nullable)
-      
     }
 }

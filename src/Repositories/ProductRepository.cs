@@ -19,13 +19,14 @@ namespace haworks.Repositories
         private const string PRODUCTS_BY_IDS_KEY = "products_by_ids_{0}";
 
         public ProductRepository(
-            haworksContext context,
-            ILogger<ProductRepository> logger,
-            Microsoft.Extensions.Caching.Memory.IMemoryCache memoryCache,
-            /*IDistributedCache distributedCache*/ object distributedCachePlaceholder = null)
-            : base(context, logger, memoryCache, distributedCachePlaceholder)
-        {
-        }
+        haworksContext context,
+        ILogger<ProductRepository> logger,
+        Microsoft.Extensions.Caching.Memory.IMemoryCache memoryCache,
+        Microsoft.Extensions.Caching.Distributed.IDistributedCache distributedCache)
+        : base(context, logger, memoryCache, distributedCache)
+    {
+    }
+
 
         public async Task<IEnumerable<Product>> GetProductsAsync(int page, int pageSize)
         {

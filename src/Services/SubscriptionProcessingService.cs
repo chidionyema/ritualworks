@@ -166,7 +166,7 @@ namespace haworks.Services
                         _logger.LogError("User not found for user_id {UserId}.", userIdString);
                         return;
                     }
-                    var newSubscription = new Subscription
+                    var newSubscription = new haworks.Db.Subscription
                     {
                         UserId = user.Id,
                         StripeSubscriptionId = stripeSubscription.Id,

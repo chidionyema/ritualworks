@@ -26,7 +26,7 @@ namespace haworks.Db
             if (env.Equals("Development", StringComparison.OrdinalIgnoreCase))
             {
                 // For local development (and migrations), use the default connection string.
-                connectionString = config.GetConnectionString("DefaultConnection");
+                connectionString = config.GetConnectionString("DefaultConnection")!;
                 Console.WriteLine($"[Debug] Environment is '{env}'. Using default connection string from configuration.");
             }
             else
@@ -36,8 +36,8 @@ namespace haworks.Db
                 var roleIdPath = config["Vault:RoleIdPath"];
                 var secretIdPath = config["Vault:SecretIdPath"];
 
-                if (!string.IsNullOrEmpty(roleIdPath) && File.Exists(roleIdPath) &&
-                    !string.IsNullOrEmpty(secretIdPath) && File.Exists(secretIdPath))
+                if (!string.IsNullOrEmpty(roleIdPath) && File.Exists(roleIdPath!) &&
+                    !string.IsNullOrEmpty(secretIdPath) && File.Exists(secretIdPath!))
                 {
                     try
                     {
@@ -50,14 +50,14 @@ namespace haworks.Db
                     {
                         Console.WriteLine($"[Error] Failed to retrieve connection string from Vault: {ex.Message}");
                         // Fall back to default connection string.
-                        connectionString = config.GetConnectionString("DefaultConnection");
+                        connectionString = config.GetConnectionString("DefaultConnection")!;
                         Console.WriteLine("[Debug] Using default connection string from configuration as fallback.");
                     }
                 }
                 else
                 {
                     // Fallback if vault files are missing.
-                    connectionString = config.GetConnectionString("DefaultConnection");
+                    connectionString = config.GetConnectionString("DefaultConnection")!;
                     Console.WriteLine("[Debug] Vault files not found. Using default connection string from configuration.");
                 }
             }

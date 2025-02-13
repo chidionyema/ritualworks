@@ -21,9 +21,9 @@ namespace haworks.Repositories
         public CategoryRepository(
             haworksContext context,
             ILogger<CategoryRepository> logger,
-            IMemoryCache memoryCache,
-            /*IDistributedCache distributedCache*/ object distributedCachePlaceholder = null)
-            : base(context, logger, memoryCache, distributedCachePlaceholder)
+            Microsoft.Extensions.Caching.Memory.IMemoryCache memoryCache,
+            Microsoft.Extensions.Caching.Distributed.IDistributedCache distributedCache)
+            : base(context, logger, memoryCache, distributedCache)
         {
         }
 
@@ -41,7 +41,7 @@ namespace haworks.Repositories
             }) ?? Enumerable.Empty<Category>();
         }
 
-        public async Task<Category> GetCategoryByIdAsync(Guid id)
+        public async Task<Category?> GetCategoryByIdAsync(Guid id)
         {
             string cacheKey = string.Format(CATEGORY_KEY, id);
 
