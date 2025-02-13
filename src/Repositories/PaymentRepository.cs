@@ -128,6 +128,7 @@ namespace haworks.Repositories
             }
         }
 
+
         public async Task<IDbContextTransaction> BeginTransactionAsync()
         {
             try

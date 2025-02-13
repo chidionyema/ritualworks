@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using haworks.Contracts;
 using haworks.Db;
+using haworks.Contracts;
 using haworks.Repositories.Base;
 
 namespace haworks.Repositories
@@ -38,7 +38,7 @@ namespace haworks.Repositories
                 return await Context.Products
                     .AsNoTracking()
                     .Include(p => p.Category)
-                    .Include(p => p.Contents.Where(c => c.EntityType == nameof(Product)))
+                    .Include(p => p.Contents!.Where(c => c.EntityType == nameof(Product)))
                     .OrderBy(p => p.Name)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize)
@@ -64,7 +64,7 @@ namespace haworks.Repositories
 
                 if (includeContents)
                 {
-                    query = query.Include(p => p.Contents.Where(c => c.EntityType == nameof(Product)));
+                    query = query.Include(p => p.Contents!.Where(c => c.EntityType == nameof(Product)));
                 }
 
                 if (includeMetadata)
@@ -87,7 +87,7 @@ namespace haworks.Repositories
                 return await Context.Products
                     .AsNoTracking()
                     .Include(p => p.Category)
-                    .Include(p => p.Contents.Where(c => c.EntityType == nameof(Product)))
+                    .Include(p => p.Contents!.Where(c => c.EntityType == nameof(Product)))
                     .Where(p => p.CategoryId == categoryId)
                     .OrderBy(p => p.Name)
                     .Skip((page - 1) * pageSize)
@@ -104,7 +104,7 @@ namespace haworks.Repositories
             {
                 return await Context.Products
                     .AsNoTracking()
-                    .Include(p => p.Contents.Where(c => c.EntityType == nameof(Product)))
+                    .Include(p => p.Contents!.Where(c => c.EntityType == nameof(Product)))
                     .Where(p => productIds.Contains(p.Id))
                     .ToListAsync();
             }) ?? new List<Product>();
@@ -189,7 +189,7 @@ namespace haworks.Repositories
             try
             {
                 var product = await Context.Products
-                    .Include(p => p.Contents.Where(c => c.EntityType == nameof(Product)))
+                    .Include(p => p.Contents!.Where(c => c.EntityType == nameof(Product)))
                     .FirstOrDefaultAsync(p => p.Id == id);
 
                 if (product == null)
@@ -215,6 +215,27 @@ namespace haworks.Repositories
             }
         }
 
+        public async Task<bool> ValidateStockAsync(Guid productId, int quantity)
+        {
+            var product = await Context.Products.FirstOrDefaultAsync(p => p.Id == productId);
+            return product != null && product.Stock >= quantity;
+        }
+
+        public async Task<bool> DecrementStockAsync(Guid productId, int quantity)
+        {
+            var product = await Context.Products.FirstOrDefaultAsync(p => p.Id == productId);
+            if (product == null || product.Stock < quantity)
+                return false;
+
+            product.Stock -= quantity;
+            await Context.SaveChangesAsync();
+
+            Logger.LogInformation("Decremented stock for product {ProductId} by {Quantity}. New stock: {Stock}",
+                productId, quantity, product.Stock);
+            return true;
+        }
+
+   
         private async Task InvalidateListCachesAsync(Guid? categoryId = null)
         {
             var keysToRemove = new List<string> { PRODUCTS_LIST_KEY, PRODUCTS_BY_IDS_KEY };

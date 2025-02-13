@@ -17,5 +17,12 @@ namespace haworks.Contracts
         Task DeleteProductAsync(Guid id);
         Task SaveChangesAsync();
         Task<List<Product>> GetProductsByIdsAsync(List<Guid> productIds);
+
+        Task<bool> ValidateStockAsync(Guid productId, int quantity);
+
+         /// <summary>
+        /// Decrements the stock of the specified product.
+        /// </summary>
+        Task<bool> DecrementStockAsync(Guid productId, int quantity);
     }
 }

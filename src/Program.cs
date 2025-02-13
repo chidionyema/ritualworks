@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using haworks.Db;
 using haworks.Services;
+using haworks.Webhooks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +25,7 @@ using Serilog;
 using Serilog.Events;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Authentication;
+using Microsoft.AspNetCore.DataProtection.StackExchangeRedis;
 using StackExchange.Redis;
 using System.Net.Http;
 using System.Linq;
@@ -33,6 +35,7 @@ using System.Threading.RateLimiting;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.DataProtection;
 using System.Net.Security;
 using System.IO;
 using Haworks.Services;
@@ -82,7 +85,7 @@ public partial class Program
         builder.Services.AddMemoryCache();
 
         ConfigureRateLimiting(builder);
-        /*
+        
 
         builder.Services.AddStackExchangeRedisCache(options =>
         {
@@ -122,7 +125,11 @@ public partial class Program
             options.ConfigurationOptions = configurationOptions;
         });
 
-        */
+        var redis = ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("Redis"));
+        builder.Services.AddDataProtection()
+            .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys")
+            .SetApplicationName("HAWorks"); // Use a unique name for your application key ring.
+
 
         builder.Services.AddSingleton<PaymentIntentService>();
         builder.Services.AddSingleton<SessionService>(provider =>
@@ -185,7 +192,8 @@ public partial class Program
 
 
     private static void ConfigureServices(WebApplicationBuilder builder)
-    {
+    {  // Configure data protection to persist keys to a mounted volume
+       
         builder.Services.AddControllers();
         ConfigureJwtAuthentication(builder);
         ConfigureStripe(builder);
@@ -237,10 +245,22 @@ public partial class Program
         builder.Services.AddScoped<IPaymentRepository, PaymentRepository>();
         builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
         builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+        builder.Services.AddScoped<PaymentSessionStrategy>();
+        builder.Services.AddScoped<SubscriptionSessionStrategy>();
+        builder.Services.AddScoped<StripeWebhookService>();
+
+   // Register domain services
+        builder.Services.AddScoped<IPaymentProcessingService, PaymentProcessingService>();
+        builder.Services.AddScoped<ISubscriptionProcessingService, SubscriptionProcessingService>();
+
+
+
+        builder.Services.AddScoped<StripeWebhookService>();
+
        // builder.Services.AddScoped<IContentService, ContentService>();
-       // builder.Services.AddScoped<IContentRepository, ContentRepository>();
-        builder.Services.AddScoped<IPaymentService, haworks.Services.PaymentService>();
-   
+       // builder.Services.AddScoped<IContentRepository, ContentRepository>();;
+         // Add these lines to your services configuration
+        builder.Services.AddSingleton<ITelemetryService, ConsoleTelemetryService>();    
          builder.Services.AddSingleton<IVaultService, VaultService>();
 
     }

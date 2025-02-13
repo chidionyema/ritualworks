@@ -116,6 +116,31 @@ namespace haworks.Repositories
             }
         }
 
+        public async Task CreateGuestUserAsync(string guestId)
+        {
+            // Check if a user with the given guestId already exists.
+            var existingUser = await _context.Users.FindAsync(guestId);
+            if (existingUser == null)
+            {
+                var guestUser = new User
+                {
+                    // Use the guestId as the primary key.
+                    Id = guestId,
+                    // Create a guest username and a dummy email.
+                    UserName = $"guest_{guestId}",
+                    Email = $"{guestId}@guest.example.com"
+                };
+
+                await _context.Users.AddAsync(guestUser);
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("Created guest user with ID: {GuestId}", guestId);
+            }
+            else
+            {
+                _logger.LogInformation("Guest user with ID: {GuestId} already exists.", guestId);
+            }
+        }
+
         public async Task<IDbContextTransaction> BeginTransactionAsync()
         {
             return await _context.Database.BeginTransactionAsync();

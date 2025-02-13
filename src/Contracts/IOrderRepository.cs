@@ -14,6 +14,11 @@ namespace haworks.Contracts
         Task UpdateOrderStatusAsync(Guid orderId, OrderStatus status);
         Task SaveChangesAsync();
         Task<Order?> GetOrderByIdempotencyKeyAsync(string idempotencyKey);
+
+        /// <summary>
+        /// Creates a guest user record.
+        /// </summary>
+        Task CreateGuestUserAsync(string guestId);
         Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

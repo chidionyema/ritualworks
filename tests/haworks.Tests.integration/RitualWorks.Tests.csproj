@@ -16,7 +16,7 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="9.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
-      <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
+       <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.2" />
       <PackageReference Include="Microsoft.Net.Http.Headers" Version="9.0.1" />
       <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
       <PackageReference Include="Moq" Version="4.20.70" />
@@ -25,6 +25,7 @@
       <PackageReference Include="System.Net.Http.Json" Version="9.0.0" />
       <PackageReference Include="xunit" Version="2.8.1" />
       <PackageReference Include="xunit.runner.visualstudio" Version="2.8.1" />
+      
   </ItemGroup>
 
   <ItemGroup>

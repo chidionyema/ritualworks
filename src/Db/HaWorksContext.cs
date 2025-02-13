@@ -25,7 +25,7 @@ namespace haworks.Db
         public DbSet<WebhookEvent> WebhookEvents { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<SubscriptionPlan> SubscriptionPlans { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; } // Add this line
+        public DbSet<RefreshToken> RefreshTokens { get; set; } 
 
         public haworksContext(DbContextOptions<haworksContext> options)
             : base(options)
@@ -49,8 +49,10 @@ namespace haworks.Db
             ConfigureRelationships(modelBuilder);
             SeedData(modelBuilder);
 
-             // Configure relationship for RefreshToken if needed.
-             // Assuming RefreshToken entity already exists and has UserId property
+            modelBuilder.Entity<WebhookEvent>()
+            .HasIndex(e => e.StripeEventId)
+            .IsUnique();
+
              modelBuilder.Entity<RefreshToken>(entity =>
              {
                  entity.HasKey(rt => rt.Id); // Assuming RefreshToken has an Id property
