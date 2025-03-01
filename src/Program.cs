@@ -5,7 +5,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using Serilog.Events;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -14,18 +13,12 @@ public partial class Program
 {
     public static async Task Main(string[] args)
     {
-        // Configure Serilog as the global logger.
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Verbose()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-            .Enrich.FromLogContext()
-            .WriteTo.Console()
-            .CreateLogger();
-
         try
         {
             var builder = WebApplication.CreateBuilder(args);
-            builder.Host.UseSerilog();
+
+            // Use the logging configuration defined in the LoggingExtensions
+            builder.ConfigureLogging();
 
             // Load production configuration (tests will override this later via environment variable and factory)
             var env = builder.Environment;
@@ -36,7 +29,7 @@ public partial class Program
             // Register MVC controllers.
             builder.Services.AddControllers();
 
-            // Unconditionally register Swagger services so ISwaggerProvider is available.
+            // Register Swagger services.
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
@@ -61,7 +54,7 @@ public partial class Program
 
             var app = builder.Build();
             await app.SeedRolesAsync(); 
- 
+
             // Initialize Vault only when not running tests.
             if (!IsTestHost())
             {

@@ -3,16 +3,23 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Diagnostics;
+
+// ASP.NET Core Imports
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
+// Project-specific Imports
 using haworks.Contracts;
 using haworks.Models;
 using haworks.Dto;
 using haworks.Db;
 using haworks.Extensions;
 using Haworks.Infrastructure.Repositories;
+
+// Additional System Imports
 using System.Security;
 
 namespace haworks.Controllers
@@ -35,11 +42,11 @@ namespace haworks.Controllers
             IContentContextRepository contentRepository,
             ILogger<ContentController> logger)
         {
-            _storageService = storageService;
-            _fileValidator = fileValidator;
-            _chunkedService = chunkedService;
-            _contentRepository = contentRepository;
-            _logger = logger;
+            _storageService = storageService ?? throw new ArgumentNullException(nameof(storageService));
+            _fileValidator = fileValidator ?? throw new ArgumentNullException(nameof(fileValidator));
+            _chunkedService = chunkedService ?? throw new ArgumentNullException(nameof(chunkedService));
+            _contentRepository = contentRepository ?? throw new ArgumentNullException(nameof(contentRepository));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpPost("upload")]
@@ -48,177 +55,393 @@ namespace haworks.Controllers
             [FromQuery] Guid entityId,
             [FromForm] IFormFile file)
         {
-            var validationResult = await _fileValidator.ValidateAsync(file);
-            if (!validationResult.IsValid)
+            var stopwatch = Stopwatch.StartNew();
+            
+            try 
             {
-                return BadRequest(validationResult.Errors);
+                _logger.LogInformation(
+                    "Starting file upload. EntityId: {EntityId}, FileName: {FileName}, ContentType: {ContentType}", 
+                    entityId, file.FileName, file.ContentType);
+
+                var validationResult = await _fileValidator.ValidateAsync(file);
+                if (!validationResult.IsValid)
+                {
+                    _logger.LogWarning(
+                        "File validation failed. Errors: {ValidationErrors}", 
+                        string.Join(", ", validationResult.Errors));
+                    return BadRequest(validationResult.Errors);
+                }
+
+                await using var fileStream = file.OpenReadStream();
+                string userId = User.GetUserId() ?? "unknown";
+
+                ContentUploadResult uploadResult;
+                try 
+                {
+                    uploadResult = await _storageService.UploadAsync(
+                        fileStream,
+                        GetBucketForType(validationResult.FileType),
+                        GenerateObjectName(file.FileName, userId),
+                        file.ContentType,
+                        GetSecurityTags(validationResult.FileType)
+                    );
+                    
+                    _logger.LogInformation(
+                        "File uploaded successfully. Bucket: {Bucket}, ObjectName: {ObjectName}", 
+                        uploadResult.BucketName, uploadResult.ObjectName);
+                }
+                catch (Exception storageEx)
+                {
+                    _logger.LogError(storageEx, 
+                        "Storage upload failed. Bucket: {Bucket}, FileName: {FileName}", 
+                        GetBucketForType(validationResult.FileType), file.FileName);
+                    return StatusCode(StatusCodes.Status500InternalServerError, 
+                        "Failed to upload file to storage.");
+                }
+
+                ContentType parsedContentType = ParseContentType(file.ContentType);
+
+                var content = new Content
+                {
+                    Id = Guid.NewGuid(),
+                    EntityId = entityId,
+                    EntityType = GetBucketForType(validationResult.FileType),
+                    FileName = file.FileName,
+                    ContentType = parsedContentType,
+                    BucketName = uploadResult.BucketName,
+                    ObjectName = uploadResult.ObjectName,
+                    ETag = uploadResult.VersionId,
+                    FileSize = fileStream.Length,
+                    StorageDetails = uploadResult.StorageDetails,
+                    Path = uploadResult.Path
+                };
+
+                try 
+                {
+                    await _contentRepository.AddContentsAsync(new[] { content });
+                    _logger.LogInformation(
+                        "Content record added. ContentId: {ContentId}, Duration: {Duration}ms", 
+                        content.Id, stopwatch.ElapsedMilliseconds);
+                }
+                catch (Exception dbEx)
+                {
+                    _logger.LogError(dbEx, 
+                        "Database insertion failed. ContentId: {ContentId}", 
+                        content.Id);
+                    return StatusCode(StatusCodes.Status500InternalServerError, 
+                        "Failed to save content to database.");
+                }
+
+                return CreatedAtAction(nameof(GetContent),
+                    new { id = content.Id },
+                    MapToDto(content));
             }
-
-            await using var fileStream = file.OpenReadStream();
-            string userId = User.GetUserId() ?? "unknown";
-
-            ContentUploadResult uploadResult = await _storageService.UploadAsync(
-                fileStream,
-                GetBucketForType(validationResult.FileType),
-                GenerateObjectName(file.FileName, userId),
-                file.ContentType,
-                GetSecurityTags(validationResult.FileType)
-            );
-
-            ContentType parsedContentType = ParseContentType(file.ContentType);
-
-            var content = new Content
+            catch (Exception ex)
             {
-                Id = Guid.NewGuid(),
-                EntityId = entityId,
-                EntityType = GetBucketForType(validationResult.FileType),
-                FileName = file.FileName,
-                ContentType = parsedContentType,
-                BucketName = uploadResult.BucketName,
-                ObjectName = uploadResult.ObjectName,
-                ETag = uploadResult.VersionId,
-                FileSize = fileStream.Length,
-                StorageDetails = uploadResult.StorageDetails,
-                Path = uploadResult.Path
-            };
-
-            await _contentRepository.AddContentsAsync(new[] { content });
-
-            return CreatedAtAction(nameof(GetContent),
-                new { id = content.Id },
-                MapToDto(content));
+                _logger.LogCritical(ex, 
+                    "Unexpected error during file upload. EntityId: {EntityId}, Duration: {Duration}ms", 
+                    entityId, stopwatch.ElapsedMilliseconds);
+                return StatusCode(StatusCodes.Status500InternalServerError, 
+                    "An unexpected error occurred during file upload.");
+            }
+            finally 
+            {
+                stopwatch.Stop();
+            }
         }
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetContent(Guid id)
         {
-            Content? content = await _contentRepository.GetContentByIdAsync(id);
-            if (content == null)
+            var stopwatch = Stopwatch.StartNew();
+            
+            try 
             {
-                return NotFound();
+                _logger.LogInformation("Retrieving content. ContentId: {ContentId}", id);
+
+                Content? content = await _contentRepository.GetContentByIdAsync(id);
+                
+                if (content == null)
+                {
+                    _logger.LogWarning(
+                        "Content not found. ContentId: {ContentId}, Duration: {Duration}ms", 
+                        id, stopwatch.ElapsedMilliseconds);
+                    return NotFound();
+                }
+
+                _logger.LogInformation(
+                    "Content retrieved successfully. ContentId: {ContentId}, Duration: {Duration}ms", 
+                    id, stopwatch.ElapsedMilliseconds);
+                
+                return Ok(MapToDto(content));
             }
-            return Ok(MapToDto(content));
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, 
+                    "Error retrieving content. ContentId: {ContentId}, Duration: {Duration}ms", 
+                    id, stopwatch.ElapsedMilliseconds);
+                return StatusCode(StatusCodes.Status500InternalServerError, 
+                    "An error occurred while retrieving the content.");
+            }
+            finally 
+            {
+                stopwatch.Stop();
+            }
         }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteContent(Guid id)
         {
-            var content = await _contentRepository.GetContentByIdAsync(id);
-            if (content == null)
+            var stopwatch = Stopwatch.StartNew();
+            
+            try 
             {
-                return NotFound();
-            }
+                _logger.LogInformation("Attempting to delete content. ContentId: {ContentId}", id);
 
-            await _contentRepository.RemoveContent(content);
-            return NoContent();
+                var content = await _contentRepository.GetContentByIdAsync(id);
+                
+                if (content == null)
+                {
+                    _logger.LogWarning(
+                        "Content not found for deletion. ContentId: {ContentId}, Duration: {Duration}ms", 
+                        id, stopwatch.ElapsedMilliseconds);
+                    return NotFound();
+                }
+
+                await _contentRepository.RemoveContent(content);
+                
+                _logger.LogInformation(
+                    "Content deleted successfully. ContentId: {ContentId}, Duration: {Duration}ms", 
+                    id, stopwatch.ElapsedMilliseconds);
+                
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, 
+                    "Error deleting content. ContentId: {ContentId}, Duration: {Duration}ms", 
+                    id, stopwatch.ElapsedMilliseconds);
+                return StatusCode(StatusCodes.Status500InternalServerError, 
+                    "An error occurred while deleting the content.");
+            }
+            finally 
+            {
+                stopwatch.Stop();
+            }
         }
 
         [HttpPost("chunked/init")]
-        [RequestSizeLimit(10_000)] // Limit the size of the initialization request
+        [RequestSizeLimit(10_000)]
         public async Task<IActionResult> InitChunkSession([FromBody] ChunkSessionRequest request)
         {
-            if (!ModelState.IsValid)
+            var stopwatch = Stopwatch.StartNew();
+            
+            try 
             {
-                return BadRequest(ModelState);
-            }
+                _logger.LogInformation(
+                    "Initializing chunk session. EntityId: {EntityId}, FileName: {FileName}", 
+                    request.EntityId, request.FileName);
 
-            try
-            {
+                if (!ModelState.IsValid)
+                {
+                    _logger.LogWarning(
+                        "Invalid chunk session request. Errors: {ModelErrors}", 
+                        ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                    return BadRequest(ModelState);
+                }
+
                 var session = await _chunkedService.InitSessionAsync(request);
-                return CreatedAtAction(nameof(GetChunkSessionStatus), new { sessionId = session.Id }, session);
+                
+                _logger.LogInformation(
+                    "Chunk session initialized. SessionId: {SessionId}, Duration: {Duration}ms", 
+                    session.Id, stopwatch.ElapsedMilliseconds);
+                
+                return CreatedAtAction(
+                    nameof(GetChunkSessionStatus), 
+                    new { sessionId = session.Id }, 
+                    session
+                );
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error initializing chunk session for entity {EntityId} and file {FileName}", request.EntityId, request.FileName);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to initialize chunk session.");
+                _logger.LogError(ex, 
+                    "Error initializing chunk session. EntityId: {EntityId}, Duration: {Duration}ms", 
+                    request.EntityId, stopwatch.ElapsedMilliseconds);
+                
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError, 
+                    "Failed to initialize chunk session."
+                );
+            }
+            finally 
+            {
+                stopwatch.Stop();
             }
         }
 
-
         [HttpPost("chunked/{sessionId}/{chunkIndex}")]
-        [RequestSizeLimit(100_000_000)] // Adjust chunk size limit as needed
+        [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> UploadChunk(Guid sessionId, int chunkIndex, IFormFile chunkFile)
         {
-            if (chunkFile == null || chunkFile.Length == 0)
+            var stopwatch = Stopwatch.StartNew();
+            
+            try 
             {
-                return BadRequest("Invalid chunk file.");
-            }
+                _logger.LogInformation(
+                    "Uploading chunk. SessionId: {SessionId}, ChunkIndex: {ChunkIndex}", 
+                    sessionId, chunkIndex);
 
-            try
-            {
+                if (chunkFile == null || chunkFile.Length == 0)
+                {
+                    _logger.LogWarning(
+                        "Invalid chunk file. SessionId: {SessionId}, ChunkIndex: {ChunkIndex}", 
+                        sessionId, chunkIndex);
+                    return BadRequest("Invalid chunk file.");
+                }
+
                 await _chunkedService.ProcessChunkAsync(sessionId, chunkIndex, chunkFile.OpenReadStream());
-                return Ok(new { Message = $"Chunk {chunkIndex} uploaded successfully for session {sessionId}" });
+                
+                _logger.LogInformation(
+                    "Chunk uploaded successfully. SessionId: {SessionId}, ChunkIndex: {ChunkIndex}, Duration: {Duration}ms", 
+                    sessionId, chunkIndex, stopwatch.ElapsedMilliseconds);
+                
+                return Ok(new { 
+                    Message = $"Chunk {chunkIndex} uploaded successfully for session {sessionId}" 
+                });
             }
             catch (InvalidOperationException ex)
             {
+                _logger.LogWarning(ex, 
+                    "Invalid operation during chunk upload. SessionId: {SessionId}, ChunkIndex: {ChunkIndex}", 
+                    sessionId, chunkIndex);
                 return NotFound(ex.Message);
-            }
-            catch (ArgumentOutOfRangeException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (InvalidDataException ex)
-            {
-                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error processing chunk {ChunkIndex} for session {SessionId}", chunkIndex, sessionId);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to process chunk.");
+                _logger.LogError(ex, 
+                    "Error processing chunk. SessionId: {SessionId}, ChunkIndex: {ChunkIndex}, Duration: {Duration}ms", 
+                    sessionId, chunkIndex, stopwatch.ElapsedMilliseconds);
+                
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError, 
+                    "Failed to process chunk."
+                );
+            }
+            finally 
+            {
+                stopwatch.Stop();
             }
         }
-
 
         [HttpPost("chunked/complete/{sessionId}")]
         public async Task<IActionResult> CompleteChunkSession(Guid sessionId)
         {
-            try
+            var stopwatch = Stopwatch.StartNew();
+            
+            try 
             {
-                var content = await _chunkedService.CompleteSessionAsync(sessionId, User.GetUserId() ?? "unknown");
-                return CreatedAtAction(nameof(GetContent), new { id = content.Id }, MapToDto(content));
+                _logger.LogInformation(
+                    "Completing chunk session. SessionId: {SessionId}", 
+                    sessionId);
+
+                var content = await _chunkedService.CompleteSessionAsync(
+                    sessionId, 
+                    User.GetUserId() ?? "unknown"
+                );
+                
+                _logger.LogInformation(
+                    "Chunk session completed. SessionId: {SessionId}, ContentId: {ContentId}, Duration: {Duration}ms", 
+                    sessionId, content.Id, stopwatch.ElapsedMilliseconds);
+                
+                return CreatedAtAction(
+                    nameof(GetContent), 
+                    new { id = content.Id }, 
+                    MapToDto(content)
+                );
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(ex.Message); // Session incomplete or invalid
+                _logger.LogWarning(ex, 
+                    "Invalid operation completing chunk session. SessionId: {SessionId}", 
+                    sessionId);
+                return BadRequest(ex.Message);
             }
             catch (TimeoutException ex)
             {
-                return BadRequest(ex.Message); // Session expired
+                _logger.LogWarning(ex, 
+                    "Chunk session timeout. SessionId: {SessionId}", 
+                    sessionId);
+                return BadRequest(ex.Message);
             }
             catch (SecurityException ex)
             {
-                return BadRequest(ex.Message); // Virus detected
+                _logger.LogWarning(ex, 
+                    "Security exception in chunk session. SessionId: {SessionId}", 
+                    sessionId);
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error completing chunk session {SessionId}", sessionId);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to complete chunk session.");
+                _logger.LogError(ex, 
+                    "Error completing chunk session. SessionId: {SessionId}, Duration: {Duration}ms", 
+                    sessionId, stopwatch.ElapsedMilliseconds);
+                
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError, 
+                    "Failed to complete chunk session."
+                );
+            }
+            finally 
+            {
+                stopwatch.Stop();
             }
         }
 
         [HttpGet("chunked/session/{sessionId}")]
         public async Task<IActionResult> GetChunkSessionStatus(Guid sessionId)
         {
-            try
+            var stopwatch = Stopwatch.StartNew();
+            
+            try 
             {
+                _logger.LogInformation(
+                    "Retrieving chunk session status. SessionId: {SessionId}", 
+                    sessionId);
+
                 var session = await _chunkedService.GetSessionAsync(sessionId);
+                
+                _logger.LogInformation(
+                    "Chunk session status retrieved. SessionId: {SessionId}, Duration: {Duration}ms", 
+                    sessionId, stopwatch.ElapsedMilliseconds);
+                
                 return Ok(session);
             }
             catch (InvalidOperationException)
             {
+                _logger.LogWarning(
+                    "Chunk session not found. SessionId: {SessionId}, Duration: {Duration}ms", 
+                    sessionId, stopwatch.ElapsedMilliseconds);
+                
                 return NotFound($"Session {sessionId} not found.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error retrieving chunk session {SessionId}", sessionId);
-                return StatusCode(StatusCodes.Status500InternalServerError, "Failed to retrieve chunk session status.");
+                _logger.LogError(ex, 
+                    "Error retrieving chunk session status. SessionId: {SessionId}, Duration: {Duration}ms", 
+                    sessionId, stopwatch.ElapsedMilliseconds);
+                
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError, 
+                    "Failed to retrieve chunk session status."
+                );
+            }
+            finally 
+            {
+                stopwatch.Stop();
             }
         }
 
+        // --- Private Helper Methods ---
 
         private string GetBucketForType(string fileType) =>
             fileType switch

@@ -18,7 +18,6 @@ public static class ApplicationServicesExtensions
             .AddScoped<IContentStorageService, ContentStorageService>()
             .AddScoped<IChunkedUploadService, ChunkedUploadService>()
             .AddScoped<ICurrentUserService, CurrentUserService>();
-              
 
         return services;
     }

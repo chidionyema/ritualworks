@@ -22,6 +22,8 @@ using System.Threading.RateLimiting;
 using haworks.Models;
 using haworks.Db;
 using Microsoft.Extensions.Logging;
+using System.IdentityModel.Tokens.Jwt;
+
 
  /// <summary>
     /// All security-related extension methods (CORS, HSTS, authentication, etc.)
@@ -255,26 +257,25 @@ using Microsoft.Extensions.Logging;
 
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            // 1) Check if we have a 'jwt' cookie
             if (!Request.Cookies.TryGetValue("jwt", out var jwtValue) || string.IsNullOrEmpty(jwtValue))
             {
+                Logger.LogDebug("No jwt cookie found.");
                 return Task.FromResult(AuthenticateResult.NoResult());
             }
 
-            // 2) Validate the JWT
             try
             {
-                var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+                var handler = new JwtSecurityTokenHandler();
                 var principal = handler.ValidateToken(jwtValue, _tokenValidationParams, out var validatedToken);
-
-                // If valid, build an AuthenticationTicket
-                var ticket = new AuthenticationTicket(principal, this.Scheme.Name);
+                Logger.LogDebug("JWT cookie validated successfully. Subject: {Subject}", principal.Identity?.Name);
+                var ticket = new AuthenticationTicket(principal, Scheme.Name);
                 return Task.FromResult(AuthenticateResult.Success(ticket));
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "JWT cookie validation failed.");
+                 Logger.LogError(ex, "JWT cookie validation failed.");
                 return Task.FromResult(AuthenticateResult.Fail("Invalid JWT cookie"));
             }
         }
+
     }

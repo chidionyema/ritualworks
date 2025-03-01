@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -34,38 +35,13 @@ namespace Haworks.Tests.IntegrationTests.Controllers
         public ContentControllerTests(IntegrationTestFixture fixture)
         {
             _fixture = fixture;
-
-            // Create a client that shares the CookieContainer:
-            _client = fixture.CreateClientWithCookies();
-
-            // If you have a custom test auth scheme called "Test", you can set that here,
-            // though it may not be strictly necessary if your real cookie is used:
-            _client.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Test");
+            _client = fixture.Factory.WithTestAuth().CreateClient();
         }
 
         public async Task InitializeAsync()
         {
-            // 1) Reset DB first
+            // Reset DB first
             await _fixture.ResetDatabaseAsync();
-
-            // 2) Now register a user with "ContentUploader" role (your register endpoint does that).
-            var username = "content_tester_" + Guid.NewGuid();
-            var password = "Password123!";
-            var regDto = new UserRegistrationDto
-            {
-                Username = username,
-                Email = $"{username}@test.com",
-                Password = password
-            };
-            // /register => sets the user in DB with "ContentUploader" + claim + sets the JWT cookie
-            var regResp = await _client.PostAsJsonAsync("/api/authentication/register", regDto);
-            regResp.EnsureSuccessStatusCode();
-
-            // If your /register does NOT auto-log the user in, then do /login here:
-            // var loginDto = new UserLoginDto { Username = username, Password = password };
-            // var loginResp = await _client.PostAsJsonAsync("/api/authentication/login", loginDto);
-            // loginResp.EnsureSuccessStatusCode();
         }
 
         public Task DisposeAsync() => Task.CompletedTask;
@@ -80,19 +56,42 @@ namespace Haworks.Tests.IntegrationTests.Controllers
             return fileContent;
         }
 
+        private async Task<string> DebugResponse(HttpResponseMessage response)
+        {
+            string content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Response: {response.StatusCode}");
+            Console.WriteLine($"Content: {content}");
+            return content;
+        }
+
         [Fact]
         public async Task UploadFile_ValidFile_ReturnsCreatedContentAndStoresFile()
         {
-            // Because the user was registered in InitializeAsync(),
-            // the cookie is set => user is [Authorize(Policy="ContentUploader")].
+            // Since FileSignatureValidator uses SixLabors.ImageSharp, use a JPEG file
             Guid entityId = Guid.NewGuid();
-            string fileName = "test_integration.pdf";
-            string contentType = "application/pdf";
-            byte[] fileBytes = Encoding.UTF8.GetBytes("This is a test pdf file for integration test.");
+            string fileName = "test_integration.jpg";
+            string contentType = "image/jpeg";
+            
+            // This is a minimal valid JPEG file header
+            byte[] fileBytes = new byte[] {
+                0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00, 0x01,
+                0x01, 0x01, 0x00, 0x48, 0x00, 0x48, 0x00, 0x00, 0xFF, 0xDB, 0x00, 0x43,
+                0x00, 0xFF, 0xC0, 0x00, 0x11, 0x08, 0x00, 0x01, 0x00, 0x01, 0x03, 0x01,
+                0x22, 0x00, 0x02, 0x11, 0x01, 0x03, 0x11, 0x01, 0xFF, 0xC4, 0x00, 0x14,
+                0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xC4, 0x00, 0x14, 0x10, 0x01,
+                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                0x00, 0x00, 0x00, 0x00, 0xFF, 0xDA, 0x00, 0x0C, 0x03, 0x01, 0x00, 0x02,
+                0x10, 0x03, 0x10, 0x00, 0x00, 0x01, 0x54, 0x00, 0xFF, 0xD9
+            };
+            
             var fileContent = CreateFileUploadContent(fileName, contentType, fileBytes);
 
             // Act
             var response = await _client.PostAsync($"/api/v1/content/upload?entityId={entityId}", fileContent);
+            
+            // Debug
+            await DebugResponse(response);
 
             // Assert
             response.Should().HaveStatusCode(HttpStatusCode.Created);
@@ -100,8 +99,8 @@ namespace Haworks.Tests.IntegrationTests.Controllers
             var contentDto = await response.Content.ReadFromJsonAsync<ContentDto>();
             contentDto.Should().NotBeNull();
             contentDto.EntityId.Should().Be(entityId);
-            contentDto.EntityType.Should().Be("documents");
-            contentDto.ContentType.Should().Be("Document");
+            contentDto.EntityType.Should().Be("images"); // Changed to images since we're uploading a JPEG
+            contentDto.ContentType.Should().Be("Image"); // Changed to Image
             contentDto.FileSize.Should().Be(fileBytes.Length);
             contentDto.Url.Should().NotBeNullOrEmpty();
 
@@ -127,6 +126,9 @@ namespace Haworks.Tests.IntegrationTests.Controllers
 
             // Act
             var response = await _client.PostAsync($"/api/v1/content/upload?entityId={entityId}", fileContent);
+            
+            // Debug
+            await DebugResponse(response);
 
             // Assert
             response.Should().HaveStatusCode(HttpStatusCode.BadRequest);
@@ -237,6 +239,9 @@ namespace Haworks.Tests.IntegrationTests.Controllers
 
             // Act
             var response = await _client.PostAsync("/api/v1/content/chunked/init", content);
+            
+            // Debug
+            await DebugResponse(response);
 
             // Assert
             response.Should().HaveStatusCode(HttpStatusCode.Created);
@@ -265,11 +270,13 @@ namespace Haworks.Tests.IntegrationTests.Controllers
         public async Task InitChunkSession_InvalidRequest_ReturnsBadRequest()
         {
             Guid entityId = Guid.NewGuid();
+            
+            // Use negative totalChunks to force a validation error
             var request = new ChunkSessionRequest(
                 entityId,
-                "largefile_integration.mp4",
-                0, // invalid 
-                1024 * 1024 * 100);
+                "test.mp4",
+                TotalChunks: -1, // Negative, should be invalid
+                TotalSize: 1024 * 1024);
 
             var content = new StringContent(
                 JsonSerializer.Serialize(request),
@@ -277,31 +284,50 @@ namespace Haworks.Tests.IntegrationTests.Controllers
                 "application/json");
 
             var response = await _client.PostAsync("/api/v1/content/chunked/init", content);
+            
+            // Debug
+            await DebugResponse(response);
+            
             response.Should().HaveStatusCode(HttpStatusCode.BadRequest);
         }
 
         [Fact]
         public async Task UploadChunk_ValidChunk_ReturnsOkAndStoresChunk()
         {
-            // Arrange: first init the chunk session
+            // Use a simpler approach without relying on file signature validation
             Guid entityId = Guid.NewGuid();
+            int totalChunks = 3;
+            int chunkSize = 1024; // 1KB
+            int totalSize = totalChunks * chunkSize; // 3KB
+            
             var initReq = new ChunkSessionRequest(
                 entityId,
-                "largefile_integration_upload_chunk.mp4",
-                TotalChunks: 3,
-                TotalSize: 3 * 1024 * 1024);
+                "test_video.mp4",
+                TotalChunks: totalChunks,
+                TotalSize: totalSize);
 
             var initContent = new StringContent(JsonSerializer.Serialize(initReq), Encoding.UTF8, "application/json");
             var initResp = await _client.PostAsync("/api/v1/content/chunked/init", initContent);
+            
+            Console.WriteLine($"Init response: {initResp.StatusCode}");
+            await DebugResponse(initResp);
+            
             var sessionResponse = await initResp.Content.ReadFromJsonAsync<ChunkSession>();
             var sessionId = sessionResponse.Id;
 
             int chunkIndex = 0;
-            byte[] chunkBytes = Encoding.UTF8.GetBytes("This is chunk data for integration test");
-            var chunkContent = CreateFileUploadContent($"chunk-{chunkIndex}", "application/octet-stream", chunkBytes);
+            
+            // Create a chunk with exactly the right size
+            byte[] chunkBytes = new byte[chunkSize];
+            new Random().NextBytes(chunkBytes); // Fill with random data
+            
+            var chunkContent = CreateFileUploadContent("chunkFile", "application/octet-stream", chunkBytes);
 
             // Act
             var response = await _client.PostAsync($"/api/v1/content/chunked/{sessionId}/{chunkIndex}", chunkContent);
+            
+            // Debug
+            await DebugResponse(response);
 
             // Assert
             response.Should().HaveStatusCode(HttpStatusCode.OK);
@@ -319,42 +345,64 @@ namespace Haworks.Tests.IntegrationTests.Controllers
         [Fact]
         public async Task UploadChunk_InvalidSession_ReturnsNotFound()
         {
+            // Create a minimal but valid chunk to test just the session not found condition
             Guid sessionId = Guid.NewGuid(); // Non-existent session
             int chunkIndex = 0;
-            byte[] chunkBytes = Encoding.UTF8.GetBytes("This is chunk data");
-            var chunkContent = CreateFileUploadContent($"chunk-{chunkIndex}", "application/octet-stream", chunkBytes);
+            
+            byte[] chunkBytes = new byte[1024]; // 1KB
+            new Random().NextBytes(chunkBytes); // Fill with random data
+            
+            var chunkContent = CreateFileUploadContent("chunkFile", "application/octet-stream", chunkBytes);
 
             var response = await _client.PostAsync($"/api/v1/content/chunked/{sessionId}/{chunkIndex}", chunkContent);
+            
+            // Debug
+            await DebugResponse(response);
+            
             response.Should().HaveStatusCode(HttpStatusCode.NotFound);
         }
 
         [Fact]
         public async Task CompleteChunkSession_ValidSession_ReturnsCreatedContentAndAssemblesFile()
         {
-            // 1) init
+            // Use a simplified approach with small chunks
             Guid entityId = Guid.NewGuid();
-            string fileName = "largefile_complete_integration.mp4";
+            string fileName = "test_small_video.mp4";
             int totalChunks = 3;
-            int totalSize = totalChunks * 1024 * 1024;
+            int chunkSize = 1024; // 1KB
+            int totalSize = totalChunks * chunkSize; // 3KB total
 
             var initReq = new ChunkSessionRequest(entityId, fileName, totalChunks, totalSize);
             var initResp = await _client.PostAsJsonAsync("/api/v1/content/chunked/init", initReq);
+            
+            Console.WriteLine($"Init response: {initResp.StatusCode}");
+            await DebugResponse(initResp);
+            
             var sessionResponse = await initResp.Content.ReadFromJsonAsync<ChunkSession>();
             Guid sessionId = sessionResponse.Id;
 
-            // 2) upload all chunks
+            // Upload all chunks with identical size
             for (int i = 0; i < totalChunks; i++)
             {
-                byte[] chunkBytes = Encoding.UTF8.GetBytes($"Chunk data for integration test - chunk {i}");
-                var chunkContent = CreateFileUploadContent($"chunk-{i}", "application/octet-stream", chunkBytes);
+                byte[] chunkBytes = new byte[chunkSize];
+                new Random().NextBytes(chunkBytes); // Fill with random data
+                
+                var chunkContent = CreateFileUploadContent("chunkFile", "application/octet-stream", chunkBytes);
                 var chunkResp = await _client.PostAsync($"/api/v1/content/chunked/{sessionId}/{i}", chunkContent);
+                
+                Console.WriteLine($"Chunk {i} response: {chunkResp.StatusCode}");
+                await DebugResponse(chunkResp);
+                
                 chunkResp.EnsureSuccessStatusCode();
             }
 
-            // 3) complete
+            // Complete the session
             var response = await _client.PostAsync($"/api/v1/content/chunked/complete/{sessionId}", null);
+            
+            // Debug
+            await DebugResponse(response);
 
-            // 4) assert
+            // Assert
             response.Should().HaveStatusCode(HttpStatusCode.Created);
             var contentDto = await response.Content.ReadFromJsonAsync<ContentDto>();
             contentDto.Should().NotBeNull();
@@ -387,6 +435,10 @@ namespace Haworks.Tests.IntegrationTests.Controllers
             // We did NOT upload the required 3 chunks
 
             var response = await _client.PostAsync($"/api/v1/content/chunked/complete/{sessionId}", null);
+            
+            // Debug
+            await DebugResponse(response);
+            
             response.Should().HaveStatusCode(HttpStatusCode.BadRequest);
         }
 

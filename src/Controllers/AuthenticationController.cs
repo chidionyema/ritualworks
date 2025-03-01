@@ -298,6 +298,8 @@ namespace haworks.Controllers
             }
             var dbClaims = await _userManager.GetClaimsAsync(user);
             claims.AddRange(dbClaims);
+            _logger.LogInformation("Generating token with Issuer: {Issuer}, Audience: {Audience}", 
+            _configuration["Jwt:Issuer"], _configuration["Jwt:Audience"]);
 
             return new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],

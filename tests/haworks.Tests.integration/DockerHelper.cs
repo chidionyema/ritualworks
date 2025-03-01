@@ -6,40 +6,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet;
 using Docker.DotNet.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Npgsql;
-using haworks.Db;
-using Polly;
-using Polly.Retry;
-using Xunit;
-using Microsoft.AspNetCore.TestHost;
 using System.Net;
-using System.Net.Http;
-using StackExchange.Redis;
 
 namespace Haworks.Tests
 {
-    // A simple pass-through delegating handler.
-    public class PassThroughHandler : DelegatingHandler
-    {
-        public PassThroughHandler(HttpMessageHandler innerHandler)
-        {
-            InnerHandler = innerHandler;
-        }
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-        {
-            return base.SendAsync(request, cancellationToken);
-        }
-    }
-
     public class DockerHelper
     {
         private readonly ILogger<DockerHelper> _logger;
@@ -51,6 +22,7 @@ namespace Haworks.Tests
         private readonly TimeSpan _healthCheckTimeout; // Configurable timeout
 
         public string ContainerName => _containerName;
+        public int HostPort { get; private set; }
 
         public DockerHelper(ILogger<DockerHelper> logger, string imageName, string containerName, Func<int, Task> postStartCallback = null, TimeSpan? healthCheckTimeout = null)
         {
@@ -68,18 +40,15 @@ namespace Haworks.Tests
         }
 
         /// <summary>
-        /// Starts a container. A HealthConfig is required.
+        /// Starts a container using the specified container parameters.
         /// </summary>
-        public async Task StartContainer(
-            int hostPort,
-            int containerPort,
-            List<string> environmentVariables,
-            List<string> command,
-            HealthConfig healthCheck)  // Health check is now required.
+        public async Task StartContainer(ContainerParameters parameters) 
         {
             try
             {
-                _logger.LogInformation($"Starting container {_containerName} with image {_imageName} on host port {hostPort} and container port {containerPort}...");
+                // Set HostPort from the passed parameters
+                HostPort = parameters.HostPort;
+                _logger.LogInformation($"Starting container {_containerName} with image {_imageName} on host port {HostPort} and container port {parameters.ContainerPort}...");
 
                 // Check if the container already exists
                 var containers = await _dockerClient.Containers.ListContainersAsync(new ContainersListParameters() { All = true });
@@ -103,25 +72,21 @@ namespace Haworks.Tests
                 }
                 else
                 {
-                    // Retrieve dbUser from environment variables if needed.
-                    var dbUser = environmentVariables.FirstOrDefault(e => e.StartsWith("POSTGRES_USER="))?
-                        .Split('=')[1] ?? "myuser";
-
+                    // Create the container with the provided parameters
                     var createParams = new CreateContainerParameters
                     {
                         Image = _imageName,
                         Name = _containerName,
-                        Env = environmentVariables,
+                        Env = parameters.EnvVars,
                         HostConfig = new HostConfig
                         {
                             PortBindings = new Dictionary<string, IList<PortBinding>>
                             {
-                                // Map container port to hostPort.
-                                [$"{containerPort}/tcp"] = new List<PortBinding> { new PortBinding { HostPort = hostPort.ToString() } }
+                                [$"{parameters.ContainerPort}/tcp"] = new List<PortBinding> { new PortBinding { HostPort = HostPort.ToString() } }
                             }
                         },
-                        Healthcheck = healthCheck,
-                        Cmd = command
+                        Healthcheck = parameters.HealthCheck,
+                        Cmd = parameters.Command
                     };
 
                     var response = await _dockerClient.Containers.CreateContainerAsync(createParams);
@@ -135,8 +100,8 @@ namespace Haworks.Tests
 
                 if (_postStartCallback != null)
                 {
-                    _logger.LogInformation($"Executing post-start callback on port {hostPort}...");
-                    await _postStartCallback(hostPort);
+                    _logger.LogInformation($"Executing post-start callback on port {HostPort}...");
+                    await _postStartCallback(HostPort);
                 }
 
                 // Wait for container health using our configurable timeout.
@@ -205,6 +170,16 @@ namespace Haworks.Tests
                 _logger.LogError($"Error removing container {_containerName}: {ex.Message}");
             }
         }
+    }
+
+    // The ContainerParameters class for passing container-related information
+    public class ContainerParameters
+    {
+        public int HostPort { get; set; }
+        public int ContainerPort { get; set; }
+        public List<string> EnvVars { get; set; } = new();
+        public List<string> Command { get; set; } = new();
+        public HealthConfig HealthCheck { get; set; }
     }
 
 }

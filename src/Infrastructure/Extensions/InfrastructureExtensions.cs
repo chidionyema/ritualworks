@@ -25,7 +25,7 @@ using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Linq;
-
+using haworks.Infrastructure;
 namespace haworks.Extensions
 {
     public static class InfrastructureExtensions
@@ -202,6 +202,11 @@ namespace haworks.Extensions
                 })
                 .AddDataProtection()
                     .PersistKeysToStackExchangeRedis(redis, "DataProtection-Keys");
+
+
+                    // Register RedisDistributedLockProvider as a singleton
+            services.AddSingleton<IDistributedLockProvider, RedisDistributedLockProvider>();
+
 
             services.AddSingleton<IDistributedLockFactory>(sp =>
             {

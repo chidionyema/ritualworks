@@ -1,619 +1,609 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Linq;
-using Swashbuckle.AspNetCore.Swagger;
-
+using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Docker.DotNet.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Haworks.Infrastructure.Data;
-using Npgsql;
-using haworks.Db;
-using Polly;
-using Polly.Retry;
-using Xunit;
-using haworks.Services;
-using StackExchange.Redis;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Minio;
 using Minio.Exceptions;
 using Minio.DataModel.Args;
+using Npgsql;
+using Polly;
+using Polly.Retry;
+using StackExchange.Redis;
+using Swashbuckle.AspNetCore.Swagger;
+using Xunit;
+using Haworks.Infrastructure.Data;
 using haworks.Contracts;
-using Microsoft.Extensions.Configuration;
+using haworks.Db;
+using haworks.Services;
+
 namespace Haworks.Tests
 {
+    #region Core Test Infrastructure
     public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         private readonly string _testConfigPath;
-        private readonly IConfigurationRoot _testConfiguration; // Store configuration
+        private readonly IConfigurationRoot _testConfiguration;
 
         public CustomWebApplicationFactory(string testConfigPath)
         {
             _testConfigPath = testConfigPath;
-            _testConfiguration = LoadTestConfiguration(testConfigPath); // Load once in constructor
-        }
-
-        private static IConfigurationRoot LoadTestConfiguration(string testConfigPath)
-        {
-            return new ConfigurationBuilder()
-                .SetBasePath(testConfigPath)
-                .AddJsonFile("appsettings.Test.json", optional: false, reloadOnChange: true)
-                .Build();
+            _testConfiguration = ConfigurationLoader.LoadTestConfiguration(testConfigPath);
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            // Force the environment to "Test"
-            builder.UseEnvironment("Test");
+            builder.ConfigureLogging(logging => logging
+                .ClearProviders()
+                .AddConsole()
+                .AddDebug()
+                .SetMinimumLevel(LogLevel.Debug));
 
-            builder.ConfigureAppConfiguration((context, config) =>
+            ConfigureAuthentication(builder);
+            ConfigureEnvironmentAndConfiguration(builder);
+            ConfigureTestServices(builder);
+            //Apply migrations AFTER test services are configured
+            builder.ConfigureServices(services => 
             {
-                // Clear existing configuration sources.
-                config.Sources.Clear();
-
-
-                // Set the base path to the test config folder and load the test configuration file.
-                config.SetBasePath(_testConfigPath);
-                config.AddJsonFile("appsettings.Test.json", optional: false, reloadOnChange: true);
-
-                // Optionally add additional in-memory configuration overrides.
-                config.AddInMemoryCollection(new Dictionary<string, string>
-                {
-                    // For testing, you might use a different key—but ensure it’s a valid Base-64 string.
-                    // Here, for demonstration, we use a simple (but valid) Base‑64 string.
-                    // ["Jwt:Key"] = "VGhpcyBpcyBhIFRlc3QgS2V5IQ==", // "This is a Test Key!" in Base-64
-                    // ["Jwt:Issuer"] = "TestIssuer",
-                    //["Jwt:Audience"] = "TestAudience",
-                    // Removed hardcoded Redis connection string here, will be read from config
-                });
+                var serviceProvider = services.BuildServiceProvider();
+                using var scope = serviceProvider.CreateScope();
+                var sp = scope.ServiceProvider;
+                
+                // Apply migrations for IdentityContext
+                var identityContext = sp.GetRequiredService<IdentityContext>();
+                identityContext.Database.Migrate();
+                
+                // Apply migrations for ContentContext
+                var contentContext = sp.GetRequiredService<ContentContext>();
+                contentContext.Database.Migrate();
             });
-            builder.UseContentRoot(_testConfigPath);
+        }
 
-            // Override services for testing.
+        private void ConfigureAuthentication(IWebHostBuilder builder)
+        {
+            builder.ConfigureServices(services =>
+            {
+                services.AddTransient<TestAuthMiddleware>();
+                services.ConfigureJwtBearer(_testConfiguration);
+            });
+        }
+
+        private void ConfigureEnvironmentAndConfiguration(IWebHostBuilder builder)
+        {
+            builder.UseEnvironment("Test")
+                   .UseContentRoot(_testConfigPath)
+                   .ConfigureAppConfiguration(config => 
+                       config.AddConfiguration(_testConfiguration));
+        }
+
+        private void ConfigureTestServices(IWebHostBuilder builder)
+        {
             builder.ConfigureTestServices(services =>
             {
-                var swaggerService = services.FirstOrDefault(s => s.ServiceType == typeof(ISwaggerProvider));
-                if (swaggerService != null)
-                {
-                    services.Remove(swaggerService);
-                }
-                // Replace Vault with a fake implementation - consider if this is still needed.
-                services.RemoveAll<IVaultService>();
-                services.AddSingleton<IVaultService, FakeVaultService>(); // Or use real Vault if testing Vault integration
-
-                // Replace ContentStorageService with real MinIO implementation
-                services.RemoveAll<IContentStorageService>();
-
-
-                // Load the test configuration.
-
-
-                services.AddSingleton<IContentStorageService>(sp =>
-                {
-                    var minioEndpoint = _testConfiguration["MinIO:Endpoint"] ?? "localhost:9000";
-                    var minioAccessKey = _testConfiguration["MinIO:AccessKey"] ?? "minioadmin";
-                    var minioSecretKey = _testConfiguration["MinIO:SecretKey"] ?? "minioadmin";
-                    var logger = sp.GetRequiredService<ILogger<ContentStorageService>>();
-
-                    // Correct MinioClient instantiation using builder pattern
-                    var minioClient = new MinioClient()
-                        .WithEndpoint(minioEndpoint)
-                        .WithCredentials(minioAccessKey, minioSecretKey)
-                        .Build();
-
-                    return new ContentStorageService(minioClient, logger, _testConfiguration); // Instantiate ContentStorageService with MinioClient - Ensure constructor expects MinioClient
-                });
-
-
-                // Register a test authentication scheme.
-            //     services.AddAuthentication(options =>
-              //  {
-                  //  options.DefaultScheme = "Test";
-              ////  })
-               // .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
-              ////  .AddCookie("Cookies", options =>
-             //   {
-                 //   options.Cookie.Name = "jwt";
-                  //  options.TicketDataFormat = new TestJwtDataFormat(
-                  //      Configuration["Jwt:Key"] ?? "YourTestKeyHereAtLeast32CharactersLong"
-                  //  );
-                 //   options.DataProtectionProvider = new TestDataProtector();
-               // });
-
-                // Add authorization policy configuration
-                services.AddAuthorization(options =>
-                {
-                    options.AddPolicy("ContentUploader", policy =>  policy
-                    .RequireRole("ContentUploader")
-                    .RequireClaim("permission", "upload_content"));
-                });
-
-                // Register your EF Core context using the test connection string.
-                var testConnection = _testConfiguration.GetConnectionString("DefaultConnection");
-                // Adjust the context type below as needed.
-                services.AddEntityFrameworkNpgsql()
-                    .AddDbContext<IdentityContext>(options =>
-                        options.UseNpgsql(testConnection)
-                                     .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning)));
-
-                using (var scope = services.BuildServiceProvider().CreateScope())
-                {
-                    var context = scope.ServiceProvider.GetRequiredService<IdentityContext>();
-                    context.Database.Migrate();
-                }
-
-                 services.AddEntityFrameworkNpgsql()
-                    .AddDbContext<ContentContext>(options =>
-                        options.UseNpgsql(testConnection)
-                                     .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning)));
-
-                using (var scope = services.BuildServiceProvider().CreateScope())
-                {
-                    var context = scope.ServiceProvider.GetRequiredService<ContentContext>();
-                    context.Database.Migrate();
-                }
-
-                services.AddEntityFrameworkNpgsql()
-                    .AddDbContext<ProductContext>(options =>
-                        options.UseNpgsql(testConnection)
-                                     .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning)));
-
-                using (var scope = services.BuildServiceProvider().CreateScope())
-                {
-                    var context = scope.ServiceProvider.GetRequiredService<ContentContext>();
-                    context.Database.Migrate();
-                }
-                
-
-                // Register Redis using the test connection string from configuration.
-                services.AddSingleton<IConnectionMultiplexer>(sp =>
-                {
-                    var redisConnectionString = _testConfiguration.GetConnectionString("RedisConnection"); // Read from config
-                    var options = ConfigurationOptions.Parse(redisConnectionString);
-                    options.AbortOnConnectFail = false;
-                    return ConnectionMultiplexer.Connect(options);
-                });
+                services.RemoveSwaggerGenerator()
+                        .ConfigureTestAuthorization()
+                        .ReplaceService<IVaultService, FakeVaultService>(sp => new FakeVaultService())
+                        .ReplaceService<IVirusScanner, FakeVirusScanner>(sp => new FakeVirusScanner())
+                        .ConfigureContentStorage(_testConfiguration)
+                        .ConfigureDatabases(_testConfiguration)
+                        .ConfigureRedis(_testConfiguration);
             });
         }
     }
 
     public class IntegrationTestFixture : IAsyncLifetime
     {
-        private readonly DockerHelper _postgresHelper;
-        private readonly DockerHelper _redisHelper;
-        private readonly DockerHelper _minioHelper; // Add MinIO DockerHelper
-        private readonly ILogger<DockerHelper> _logger;
-        private const int DockerPostgresPort = 5433;
-        private const int DockerRedisPort = 6380;
-        private const int DockerMinioPort = 9001; // Different from default 9000 to avoid conflicts if you run MinIO locally
-        private readonly string _connectionString;
-        private readonly AsyncRetryPolicy _retryPolicy;
-        private readonly IConfiguration _configuration; // Store configuration
-
-        // Health-check values.
-        public HealthConfig PostgresHealthCheck { get; }
-        public HealthConfig RedisHealthCheck { get; }
-        public HealthConfig MinioHealthCheck { get; } // Add MinIO health check
-
-        // Shared CookieContainer for tests.
+        private readonly DockerServiceManager _dockerManager;
+        private readonly ILogger<IntegrationTestFixture> _logger;
+        
         public CookieContainer CookieContainer { get; } = new CookieContainer();
-
-        // Our custom factory that uses the test configuration.
         public CustomWebApplicationFactory Factory { get; }
+        public IConfiguration Configuration { get; }
 
         public IntegrationTestFixture()
         {
-            // Load configuration from the test folder's appsettings.json.
-            _configuration = new ConfigurationBuilder() // Initialize _configuration here
-                .SetBasePath(GetTestConfigPath())
-                .AddJsonFile("appsettings.Test.json", optional: false, reloadOnChange: true)
-                .Build();
+            Configuration = ConfigurationLoader.LoadTestConfiguration(PathHelper.TestConfigPath);
 
-            // Build connection string based on Docker-mapped port.
-            var dbHost = _configuration["Database:Host"] ?? "localhost";
-            var dbPort = DockerPostgresPort.ToString();
-            var dbName = _configuration["Database:Name"] ?? "test_db";
-            var dbUser = _configuration["Database:User"] ?? "myuser";
-            var dbPassword = _configuration["Database:Password"] ?? "mypassword";
-            _connectionString = $"Host={dbHost};Port={dbPort};Database={dbName};Username={dbUser};Password={dbPassword};";
+            // Create an ILoggerFactory
+            ILoggerFactory loggerFactoryForFixture = LoggerFactory.Create(builder => builder.AddConsole());
+            // Use the LoggerFactory to create an ILogger for IntegrationTestFixture
+            _logger = loggerFactoryForFixture.CreateLogger<IntegrationTestFixture>();
 
-            var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-            _logger = loggerFactory.CreateLogger<DockerHelper>();
+            // Create logger for DockerHelper -  You were also doing it wrong here!
+            ILoggerFactory loggerFactoryForDocker = LoggerFactory.Create(builder => builder.AddConsole());
+            var dockerLogger = loggerFactoryForDocker.CreateLogger<Haworks.Tests.DockerHelper>();
 
-            _retryPolicy = Policy.Handle<NpgsqlException>()
-                .WaitAndRetryAsync(5, attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt)),
-                    (exception, delay, attempt, context) =>
-                    {
-                        _logger.LogWarning($"Retry {attempt} due to {exception.Message}. Waiting {delay.TotalSeconds} seconds...");
-                    });
+            _dockerManager = new DockerServiceManager(Configuration, loggerFactoryForDocker);
+            Factory = new CustomWebApplicationFactory(PathHelper.TestConfigPath);
+}
 
-            PostgresHealthCheck = new HealthConfig
+        public async Task InitializeAsync() => await _dockerManager.StartAllServicesAsync();
+        public async Task DisposeAsync() => await _dockerManager.StopAllServicesAsync();
+
+        public HttpClient CreateClientWithCookies() => 
+            HttpClientFactory.CreateWithCookies(Factory, CookieContainer);
+
+        public async Task ResetDatabaseAsync() => 
+            await DatabaseMaintainer.ResetAsync(Configuration.GetConnectionString("DefaultConnection"), _logger);
+
+        public HttpClient CreateAuthorizedClient(string token) => 
+            HttpClientFactory.CreateAuthorized(Factory, token);
+
+        public HttpClient CreateBypassAuthClient() => 
+            HttpClientFactory.CreateBypassAuth(Factory);
+    }
+    #endregion
+
+    #region Configuration Extensions
+    public static class ServiceCollectionExtensions
+    {
+        public static IServiceCollection RemoveSwaggerGenerator(this IServiceCollection services)
+        {
+            services.RemoveAll<ISwaggerProvider>();
+            return services;
+        }
+        
+
+        public static IServiceCollection ConfigureTestAuthorization(this IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
             {
-                Test = new List<string> { "CMD-SHELL", $"pg_isready -U {_configuration["Database:User"] ?? "myuser"}" },
-                Interval = TimeSpan.FromSeconds(2),
-                Timeout = TimeSpan.FromSeconds(1),
-                Retries = 20,
-                StartPeriod = TimeSpan.FromSeconds(10).Ticks
+                options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                options.AddPolicy(AuthorizationPolicies.ContentUploader, policy => 
+                    policy.RequireRole(UserRoles.ContentUploader));
+            });
+            return services;
+        }
+
+        public static IServiceCollection ReplaceService<TService, TImplementation>(
+        this IServiceCollection services, 
+        Func<IServiceProvider, TImplementation> implementationFactory) 
+        where TService : class
+        where TImplementation : class, TService
+    {
+        services.RemoveAll<TService>();
+        services.AddSingleton<TService, TImplementation>(implementationFactory); 
+        return services;
+    }
+
+        public static IServiceCollection ConfigureContentStorage(
+        this IServiceCollection services, IConfiguration config)
+        {
+            return services.ReplaceService<IContentStorageService, ContentStorageService>(sp =>
+                new ContentStorageService(
+                    new MinioClient()
+                        .WithEndpoint(config["MinIO:Endpoint"] ?? "localhost:9000")
+                        .WithCredentials(
+                            config["MinIO:AccessKey"] ?? "minioadmin",
+                            config["MinIO:SecretKey"] ?? "minioadmin")
+                        .Build(),
+                    sp.GetRequiredService<ILogger<ContentStorageService>>(),
+                    config));
+        }
+
+        public static IServiceCollection ConfigureDatabases(
+            this IServiceCollection services, IConfiguration config)
+        {
+            var connectionString = config.GetConnectionString("DefaultConnection");
+            
+            services.AddDbContext<IdentityContext>(options => 
+                options.ConfigureNpgsql(connectionString));
+            
+            services.AddDbContext<ContentContext>(options => 
+                options.ConfigureNpgsql(connectionString));
+            
+            services.AddDbContext<ProductContext>(options => 
+                options.ConfigureNpgsql(connectionString));
+
+            return services;
+        }
+
+        public static IServiceCollection ConfigureRedis(
+            this IServiceCollection services, IConfiguration config)
+        {
+            return services.AddSingleton<IConnectionMultiplexer>(sp => 
+                ConnectionMultiplexer.Connect(
+                    ConfigurationOptions.Parse(config.GetConnectionString("Redis"))));
+        }
+
+        public static void ConfigureNpgsql(
+            this DbContextOptionsBuilder options, string connectionString)
+        {
+            options.UseNpgsql(connectionString)
+                   .ConfigureWarnings(warnings => 
+                       warnings.Ignore(RelationalEventId.PendingModelChangesWarning));
+        }
+
+        public static void ConfigureJwtBearer(
+            this IServiceCollection services, IConfiguration config)
+        {
+            services.PostConfigure<Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerOptions>(
+                Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme,
+                options => ConfigureTokenValidation(options, config));
+        }
+
+        private static void ConfigureTokenValidation(
+            Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerOptions options, 
+            IConfiguration config)
+        {
+            options.SaveToken = true;
+            options.IncludeErrorDetails = true;
+            options.TokenValidationParameters = CreateValidationParameters(config);
+        }
+
+        private static TokenValidationParameters CreateValidationParameters(IConfiguration config)
+        {
+            var key = Convert.FromBase64String(config["Jwt:Key"]);
+            return new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = config["Jwt:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = config["Jwt:Audience"],
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ClockSkew = TimeSpan.Zero,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                NameClaimType = System.Security.Claims.ClaimTypes.NameIdentifier
             };
-
-            RedisHealthCheck = new HealthConfig
-            {
-                Test = new List<string> { "CMD-SHELL", "redis-cli ping | grep PONG" },
-                Interval = TimeSpan.FromSeconds(2),
-                Timeout = TimeSpan.FromSeconds(5),
-                Retries = 20,
-                StartPeriod = TimeSpan.FromSeconds(10).Ticks
-            };
-            MinioHealthCheck = new HealthConfig // Define MinIO health check
-            {
-                Test = new List<string> { "CMD-SHELL", "mc admin health check" }, // Basic MinIO health check using mc CLI
-                Interval = TimeSpan.FromSeconds(2),
-                Timeout = TimeSpan.FromSeconds(5),
-                Retries = 20,
-                StartPeriod = TimeSpan.FromSeconds(10).Ticks // Give MinIO a bit longer to start
-            };
-
-
-            // Initialize Docker helpers for PostgreSQL, Redis, and MinIO.
-            _postgresHelper = new DockerHelper(
-                _logger,
-                imageName: _configuration["Docker:PostgresImage"] ?? "postgres:13",
-                containerName: _configuration["Docker:PostgresContainerName"] ?? "postgres_test_container",
-                postStartCallback: async port =>
-                {
-                    await EnsureDatabaseExistsAsync(port);
-                    await SetupDatabaseAsync(port);
-                });
-
-            _redisHelper = new DockerHelper(
-                _logger,
-                imageName: _configuration["Docker:RedisImage"] ?? "redis:latest",
-                containerName: _configuration["Docker:RedisContainerName"] ?? "redis_test_container",
-                postStartCallback: async port =>
-                {
-                    var redisConnectionString = $"localhost:{port},abortConnect=false"; // Will be overridden by DockerHelper
-                    await WaitForRedisAsync(redisConnectionString);
-                });
-            _minioHelper = new DockerHelper( // Initialize MinIO DockerHelper
-                _logger,
-                imageName: _configuration["Docker:MinioImage"] ?? "minio/minio:latest",
-                containerName: _configuration["Docker:MinioContainerName"] ?? "minio_test_container",
-                postStartCallback: async port =>
-                {
-                    var minioEndpoint = $"localhost:{port}";
-                    await WaitForMinioAsync(minioEndpoint);
-                    await SetupMinioAsync(minioEndpoint); // Optional: Setup buckets, users etc. if needed for tests
-                });
-
-
-            // Create our custom factory with the test configuration folder path.
-            Factory = new CustomWebApplicationFactory(GetTestConfigPath());
         }
+    }
+    #endregion
 
-        public async Task InitializeAsync()
+    #region HttpClient Factories
+    public static class HttpClientFactory
+    {
+        public static HttpClient CreateWithCookies(
+            CustomWebApplicationFactory factory, CookieContainer container)
         {
-            // Start PostgreSQL container.
-            await _postgresHelper.StartContainer(
-                hostPort: int.Parse(_configuration["Docker:PostgresHostPort"] ?? DockerPostgresPort.ToString()), // Use _configuration
-                containerPort: 5432,
-                environmentVariables: new List<string>
-                {
-                    $"POSTGRES_USER={_configuration["Database:User"] ?? "myuser"}", // Use _configuration
-                    $"POSTGRES_PASSWORD={_configuration["Database:Password"] ?? "mypassword"}" // Use _configuration
-                },
-                command: new List<string>(),
-                healthCheck: PostgresHealthCheck
-            );
-
-            // Wait for Postgres to be ready before proceeding and add a small buffer
-            var postgresConnectionStringForWait = $"Host=localhost;Port={int.Parse(_configuration["Docker:PostgresHostPort"] ?? DockerPostgresPort.ToString())};Username={_configuration["Database:User"] ?? "myuser"};Password={_configuration["Database:Password"] ?? "mypassword"};Database=postgres;";
-            _logger.LogInformation($"Waiting for Postgres to be ready. Connection string: {postgresConnectionStringForWait}");
-            await WaitForPostgresAsync(postgresConnectionStringForWait); // Wait here
-            await Task.Delay(2000); // Add a 2-second delay after Postgres is ready
-
-
-            // Start Redis container.
-            var redisHostPort = int.Parse(_configuration["Docker:RedisHostPort"] ?? DockerRedisPort.ToString());
-            await _redisHelper.StartContainer(
-                hostPort: redisHostPort,
-                containerPort: 6379,
-                environmentVariables: new List<string>(),
-                command: new List<string>(),
-                healthCheck: RedisHealthCheck
-            );
-
-            // Start MinIO container.
-            var minioHostPort = int.Parse(_configuration["Docker:MinioHostPort"] ?? DockerMinioPort.ToString()); 
-            await _minioHelper.StartContainer(
-                hostPort: minioHostPort,
-                containerPort: 9000, // MinIO default container port
-                environmentVariables: new List<string>
-                {
-                    $"MINIO_ACCESS_KEY={_configuration["MinIO:AccessKey"] ?? "minioadmin"}", 
-                    $"MINIO_SECRET_KEY={_configuration["MinIO:SecretKey"] ?? "minioadmin"}"  
-                },
-                command: new List<string> { "server", "/data" }, 
-                healthCheck: MinioHealthCheck
-            );
-        }
-
-        public async Task DisposeAsync()
-        {
-            try
+            var handler = new HttpClientHandler { CookieContainer = container };
+            return factory.CreateClient(new WebApplicationFactoryClientOptions
             {
-                await _postgresHelper.StopContainer();
-                await _postgresHelper.RemoveContainer();
-
-                await _redisHelper.StopContainer();
-                await _redisHelper.RemoveContainer();
-
-                await _minioHelper.StopContainer(); // Stop MinIO container
-                await _minioHelper.RemoveContainer(); // Remove MinIO container
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error during cleanup: {ex.Message}");
-            }
-        }
-
-        private async Task WaitForPostgresAsync(string connectionString, int maxRetries = 20, int delayMilliseconds = 2000) // Increased retries
-        {
-            int retries = 0;
-            while (retries < maxRetries)
-            {
-                try
-                {
-                    _logger.LogDebug($"Attempting PostgreSQL connection. Connection string: {connectionString}, Attempt: {retries + 1}/{maxRetries}"); // Log connection string
-                    await using var connection = new NpgsqlConnection(connectionString);
-                    await connection.OpenAsync();
-                    _logger.LogInformation("Successfully connected to PostgreSQL.");
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning($"PostgreSQL not ready (attempt {retries + 1}/{maxRetries}): {ex.Message}");
-                    await Task.Delay(delayMilliseconds);
-                    retries++;
-                }
-            }
-            throw new Exception("Failed to connect to PostgreSQL after multiple retries.");
-        }
-
-        private async Task WaitForRedisAsync(string connectionString, int maxRetries = 10, int delayMilliseconds = 2000, TimeSpan timeout = default)
-        {
-            timeout = timeout == default ? TimeSpan.FromSeconds(30) : timeout;
-            var options = ConfigurationOptions.Parse(connectionString);
-            options.AbortOnConnectFail = false;
-            using var cts = new System.Threading.CancellationTokenSource(timeout);
-
-            for (int retries = 0; retries < maxRetries; retries++)
-            {
-                try
-                {
-                    using var redis = await ConnectionMultiplexer.ConnectAsync(options);
-                    if (redis.IsConnected)
-                    {
-                        _logger.LogInformation("Successfully connected to Redis.");
-                        return;
-                    }
-                    else
-                    {
-                        _logger.LogWarning("Redis is not connected, retrying...");
-                    }
-                }
-                catch (RedisConnectionException ex)
-                {
-                    _logger.LogWarning($"Redis connection failed (attempt {retries + 1}/{maxRetries}): {ex.Message}");
-                }
-                catch (OperationCanceledException ex) when (ex.CancellationToken == cts.Token)
-                {
-                    _logger.LogError($"Redis connection timed out after {timeout.TotalSeconds} seconds.");
-                    throw new Exception($"Failed to connect to Redis within the timeout of {timeout.TotalSeconds} seconds.");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning($"Redis connection failed (attempt {retries + 1}/{maxRetries}): {ex.Message}");
-                }
-                await Task.Delay(delayMilliseconds);
-            }
-            throw new Exception("Failed to connect to Redis after multiple retries.");
-        }
-       private async Task WaitForMinioAsync(string endpoint, int maxRetries = 10, int delayMilliseconds = 2000, TimeSpan timeout = default)
-        {
-            timeout = timeout == default ? TimeSpan.FromSeconds(30) : timeout;
-            using var cts = new System.Threading.CancellationTokenSource(timeout);
-            IMinioClient minioClient = new MinioClient() // Changed to IMinioClient
-                .WithEndpoint(endpoint)
-                .WithCredentials(_configuration["MinIO:AccessKey"] ?? "minioadmin", _configuration["MinIO:SecretKey"] ?? "minioadmin")
-                .Build();
-
-            for (int retries = 0; retries < maxRetries; retries++)
-            {
-                try
-                {
-                    await minioClient.ListBucketsAsync().ConfigureAwait(false);
-
-                    _logger.LogInformation("Successfully connected to MinIO and listed buckets.");
-                    return;
-                }
-                catch (MinioException ex)
-                {
-                    _logger.LogWarning($"MinIO connection failed (attempt {retries + 1}/{maxRetries}): {ex.Message}");
-                }
-                catch (OperationCanceledException ex) when (ex.CancellationToken == cts.Token)
-                {
-                    _logger.LogError($"MinIO connection timed out after {timeout.TotalSeconds} seconds.");
-                    throw new Exception($"Failed to connect to MinIO within the timeout of {timeout.TotalSeconds} seconds.");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning($"MinIO connection failed (attempt {retries + 1}/{maxRetries}): {ex.Message}");
-                }
-                await Task.Delay(delayMilliseconds);
-            }
-            throw new Exception("Failed to connect to MinIO after multiple retries."); // Removed extra parenthesis here
-        }
-
-        private async Task EnsureDatabaseExistsAsync(int port)
-        {
-            var dbUser = _configuration["Database:User"] ?? "myuser"; // Use _configuration
-            var dbPassword = _configuration["Database:Password"] ?? "mypassword"; // Use _configuration
-            var adminConnectionString = $"Host=localhost;Port={port};Username={dbUser};Password={dbPassword};Database=postgres;";
-            _logger.LogInformation($"Admin Connection String: {adminConnectionString}");
-            await WaitForPostgresAsync(adminConnectionString);
-            await _retryPolicy.ExecuteAsync(async () =>
-            {
-                await using var connection = new NpgsqlConnection(adminConnectionString);
-                await connection.OpenAsync();
-                var checkDbCmd = new NpgsqlCommand("SELECT 1 FROM pg_database WHERE datname = 'test_db';", connection);
-                var exists = await checkDbCmd.ExecuteScalarAsync() != null;
-                if (!exists)
-                {
-                    _logger.LogInformation("Database 'test_db' does not exist. Creating database...");
-                    var createDbCmd = new NpgsqlCommand("CREATE DATABASE test_db;", connection);
-                    await createDbCmd.ExecuteNonQueryAsync();
-                    _logger.LogInformation("Database 'test_db' created successfully.");
-                }
-                else
-                {
-                    _logger.LogInformation("Database 'test_db' already exists.");
-                }
+                AllowAutoRedirect = false,
+                HandleCookies = true
             });
         }
-        private async Task SetupMinioAsync(string endpoint)
+
+        public static HttpClient CreateAuthorized(
+            CustomWebApplicationFactory factory, string token)
         {
-            // change 3: Use builder pattern for MinioClient constructor
-            var minioClient = new MinioClient()
-                .WithEndpoint(endpoint)
-                .WithCredentials(_configuration["MinIO:AccessKey"] ?? "minioadmin", _configuration["MinIO:SecretKey"] ?? "minioadmin")
+            return factory.WithWebHostBuilder(builder => 
+                builder.ConfigureServices(services => 
+                    services.PostConfigure<AuthorizationOptions>(options => 
+                        options.AddPolicy(AuthorizationPolicies.ContentUploader, policy => 
+                            policy.RequireAuthenticatedUser()
+                                  .RequireRole(UserRoles.ContentUploader)))))
+                .CreateClient()
+                .WithBearerToken(token);
+        }
+
+        public static HttpClient CreateBypassAuth(CustomWebApplicationFactory factory)
+        {
+            return factory.WithWebHostBuilder(builder => 
+                builder.ConfigureServices(services => 
+                    services.AddSingleton<IAuthorizationHandler, AllowAllHandler>()))
+                .CreateClient();
+        }
+
+        private static HttpClient WithBearerToken(this HttpClient client, string token)
+        {
+            client.DefaultRequestHeaders.Authorization = 
+                new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            return client;
+        }
+    }
+    #endregion
+
+    #region Docker Management
+    public class DockerServiceManager
+    {
+        private readonly List<DockerService> _services;
+        private readonly ILogger _logger;
+
+        public DockerServiceManager(IConfiguration config, ILoggerFactory loggerFactory)
+        {
+            _logger = loggerFactory.CreateLogger<DockerServiceManager>();
+            _services = new List<DockerService>
+            {
+                new PostgresService(config, loggerFactory),
+                new RedisService(config, loggerFactory),
+                new MinioService(config, loggerFactory)
+            };
+        }
+
+        public async Task StartAllServicesAsync()
+        {
+            foreach (var service in _services)
+            {
+                await service.StartAsync();
+                await service.WaitForReadyAsync();
+            }
+        }
+
+        public async Task StopAllServicesAsync()
+        {
+            foreach (var service in _services.AsEnumerable().Reverse())
+            {
+                await service.StopAsync();
+            }
+        }
+    }
+
+    public abstract class DockerService
+    {
+        protected readonly IConfiguration _config;
+        protected readonly ILogger _logger;
+        protected readonly DockerHelper _helper;
+
+        protected DockerService(
+            IConfiguration config,
+            ILoggerFactory loggerFactory, // Accept ILoggerFactory instead of ILogger
+            string imageKey,
+            string containerKey,
+            string defaultImage)
+        {
+            _config = config;
+            _logger = loggerFactory.CreateLogger(GetType()); // Create logger for the service
+            var dockerLogger = loggerFactory.CreateLogger<DockerHelper>(); // Create DockerHelper logger
+            _helper = new DockerHelper(
+                dockerLogger,
+                _config[$"Docker:{imageKey}"] ?? defaultImage,
+                _config[$"Docker:{containerKey}"] ?? $"{imageKey}_test");
+        }
+
+        public abstract Task StartAsync();
+        public abstract Task WaitForReadyAsync();
+        public Task StopAsync() => _helper.StopContainer();
+    }
+
+    public class PostgresService : DockerService
+    {
+        public PostgresService(IConfiguration config, ILoggerFactory loggerFactory) 
+            : base(config, loggerFactory, "PostgresImage", "PostgresContainer", "postgres:13") { }
+
+        // In PostgresService.cs
+        public override async Task StartAsync()
+        {
+            await _helper.StartContainer(new ContainerParameters 
+            {
+                HostPort = _config.GetValue<int>("Docker:PostgresPort", 5433),
+                ContainerPort = 5432,
+                EnvVars = new List<string>
+                {
+                    $"POSTGRES_USER={_config["Database:User"]}",
+                    $"POSTGRES_PASSWORD={_config["Database:Password"]}"
+                },
+                HealthCheck = HealthCheckConfig.Postgres(_config["Database:User"] ?? "postgres")
+            });
+        }
+
+        public override async Task WaitForReadyAsync()
+        {
+            var connectionString = $"Host=localhost;Port={_helper.HostPort};" +
+                $"Username={_config["Database:User"]};Password={_config["Database:Password"]};";
+            
+            await DatabaseMaintainer.EnsureCreatedAsync(connectionString, _logger);
+        }
+    }
+
+    public class RedisService : DockerService
+    {
+        public RedisService(IConfiguration config, ILoggerFactory loggerFactory)
+            : base(config, loggerFactory, "RedisImage", "RedisContainer", "redis:latest") { }
+
+        public override async Task StartAsync()
+        {
+            await _helper.StartContainer(
+                new ContainerParameters{
+                    HostPort = _config.GetValue<int>("Docker:RedisPort", 6380),
+                    ContainerPort = 6379,
+                    HealthCheck = HealthCheckConfig.Redis()}
+            );
+        }
+
+        public override async Task WaitForReadyAsync()
+        {
+            await ConnectionMultiplexer.ConnectAsync(
+                $"localhost:{_helper.HostPort},abortConnect=false");
+        }
+    }
+
+    public class MinioService : DockerService
+    {
+        public MinioService(IConfiguration config, ILoggerFactory loggerFactory)
+            : base(config, loggerFactory, "MinioImage", "MinioContainer", "minio/minio:latest") { }
+
+      public override async Task StartAsync()
+      {
+        await _helper.StartContainer(
+        new ContainerParameters{ // Line 425
+        HostPort = _config.GetValue<int>("Docker:MinioPort", 9001),
+        ContainerPort = 9000,
+        Command = new List<string> { "server", "/data" },
+        EnvVars = new List<string>
+        {
+            $"MINIO_ACCESS_KEY={_config["MinIO:AccessKey"]}",
+            $"MINIO_SECRET_KEY={_config["MinIO:SecretKey"]}"
+        },
+        HealthCheck = HealthCheckConfig.Minio()});
+
+     }
+
+        public override async Task WaitForReadyAsync()
+        {
+            var client = new MinioClient()
+                .WithEndpoint($"localhost:{_helper.HostPort}")
+                .WithCredentials(
+                    _config["MinIO:AccessKey"] ?? "minioadmin",
+                    _config["MinIO:SecretKey"] ?? "minioadmin")
                 .Build();
 
-            string[] bucketsToCreate = new[] { "documents", "temp-chunks", "videos", "images" }; // Example buckets
+            await client.ListBucketsAsync();
+            await EnsureBucketsExistAsync(client);
+        }
 
-            foreach (var bucketName in bucketsToCreate)
+        private async Task EnsureBucketsExistAsync(IMinioClient client)
+        {
+            foreach (var bucket in new[] { "documents", "temp-chunks", "videos", "images" })
             {
-                bool exists = await minioClient.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucketName)); // Modified BucketExistsAsync call
-                if (!exists)
+                if (!await client.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucket)))
                 {
-                    _logger.LogInformation($"Bucket '{bucketName}' does not exist. Creating...");
-                    await minioClient.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucketName)); // Modified MakeBucketAsync call
-                    _logger.LogInformation($"Bucket '{bucketName}' created successfully.");
+                    await client.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucket));
                 }
-                else
-                {
-                    _logger.LogInformation($"Bucket '{bucketName}' already exists.");
-                }
-            }
-        }
-
-
-        private async Task SetupDatabaseAsync(int port)
-        {
-            _logger.LogInformation($"Attempting to connect to PostgreSQL with user '{_configuration["Database:User"] ?? "myuser"}'.");
-            try
-            {
-                await using var connection = new NpgsqlConnection(_connectionString);
-                await connection.OpenAsync();
-                _logger.LogInformation("Successfully connected to PostgreSQL.");
-                // Corrected SQL query string:
-                var setupQuery = $@"
-                    GRANT ALL PRIVILEGES ON DATABASE test_db TO ""{(_configuration["Database:User"] ?? "myuser")}"";
-                    ALTER USER ""{(_configuration["Database:User"] ?? "myuser")}"" CREATEDB;";
-                await using (var cmd = new NpgsqlCommand(setupQuery, connection))
-                {
-                    await cmd.ExecuteNonQueryAsync();
-                    _logger.LogInformation("Database setup completed successfully.");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error occurred while setting up the database: {ex.Message}");
-                throw;
-            }
-        }
-
-        // --- Helpers to locate project and configuration paths ---
-        private string GetProjectPath()
-        {
-            var currentDirectory = AppContext.BaseDirectory;
-            var directoryInfo = new DirectoryInfo(currentDirectory);
-            while (directoryInfo != null && !File.Exists(Path.Combine(directoryInfo.FullName, "RitualWorks.sln")))
-            {
-                directoryInfo = directoryInfo.Parent;
-            }
-            if (directoryInfo == null)
-                throw new DirectoryNotFoundException("Solution directory could not be found.");
-            return directoryInfo.FullName;
-        }
-
-        private string GetApplicationPath()
-        {
-            var projectPath = GetProjectPath();
-            var applicationPath = Path.Combine(projectPath, "src");
-            if (!Directory.Exists(applicationPath))
-                throw new DirectoryNotFoundException($"Application path '{applicationPath}' does not exist.");
-            return applicationPath;
-        }
-
-        private string GetTestConfigPath()
-        {
-            var projectPath = GetProjectPath();
-            var testConfigPath = Path.Combine(projectPath, "tests", "haworks.Tests.integration");
-            if (!Directory.Exists(testConfigPath))
-                throw new DirectoryNotFoundException($"Test configuration path '{testConfigPath}' does not exist.");
-            return testConfigPath;
-        }
-
-        public IConfiguration Configuration // Make the property use the _configuration field
-        {
-            get
-            {
-                return _configuration;
-            }
-        }
-
-        // Create an HttpClient that uses a shared CookieContainer.
-        public HttpClient CreateClientWithCookies()
-        {
-            var httpClientHandler = new HttpClientHandler { CookieContainer = this.CookieContainer };
-            return Factory.CreateDefaultClient(new PassThroughHandler(httpClientHandler));
-        }
-
-        public async Task ResetDatabaseAsync()
-        {
-            _logger.LogInformation("Resetting database by truncating Contents table..."); // Updated log message
-            try
-            {
-                await using var connection = new NpgsqlConnection(_connectionString);
-                await connection.OpenAsync();
-                var truncateQuery = @"TRUNCATE TABLE ""Contents"" CASCADE;"; // Truncate Contents table
-                await using (var cmd = new NpgsqlCommand(truncateQuery, connection))
-                {
-                    await cmd.ExecuteNonQueryAsync();
-                }
-                _logger.LogInformation("Database reset completed by truncating Contents table."); // Updated log message
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error resetting database: {ex.Message}");
-                throw;
             }
         }
     }
+    #endregion
+
+    #region Support Classes
+    public static class AuthorizationPolicies
+    {
+        public const string ContentUploader = "ContentUploader";
+    }
+
+    public static class UserRoles
+    {
+        public const string ContentUploader = "ContentUploader";
+    }
+
+    public static class HealthCheckConfig
+    {
+        public static HealthConfig Postgres(string user) => new HealthConfig
+        {
+            Test = new List<string> { "CMD-SHELL", $"pg_isready -U {user}" },
+            Interval = TimeSpan.FromSeconds(2),
+            Timeout = TimeSpan.FromSeconds(1),
+            Retries = 20
+        };
+
+        public static HealthConfig Redis() => new HealthConfig
+        {
+            Test = new List<string> { "CMD-SHELL", "redis-cli ping | grep PONG" },
+            Interval = TimeSpan.FromSeconds(2),
+            Timeout = TimeSpan.FromSeconds(5),
+            Retries = 20
+        };
+
+        public static HealthConfig Minio() => new HealthConfig
+        {
+            Test = new List<string> { "CMD-SHELL", "mc admin health check" },
+            Interval = TimeSpan.FromSeconds(2),
+            Timeout = TimeSpan.FromSeconds(5),
+            Retries = 20
+        };
+    }
+
+    public static class DatabaseMaintainer
+    {
+        private static readonly AsyncRetryPolicy _retryPolicy = Policy
+            .Handle<NpgsqlException>()
+            .WaitAndRetryAsync(5, attempt => 
+                TimeSpan.FromSeconds(Math.Pow(2, attempt)));
+
+        public static async Task EnsureCreatedAsync(string connectionString, ILogger logger)
+        {
+            await _retryPolicy.ExecuteAsync(async () =>
+            {
+                await using var connection = new NpgsqlConnection(connectionString);
+                await connection.OpenAsync();
+                
+                var exists = await CheckDatabaseExists(connection);
+                if (!exists) await CreateDatabase(connection, logger);
+                
+                await GrantPrivileges(connection, logger);
+            });
+        }
+
+        private static async Task<bool> CheckDatabaseExists(NpgsqlConnection connection)
+        {
+            var cmd = new NpgsqlCommand(
+                "SELECT 1 FROM pg_database WHERE datname = 'test_db'", connection);
+            return await cmd.ExecuteScalarAsync() != null;
+        }
+
+        private static async Task CreateDatabase(NpgsqlConnection connection, ILogger logger)
+        {
+            logger.LogInformation("Creating test database");
+            await new NpgsqlCommand("CREATE DATABASE test_db", connection)
+                .ExecuteNonQueryAsync();
+        }
+
+        private static async Task GrantPrivileges(NpgsqlConnection connection, ILogger logger)
+        {
+            logger.LogInformation("Configuring database privileges");
+            var user = connection.ConnectionString.Split("Username=")[1].Split(';')[0];
+            var query = $@"
+                GRANT ALL PRIVILEGES ON DATABASE test_db TO ""{user}"";
+                ALTER USER ""{user}"" CREATEDB;";
+            
+            await new NpgsqlCommand(query, connection).ExecuteNonQueryAsync();
+        }
+
+        public static async Task ResetAsync(string connectionString, ILogger logger)
+        {
+            await using var connection = new NpgsqlConnection(connectionString);
+            await connection.OpenAsync();
+            await new NpgsqlCommand(@"TRUNCATE TABLE ""Contents"" CASCADE", connection)
+                .ExecuteNonQueryAsync();
+            logger.LogInformation("Database reset completed");
+        }
+    }
+
+    public static class PathHelper
+    {
+        public static string TestConfigPath => FindParentContaining("appsettings.Test.json");
+
+        private static string FindParentContaining(string fileName)
+        {
+            var directory = new DirectoryInfo(AppContext.BaseDirectory);
+            while (directory != null && !directory.GetFiles(fileName).Any())
+            {
+                directory = directory.Parent;
+            }
+            return directory?.FullName ?? throw new FileNotFoundException(fileName);
+        }
+    }
+
+    public static class ConfigurationLoader
+    {
+        public static IConfigurationRoot LoadTestConfiguration(string path) => 
+            new ConfigurationBuilder()
+                .SetBasePath(path)
+                .AddJsonFile("appsettings.Test.json")
+                .Build();
+    }
+
+    public class AllowAllHandler : IAuthorizationHandler
+    {
+        public Task HandleAsync(AuthorizationHandlerContext context)
+        {
+            foreach (var requirement in context.PendingRequirements)
+                context.Succeed(requirement);
+            return Task.CompletedTask;
+        }
+    }
+
 
     [CollectionDefinition("Integration Tests", DisableParallelization = true)]
-    public class IntegrationTestCollection : ICollectionFixture<IntegrationTestFixture>
-    {
-    }
+    public class IntegrationTestCollection : ICollectionFixture<IntegrationTestFixture> { }
+    #endregion
 }

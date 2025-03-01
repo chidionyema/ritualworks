@@ -9,9 +9,20 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using haworks.Services;
+using haworks.Contracts;
+using haworks.Models;
 
 namespace Haworks.Tests
-{
+{   
+    public class FakeVirusScanner : IVirusScanner
+    {
+        public Task<VirusScanResult> ScanAsync(Stream fileStream)
+        {
+            // Fake virus scanning logic: Always return no virus detected for tests.
+            return Task.FromResult(new VirusScanResult(false, "No Virus Detected"));
+        }
+    }
+
     public class FakeVaultService : VaultService
     {
         public FakeVaultService()
