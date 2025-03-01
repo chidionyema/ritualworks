@@ -3,9 +3,9 @@ namespace haworks.Db
     public enum ContentType
     {
         Image,
-        Asset,
+        Document,
         Video,
-        Document
+        Other
     }
 
 }

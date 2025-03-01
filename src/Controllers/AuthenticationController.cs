@@ -13,11 +13,10 @@ using System.Threading.Tasks;
 using haworks.Models;
 using haworks.Dto;
 using haworks.Db;
+using Haworks.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.MicrosoftAccount;
 using System.ComponentModel.DataAnnotations;
 
 namespace haworks.Controllers
@@ -29,7 +28,7 @@ namespace haworks.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IConfiguration _configuration;
         private readonly ILogger<AuthenticationController> _logger;
-        private readonly haworksContext _context;
+        private readonly IdentityContext _identityContext;
         private readonly SymmetricSecurityKey _symmetricSecurityKey;
         private readonly TokenValidationParameters _tokenValidationParameters;
 
@@ -37,18 +36,23 @@ namespace haworks.Controllers
             UserManager<User> userManager,
             IConfiguration configuration,
             ILogger<AuthenticationController> logger,
-            haworksContext context)
+            IdentityContext identityContext)
         {
             _userManager = userManager;
             _configuration = configuration;
             _logger = logger;
-            _context = context;
+            _identityContext = identityContext;
 
             var keyString = configuration["Jwt:Key"];
             if (string.IsNullOrWhiteSpace(keyString))
             {
                 throw new ArgumentException("JWT key is not configured.");
             }
+
+            // Log the raw key length to ensure it's at least 32 bytes for HmacSha256
+            var rawKey = Convert.FromBase64String(keyString);
+            _logger.LogInformation("JWT raw key length (bytes): {Length}", rawKey.Length);
+
             var keyBytes = Convert.FromBase64String(keyString);
             _symmetricSecurityKey = new SymmetricSecurityKey(keyBytes);
 
@@ -62,7 +66,9 @@ namespace haworks.Controllers
                 ValidateIssuerSigningKey = true,
                 ClockSkew = TimeSpan.Zero,
                 IssuerSigningKey = _symmetricSecurityKey,
-                NameClaimType = JwtRegisteredClaimNames.Sub
+                // This setting ensures that the claim with type ClaimTypes.NameIdentifier
+                // (set to the user ID in GenerateToken) is not overwritten by default mappings.
+                NameClaimType = ClaimTypes.NameIdentifier
             };
         }
 
@@ -71,11 +77,12 @@ namespace haworks.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Invalid registration attempt. Errors: {Errors}",
-                    ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                _logger.LogWarning("Invalid registration attempt => Model errors: {Errors}",
+                    string.Join("; ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
                 return BadRequest(ModelState);
             }
 
+            _logger.LogInformation("Attempting to register user: {Username}", registrationDto.Username);
             var user = new User
             {
                 UserName = registrationDto.Username,
@@ -85,15 +92,31 @@ namespace haworks.Controllers
             var result = await _userManager.CreateAsync(user, registrationDto.Password);
             if (!result.Succeeded)
             {
-                _logger.LogWarning("User registration failed for {Username}. Errors: {Errors}",
-                    registrationDto.Username, string.Join(", ", result.Errors.Select(e => e.Description)));
+                foreach (var err in result.Errors)
+                {
+                    _logger.LogWarning("Registration error: {Err}", err.Description);
+                }
                 return BadRequest(result.Errors);
             }
 
-            _logger.LogInformation("User registered successfully: {Username}, UserId: {UserId}", user.UserName, user.Id);
+            _logger.LogInformation("User registration succeeded for user: {Username}, Id: {UserId}",
+                user.UserName, user.Id);
 
-            var token = GenerateToken(user.UserName!, user.Id!, DateTime.UtcNow.AddMinutes(15));
+            var roleResult = await _userManager.AddToRoleAsync(user, "ContentUploader");
+            if (!roleResult.Succeeded)
+                return BadRequest(roleResult.Errors);
+
+            // 2) Add a custom claim "permission=upload_content"
+            var claimResult = await _userManager.AddClaimAsync(
+                user, new Claim("permission", "upload_content")
+            );
+            if (!claimResult.Succeeded)
+                return BadRequest(claimResult.Errors);   
+
+            // Use the modified async GenerateToken method passing the User object
+            var token = await GenerateToken(user, DateTime.UtcNow.AddMinutes(15));
             SetSecureCookie(token);
+
             return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token),
@@ -107,24 +130,30 @@ namespace haworks.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Invalid login attempt. Errors: {Errors}",
-                    ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                _logger.LogWarning("Invalid login attempt => Model errors: {Errors}",
+                    string.Join("; ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)));
                 return BadRequest(ModelState);
             }
 
+            _logger.LogInformation("Attempting to login user: {Username}", loginDto.Username);
             var user = await _userManager.FindByNameAsync(loginDto.Username);
-            if (user == null || !await _userManager.CheckPasswordAsync(user, loginDto.Password))
+            if (user == null)
             {
-                _logger.LogWarning("Failed login attempt for {Username}", loginDto.Username);
+                _logger.LogWarning("User not found: {Username}", loginDto.Username);
                 return Unauthorized(new { message = "Invalid credentials" });
             }
 
-            _logger.LogInformation("User logged in successfully: {Username}, UserId: {UserId}", user.UserName, user.Id);
+            var passwordValid = await _userManager.CheckPasswordAsync(user, loginDto.Password);
+            if (!passwordValid)
+            {
+                _logger.LogWarning("Invalid password for user: {Username}", loginDto.Username);
+                return Unauthorized(new { message = "Invalid credentials" });
+            }
 
-            var token = GenerateToken(user.UserName!, user.Id!, DateTime.UtcNow.AddMinutes(15));
+            _logger.LogInformation("Login successful for user: {Username}, Id: {UserId}", user.UserName, user.Id);
+
+            var token = await GenerateToken(user, DateTime.UtcNow.AddMinutes(15));
             SetSecureCookie(token);
-
-            bool isUserSubscribed = await _context.Subscriptions.AnyAsync(s => s.UserId == user.Id && s.Status == SubscriptionStatus.Active);
 
             return Ok(new
             {
@@ -133,8 +162,7 @@ namespace haworks.Controllers
                 {
                     id = user.Id,
                     userName = user.UserName,
-                    email = user.Email,
-                    isSubscribed = isUserSubscribed
+                    email = user.Email
                 },
                 expires = token.ValidTo
             });
@@ -143,132 +171,134 @@ namespace haworks.Controllers
         [HttpPost("logout")]
         public IActionResult Logout()
         {
+            _logger.LogInformation("Logout endpoint called; removing 'jwt' cookie.");
             Response.Cookies.Delete("jwt");
-            _logger.LogInformation("User logged out. IP Address: {IPAddress}", HttpContext.Connection.RemoteIpAddress?.ToString());
             return Ok(new { message = "Logged out successfully" });
         }
 
         [HttpGet("verify-token")]
+        [Authorize]
         public async Task<IActionResult> VerifyToken()
         {
-            var token = GetTokenFromHeader();
-            if (string.IsNullOrEmpty(token))
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
             {
-                _logger.LogWarning("VerifyToken: No token found in header. IP Address: {IPAddress}", HttpContext.Connection.RemoteIpAddress?.ToString());
-                return Unauthorized(new { message = "Invalid token" });
+                _logger.LogWarning("verify-token => No userId in Claims => returning Unauthorized");
+                return Unauthorized();
             }
 
-            var principal = ValidateToken(token);
-            if (principal == null)
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
             {
-                _logger.LogWarning("VerifyToken: Token validation failed. Token: {Token}, IP Address: {IPAddress}", token, HttpContext.Connection.RemoteIpAddress?.ToString());
-                return Unauthorized(new { message = "Token validation failed" });
+                _logger.LogWarning("verify-token => userId not found in DB => returning Unauthorized");
+                return Unauthorized();
             }
 
-            _logger.LogDebug("Token verified successfully for user: {Username}, UserId: {UserId}",
-                principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value,
-                principal.FindFirst(ClaimTypes.NameIdentifier)?.Value);
-
-            string userId = principal.FindFirstValue(ClaimTypes.NameIdentifier)!;
-
-            bool isUserSubscribed = await _context.Subscriptions.AnyAsync(s => s.UserId == userId && s.Status == SubscriptionStatus.Active);
-
-            return Ok(new
-            {
-                userName = principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value,
-                userId = userId,
-                isSubscribed = isUserSubscribed
-            });
+            _logger.LogInformation("verify-token => User found: {UserId}, {UserName}", user.Id, user.UserName);
+            return Ok(new { userId = user.Id, userName = user.UserName });
         }
 
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
         {
-            var principal = ValidateToken(request.AccessToken);
-            if (principal == null)
+            _logger.LogInformation("RefreshToken called with AccessToken length: {AccessLen}, RefreshToken length: {RefreshLen}",
+                request.AccessToken.Length, request.RefreshToken.Length);
+
+            try
             {
-                _logger.LogWarning("RefreshToken: Access token validation failed. IP Address: {IPAddress}", HttpContext.Connection.RemoteIpAddress?.ToString());
-                return Unauthorized(new { message = "Invalid token" });
-            }
-
-            var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier)!;
-            var storedToken = await _context.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == request.RefreshToken && rt.UserId == userId);
-            if (storedToken == null || storedToken.Expires < DateTime.UtcNow)
-            {
-                _logger.LogWarning("RefreshToken: Invalid or expired refresh token used for UserID: {UserId}. Provided Refresh Token: {RefreshToken}", userId, request.RefreshToken);
-                return Unauthorized(new { message = "Invalid refresh token" });
-            }
-
-            _context.RefreshTokens.Remove(storedToken);
-            await _context.SaveChangesAsync();
-
-            var newAccessToken = GenerateToken(principal.FindFirstValue(JwtRegisteredClaimNames.Sub)!, userId, DateTime.UtcNow.AddMinutes(15));
-            var newRefreshToken = await GenerateRefreshToken(userId);
-
-            _logger.LogInformation("Token refreshed successfully for UserId: {UserId}", userId);
-
-            return Ok(new
-            {
-                accessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
-                refreshToken = newRefreshToken.Token,
-                expires = newAccessToken.ValidTo
-            });
-        }
-
-        [HttpGet("external/microsoft")]
-        public IActionResult LoginMicrosoft()
-        {
-            var redirectUrl = Url.Action("MicrosoftCallback", "Authentication", null, Request.Scheme);
-            var properties = new AuthenticationProperties { RedirectUri = redirectUrl, Items = { { "scheme", MicrosoftAccountDefaults.AuthenticationScheme } } };
-            return Challenge(properties, MicrosoftAccountDefaults.AuthenticationScheme);
-        }
-
-        [HttpGet("external/microsoft-callback")]
-        public async Task<IActionResult> MicrosoftCallback()
-        {
-            var result = await HttpContext.AuthenticateAsync(MicrosoftAccountDefaults.AuthenticationScheme);
-            if (!result.Succeeded)
-            {
-                _logger.LogWarning("Microsoft external authentication failed. Error: {Error}", result.Failure?.Message);
-                return BadRequest(new { message = "External authentication failed" });
-            }
-
-            var email = result.Principal.FindFirstValue(ClaimTypes.Email)!;
-            var user = await _userManager.FindByEmailAsync(email) ?? await CreateUserFromExternalProvider(email);
-
-            bool isUserSubscribed = await _context.Subscriptions.AnyAsync(s => s.UserId == user.Id && s.Status == SubscriptionStatus.Active);
-
-            var accessToken = GenerateToken(user.UserName!, user.Id!, DateTime.UtcNow.AddMinutes(15));
-            var refreshToken = await GenerateRefreshToken(user.Id);
-            SetSecureCookie(accessToken);
-
-            _logger.LogInformation("Microsoft external login successful for user: {Email}, UserId: {UserId}", email, user.Id);
-
-            return Ok(new
-            {
-                accessToken = new JwtSecurityTokenHandler().WriteToken(accessToken),
-                refreshToken = refreshToken.Token,
-                expires = accessToken.ValidTo,
-                user = new
+                // Step 1: Validate the old Access Token
+                var principal = ValidateToken(request.AccessToken);
+                if (principal == null)
                 {
-                    id = user.Id,
-                    userName = user.UserName,
-                    email = user.Email,
-                    isSubscribed = isUserSubscribed
+                    _logger.LogWarning("RefreshToken => principal is null => returning Unauthorized");
+                    return Unauthorized();
                 }
-            });
+
+                var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+                _logger.LogInformation("Attempting refresh for userId: {UserId}", userId);
+
+                // Step 2: Confirm user still exists
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    _logger.LogWarning("RefreshToken => user not found => returning Unauthorized");
+                    return Unauthorized();
+                }
+
+                // Step 3: Validate the stored refresh token 
+                var storedToken = await _identityContext.RefreshTokens
+                    .FirstOrDefaultAsync(rt => rt.Token == request.RefreshToken && rt.UserId == userId);
+
+                if (storedToken == null)
+                {
+                    _logger.LogWarning("RefreshToken => No matching refresh token in DB => Unauthorized");
+                    return Unauthorized();
+                }
+
+                _logger.LogInformation("Found refresh token in DB: {RefreshToken}, expires: {Expires}, userId: {UserId}",
+                    storedToken.Token, storedToken.Expires, storedToken.UserId);
+
+                if (storedToken.Expires < DateTime.UtcNow)
+                {
+                    _logger.LogWarning("RefreshToken => storedToken expired on {ExpiredOn} => returning Unauthorized",
+                        storedToken.Expires);
+                    return Unauthorized();
+                }
+
+                // Step 4: Remove old refresh token from DB
+                _logger.LogInformation("Removing old refresh token from DB: {RefreshToken}", storedToken.Token);
+                _identityContext.RefreshTokens.Remove(storedToken);
+
+                // Step 5: Save changes for removing old token 
+                await _identityContext.SaveChangesAsync();
+                _logger.LogInformation("Old refresh token removed successfully.");
+
+                // Step 6: Generate new access token + new refresh token
+                var newAccessToken = await GenerateToken(user, DateTime.UtcNow.AddMinutes(15));
+                var newRefreshToken = await GenerateRefreshToken(user.Id);
+
+                _logger.LogInformation("Generated new refresh token: {RefreshToken} => expires {Expires}",
+                    newRefreshToken.Token, newAccessToken.ValidTo);
+
+                return Ok(new
+                {
+                    accessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+                    refreshToken = newRefreshToken.Token,
+                    expires = newAccessToken.ValidTo
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Refresh token failed unexpectedly.");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
-        private JwtSecurityToken GenerateToken(string userName, string userId, DateTime expiration)
+        /// <summary>
+        /// Asynchronously generates a JWT based on the provided user and expiration.
+        /// </summary>
+        private async Task<JwtSecurityToken> GenerateToken(User user, DateTime expiration)
         {
             var claims = new List<Claim>
-            {
-                new(JwtRegisteredClaimNames.Sub, userName),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new(JwtRegisteredClaimNames.Iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()),
-                new(ClaimTypes.NameIdentifier, userId),
-                new("auth_time", DateTime.UtcNow.ToString("O"))
+            {        
+                // Use user.Id as the subject and include user.UserName as unique name.
+                new(JwtRegisteredClaimNames.Sub, user.Id),
+                new(JwtRegisteredClaimNames.UniqueName, user.UserName),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
+
+            _logger.LogDebug("GenerateToken => userName: {UserName}, userId: {UserId}, expiration: {Expires}",
+                user.UserName, user.Id, expiration);
+
+            // Retrieve roles and claims from the user manager.
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+            var dbClaims = await _userManager.GetClaimsAsync(user);
+            claims.AddRange(dbClaims);
+
             return new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
@@ -278,119 +308,75 @@ namespace haworks.Controllers
             );
         }
 
-        private async Task<User> CreateUserFromExternalProvider(string email)
-        {
-            var user = new User { UserName = email, Email = email, EmailConfirmed = true };
-            var result = await _userManager.CreateAsync(user);
-            if (!result.Succeeded)
-            {
-                _logger.LogError("Failed to create user from external provider for email: {Email}. Errors: {Errors}",
-                    email, string.Join(", ", result.Errors.Select(e => e.Description)));
-                throw new Exception("User creation failed from external provider");
-            }
-            _logger.LogInformation("User created from external provider: {Email}, UserId: {UserId}", email, user.Id);
-            return user;
-        }
-
         private async Task<RefreshToken> GenerateRefreshToken(string userId)
         {
+            var newToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            _logger.LogDebug("Generating new refresh token for userId: {UserId}, token: {Token}", userId, newToken);
+
             var refreshToken = new RefreshToken
             {
                 UserId = userId,
-                Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Token = newToken,
                 Expires = DateTime.UtcNow.AddDays(7),
-                Created = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow
             };
-            _context.RefreshTokens.Add(refreshToken);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException ex)
-            {
-                _logger.LogError(ex, "Database error while saving refresh token for UserId: {UserId}", userId);
-                throw;
-            }
+            _identityContext.RefreshTokens.Add(refreshToken);
+            await _identityContext.SaveChangesAsync();
             return refreshToken;
         }
 
         private ClaimsPrincipal? ValidateToken(string token)
         {
+            _logger.LogDebug("Validating token: {Token}", token);
             try
             {
-                return new JwtSecurityTokenHandler().ValidateToken(token, _tokenValidationParameters, out _);
-            }
-            catch (SecurityTokenException ex)
-            {
-                _logger.LogWarning("Token validation failed: {Message}. Token: {Token}", ex.Message, token);
-                return null;
+                var handler = new JwtSecurityTokenHandler();
+                var principal = handler.ValidateToken(token, _tokenValidationParameters, out var validToken);
+                _logger.LogDebug("ValidateToken => validated principal => subject: {Subject}",
+                    principal.Identity?.Name ?? "null");
+                return principal;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unexpected error during token validation. Token: {Token}", token);
+                _logger.LogWarning(ex, "ValidateToken => token validation failed => returning null principal");
                 return null;
             }
         }
 
-        private string? GetTokenFromHeader()
+        private void SetSecureCookie(JwtSecurityToken token)
         {
-            var authHeader = Request.Headers["Authorization"].ToString();
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
-            {
-                return null;
-            }
-            return authHeader["Bearer ".Length..].Trim();
-        }
-
-        // In production you may want Secure cookies.
-        // In the Test environment (set via builder.UseEnvironment("Test")), we set Secure = false.
-       private void SetSecureCookie(JwtSecurityToken token)
-       {
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            _logger.LogDebug("SetSecureCookie: Generated token string: {TokenString}", tokenString);
+            var segments = tokenString.Split('.');
+            _logger.LogDebug("SetSecureCookie: Token has {SegmentCount} segments.", segments.Length);
+            _logger.LogDebug("SetSecureCookie => appending 'jwt' cookie with expiry: {Expires}", token.ValidTo);
+
             Response.Cookies.Append("jwt", tokenString, new CookieOptions
             {
                 HttpOnly = true,
-                Secure = HttpContext.Request.IsHttps, // Respect HTTPS in test if configured
+                Secure = HttpContext.Request.IsHttps,
                 SameSite = SameSiteMode.Lax,
                 Expires = token.ValidTo
             });
         }
     }
 
-    // DTO classes
-
     public class UserRegistrationDto
     {
-        [Required(ErrorMessage = "Username is required")]
-        [StringLength(50, MinimumLength = 3, ErrorMessage = "Username must be between 3 and 50 characters")]
-        public string Username { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Invalid email format")]
-        public string Email { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Password is required")]
-        [StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$",
-            ErrorMessage = "Password must contain at least one uppercase letter, one lowercase letter, one digit and one special character")]
-        public string Password { get; set; } = string.Empty;
+        [Required] public string Username { get; set; } = string.Empty;
+        [Required, EmailAddress] public string Email { get; set; } = string.Empty;
+        [Required, MinLength(8)] public string Password { get; set; } = string.Empty;
     }
 
     public class UserLoginDto
     {
-        [Required(ErrorMessage = "Username is required")]
-        public string Username { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Password is required")]
-        public string Password { get; set; } = string.Empty;
+        [Required] public string Username { get; set; } = string.Empty;
+        [Required] public string Password { get; set; } = string.Empty;
     }
 
     public class RefreshTokenRequest
     {
-        [Required(ErrorMessage = "Access Token is required")]
-        public string AccessToken { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Refresh Token is required")]
-        public string RefreshToken { get; set; } = string.Empty;
+        [Required] public string AccessToken { get; set; } = string.Empty;
+        [Required] public string RefreshToken { get; set; } = string.Empty;
     }
 }

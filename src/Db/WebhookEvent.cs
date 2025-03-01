@@ -11,11 +11,9 @@ namespace haworks.Db
         Unknown
     }
 
-    public class WebhookEvent
+    public class WebhookEvent : AuditableEntity
     {
-        public Guid Id { get; set; }
-        
-        // Enforce uniqueness via Fluent API in your DbContext.
+        // Unique Stripe event identifier.
         public string StripeEventId { get; set; } = string.Empty;
         
         public string EventType { get; set; } = string.Empty;
@@ -27,10 +25,8 @@ namespace haworks.Db
         public HandlerType HandlerType { get; set; } = HandlerType.Unknown;
         
         public string Error { get; set; } = string.Empty;
-
-        // Optimistic concurrency token.
-        [Timestamp]
-        [ConcurrencyCheck]
-        public byte[] RowVersion { get; set; } = Array.Empty<byte>(); // Initialized to a non-null value
+        
+        // The RowVersion property is inherited from AuditableEntity.
+        // If needed, you can override it here with additional annotations.
     }
 }

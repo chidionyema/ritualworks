@@ -20,6 +20,8 @@ services:
       - Elasticsearch__Uri=http://elasticsearch:9200
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - RabbitMq__Host=rabbitmq
+      - ClamAV__Host=clamav  
+      - ClamAV__Port=3310
       - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
       - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
     volumes:
@@ -40,6 +42,21 @@ services:
       - db_migrations 
     extra_hosts:
       - "api.local.ritualworks.com:127.0.0.1"
+  
+  clamav_rest:
+    image: clamav/clamav:1.0
+    ports:
+      - "8080:8080"
+    depends_on:
+      - clamav
+    environment:
+      - CLAMD_HOST=clamav
+      - CLAMD_PORT=3310
+
+  clamav:
+    image: clamav/clamav:latest
+    ports:
+      - "3310:3310"
 
   db_migrations:
     build:

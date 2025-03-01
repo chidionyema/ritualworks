@@ -1,25 +1,21 @@
-using Microsoft.AspNetCore.Identity;
-using System.Collections.Generic;
 using System;
+using Microsoft.AspNetCore.Identity;
+
 namespace haworks.Db
 {
-    public class UserProfile {
-        
-        public Guid Id { get; set; }
-        // This is the same type as your Identity User primary key (string or Guid)
-        public string UserId { get; set; } = null!;
+    public class UserProfile : AuditableEntity
+    {
+        public string UserId { get; set; } = string.Empty;
 
-        // A short bio or about text
         public string Bio { get; set; } = string.Empty;
 
-        // Link to an avatar image or S3 bucket
         public string AvatarUrl { get; set; } = string.Empty;
 
         // Social or website links
         public string Website { get; set; } = string.Empty;
 
-        // Navigation back to the Identity User
         public User? User { get; set; }
-   }
 
+        public DateTime? LastLogin { get; set; }
+    }
 }

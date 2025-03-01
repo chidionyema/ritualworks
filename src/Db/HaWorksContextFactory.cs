@@ -1,9 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿/*using System;
+using System.IO;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.IO;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.FileProviders;
+using haworks.Services;
+using Microsoft.Extensions.Options;
+using haworks.Db;
 
 namespace haworks.Db
 {
@@ -25,25 +32,41 @@ namespace haworks.Db
 
             if (env.Equals("Development", StringComparison.OrdinalIgnoreCase))
             {
-                // For local development (and migrations), use the default connection string.
+                // For local development, use the default connection string.
                 connectionString = config.GetConnectionString("DefaultConnection")!;
                 Console.WriteLine($"[Debug] Environment is '{env}'. Using default connection string from configuration.");
             }
             else
             {
-                // In production (or non‑Development), attempt to retrieve the connection string via Vault.
-                // Check for the existence of the vault files.
+                // In production, attempt to retrieve the connection string via Vault.
                 var roleIdPath = config["Vault:RoleIdPath"];
                 var secretIdPath = config["Vault:SecretIdPath"];
 
-                if (!string.IsNullOrEmpty(roleIdPath) && File.Exists(roleIdPath!) &&
-                    !string.IsNullOrEmpty(secretIdPath) && File.Exists(secretIdPath!))
+                if (!string.IsNullOrEmpty(roleIdPath) && File.Exists(roleIdPath) &&
+                    !string.IsNullOrEmpty(secretIdPath) && File.Exists(secretIdPath))
                 {
                     try
                     {
-                        // Initialize your VaultService (assumed to be implemented elsewhere).
-                        var vaultService = new Haworks.Services.VaultService(config);
-                        connectionString = vaultService.GetDatabaseConnectionString().Result;
+                        // Create a logger for VaultService.
+                        using var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+                        var vaultLogger = loggerFactory.CreateLogger<VaultService>();
+
+                        // Create Options objects for VaultOptions and DatabaseOptions.
+                        var vaultOptions = Options.Create(new VaultOptions
+                        {
+                            Address = config["Vault:Address"] ?? string.Empty,
+                            RoleIdPath = config["Vault:RoleIdPath"] ?? string.Empty,
+                            SecretIdPath = config["Vault:SecretIdPath"] ?? string.Empty,
+                            CertThumbprint = config["Vault:CertThumbprint"] ?? string.Empty
+                        });
+                        var databaseOptions = Options.Create(new DatabaseOptions
+                        {
+                            Host = config["Database:Host"] ?? string.Empty
+                        });
+
+                        // Create VaultService with the proper options.
+                        var vaultService = new VaultService(vaultOptions, databaseOptions, vaultLogger);
+                        connectionString = vaultService.GetDatabaseConnectionStringAsync().Result!;
                         Console.WriteLine("[Debug] Retrieved connection string from Vault.");
                     }
                     catch (Exception ex)
@@ -56,7 +79,7 @@ namespace haworks.Db
                 }
                 else
                 {
-                    // Fallback if vault files are missing.
+                    // Fallback if Vault files are missing.
                     connectionString = config.GetConnectionString("DefaultConnection")!;
                     Console.WriteLine("[Debug] Vault files not found. Using default connection string from configuration.");
                 }
@@ -69,7 +92,32 @@ namespace haworks.Db
                 .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))
                 .EnableDetailedErrors();
 
-            return new haworksContext(optionsBuilder.Options);
+            // Create dependencies.
+            var loggerFactoryReal = LoggerFactory.Create(builder => builder.AddConsole());
+            var logger = loggerFactoryReal.CreateLogger<haworksContext>();
+
+            var httpContextAccessor = new HttpContextAccessor();
+            var currentUserService = new CurrentUserService(httpContextAccessor);
+            var hostEnvironment = new DesignTimeHostEnvironment();
+
+            return new haworksContext(
+                optionsBuilder.Options,
+                currentUserService,
+                logger,
+                httpContextAccessor,
+                config,
+                hostEnvironment);
         }
     }
+
+    // Minimal implementation of IHostEnvironment for design time.
+    public class DesignTimeHostEnvironment : IHostEnvironment
+    {
+        public string EnvironmentName { get; set; } = "Development";
+        public string ApplicationName { get; set; } = "HAworks";
+        public string ContentRootPath { get; set; } = Directory.GetCurrentDirectory();
+        public IFileProvider ContentRootFileProvider { get; set; } =
+            new PhysicalFileProvider(Directory.GetCurrentDirectory());
+    }
 }
+*/

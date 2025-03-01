@@ -52,7 +52,8 @@ namespace haworks.Webhooks
                 return false;
             }
 
-            ISessionHandlerStrategy strategy = session.Mode switch
+            // Declare strategy as nullable since the default case may return null.
+            ISessionHandlerStrategy? strategy = session.Mode switch
             {
                 "subscription" => _serviceProvider.GetRequiredService<SubscriptionSessionStrategy>(),
                 "payment" => _serviceProvider.GetRequiredService<PaymentSessionStrategy>(),

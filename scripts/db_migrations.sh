@@ -7,4 +7,9 @@ if [ -f "/certs-volume/ca.crt" ]; then
   update-ca-certificates
 fi
 
-dotnet ef database update
+dotnet ef database update --context OrderContext
+dotnet ef database update --context ProductContext
+dotnet ef database update --context ContentContext
+dotnet ef database update --context IdentityContext
+
+

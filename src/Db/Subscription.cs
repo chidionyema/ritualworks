@@ -1,9 +1,9 @@
 using System;
+
 namespace haworks.Db
 {
-    public class Subscription
+    public class Subscription : AuditableEntity
     {
-        public Guid Id { get; set; }
         public string UserId { get; set; } = string.Empty;
         public string StripeSubscriptionId { get; set; } = string.Empty;
         public string PlanId { get; set; } = string.Empty;
@@ -12,9 +12,8 @@ namespace haworks.Db
         public DateTime ExpiresAt { get; set; }
     }
 
-    public class SubscriptionPlan
+    public class SubscriptionPlan : AuditableEntity
     {
-        public string Id { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string StripePriceId { get; set; } = string.Empty;
         public decimal Price { get; set; }

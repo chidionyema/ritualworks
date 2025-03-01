@@ -1,10 +1,10 @@
- 
- using System;
- namespace haworks.Dto
-{ 
-    public class CategoryDto
+using System;
+
+namespace haworks.Dto
+{
+    public record CategoryDto
     {
-        public Guid Id { get; set; }
-        public string? Name { get; set; } = string.Empty;
-    } 
+        public Guid Id { get; init; }
+        public string? Name { get; init; } = string.Empty;
+    }
 }

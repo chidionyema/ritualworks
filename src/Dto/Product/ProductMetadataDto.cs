@@ -2,10 +2,10 @@ using System;
 
 namespace haworks.Dto
 {
-    public class ProductMetadataDto
+    public record ProductMetadataDto
     {
-        public Guid Id { get; set; }
-        public string KeyName { get; set; } = string.Empty;
-        public string KeyValue { get; set; } = string.Empty;
+        public Guid Id { get; init; }
+        public string KeyName { get; init; } = string.Empty;
+        public string KeyValue { get; init; } = string.Empty;
     }
 }

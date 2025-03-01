@@ -12,7 +12,7 @@ namespace haworks.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [AllowAnonymous]
-    public class StripeWebhookController : ControllerBase
+    public class StripeWebhookController: ControllerBase
     {
         private readonly StripeWebhookService _webhookService;
         private readonly IConfiguration _configuration;
@@ -34,8 +34,9 @@ namespace haworks.Controllers
                 json = await reader.ReadToEndAsync();
             }
 
-            string signatureHeader = Request.Headers["Stripe-Signature"];
-            string endpointSecret = _configuration["Stripe:WebhookSecret"];
+            // Convert StringValues to string before using null-coalescing operator
+            string signatureHeader = Request.Headers["Stripe-Signature"].ToString()?? string.Empty;
+            string endpointSecret = _configuration["Stripe:WebhookSecret"]?? string.Empty;
 
             Event stripeEvent;
             try

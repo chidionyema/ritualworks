@@ -56,7 +56,7 @@ COMPOSE_FRONTEND_FILE="../docker/compose/docker-compose-frontend-api.yml"
 # ============================
 
 # Build backend services
-# build_backend_services "$COMPOSE_BACKEND_FILE"
+ build_backend_services "$COMPOSE_BACKEND_FILE"
 
 
 # ============================

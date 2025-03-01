@@ -40,24 +40,25 @@ namespace Haworks.Tests
         public TestAuthHandler(
             IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
-            UrlEncoder encoder) // Removed ISystemClock from constructor parameters
-            : base(options, logger, encoder) // Updated base constructor
+            UrlEncoder encoder)
+            : base(options, logger, encoder) 
         {
         }
 
 
-        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
-        {
+       protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
+       {
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, "test-user-id"),
-                new Claim(ClaimTypes.Name, "testuser")
+                new Claim(ClaimTypes.Name, "testuser"),
+                new Claim(ClaimTypes.Role, "ContentUploader"),
+                new Claim("permission", "upload_content")
             };
+
             var identity = new ClaimsIdentity(claims, "Test");
             var principal = new ClaimsPrincipal(identity);
-            var ticket = new AuthenticationTicket(principal, "Test");
-
-            return Task.FromResult(AuthenticateResult.Success(ticket));
+            return AuthenticateResult.Success(new AuthenticationTicket(principal, "Test"));
         }
     }
 }

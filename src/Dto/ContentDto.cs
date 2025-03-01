@@ -2,14 +2,46 @@ using System;
 
 namespace haworks.Dto
 {
-    public class ContentDto
+   public record ChunkSessionRequest(
+        Guid EntityId,
+        string FileName,
+        int TotalChunks,
+        long TotalSize);
+
+    public record StorageInfo(long FileSize)
     {
-        public Guid Id { get; set; } // Unique identifier for the content
-        public string Url { get; set; } = string.Empty; // URL of the content
-        public string BlobName { get; set; } = string.Empty; // Blob or file name
-        public string EntityType { get; set; } = string.Empty; // Type of the related entity (e.g., "Product")
-        public Guid EntityId { get; set; } // ID of the related entity
-        public haworks.Db.ContentType ContentType { get; set; } // Enum representing the type of content (e.g., Image, Asset)
-        public DateTime CreatedAt { get; set; } // Timestamp when the content was created
+        public string BucketName { get; set; } = string.Empty;
+        public string ObjectName { get; set; } = string.Empty;
+        public string ETag { get; set; } = string.Empty;
+        public string StorageDetails { get; set; } = string.Empty;
+        public string Path { get; set; } = string.Empty;
     }
+
+    public record ChunkSessionDto(
+        Guid SessionId,
+        DateTime ExpiresAt,
+        int TotalChunks);
+
+    public record ContentDto(
+        Guid Id,
+        Guid EntityId,
+        string EntityType,
+        string Url,
+        string ContentType,
+        long FileSize);
+
+
+
+   public record ContentUploadResult(
+        string BucketName,
+        string ObjectName,
+        string ContentType,
+        long FileSize,
+        string VersionId,
+        string StorageDetails,
+        string Path
+    );
+
+
+
 }

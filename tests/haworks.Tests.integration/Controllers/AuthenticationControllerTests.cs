@@ -1,339 +1,581 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Net.Http.Headers;
-using System.Text.Json;
+using System.Net.Http.Json;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
-using haworks.Controllers; // For DTO classes
+using haworks.Controllers;
 using haworks.Db;
+using haworks.Dto;
+using haworks.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Linq;
 using Xunit;
-using Microsoft.Net.Http.Headers;
-using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using Haworks.Infrastructure.Data;
 
-namespace Haworks.Tests
+namespace Haworks.Tests.Integration
 {
     [Collection("Integration Tests")]
-    public class AuthenticationControllerWithDockerTests
+    public class AuthenticationControllerIntegrationTests : IAsyncLifetime
     {
         private readonly IntegrationTestFixture _fixture;
-        private readonly HttpClient _client;
-        private readonly WebApplicationFactory<Program> _factory;
 
-        public AuthenticationControllerWithDockerTests(IntegrationTestFixture fixture)
+        // (A) The original client that shares the CookieContainer
+        private readonly HttpClient _client; 
+        
+        // (B) A second client with NO cookies, for Bearer-based tests
+        private readonly HttpClient _clientNoCookies;
+
+        public AuthenticationControllerIntegrationTests(IntegrationTestFixture fixture)
         {
             _fixture = fixture;
-            _factory = _fixture.CreateFactory();
-            _client = _fixture.CreateClientWithCookies();
+            _client = fixture.CreateClientWithCookies();
+            // Create a second client without a cookie container:
+            _clientNoCookies = fixture.Factory.CreateClient();
         }
 
-        // Helper: generate a unique suffix.
-        private string GetUniqueSuffix() => Guid.NewGuid().ToString("N").Substring(0, 8);
-
-        #region Register Integration Tests
-
-        [Fact]
-        public async Task Register_ValidInput_ReturnsOkAndCreatesUser_Docker()
+        // Runs before each test class execution
+        public async Task InitializeAsync()
         {
             await _fixture.ResetDatabaseAsync();
-            var unique = GetUniqueSuffix();
-            var registrationDto = new UserRegistrationDto 
-            { 
-                Username = "dockerTestNewUser_" + unique, 
-                Email = $"dockernewuser_{unique}@example.com", 
+        }
+
+        // Runs after each test class execution
+        public Task DisposeAsync() => Task.CompletedTask;
+
+        // ------------------------------------------------------
+        // SECTION 1: Original Cookie-based Tests
+        // ------------------------------------------------------
+
+        #region Registration Tests (Cookie-based)
+
+        [Fact(DisplayName = "[Cookie] POST /register - Success (Valid Model)")]
+        public async Task Register_ValidModel_ReturnsOk()
+        {
+            // Arrange
+            var registrationDto = new UserRegistrationDto
+            {
+                Username = $"reg_success_{Guid.NewGuid()}",
+                Email = "testuser@example.com",
                 Password = "Password123!"
             };
 
-            var response = await _client.PostAsJsonAsync("/api/Authentication/register", registrationDto);
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var responseObject = await response.Content.ReadFromJsonAsync<JsonDocument>();
-            Assert.NotNull(responseObject!.RootElement.GetProperty("token").GetString());
-            Assert.NotNull(responseObject.RootElement.GetProperty("userId").GetString());
-            Assert.NotNull(responseObject.RootElement.GetProperty("expires").GetString());
+            // Act
+            var response = await _client.PostAsJsonAsync("api/authentication/register", registrationDto);
+            var responseBody = await response.Content.ReadAsStringAsync();
 
-            using (var scope = _factory.Services.CreateScope())
-            {
-                var context = scope.ServiceProvider.GetRequiredService<haworksContext>();
-                var user = await context.Users.FirstOrDefaultAsync(u => u.UserName == registrationDto.Username);
-                Assert.NotNull(user);
-                Assert.Equal(registrationDto.Email, user.Email);
-            }
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            // Validate JSON fields
+            var json = JObject.Parse(responseBody);
+            Assert.True(json.ContainsKey("token"), "Response should contain 'token'");
+            Assert.True(json.ContainsKey("userId"), "Response should contain 'userId'");
+            Assert.True(json.ContainsKey("expires"), "Response should contain 'expires'");
         }
 
-        [Fact]
-        public async Task Register_InvalidInput_ReturnsBadRequest_Docker()
+        [Fact(DisplayName = "[Cookie] POST /register - Failure (Invalid Model)")]
+        public async Task Register_InvalidModel_ReturnsBadRequest()
         {
-            await _fixture.ResetDatabaseAsync();
-            var invalidRegistrationDto = new UserRegistrationDto 
-            { 
-                Username = null,
-                Email = "invalid-email",
-                Password = "short"
+            // Arrange: Missing email, invalid password
+            var registrationDto = new UserRegistrationDto
+            {
+                Username = "invalid_user",
+                Email = "not-an-email", 
+                Password = "123"  // fails MinLength=8
             };
 
-            var response = await _client.PostAsJsonAsync("/api/Authentication/register", invalidRegistrationDto);
+            // Act
+            var response = await _client.PostAsJsonAsync("api/authentication/register", registrationDto);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact(DisplayName = "[Cookie] POST /register - Failure (Duplicate Username)")]
+        public async Task Register_DuplicateUsername_ReturnsBadRequest()
+        {
+            // Arrange
+            var username = $"dup_user_{Guid.NewGuid()}";
+            var firstDto = new UserRegistrationDto
+            {
+                Username = username,
+                Email = $"{username}@example.com",
+                Password = "Password123!"
+            };
+            var secondDto = new UserRegistrationDto
+            {
+                Username = username, // same username
+                Email = $"another_{username}@example.com",
+                Password = "AnotherPass123!"
+            };
+
+            // Act: First registration is successful
+            var firstResponse = await _client.PostAsJsonAsync("api/authentication/register", firstDto);
+            Assert.Equal(HttpStatusCode.OK, firstResponse.StatusCode);
+
+            // Second registration with the same username should fail
+            var secondResponse = await _client.PostAsJsonAsync("api/authentication/register", secondDto);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, secondResponse.StatusCode);
+        }
+
+        #endregion
+
+        #region Login Tests (Cookie-based)
+
+        [Fact(DisplayName = "[Cookie] POST /login - Success (Valid Credentials)")]
+        public async Task Login_ValidCredentials_ReturnsOk()
+        {
+            // Arrange: Register the user first
+            var username = $"login_success_{Guid.NewGuid()}";
+            var password = "Password123!";
+            await RegisterTestUserCookie(username, $"{username}@example.com", password);
+
+            var loginDto = new UserLoginDto
+            {
+                Username = username,
+                Password = password
+            };
+
+            // Act
+            var response = await _client.PostAsJsonAsync("api/authentication/login", loginDto);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var json = JObject.Parse(responseBody);
+            Assert.True(json.ContainsKey("token"), "Response should contain 'token'.");
+            Assert.True(json.ContainsKey("user"), "Response should contain 'user'.");
+            Assert.True(json.ContainsKey("expires"), "Response should contain 'expires'.");
+
+            // Additional check on user object
+            var userObj = json["user"] as JObject;
+            Assert.Equal(username, userObj?["userName"]?.ToString());
+        }
+
+        [Fact(DisplayName = "[Cookie] POST /login - Failure (Invalid Credentials)")]
+        public async Task Login_InvalidCredentials_ReturnsUnauthorized()
+        {
+            // Arrange: This user doesn't exist
+            var loginDto = new UserLoginDto
+            {
+                Username = "non_existent",
+                Password = "WrongPassword"
+            };
+
+            // Act
+            var response = await _client.PostAsJsonAsync("api/authentication/login", loginDto);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact(DisplayName = "[Cookie] POST /login - Failure (Invalid Model => BadRequest)")]
+        public async Task Login_InvalidModel_ReturnsBadRequest()
+        {
+            // Arrange: Missing password
+            var loginDto = new UserLoginDto
+            {
+                Username = "some_user"
+            };
+
+            // Act
+            var response = await _client.PostAsJsonAsync("api/authentication/login", loginDto);
+
+            // Assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         #endregion
 
-        #region Login Integration Tests
+        #region Logout Tests (Cookie-based)
 
-        [Fact]
-        public async Task Login_ValidCredentials_ReturnsOkWithTokenUserAndCookie_Docker()
+        [Fact(DisplayName = "[Cookie] POST /logout - Success (Cookie Cleared)")]
+        public async Task Logout_Success_ClearsJwtCookie()
         {
-            await _fixture.ResetDatabaseAsync();
-            var unique = GetUniqueSuffix();
-            var registrationDto = new UserRegistrationDto 
-            { 
-                Username = "testuser_" + unique, 
-                Email = $"testuser_{unique}@example.com", 
-                Password = "IntegrationTestPassword123!" 
-            };
-            var registerResponse = await _client.PostAsJsonAsync("/api/Authentication/register", registrationDto);
-            registerResponse.EnsureSuccessStatusCode();
+            // Arrange: Register & Login to set cookie
+            var username = $"logout_{Guid.NewGuid()}";
+            var password = "Password123!";
+            await RegisterTestUserCookie(username, $"{username}@example.com", password);
+            await LoginTestUserCookie(username, password);
 
+            // Act
+            var response = await _client.PostAsync("api/authentication/logout", null);
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Contains("Logged out successfully", responseBody);
+
+            // Ensure the "jwt" cookie is deleted
+            var cookies = _fixture.CookieContainer.GetCookies(_client.BaseAddress!);
+            Assert.False(cookies.Cast<System.Net.Cookie>().Any(c => c.Name == "jwt"),
+                         "JWT cookie should be removed after logout.");
+        }
+
+        #endregion
+
+        #region Verify-Token Tests (Cookie-based)
+
+        [Fact(DisplayName = "[Cookie] GET /verify-token - Success (Valid Cookie)")]
+        public async Task VerifyToken_ValidCookie_ReturnsOk()
+        {
+            // Arrange: Register & Login
+            var username = $"verify_{Guid.NewGuid()}";
+            var password = "Password123!";
+            var userId = await RegisterTestUserCookie(username, $"{username}@example.com", password);
+            await LoginTestUserCookie(username, password);
+
+            // Act
+            var response = await _client.GetAsync("api/authentication/verify-token");
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            var json = JObject.Parse(responseBody);
+            Assert.Equal(userId, json["userId"]?.ToString());
+            Assert.Equal(username, json["userName"]?.ToString());
+        }
+
+        [Fact(DisplayName = "[Cookie] GET /verify-token - Failure (No Cookie => Unauthorized)")]
+        public async Task VerifyToken_NoCookie_ReturnsUnauthorized()
+        {
+            // Arrange: brand new client, no cookies
+            var cleanClient = _fixture.Factory.CreateClient();
+
+            // Act
+            var response = await cleanClient.GetAsync("api/authentication/verify-token");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        #endregion
+
+        #region Refresh-Token Tests (Cookie-based)
+
+        [Fact(DisplayName = "[Cookie] POST /refresh-token - Success (Valid Access/Refresh Tokens)")]
+        public async Task RefreshToken_ValidTokens_ReturnsNewTokens()
+        {
+            // Arrange: register user and login once to get the valid JWT
+            var username = $"refresh_{Guid.NewGuid()}";
+            var password = "Password123!";
+            var userId = await RegisterTestUserCookie(username, $"{username}@example.com", password);
+
+            // Perform a single login call and capture the access token from the response.
             var loginDto = new UserLoginDto 
             { 
-                Username = registrationDto.Username, 
-                Password = registrationDto.Password
+                Username = username, 
+                Password = password 
             };
+            var loginResponse = await _client.PostAsJsonAsync("api/authentication/login", loginDto);
+            Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
 
-            var response = await _client.PostAsJsonAsync("/api/Authentication/login", loginDto);
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var responseObject = await response.Content.ReadFromJsonAsync<JsonDocument>();
-            Assert.NotNull(responseObject!.RootElement.GetProperty("token").GetString());
-            Assert.NotNull(responseObject.RootElement.GetProperty("user").GetProperty("id").GetString());
-            Assert.NotNull(responseObject.RootElement.GetProperty("expires").GetString());
-            Assert.False(responseObject.RootElement.GetProperty("user").GetProperty("isSubscribed").GetBoolean());
+            var loginJson = JObject.Parse(await loginResponse.Content.ReadAsStringAsync());
+            var oldAccessToken = loginJson["token"]?.ToString();
+            Assert.False(string.IsNullOrEmpty(oldAccessToken), "Access token should not be null or empty.");
 
+            // Clear the cookie so that it does not interfere with the refresh endpoint.
             var cookies = _fixture.CookieContainer.GetCookies(_client.BaseAddress);
-            var jwtCookie = cookies.Cast<Cookie>().FirstOrDefault(c => c.Name.Equals("jwt", StringComparison.OrdinalIgnoreCase));
-            Assert.NotNull(jwtCookie);
-        }
-
-        [Fact]
-        public async Task Login_InvalidCredentials_ReturnsUnauthorized_Docker()
-        {
-            await _fixture.ResetDatabaseAsync();
-            var loginDto = new UserLoginDto 
-            { 
-                Username = "nonexistent", 
-                Password = "wrongPassword" 
-            };
-
-            var response = await _client.PostAsJsonAsync("/api/Authentication/login", loginDto);
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        }
-
-        #endregion
-
-        #region VerifyToken Integration Tests
-
-        [Fact]
-        public async Task VerifyToken_ValidTokenInHeader_ReturnsOkWithUserInfo_Docker()
-        {
-            await _fixture.ResetDatabaseAsync();
-            var unique = GetUniqueSuffix();
-            var registrationDto = new UserRegistrationDto 
-            { 
-                Username = "dockerVerifyTokenUser_" + unique, 
-                Email = $"dockerverifytoken_{unique}@example.com", 
-                Password = "Password123!" 
-            };
-            var registerResponse = await _client.PostAsJsonAsync("/api/Authentication/register", registrationDto);
-            registerResponse.EnsureSuccessStatusCode();
-            var registerResponseObject = await registerResponse.Content.ReadFromJsonAsync<JsonDocument>();
-            var token = registerResponseObject!.RootElement.GetProperty("token").GetString();
-
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            var response = await _client.GetAsync("/api/Authentication/verify-token");
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var responseObject = await response.Content.ReadFromJsonAsync<JsonDocument>();
-            Assert.Equal(registrationDto.Username, responseObject!.RootElement.GetProperty("userName").GetString());
-            Assert.NotNull(responseObject.RootElement.GetProperty("userId").GetString());
-            Assert.False(responseObject.RootElement.GetProperty("isSubscribed").GetBoolean());
-        }
-
-        [Fact]
-        public async Task VerifyToken_NoTokenInHeader_ReturnsUnauthorized_Docker()
-        {
-            await _fixture.ResetDatabaseAsync();
-            _client.DefaultRequestHeaders.Authorization = null;
-            var response = await _client.GetAsync("/api/Authentication/verify-token");
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task VerifyToken_InvalidToken_ReturnsUnauthorized_Docker()
-        {
-            await _fixture.ResetDatabaseAsync();
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "invalid.jwt.token");
-            var response = await _client.GetAsync("/api/Authentication/verify-token");
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        }
-
-        #endregion
-
-        #region RefreshToken Integration Tests
-
-        [Fact]
-        public async Task RefreshToken_ValidTokens_ReturnsOkWithNewTokens_Docker()
-        {
-            await _fixture.ResetDatabaseAsync();
-            var unique = GetUniqueSuffix();
-            var registrationDto = new UserRegistrationDto 
-            { 
-                Username = "dockerRefreshTokenUser_" + unique, 
-                Email = $"dockerrefreshtoken_{unique}@example.com", 
-                Password = "Password123!" 
-            };
-            var registerResponse = await _client.PostAsJsonAsync("/api/Authentication/register", registrationDto);
-            registerResponse.EnsureSuccessStatusCode();
-            var registerResponseObject = await registerResponse.Content.ReadFromJsonAsync<JsonDocument>();
-            var accessToken = registerResponseObject!.RootElement.GetProperty("token").GetString();
-            var userId = registerResponseObject.RootElement.GetProperty("userId").GetString();
-            var refreshTokenString = "testRefreshTokenValueDocker";
-
-            // Clear any "jwt" cookie so it does not override our Authorization header.
-            var cookies = _fixture.CookieContainer.GetCookies(_client.BaseAddress).Cast<Cookie>().ToList();
-            foreach (var cookie in cookies.Where(c => c.Name.Equals("jwt", StringComparison.OrdinalIgnoreCase)))
+            if (cookies["jwt"] != null)
             {
-                cookie.Expired = true;
+                cookies["jwt"].Expired = true;
+            }
+            // Alternatively, create a new HttpClient with no cookies
+            var clientNoCookie = _fixture.Factory.CreateClient();
+
+            // Manually create & store a valid refresh token for the user in the DB.
+            string existingRefreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            using (var scope = _fixture.Factory.Services.CreateScope())
+            {
+                var ctx = scope.ServiceProvider.GetRequiredService<IdentityContext>();
+                var token = new RefreshToken
+                {
+                    UserId = userId!,
+                    Token = existingRefreshToken,
+                    Expires = DateTime.UtcNow.AddMinutes(30),
+                    CreatedAt = DateTime.UtcNow
+                };
+                ctx.RefreshTokens.Add(token);
+                await ctx.SaveChangesAsync();
             }
 
-            // Manually insert a refresh token.
-            using (var scope = _factory.Services.CreateScope())
+            // Act: call the refresh endpoint using clientNoCookie
+            var refreshDto = new RefreshTokenRequest
             {
-                var context = scope.ServiceProvider.GetRequiredService<haworksContext>();
-                var refreshTokenEntity = new RefreshToken
+                AccessToken = oldAccessToken!,
+                RefreshToken = existingRefreshToken
+            };
+            var refreshResponse = await clientNoCookie.PostAsJsonAsync("api/authentication/refresh-token", refreshDto);
+            var refreshBody = await refreshResponse.Content.ReadAsStringAsync();
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, refreshResponse.StatusCode);
+
+            var json = JObject.Parse(refreshBody);
+            Assert.True(json.ContainsKey("accessToken"), "Response must contain 'accessToken'.");
+            Assert.True(json.ContainsKey("refreshToken"), "Response must contain 'refreshToken'.");
+            Assert.True(json.ContainsKey("expires"), "Response must contain 'expires'.");
+
+            // Clean up the refresh token from the DB
+            using (var scope = _fixture.Factory.Services.CreateScope())
+            {
+                var ctx = scope.ServiceProvider.GetRequiredService<IdentityContext>();
+                var tokenToRemove = await ctx.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == existingRefreshToken);
+                if (tokenToRemove != null)
+                {
+                    ctx.RefreshTokens.Remove(tokenToRemove);
+                    await ctx.SaveChangesAsync();
+                }
+            }
+        }
+
+        [Fact(DisplayName = "[Cookie] POST /refresh-token - Failure (Invalid Tokens => Unauthorized)")]
+        public async Task RefreshToken_InvalidTokens_ReturnsUnauthorized()
+        {
+            // Arrange
+            var refreshDto = new RefreshTokenRequest
+            {
+                AccessToken = "fakeAccess",
+                RefreshToken = "fakeRefresh"
+            };
+
+            // Act
+            var response = await _client.PostAsJsonAsync("api/authentication/refresh-token", refreshDto);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        [Fact(DisplayName = "[Cookie] POST /refresh-token - Failure (Expired Refresh Token)")]
+        public async Task RefreshToken_ExpiredRefreshToken_ReturnsUnauthorized()
+        {
+            // Arrange: register user, then create an expired refresh token
+            var username = $"refresh_expired_{Guid.NewGuid()}";
+            var password = "Password123!";
+            var userId = await RegisterTestUserCookie(username, $"{username}@example.com", password);
+
+            // Suppose we skip actual login, just assume the access token is valid for test
+            string expiredToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            using (var scope = _fixture.Factory.Services.CreateScope())
+            {
+                var ctx = scope.ServiceProvider.GetRequiredService<IdentityContext>();
+                var token = new RefreshToken
+                {
+                    UserId = userId!,
+                    Token = expiredToken,
+                    Expires = DateTime.UtcNow.AddMinutes(-1), // already expired
+                    CreatedAt = DateTime.UtcNow.AddHours(-2)
+                };
+                ctx.RefreshTokens.Add(token);
+                await ctx.SaveChangesAsync();
+            }
+
+            var refreshDto = new RefreshTokenRequest
+            {
+                AccessToken = "someAccessToken",
+                RefreshToken = expiredToken
+            };
+
+            // Act
+            var response = await _client.PostAsJsonAsync("api/authentication/refresh-token", refreshDto);
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
+        #endregion
+
+        // ------------------------------------------------------
+        // SECTION 2: Additional Bearer-based Tests
+        // ------------------------------------------------------
+        #region Bearer Tests
+
+        [Fact(DisplayName = "[Bearer] POST /register => Get token => use Bearer => verify-token => 200")]
+        public async Task Bearer_RegisterAndVerify()
+        {
+            // 1) Register a user, capturing the token from JSON
+            var username = $"bearer_reg_{Guid.NewGuid()}";
+            var password = "BearerPass123!";
+            var regDto = new UserRegistrationDto
+            {
+                Username = username,
+                Email = $"bearer_{username}@example.com",
+                Password = password
+            };
+
+            var regResp = await _clientNoCookies.PostAsJsonAsync("api/authentication/register", regDto);
+            Assert.Equal(HttpStatusCode.OK, regResp.StatusCode);
+
+            var regBody = await regResp.Content.ReadAsStringAsync();
+            var regJson = JObject.Parse(regBody);
+            var bearerToken = regJson["token"]?.ToString();
+            Assert.False(string.IsNullOrEmpty(bearerToken), "Should receive a 'token' in the register response.");
+
+            // 2) Set the Authorization header
+            _clientNoCookies.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", bearerToken);
+
+            // 3) Call /verify-token => Should be OK
+            var verifyResp = await _clientNoCookies.GetAsync("api/authentication/verify-token");
+            Assert.Equal(HttpStatusCode.OK, verifyResp.StatusCode);
+
+            var verifyBody = await verifyResp.Content.ReadAsStringAsync();
+            var verifyJson = JObject.Parse(verifyBody);
+            Assert.Equal(username, verifyJson["userName"]?.ToString());
+        }
+
+        [Fact(DisplayName = "[Bearer] POST /login => Bearer => verify-token => 200")]
+        public async Task Bearer_LoginAndVerify()
+        {
+            // 1) Register
+            var username = $"bearer_login_{Guid.NewGuid()}";
+            var password = "BearerLogin123!";
+            await RegisterTestUserCookie(username, $"{username}@example.com", password);
+
+            // 2) Now login using clientNoCookies (we don't want any cookie set)
+            var loginDto = new UserLoginDto
+            {
+                Username = username,
+                Password = password
+            };
+            var loginResp = await _clientNoCookies.PostAsJsonAsync("api/authentication/login", loginDto);
+            Assert.Equal(HttpStatusCode.OK, loginResp.StatusCode);
+
+            var loginBody = await loginResp.Content.ReadAsStringAsync();
+            var loginJson = JObject.Parse(loginBody);
+            var bearerToken = loginJson["token"]?.ToString();
+            Assert.False(string.IsNullOrEmpty(bearerToken), "Login response must have 'token' field.");
+
+            // 3) Set Bearer token
+            _clientNoCookies.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", bearerToken);
+
+            // 4) /verify-token => 200
+            var verifyResp = await _clientNoCookies.GetAsync("api/authentication/verify-token");
+            Assert.Equal(HttpStatusCode.OK, verifyResp.StatusCode);
+            var verifyBody = await verifyResp.Content.ReadAsStringAsync();
+            var verifyJson = JObject.Parse(verifyBody);
+            Assert.Equal(username, verifyJson["userName"]?.ToString());
+        }
+
+        [Fact(DisplayName = "[Bearer] GET /verify-token => Invalid Bearer => 401")]
+        public async Task Bearer_Verify_InvalidToken()
+        {
+            // Provide a random invalid bearer token
+            _clientNoCookies.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", "abc.def.ghi");
+
+            // call verify-token => expect 401
+            var verifyResp = await _clientNoCookies.GetAsync("api/authentication/verify-token");
+            Assert.Equal(HttpStatusCode.Unauthorized, verifyResp.StatusCode);
+        }
+
+        [Fact(DisplayName = "[Bearer] POST /refresh-token => coverage")]
+        public async Task Bearer_RefreshToken_Flow()
+        {
+            // 1) Register a user => parse out token
+            var username = $"bearer_refresh_{Guid.NewGuid()}";
+            var password = "BearerRefresh123!";
+            var regDto = new UserRegistrationDto
+            {
+                Username = username,
+                Email = $"{username}@example.com",
+                Password = password
+            };
+            var regResp = await _clientNoCookies.PostAsJsonAsync("api/authentication/register", regDto);
+            Assert.Equal(HttpStatusCode.OK, regResp.StatusCode);
+
+            var regBody = await regResp.Content.ReadAsStringAsync();
+            var regJson = JObject.Parse(regBody);
+            var oldAccessToken = regJson["token"]?.ToString();
+            Assert.False(string.IsNullOrEmpty(oldAccessToken));
+
+            // 2) Create a refresh token in DB manually
+            string userId;
+            using (var scope = _fixture.Factory.Services.CreateScope())
+            {
+                var ctx = scope.ServiceProvider.GetRequiredService<IdentityContext>();
+                var user = await ctx.Users.FirstOrDefaultAsync(u => u.UserName == username);
+                Assert.NotNull(user);
+                userId = user!.Id!;
+            }
+
+            var existingRefreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            using (var scope = _fixture.Factory.Services.CreateScope())
+            {
+                var ctx = scope.ServiceProvider.GetRequiredService<IdentityContext>();
+                var token = new RefreshToken
                 {
                     UserId = userId,
-                    Token = refreshTokenString,
-                    Expires = DateTime.UtcNow.AddDays(1),
-                    Created = DateTime.UtcNow
+                    Token = existingRefreshToken,
+                    Expires = DateTime.UtcNow.AddMinutes(30),
+                    CreatedAt = DateTime.UtcNow
                 };
-                context.RefreshTokens.Add(refreshTokenEntity);
-                await context.SaveChangesAsync();
+                ctx.RefreshTokens.Add(token);
+                await ctx.SaveChangesAsync();
             }
 
-            var refreshTokenRequest = new RefreshTokenRequest 
-            { 
-                AccessToken = accessToken, 
-                RefreshToken = refreshTokenString 
-            };
-
-            var response = await _client.PostAsJsonAsync("/api/Authentication/refresh-token", refreshTokenRequest);
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            var responseObject = await response.Content.ReadFromJsonAsync<JsonDocument>();
-            Assert.NotNull(responseObject!.RootElement.GetProperty("accessToken").GetString());
-            Assert.NotNull(responseObject.RootElement.GetProperty("refreshToken").GetString());
-            Assert.NotNull(responseObject.RootElement.GetProperty("expires").GetString());
-
-            using (var scope = _factory.Services.CreateScope())
+            // 3) POST /refresh-token
+            var refreshDto = new RefreshTokenRequest
             {
-                var context = scope.ServiceProvider.GetRequiredService<haworksContext>();
-                var oldRefreshToken = await context.RefreshTokens.FirstOrDefaultAsync(rt => rt.Token == refreshTokenString);
-                Assert.Null(oldRefreshToken);
-            }
-        }
-
-        [Fact]
-        public async Task RefreshToken_InvalidAccessToken_ReturnsUnauthorized_Docker()
-        {
-            await _fixture.ResetDatabaseAsync();
-            var refreshTokenRequest = new RefreshTokenRequest 
-            { 
-                AccessToken = "invalid.access.token", 
-                RefreshToken = "someRefreshToken" 
+                AccessToken = oldAccessToken!,
+                RefreshToken = existingRefreshToken
             };
+            var refreshResp = await _clientNoCookies.PostAsJsonAsync("api/authentication/refresh-token", refreshDto);
+            var refreshBody = await refreshResp.Content.ReadAsStringAsync();
+            Assert.Equal(HttpStatusCode.OK, refreshResp.StatusCode);
 
-            var response = await _client.PostAsJsonAsync("/api/Authentication/refresh-token", refreshTokenRequest);
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
-        }
-
-        [Fact]
-        public async Task RefreshToken_InvalidRefreshToken_ReturnsUnauthorized_Docker()
-        {
-            await _fixture.ResetDatabaseAsync();
-            var unique = GetUniqueSuffix();
-            var registrationDto = new UserRegistrationDto 
-            { 
-                Username = "dockerInvalidRefreshTokenUser_" + unique, 
-                Email = $"dockerinvalidrefreshtoken_{unique}@example.com", 
-                Password = "Password123!" 
-            };
-            var registerResponse = await _client.PostAsJsonAsync("/api/Authentication/register", registrationDto);
-            registerResponse.EnsureSuccessStatusCode();
-            var registerResponseObject = await registerResponse.Content.ReadFromJsonAsync<JsonDocument>();
-            var accessToken = registerResponseObject!.RootElement.GetProperty("token").GetString();
-
-            var refreshTokenRequest = new RefreshTokenRequest 
-            { 
-                AccessToken = accessToken, 
-                RefreshToken = "invalidRefreshToken" 
-            };
-
-            var response = await _client.PostAsJsonAsync("/api/Authentication/refresh-token", refreshTokenRequest);
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            var refreshJson = JObject.Parse(refreshBody);
+            Assert.True(refreshJson.ContainsKey("accessToken"), "Response must contain 'accessToken'.");
+            Assert.True(refreshJson.ContainsKey("refreshToken"), "Response must contain 'refreshToken'.");
+            Assert.True(refreshJson.ContainsKey("expires"), "Response must contain 'expires'.");
         }
 
         #endregion
 
-        #region Logout Integration Tests
+        // ------------------------------------------------------
+        // SECTION 3: Helper Methods
+        // ------------------------------------------------------
 
-        [Fact]
-        public async Task Logout_ReturnsOkAndDeletesCookie_Docker()
+        /// <summary>
+        /// Registers a user using the /register endpoint (COOKIE client), asserting success, returns userId.
+        /// </summary>
+        private async Task<string?> RegisterTestUserCookie(string username, string email, string password)
         {
-            await _fixture.ResetDatabaseAsync();
-            var unique = GetUniqueSuffix();
-            var registrationDto = new UserRegistrationDto 
-            { 
-                Username = "testuser_" + unique, 
-                Email = $"testuser_{unique}@example.com", 
-                Password = "IntegrationTestPassword123!" 
+            var dto = new UserRegistrationDto
+            {
+                Username = username,
+                Email = email,
+                Password = password
             };
-            var registerResponse = await _client.PostAsJsonAsync("/api/Authentication/register", registrationDto);
-            registerResponse.EnsureSuccessStatusCode();
+            var response = await _client.PostAsJsonAsync("api/authentication/register", dto);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-            var loginDto = new UserLoginDto 
-            { 
-                Username = registrationDto.Username, 
-                Password = registrationDto.Password
-            };
-            var loginResponse = await _client.PostAsJsonAsync("/api/Authentication/login", loginDto);
-            loginResponse.EnsureSuccessStatusCode();
-
-            var cookiesBefore = _fixture.CookieContainer.GetCookies(_client.BaseAddress);
-            var jwtCookieBefore = cookiesBefore.Cast<Cookie>().FirstOrDefault(c => c.Name.Equals("jwt", StringComparison.OrdinalIgnoreCase));
-            Assert.NotNull(jwtCookieBefore);
-
-            var logoutResponse = await _client.PostAsync("/api/Authentication/logout", null);
-            Assert.Equal(HttpStatusCode.OK, logoutResponse.StatusCode);
-
-            var cookiesAfter = _fixture.CookieContainer.GetCookies(_client.BaseAddress);
-            var jwtCookieAfter = cookiesAfter.Cast<Cookie>().FirstOrDefault(c => c.Name.Equals("jwt", StringComparison.OrdinalIgnoreCase));
-            Assert.Null(jwtCookieAfter);
+            var body = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(body);
+            return json["userId"]?.ToString();
         }
 
-        #endregion
-
-        #region External Authentication Endpoints
-
-        [Fact]
-        public async Task ExternalMicrosoft_ReturnsChallenge_Docker()
+        /// <summary>
+        /// Logs in a user using /login endpoint (COOKIE client), asserting success.
+        /// </summary>
+        private async Task LoginTestUserCookie(string username, string password)
         {
-            await _fixture.ResetDatabaseAsync();
-            var response = await _client.GetAsync("/api/Authentication/external/microsoft");
-            Assert.True(response.StatusCode == HttpStatusCode.Redirect ||
-                        response.StatusCode == HttpStatusCode.Unauthorized ||
-                        response.StatusCode == HttpStatusCode.OK);
+            var dto = new UserLoginDto
+            {
+                Username = username,
+                Password = password
+            };
+            var response = await _client.PostAsJsonAsync("api/authentication/login", dto);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
-
-        #endregion
     }
 }

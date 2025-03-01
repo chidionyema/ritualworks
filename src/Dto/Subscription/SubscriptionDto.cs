@@ -3,24 +3,24 @@ using System.ComponentModel.DataAnnotations;
 
 namespace haworks.Dto
 {
-    public class SubscriptionRequest
+    public record SubscriptionRequest
     {
         [Required]
-        public string PriceId { get; set; } = string.Empty;
+        public string PriceId { get; init; } = string.Empty;
         
         [Required]
-        public string RedirectPath { get; set; } = string.Empty;
+        public string RedirectPath { get; init; } = string.Empty;
     }
 
-    public class SubscriptionStatusResponseDto
+    public record SubscriptionStatusResponseDto
     {
-        public bool IsSubscribed { get; set; }
-        public string? PlanId { get; set; }
-        public DateTimeOffset? ExpiresAt { get; set; }
+        public bool IsSubscribed { get; init; }
+        public string? PlanId { get; init; }
+        public DateTimeOffset? ExpiresAt { get; init; }
     }
 
-    public class CreateCheckoutSessionResponseDto
+    public record CreateCheckoutSessionResponseDto
     {
-        public string SessionId { get; set; } = string.Empty;
+        public string SessionId { get; init; } = string.Empty;
     }
 }

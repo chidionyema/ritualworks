@@ -2,16 +2,18 @@ using System;
 
 namespace haworks.Db
 {
-    public class ProductMetadata
+    public class ProductMetadata : AuditableEntity
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        // The Id property is inherited from AuditableEntity
+
+        // Foreign key to the associated product
         public Guid ProductId { get; set; }
 
         // A "key" (like "CourseInfo", "AuthorInfo", "CourseCurriculum", etc.)
-        public string KeyName { get; set; } = string.Empty;
+        public string Key { get; set; } = string.Empty;
 
         // The string value (could be JSON, or just a single text)
-        public string KeyValue { get; set; } = string.Empty;
+        public string Value { get; set; } = string.Empty;
 
         // Navigation property back to the product
         public Product Product { get; set; } = null!;

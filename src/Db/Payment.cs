@@ -1,22 +1,37 @@
-
 using System;
-using System.Collections.Generic;
 
 namespace haworks.Db
 {
-    public class Payment
+    public class Payment : AuditableEntity
     {
-        public Guid Id { get; set; }
+        // The Id property is inherited from AuditableEntity
+
+        // Date of the order/payment
         public DateTime OrderDate { get; set; }
+
+        // Foreign key to the user (as string, matching Identity)
         public string UserId { get; set; } = string.Empty;
+
+        // Foreign key to the associated order
         public Guid OrderId { get; set; }
-        public Order Order { get; set; }
+
+        // Navigation property to the order
+        public Order Order { get; set; } = null!;
+
+        // Stripe and PaymentIntent identifiers (internal setters)
         public string? StripeSessionId { get; internal set; }
-         public string? PaymentIntentId { get; internal set; }
+
+        public string TransactionId { get; set; } = string.Empty;
+        public string? PaymentIntentId { get; internal set; }
+
+        // Payment amount and tax
         public decimal Amount { get; set; }
         public decimal Tax { get; set; }
-        public bool IsComplete { get; set; } 
-        public PaymentStatus Status { get; set; } // Added status field
+
+        // Flag indicating whether the payment is complete
+        public bool IsComplete { get; set; }
+
+        // Payment status enumeration (ensure PaymentStatus enum is defined)
+        public PaymentStatus Status { get; set; }
     }
 }
-

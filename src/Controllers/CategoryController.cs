@@ -5,19 +5,20 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Haworks.Infrastructure.Repositories;
 
 namespace haworks.Controllers
 {
-    [Route("api/[controller]")]
+     [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly IProductContextRepository _repository;
         private readonly ILogger<CategoryController> _logger;
 
-        public CategoryController(ICategoryRepository categoryRepository, ILogger<CategoryController> logger)
+        public CategoryController(IProductContextRepository repository, ILogger<CategoryController> logger)
         {
-            _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -28,7 +29,7 @@ namespace haworks.Controllers
             try
             {
                 _logger.LogInformation("Fetching all categories.");
-                var categories = await _categoryRepository.GetCategoriesAsync();
+                var categories = await _repository.GetCategoriesAsync();
                 return Ok(categories);
             }
             catch (Exception ex)
@@ -45,14 +46,12 @@ namespace haworks.Controllers
             try
             {
                 _logger.LogInformation("Fetching category with ID: {CategoryId}.", id);
-                var category = await _categoryRepository.GetCategoryByIdAsync(id);
-
+                var category = await _repository.GetCategoryByIdAsync(id);
                 if (category == null)
                 {
                     _logger.LogWarning("Category with ID {CategoryId} not found.", id);
                     return NotFound();
                 }
-
                 return Ok(category);
             }
             catch (Exception ex)
@@ -72,10 +71,8 @@ namespace haworks.Controllers
                 {
                     return BadRequest("Category cannot be null.");
                 }
-
-                await _categoryRepository.AddCategoryAsync(category);
-                await _categoryRepository.SaveChangesAsync();
-
+                await _repository.AddCategoryAsync(category);
+                await _repository.SaveChangesAsync();
                 _logger.LogInformation("Category {CategoryName} added successfully.", category.Name);
                 return CreatedAtAction(nameof(GetCategory), new { id = category.Id }, category);
             }
@@ -96,17 +93,14 @@ namespace haworks.Controllers
                 {
                     return BadRequest("Category is either null or ID mismatch.");
                 }
-
-                var existingCategory = await _categoryRepository.GetCategoryByIdAsync(id);
+                var existingCategory = await _repository.GetCategoryByIdAsync(id);
                 if (existingCategory == null)
                 {
                     return NotFound();
                 }
-
-                existingCategory.Name = category.Name; // Example of update (could be expanded)
-
-                await _categoryRepository.SaveChangesAsync();
-                return NoContent(); // No content returned after successful update
+                existingCategory.Name = category.Name; // Simple update example
+                await _repository.SaveChangesAsync();
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -114,6 +108,5 @@ namespace haworks.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
-
     }
 }

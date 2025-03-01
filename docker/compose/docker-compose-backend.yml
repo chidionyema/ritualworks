@@ -1,6 +1,91 @@
 version: '3.8'
 
 services:
+  redis_exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: redis_exporter
+    ports:
+      - "9121:9121"
+
+  redis-master:
+    container_name: redis-master
+    image: redis:latest
+    command: ["redis-server", "/etc/redis/redis.conf", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-master-data:/data
+      - ../../redis/config/redis.conf:/etc/redis/redis.conf
+      - certs-volume:/certs-volume:ro
+    networks:
+      - internal_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "--tls", "--cert", "/certs-volume/redis.crt", "--key", "/certs-volume/redis.key", "--cacert", "/certs-volume/ca.crt", "-h", "127.0.0.1", "-p", "6379", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+
+  minio1:
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+    environment:
+      - MINIO_ROOT_USER=test
+      - MINIO_ROOT_PASSWORD=tester123
+      - MINIO_SERVER_CERT=/certs-volume/public.crt
+      - MINIO_SERVER_KEY=/certs-volume/private.key
+      - MINIO_SITE_REGION=us-east-1
+      - MINIO_CLUSTER_NAME=ritualworks-minio
+    volumes:
+      - minio-data1:/data
+      - certs-volume:/certs-volume:ro
+    networks:
+      internal_network:
+        aliases:
+          - minio1
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f https://localhost:9000/minio/health/ready || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    entrypoint: /bin/sh
+    command: >
+      -c "
+      minio server /data --certs-dir /certs-volume &
+      echo 'Waiting for MinIO to be ready...' &&
+      until curl -s https://localhost:9000/minio/health/ready >/dev/null; do
+        sleep 5;
+      done &&
+      echo 'Configuring MinIO for buckets and policies...' &&
+      mc alias set local https://localhost:9000 test tester123 --insecure &&
+      mc mb local/public-images --insecure --ignore-existing &&
+      mc mb local/private-assets --insecure --ignore-existing &&
+      echo '{"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Action": ["s3:ListBucket", "s3:PutObject", "s3:GetObject", "s3:DeleteObject"], "Resource": ["arn:aws:s3:::*"]}]}' > /tmp/readwrite-policy.json &&
+      mc admin policy create local readwrite /tmp/readwrite-policy.json --insecure &&
+      echo '{"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Principal": "*", "Action": ["s3:GetObject"], "Resource": ["arn:aws:s3:::public-images/*"]}]}' > /tmp/public-images-policy.json &&
+      mc anonymous set-json /tmp/public-images-policy.json local/public-images --insecure &&
+      echo 'MinIO configuration completed.'
+      "
+
+networks:
+  internal_network:
+    name: internal_network
+    external: true
+
+volumes:
+  redis-master-data:
+    driver: local
+  minio-data1:
+    driver: local
+  certs-volume:
+    external: true
+
   # vault-agent:
   #   build:
   #     context: ../
@@ -174,27 +259,3 @@ services:
   #     echo 'MinIO configuration completed.'
   #     "
 
-networks:
-  internal_network:
-    name: internal_network
-    external: true
-
-volumes:
-  redis-master-data:
-    driver: local
-  es-data-node1:
-    driver: local
-  es-backup:
-    driver: local
-  rabbitmq-data-node1:
-    driver: local
-  minio-data1:
-    driver: local
-  certs-volume:
-    external: true
-  vault-secrets:
-    external: true
-  vault-sink:
-    external: true
-  pgpool-config:
-    external: true

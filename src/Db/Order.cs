@@ -8,15 +8,13 @@ namespace haworks.Db
         public Order() : base() { }
 
         public Order(Guid id) : base(id) { }
-
-        // Add a constructor to initialize properties during creation
         public Order(Guid id, decimal totalAmount, OrderStatus status, string? userId = null) 
             : base(id)
         {
             TotalAmount = totalAmount;
             Status = status;
             UserId = userId ?? string.Empty;
-            OrderItems = new List<OrderItem>(); // Initialize to prevent null reference issues
+            OrderItems = new List<OrderItem>(); 
         }
 
         public string UserId { get; set; } = string.Empty;  
@@ -25,7 +23,6 @@ namespace haworks.Db
         public decimal TotalAmount { get; set; }
         public OrderStatus Status { get; set; } 
         public bool IsPaymentComplete { get; set; } 
-
-        public Payment? Payment { get; set; } // Navigation property (nullable)
+        public Payment? Payment { get; set; }
     }
 }

@@ -21,7 +21,6 @@ using Polly;
 using Polly.Retry;
 using Xunit;
 using Microsoft.AspNetCore.TestHost;
-using Haworks.Services;
 using System.Net;
 using System.Net.Http;
 using StackExchange.Redis;

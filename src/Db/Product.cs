@@ -40,7 +40,7 @@ namespace haworks.Db
         public string? Type { get; set; } = string.Empty;
         public Guid CategoryId { get; set; }
         public Category? Category { get; set; }
-        public List<Content>? Contents { get; set; } // Navigation property for related content
+        public List<Content>? Contents { get; set; } 
         public List<ProductReview>? ProductReviews { get; set; }
         public List<ProductMetadata>? Metadata { get; set; }
         

@@ -3,13 +3,19 @@ using Microsoft.AspNetCore.Identity;
 
 namespace haworks.Db
 {
-    public class RefreshToken
+    public class RefreshToken : AuditableEntity
     {
-        public Guid Id { get; set; }
+
+        // Foreign key to the User
         public string UserId { get; set; } = string.Empty;
-        public User User { get; set; } = null!; // Using null-forgiving operator to indicate it will be set later
+        
+        // Navigation property to the Identity User
+        public User User { get; set; } = null!;
+
+        // The token string
         public string Token { get; set; } = string.Empty;
+        
+        // Expiration date for the token
         public DateTime Expires { get; set; }
-        public DateTime Created { get; set; }
     }
 }

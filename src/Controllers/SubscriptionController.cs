@@ -16,7 +16,9 @@ namespace haworks.Controllers
         private readonly ISubscriptionProcessingService _subscriptionService;
         private readonly ILogger<SubscriptionController> _logger;
 
-        public SubscriptionController(ISubscriptionProcessingService subscriptionService, ILogger<SubscriptionController> logger)
+        public SubscriptionController(
+            ISubscriptionProcessingService subscriptionService,
+            ILogger<SubscriptionController> logger)
         {
             _subscriptionService = subscriptionService;
             _logger = logger;
@@ -25,7 +27,8 @@ namespace haworks.Controllers
         [HttpGet("status")]
         public async Task<IActionResult> GetSubscriptionStatus()
         {
-            string userId = User?.FindFirst("sub")?.Value;
+            // Use null-coalescing to ensure a non-null string value.
+            string userId = User?.FindFirst("sub")?.Value ?? string.Empty;
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized();
@@ -46,7 +49,7 @@ namespace haworks.Controllers
         [HttpPost("create-checkout-session")]
         public async Task<IActionResult> CreateCheckoutSession([FromBody] SubscriptionRequest request)
         {
-            string userId = User?.FindFirst("sub")?.Value;
+            string userId = User?.FindFirst("sub")?.Value ?? string.Empty;
             if (string.IsNullOrEmpty(userId))
             {
                 return Unauthorized();
