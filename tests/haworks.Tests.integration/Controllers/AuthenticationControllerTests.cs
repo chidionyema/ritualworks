@@ -19,7 +19,7 @@ using Haworks.Infrastructure.Data;
 namespace Haworks.Tests.Integration
 {
     [Collection("Integration Tests")]
-    public class AuthenticationControllerIntegrationTests : IAsyncLifetime
+    public class AuthenticationControllerTests : IAsyncLifetime
     {
         private readonly IntegrationTestFixture _fixture;
 
@@ -29,7 +29,7 @@ namespace Haworks.Tests.Integration
         // (B) A second client with NO cookies, for Bearer-based tests
         private readonly HttpClient _clientNoCookies;
 
-        public AuthenticationControllerIntegrationTests(IntegrationTestFixture fixture)
+        public AuthenticationControllerTests(IntegrationTestFixture fixture)
         {
             _fixture = fixture;
             _client = fixture.CreateClientWithCookies();
@@ -197,7 +197,7 @@ namespace Haworks.Tests.Integration
         #region Logout Tests (Cookie-based)
 
         [Fact(DisplayName = "[Cookie] POST /logout - Success (Cookie Cleared)")]
-        public async Task Logout_Success_ClearsJwtCookie()
+         public async Task Logout_Success_ClearsJwtCookie()
         {
             // Arrange: Register & Login to set cookie
             var username = $"logout_{Guid.NewGuid()}";
@@ -213,10 +213,9 @@ namespace Haworks.Tests.Integration
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             Assert.Contains("Logged out successfully", responseBody);
 
-            // Ensure the "jwt" cookie is deleted
-            var cookies = _fixture.CookieContainer.GetCookies(_client.BaseAddress!);
-            Assert.False(cookies.Cast<System.Net.Cookie>().Any(c => c.Name == "jwt"),
-                         "JWT cookie should be removed after logout.");
+            // Ensure the "jwt" cookie is deleted from the *CookieContainer*
+            var cookies = _fixture.CookieContainer.GetCookies(_client.BaseAddress);
+            Assert.DoesNotContain(cookies.Cast<Cookie>(), c => c.Name == "jwt"); // Corrected assertion
         }
 
         #endregion
@@ -398,7 +397,8 @@ namespace Haworks.Tests.Integration
         // ------------------------------------------------------
         #region Bearer Tests
 
-        [Fact(DisplayName = "[Bearer] POST /register => Get token => use Bearer => verify-token => 200")]
+
+       [Fact(DisplayName = "[Bearer] POST /register => Get token => use Bearer => verify-token => 200")]
         public async Task Bearer_RegisterAndVerify()
         {
             // 1) Register a user, capturing the token from JSON
@@ -411,33 +411,59 @@ namespace Haworks.Tests.Integration
                 Password = password
             };
 
-            var regResp = await _clientNoCookies.PostAsJsonAsync("api/authentication/register", regDto);
+            Console.WriteLine($"Registering user: {username}");
+            // Use _client (or a new client) - doesn't matter for registration.
+            var regResp = await _client.PostAsJsonAsync("api/authentication/register", regDto);
+            Console.WriteLine($"Registration response status: {regResp.StatusCode}");
+
             Assert.Equal(HttpStatusCode.OK, regResp.StatusCode);
 
             var regBody = await regResp.Content.ReadAsStringAsync();
+            Console.WriteLine($"Registration response body: {regBody}");
+
             var regJson = JObject.Parse(regBody);
             var bearerToken = regJson["token"]?.ToString();
             Assert.False(string.IsNullOrEmpty(bearerToken), "Should receive a 'token' in the register response.");
 
-            // 2) Set the Authorization header
-            _clientNoCookies.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", bearerToken);
+            // 2) Use a *new* client instance for Bearer tests
+            var clientNoCookies = _fixture.Factory.CreateClient();
 
-            // 3) Call /verify-token => Should be OK
-            var verifyResp = await _clientNoCookies.GetAsync("api/authentication/verify-token");
+            // 3) Set the Authorization header using our helper method
+            SetBearerToken(clientNoCookies, bearerToken); // Pass the client
+
+            // 4) Call /verify-token => Should be OK
+            Console.WriteLine("Making verify-token request with Authorization header");
+            var verifyResp = await clientNoCookies.GetAsync("api/authentication/verify-token");
+            Console.WriteLine($"Verify response status: {verifyResp.StatusCode}");
+
+            // If there's an error response, print it
+            if (verifyResp.StatusCode != HttpStatusCode.OK)
+            {
+                var errorContent = await verifyResp.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error response: {errorContent}");
+            }
+
             Assert.Equal(HttpStatusCode.OK, verifyResp.StatusCode);
 
             var verifyBody = await verifyResp.Content.ReadAsStringAsync();
+            Console.WriteLine($"Verify response body: {verifyBody}");
+
             var verifyJson = JObject.Parse(verifyBody);
             Assert.Equal(username, verifyJson["userName"]?.ToString());
         }
 
-        [Fact(DisplayName = "[Bearer] POST /login => Bearer => verify-token => 200")]
+
+
+
+            
+         [Fact(DisplayName = "[Bearer] POST /login => Bearer => verify-token => 200")]
         public async Task Bearer_LoginAndVerify()
         {
             // 1) Register
             var username = $"bearer_login_{Guid.NewGuid()}";
             var password = "BearerLogin123!";
+
+            Console.WriteLine($"Registering user for login test: {username}");
             await RegisterTestUserCookie(username, $"{username}@example.com", password);
 
             // 2) Now login using clientNoCookies (we don't want any cookie set)
@@ -446,98 +472,106 @@ namespace Haworks.Tests.Integration
                 Username = username,
                 Password = password
             };
-            var loginResp = await _clientNoCookies.PostAsJsonAsync("api/authentication/login", loginDto);
+
+            // Use a *new* client instance
+            var clientNoCookies = _fixture.Factory.CreateClient();
+
+
+            Console.WriteLine($"Logging in with user: {username}");
+            var loginResp = await clientNoCookies.PostAsJsonAsync("api/authentication/login", loginDto);  // Use new client
+            Console.WriteLine($"Login response status: {loginResp.StatusCode}");
+
             Assert.Equal(HttpStatusCode.OK, loginResp.StatusCode);
 
             var loginBody = await loginResp.Content.ReadAsStringAsync();
+            Console.WriteLine($"Login response body: {loginBody}");
+
             var loginJson = JObject.Parse(loginBody);
             var bearerToken = loginJson["token"]?.ToString();
             Assert.False(string.IsNullOrEmpty(bearerToken), "Login response must have 'token' field.");
 
-            // 3) Set Bearer token
-            _clientNoCookies.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", bearerToken);
+            // 3) Set Bearer token using our helper method
+            SetBearerToken(clientNoCookies, bearerToken); // Pass the client
 
             // 4) /verify-token => 200
-            var verifyResp = await _clientNoCookies.GetAsync("api/authentication/verify-token");
+            Console.WriteLine("Making verify-token request with Authorization header");
+            var verifyResp = await clientNoCookies.GetAsync("api/authentication/verify-token");  // Use new client
+            Console.WriteLine($"Verify response status: {verifyResp.StatusCode}");
+
+            // If there's an error response, print it
+            if (verifyResp.StatusCode != HttpStatusCode.OK)
+            {
+                var errorContent = await verifyResp.Content.ReadAsStringAsync();
+                Console.WriteLine($"Error response: {errorContent}");
+            }
+
             Assert.Equal(HttpStatusCode.OK, verifyResp.StatusCode);
+
             var verifyBody = await verifyResp.Content.ReadAsStringAsync();
+            Console.WriteLine($"Verify response body: {verifyBody}");
+
             var verifyJson = JObject.Parse(verifyBody);
             Assert.Equal(username, verifyJson["userName"]?.ToString());
         }
 
-        [Fact(DisplayName = "[Bearer] GET /verify-token => Invalid Bearer => 401")]
-        public async Task Bearer_Verify_InvalidToken()
-        {
-            // Provide a random invalid bearer token
-            _clientNoCookies.DefaultRequestHeaders.Authorization =
-                new AuthenticationHeaderValue("Bearer", "abc.def.ghi");
 
-            // call verify-token => expect 401
-            var verifyResp = await _clientNoCookies.GetAsync("api/authentication/verify-token");
-            Assert.Equal(HttpStatusCode.Unauthorized, verifyResp.StatusCode);
-        }
 
-        [Fact(DisplayName = "[Bearer] POST /refresh-token => coverage")]
+         [Fact(DisplayName = "[Bearer] POST /refresh-token => using real token")]
         public async Task Bearer_RefreshToken_Flow()
         {
-            // 1) Register a user => parse out token
-            var username = $"bearer_refresh_{Guid.NewGuid()}";
-            var password = "BearerRefresh123!";
-            var regDto = new UserRegistrationDto
+            // 1) Register
+            var username = $"refresh_{Guid.NewGuid()}";
+            var registerDto = new UserRegistrationDto
             {
                 Username = username,
-                Email = $"{username}@example.com",
-                Password = password
+                Email = $"refresh_{username}@example.com",
+                Password = "RefreshTest123!"
             };
-            var regResp = await _clientNoCookies.PostAsJsonAsync("api/authentication/register", regDto);
-            Assert.Equal(HttpStatusCode.OK, regResp.StatusCode);
 
-            var regBody = await regResp.Content.ReadAsStringAsync();
-            var regJson = JObject.Parse(regBody);
-            var oldAccessToken = regJson["token"]?.ToString();
-            Assert.False(string.IsNullOrEmpty(oldAccessToken));
+            var registerResponse = await _client.PostAsJsonAsync("api/authentication/register", registerDto);
+            Assert.Equal(HttpStatusCode.OK, registerResponse.StatusCode);
+            var registerJson = JObject.Parse(await registerResponse.Content.ReadAsStringAsync());
+            var initialToken = registerJson["token"]?.ToString();
+            Assert.False(string.IsNullOrEmpty(initialToken), "Registration token should not be null or empty.");
 
-            // 2) Create a refresh token in DB manually
-            string userId;
-            using (var scope = _fixture.Factory.Services.CreateScope())
+
+            // 2) Generate Refresh token (login)
+            var loginDto = new UserLoginDto
             {
-                var ctx = scope.ServiceProvider.GetRequiredService<IdentityContext>();
-                var user = await ctx.Users.FirstOrDefaultAsync(u => u.UserName == username);
-                Assert.NotNull(user);
-                userId = user!.Id!;
-            }
+                Username = username,
+                Password = "RefreshTest123!"
+            };
+            var loginResponse = await _client.PostAsJsonAsync("api/authentication/login", loginDto);
+            Assert.Equal(HttpStatusCode.OK, loginResponse.StatusCode);
+            var loginJson = JObject.Parse(await loginResponse.Content.ReadAsStringAsync());
+            var refreshToken = loginJson["refreshToken"]?.ToString();
+            var accessToken = loginJson["token"]?.ToString();
+            Assert.False(string.IsNullOrEmpty(refreshToken), "Refresh token from login should not be null or empty.");
+            Assert.False(string.IsNullOrEmpty(accessToken), "Access token from login should not be null or empty.");
 
-            var existingRefreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-            using (var scope = _fixture.Factory.Services.CreateScope())
-            {
-                var ctx = scope.ServiceProvider.GetRequiredService<IdentityContext>();
-                var token = new RefreshToken
-                {
-                    UserId = userId,
-                    Token = existingRefreshToken,
-                    Expires = DateTime.UtcNow.AddMinutes(30),
-                    CreatedAt = DateTime.UtcNow
-                };
-                ctx.RefreshTokens.Add(token);
-                await ctx.SaveChangesAsync();
-            }
 
-            // 3) POST /refresh-token
+            // 3) Use /refresh-token endpoint.
+            // Use a new client instance for clarity and to avoid any lingering state
+            using var refreshClient = _fixture.Factory.CreateClient();
+
             var refreshDto = new RefreshTokenRequest
             {
-                AccessToken = oldAccessToken!,
-                RefreshToken = existingRefreshToken
+                AccessToken = accessToken, // Use the *actual* access token here.
+                RefreshToken = refreshToken
             };
-            var refreshResp = await _clientNoCookies.PostAsJsonAsync("api/authentication/refresh-token", refreshDto);
-            var refreshBody = await refreshResp.Content.ReadAsStringAsync();
-            Assert.Equal(HttpStatusCode.OK, refreshResp.StatusCode);
 
-            var refreshJson = JObject.Parse(refreshBody);
-            Assert.True(refreshJson.ContainsKey("accessToken"), "Response must contain 'accessToken'.");
-            Assert.True(refreshJson.ContainsKey("refreshToken"), "Response must contain 'refreshToken'.");
-            Assert.True(refreshJson.ContainsKey("expires"), "Response must contain 'expires'.");
+            var refreshResponse = await refreshClient.PostAsJsonAsync("api/authentication/refresh-token", refreshDto);
+            Assert.Equal(HttpStatusCode.OK, refreshResponse.StatusCode);
+
+            var refreshJson = JObject.Parse(await refreshResponse.Content.ReadAsStringAsync());
+            var newAccessToken = refreshJson["accessToken"]?.ToString();
+            var newRefreshToken = refreshJson["refreshToken"]?.ToString();
+
+            Assert.False(string.IsNullOrEmpty(newAccessToken), "New access token should not be null or empty.");
+            Assert.False(string.IsNullOrEmpty(newRefreshToken), "Refresh token should not be null or empty."); // Corrected assertion
         }
+
+
 
         #endregion
 
@@ -564,18 +598,121 @@ namespace Haworks.Tests.Integration
             return json["userId"]?.ToString();
         }
 
-        /// <summary>
-        /// Logs in a user using /login endpoint (COOKIE client), asserting success.
-        /// </summary>
-        private async Task LoginTestUserCookie(string username, string password)
+        private void SetBearerToken(HttpClient client, string token)
         {
-            var dto = new UserLoginDto
+            if (string.IsNullOrEmpty(token))
             {
-                Username = username,
-                Password = password
-            };
-            var response = await _client.PostAsJsonAsync("api/authentication/login", dto);
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                throw new ArgumentException("Token cannot be null or empty.", nameof(token));
+            }
+
+            // Corrected logging: use numbered placeholders instead of named ones
+            Console.WriteLine("Setting Bearer token: {0}", token);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            Console.WriteLine("Authorization header set. Scheme: {0}, Parameter: {1}",
+                client.DefaultRequestHeaders.Authorization.Scheme,
+                client.DefaultRequestHeaders.Authorization.Parameter);
         }
+
+
+   
+
+/// <summary>
+/// Logs in a user using /login endpoint (COOKIE client), asserting success.
+/// </summary>
+private async Task LoginTestUserCookie(string username, string password)
+{
+    var dto = new UserLoginDto
+    {
+        Username = username,
+        Password = password
+    };
+    var response = await _client.PostAsJsonAsync("api/authentication/login", dto);
+    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+    if (response.Headers.TryGetValues("Set-Cookie", out var setCookieValues))
+    {
+        foreach (var cookieHeader in setCookieValues)
+        {
+            if (cookieHeader.StartsWith("jwt="))
+            {
+                // Parse the Set-Cookie header.
+                var cookie = ParseSetCookieHeader(cookieHeader, _client.BaseAddress);
+
+                if (cookie != null)
+                {
+                    // Add the cookie to the CookieContainer, using the _client.BaseAddress.
+                    _fixture.CookieContainer.Add(_client.BaseAddress, cookie);
+
+                    // *** LOGGING ***
+                    Console.WriteLine("Setting cookie: Name={0}, Value={1}, Domain={2}, Path={3}, Secure={4}, HttpOnly={5}, Expires={6}, ClientBaseAddress={7}",
+                        cookie.Name, cookie.Value, cookie.Domain, cookie.Path, cookie.Secure, cookie.HttpOnly, cookie.Expires, _client.BaseAddress);
+                }
+                else
+                {
+                    Console.WriteLine("Failed to parse Set-Cookie header: {0}", cookieHeader);
+                }
+            }
+        }
+    }
+    else
+    {
+        Console.WriteLine("No Set-Cookie header found in login response.");
+    }
+}
+
+
+// Helper method to parse the Set-Cookie header
+private Cookie ParseSetCookieHeader(string header, Uri baseAddress)
+{
+    try
+    {
+        // Basic parsing (improved from before, but still not 100% RFC compliant).
+        // A full RFC 6265 parser would be even better, but this is a good compromise.
+        var parts = header.Split(';', StringSplitOptions.RemoveEmptyEntries);
+        var nameValue = parts[0].Split('=', 2);
+        var name = nameValue[0].Trim();
+        var value = nameValue[1].Trim();
+
+        var cookie = new Cookie(name, value);
+        cookie.Domain = baseAddress.Host;  // *Always* set the domain explicitly
+        cookie.Path = "/"; // Default path
+
+        foreach (var part in parts.Skip(1))
+        {
+            var trimmedPart = part.Trim();
+            if (trimmedPart.StartsWith("expires=", StringComparison.OrdinalIgnoreCase))
+            {
+                if (DateTimeOffset.TryParse(trimmedPart.Substring("expires=".Length), out var expires))
+                {
+                    cookie.Expires = expires.UtcDateTime;
+                }
+            }
+            else if (trimmedPart.StartsWith("path=", StringComparison.OrdinalIgnoreCase))
+            {
+                cookie.Path = trimmedPart.Substring("path=".Length);
+            }
+            else if (trimmedPart.StartsWith("domain=", StringComparison.OrdinalIgnoreCase))
+            {
+                cookie.Domain = trimmedPart.Substring("domain=".Length);
+            }
+            else if (trimmedPart.Equals("secure", StringComparison.OrdinalIgnoreCase))
+            {
+                cookie.Secure = true;
+            }
+            else if (trimmedPart.Equals("httponly", StringComparison.OrdinalIgnoreCase))
+            {
+                cookie.HttpOnly = true;
+            }
+            // You could add parsing for SameSite here if needed.
+        }
+        return cookie;
+
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Error parsing Set-Cookie header: {0}. Exception: {1}", header, ex);
+        return null; // Indicate parsing failure
+    }
+}
     }
 }

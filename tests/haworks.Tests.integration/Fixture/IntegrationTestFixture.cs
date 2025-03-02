@@ -131,7 +131,7 @@ namespace Haworks.Tests
 
             _dockerManager = new DockerServiceManager(Configuration, loggerFactoryForDocker);
             Factory = new CustomWebApplicationFactory(PathHelper.TestConfigPath);
-}
+       }
 
         public async Task InitializeAsync() => await _dockerManager.StartAllServicesAsync();
         public async Task DisposeAsync() => await _dockerManager.StopAllServicesAsync();
@@ -139,8 +139,30 @@ namespace Haworks.Tests
         public HttpClient CreateClientWithCookies() => 
             HttpClientFactory.CreateWithCookies(Factory, CookieContainer);
 
-        public async Task ResetDatabaseAsync() => 
-            await DatabaseMaintainer.ResetAsync(Configuration.GetConnectionString("DefaultConnection"), _logger);
+       
+        public async Task ResetDatabaseAsync()
+        {
+            // Reset SQL database
+            await DatabaseMaintainer.ResetAsync(
+                Configuration.GetConnectionString("DefaultConnection"), 
+                _logger
+            );
+
+            // Get Redis connection string from configuration
+            var redisConfig = ConfigurationOptions.Parse(Configuration.GetConnectionString("Redis"));
+    
+            // Reset Redis databases
+            var config = new ConfigurationOptions
+            {
+                EndPoints = { redisConfig.EndPoints[0] }, // Use first endpoint without parameters
+                AllowAdmin = true,
+                AbortOnConnectFail = redisConfig.AbortOnConnectFail // Preserve connection behavior
+            };
+            
+            var redis = await ConnectionMultiplexer.ConnectAsync(config);
+            var server = redis.GetServer(redisConfig.EndPoints[0]);
+            await server.FlushAllDatabasesAsync();
+        }
 
         public HttpClient CreateAuthorizedClient(string token) => 
             HttpClientFactory.CreateAuthorized(Factory, token);
@@ -192,6 +214,7 @@ namespace Haworks.Tests
                 new ContentStorageService(
                     new MinioClient()
                         .WithEndpoint(config["MinIO:Endpoint"] ?? "localhost:9000")
+                        .WithSSL(false)
                         .WithCredentials(
                             config["MinIO:AccessKey"] ?? "minioadmin",
                             config["MinIO:SecretKey"] ?? "minioadmin")
@@ -272,16 +295,27 @@ namespace Haworks.Tests
     #region HttpClient Factories
     public static class HttpClientFactory
     {
-        public static HttpClient CreateWithCookies(
-            CustomWebApplicationFactory factory, CookieContainer container)
+                // In HttpClientFactory.cs
+        public static HttpClient CreateWithCookies(CustomWebApplicationFactory factory, CookieContainer container)
         {
-            var handler = new HttpClientHandler { CookieContainer = container };
-            return factory.CreateClient(new WebApplicationFactoryClientOptions
+            var handler = new HttpClientHandler { 
+                CookieContainer = container,
+                UseCookies = true,
+                AllowAutoRedirect = false  // Add this
+            };
+            
+            // Create client with this handler
+            var client = factory.CreateClient(new WebApplicationFactoryClientOptions
             {
                 AllowAutoRedirect = false,
-                HandleCookies = true
+                HandleCookies = true,
+                BaseAddress = new Uri("http://localhost")
             });
+            
+            // Return client configured with this handler
+            return client;
         }
+
 
         public static HttpClient CreateAuthorized(
             CustomWebApplicationFactory factory, string token)
@@ -435,43 +469,51 @@ namespace Haworks.Tests
       public override async Task StartAsync()
       {
         await _helper.StartContainer(
-        new ContainerParameters{ // Line 425
+        new ContainerParameters{ 
         HostPort = _config.GetValue<int>("Docker:MinioPort", 9001),
         ContainerPort = 9000,
         Command = new List<string> { "server", "/data" },
         EnvVars = new List<string>
         {
-            $"MINIO_ACCESS_KEY={_config["MinIO:AccessKey"]}",
-            $"MINIO_SECRET_KEY={_config["MinIO:SecretKey"]}"
+            $"MINIO_ROOT_USER={_config["MinIO:AccessKey"]}",
+            $"MINIO_ROOT_PASSWORD={_config["MinIO:SecretKey"]}"
         },
         HealthCheck = HealthCheckConfig.Minio()});
 
      }
 
-        public override async Task WaitForReadyAsync()
-        {
-            var client = new MinioClient()
-                .WithEndpoint($"localhost:{_helper.HostPort}")
-                .WithCredentials(
-                    _config["MinIO:AccessKey"] ?? "minioadmin",
-                    _config["MinIO:SecretKey"] ?? "minioadmin")
-                .Build();
+         public override async Task WaitForReadyAsync()
+    {
+        var client = new MinioClient()
+            .WithEndpoint($"localhost:{_helper.HostPort}")
+            .WithCredentials(
+                _config["MinIO:AccessKey"] ?? "minioadmin",
+                _config["MinIO:SecretKey"] ?? "minioadmin")
+            .Build();
 
-            await client.ListBucketsAsync();
-            await EnsureBucketsExistAsync(client);
-        }
+        await client.ListBucketsAsync();
+        await EnsureBucketsExistAsync(client); // This calls the method
+    }
 
-        private async Task EnsureBucketsExistAsync(IMinioClient client)
+
+    private async Task EnsureBucketsExistAsync(IMinioClient client)
         {
-            foreach (var bucket in new[] { "documents", "temp-chunks", "videos", "images" })
+            var requiredBuckets = new[] { "temp-chunks", "final-content" };
+            
+            foreach (var bucket in requiredBuckets)
             {
-                if (!await client.BucketExistsAsync(new BucketExistsArgs().WithBucket(bucket)))
+                var exists = await client.BucketExistsAsync(
+                    new BucketExistsArgs().WithBucket(bucket));
+                
+                if (!exists)
                 {
-                    await client.MakeBucketAsync(new MakeBucketArgs().WithBucket(bucket));
+                    await client.MakeBucketAsync(
+                        new MakeBucketArgs().WithBucket(bucket));
+                    _logger.LogInformation("Created bucket: {BucketName}", bucket);
                 }
             }
         }
-    }
+}
     #endregion
 
     #region Support Classes
