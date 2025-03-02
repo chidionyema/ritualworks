@@ -197,26 +197,30 @@ namespace Haworks.Tests.Integration
         #region Logout Tests (Cookie-based)
 
         [Fact(DisplayName = "[Cookie] POST /logout - Success (Cookie Cleared)")]
-         public async Task Logout_Success_ClearsJwtCookie()
+        public async Task Logout_Success_ClearsJwtCookie()
         {
-            // Arrange: Register & Login to set cookie
+            // Arrange: Register & Login to set the jwt cookie
             var username = $"logout_{Guid.NewGuid()}";
             var password = "Password123!";
             await RegisterTestUserCookie(username, $"{username}@example.com", password);
             await LoginTestUserCookie(username, password);
 
-            // Act
+            // Act: Call /logout
             var response = await _client.PostAsync("api/authentication/logout", null);
-            var responseBody = await response.Content.ReadAsStringAsync();
-
-            // Assert
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            // Optionally, read the logout response body for message
+            var responseBody = await response.Content.ReadAsStringAsync();
             Assert.Contains("Logged out successfully", responseBody);
 
-            // Ensure the "jwt" cookie is deleted from the *CookieContainer*
+            // **Key step**: Make a follow-up request so CookieContainer processes the expired cookie
+            await _client.GetAsync("api/authentication/debug-auth");
+
+            // Assert: confirm the cookie is gone from the container
             var cookies = _fixture.CookieContainer.GetCookies(_client.BaseAddress);
-            Assert.DoesNotContain(cookies.Cast<Cookie>(), c => c.Name == "jwt"); // Corrected assertion
+            Assert.DoesNotContain(cookies.Cast<Cookie>(), c => c.Name == "jwt");
         }
+
 
         #endregion
 
