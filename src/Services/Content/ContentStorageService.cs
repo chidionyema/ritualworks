@@ -11,6 +11,10 @@ using haworks.Contracts;
 using haworks.Dto;
 using haworks.PolicyFactory;
 using Polly;
+using System.Text; // For Encoding
+using Minio.Exceptions; // For MinioException
+using System.Security.Cryptography; // For SHA256
+
 
 namespace haworks.Services
 {
@@ -94,34 +98,53 @@ namespace haworks.Services
             return url ?? throw new InvalidOperationException("Failed to generate URL");
         }
 
-        public async Task<Stream> DownloadAsync(
-            string bucketName,
-            string objectName,
-            CancellationToken cancellationToken = default) // Added CancellationToken
+  public async Task<Stream> DownloadAsync(string bucketName, string objectKey, CancellationToken cancellationToken = default)
+{
+    try {
+        // Create a memory stream to hold the object data
+        var memoryStream = new MemoryStream();
+        
+        // Get the object and copy its contents to our memory stream
+        await _minioClient.GetObjectAsync(
+            new GetObjectArgs()
+                .WithBucket(bucketName)
+                .WithObject(objectKey)
+                .WithCallbackStream(stream => {
+                    // Copy the stream content to memory stream
+                    stream.CopyTo(memoryStream);
+                }),
+            cancellationToken);
+        
+        // Reset memory stream position for reading
+        memoryStream.Position = 0;
+        
+        // Check if we got XML (which likely indicates an error) instead of actual data
+        if (memoryStream.Length > 5)
         {
-            Stream? resultStream = null;
-            await _resiliencePolicy.ExecuteAsync(
-                async (context, ct) => // Correct lambda parameters
-                {
-                    var memoryStream = new MemoryStream();
-                    var args = new GetObjectArgs()
-                        .WithBucket(bucketName)
-                        .WithObject(objectName)
-                        .WithCallbackStream(async stream =>
-                        {
-                            await stream.CopyToAsync(memoryStream, ct); // Use ct here
-                        });
-
-                    await _minioClient.GetObjectAsync(args, ct);
-                    memoryStream.Position = 0;
-                    resultStream = memoryStream;
-                },
-                new Context(),
-                cancellationToken
-            );
+            byte[] buffer = new byte[5];
+            memoryStream.Read(buffer, 0, 5);
+            memoryStream.Position = 0; // Reset position
             
-            return resultStream ?? throw new InvalidOperationException("Download failed");
+            string prefix = Encoding.ASCII.GetString(buffer);
+            if (prefix == "<?xml")
+            {
+                using var reader = new StreamReader(memoryStream, Encoding.UTF8, detectEncodingFromByteOrderMarks: false, leaveOpen: true);
+                string xml = reader.ReadToEnd();
+                memoryStream.Position = 0;
+                
+                _logger.LogError("Received XML response instead of object data: {Xml}", xml);
+                throw new InvalidOperationException($"Failed to download object {objectKey} from {bucketName}: Server returned XML");
+            }
         }
+        
+        return memoryStream;
+    }
+    catch (Exception ex) when (ex is MinioException || ex is ObjectNotFoundException || ex is BucketNotFoundException)
+    {
+        _logger.LogError(ex, "Error downloading object {ObjectKey} from bucket {BucketName}", objectKey, bucketName);
+        throw;
+    }
+}
 
         public async Task DeleteAsync(
             string bucketName,

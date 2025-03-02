@@ -15,6 +15,8 @@ using RedLockNet;
 using RedLockNet.SERedis;
 using StackExchange.Redis;
 using haworks.Infrastructure;
+using System.Security.Cryptography;
+
 
 namespace haworks.Services
 {
@@ -68,42 +70,69 @@ namespace haworks.Services
         }
 
         public async Task ProcessChunkAsync(Guid sessionId, int chunkIndex, Stream chunkData)
+{
+    _logger.LogInformation("Processing chunk {ChunkIndex} for session {SessionId}. Chunk size: {ChunkSize} bytes", 
+        chunkIndex, sessionId, chunkData.Length);
+
+    await using var lockHandle = await _lockProvider.AcquireLockAsync(
+        $"chunk:{sessionId}",
+        TimeSpan.FromSeconds(30));
+    
+    var session = await GetSessionAsync(sessionId);
+    
+    _logger.LogInformation("Validating chunk {ChunkIndex} for session {SessionId}", chunkIndex, sessionId);
+    ValidateChunk(session, chunkIndex, chunkData.Length);
+
+    // Create a dedicated memory stream and fully copy all data to it
+    using var memoryStream = new MemoryStream();
+    await chunkData.CopyToAsync(memoryStream);
+    
+    // Make sure everything is flushed to the memory buffer
+    await memoryStream.FlushAsync();
+    
+    // IMPORTANT: Reset position to beginning before using it as a source
+    memoryStream.Position = 0;
+    
+    // Log the actual chunk size before upload for debugging
+    _logger.LogInformation("Prepared chunk {ChunkIndex} for upload. Size in memory: {MemoryStreamLength} bytes", 
+        chunkIndex, memoryStream.Length);
+
+    var chunkKey = $"{sessionId}/{chunkIndex}";
+    _logger.LogInformation("Uploading chunk {ChunkIndex} for session {SessionId} to storage with key {ChunkKey}", 
+        chunkIndex, sessionId, chunkKey);
+
+    // Verify data is intact before upload by calculating a checksum
+    memoryStream.Position = 0;
+    var checksumBytes = new byte[memoryStream.Length];
+    await memoryStream.ReadAsync(checksumBytes, 0, checksumBytes.Length);
+    var checksum = Convert.ToHexString(SHA256.HashData(checksumBytes));
+    _logger.LogDebug("Chunk checksum before upload: {Checksum}", checksum);
+    
+    // Reset position again before upload
+    memoryStream.Position = 0;
+
+    await _storageService.UploadAsync(
+        memoryStream,
+        "temp-chunks",
+        chunkKey,
+        "application/octet-stream",
+        new Dictionary<string, string>
         {
-            _logger.LogInformation("Processing chunk {ChunkIndex} for session {SessionId}. Chunk size: {ChunkSize} bytes", chunkIndex, sessionId, chunkData.Length);
+            ["sessionId"] = sessionId.ToString(),
+            ["chunkIndex"] = chunkIndex.ToString(),
+            ["checksum"] = checksum,
+            ["originalSize"] = memoryStream.Length.ToString()
+        });
 
-            await using var lockHandle = await _lockProvider.AcquireLockAsync(
-                $"chunk:{sessionId}",
-                TimeSpan.FromSeconds(30));
-            _logger.LogDebug("Acquired lock for processing chunk {ChunkIndex} in session {SessionId}", chunkIndex, sessionId);
+    _logger.LogInformation("Uploaded chunk {ChunkIndex} to {Bucket}/{ChunkKey}", 
+        chunkIndex, "temp-chunks", chunkKey);
 
-            var session = await GetSessionAsync(sessionId);
-            _logger.LogDebug("Retrieved session details: {@Session}", session);
-
-            _logger.LogInformation("Validating chunk {ChunkIndex} for session {SessionId}", chunkIndex, sessionId);
-            ValidateChunk(session, chunkIndex, chunkData.Length);
-
-            var chunkKey = $"chunks/{sessionId}/{chunkIndex}";
-            _logger.LogInformation("Uploading chunk {ChunkIndex} for session {SessionId} to storage with key {ChunkKey}", chunkIndex, sessionId, chunkKey);
-
-            await _storageService.UploadAsync(
-                chunkData,
-                "temp-chunks",
-                chunkKey,
-                "application/octet-stream",
-                new Dictionary<string, string>
-                {
-                    ["sessionId"] = sessionId.ToString(),
-                    ["chunkIndex"] = chunkIndex.ToString()
-                });
-
-            _logger.LogInformation("Chunk {ChunkIndex} for session {SessionId} uploaded successfully", chunkIndex, sessionId);
-
-            session.UploadedChunks.Add(chunkIndex);
-            _logger.LogDebug("Updated uploaded chunks for session {SessionId}: {UploadedChunks}", sessionId, session.UploadedChunks);
-
-            await UpdateSessionAsync(session);
-            _logger.LogInformation("Session {SessionId} updated in Redis after processing chunk {ChunkIndex}", sessionId, chunkIndex);
-        }
+    session.UploadedChunks.Add(chunkIndex);
+    
+    await UpdateSessionAsync(session);
+    _logger.LogInformation("Session {SessionId} updated in Redis after processing chunk {ChunkIndex}", 
+        sessionId, chunkIndex);
+}
 
         public async Task<ChunkSession> GetSessionAsync(Guid sessionId)
         {
@@ -248,19 +277,25 @@ namespace haworks.Services
             var tempFile = Path.Combine(tempDir, $"{session.Id}-assembled");
             _logger.LogInformation("Assembled file will be created at {TempFile}", tempFile);
 
-            await using var outputStream = File.Create(tempFile);
-
-            for (int i = 0; i < session.TotalChunks; i++)
+            // Wrap the loop within the using block to ensure the stream is disposed before checking the size
+            await using (var outputStream = File.Create(tempFile))
             {
-                var chunkKey = $"chunks/{session.Id}/{i}";
-                _logger.LogInformation("Downloading chunk {ChunkIndex} for session {SessionId} with key {ChunkKey}", i, session.Id, chunkKey);
+                for (int i = 0; i < session.TotalChunks; i++)
+                {
+                    // Fix: Use the same path format as in ProcessChunkAsync
+                    var chunkKey = $"{session.Id}/{i}";
+                    _logger.LogInformation("Attempting to download {Bucket}/{ChunkKey}", "temp-chunks", chunkKey);
 
-                await using var chunkStream = await _storageService.DownloadAsync("temp-chunks", chunkKey);
-                _logger.LogInformation("Copying chunk {ChunkIndex} into assembled file for session {SessionId}", i, session.Id);
-                await chunkStream.CopyToAsync(outputStream);
-                _logger.LogInformation("Chunk {ChunkIndex} assembled successfully for session {SessionId}", i, session.Id);
-            }
-
+                    await using var chunkStream = await _storageService.DownloadAsync("temp-chunks", chunkKey);
+                    _logger.LogInformation("Copying chunk {ChunkIndex} into assembled file for session {SessionId}", i, session.Id);
+                    await chunkStream.CopyToAsync(outputStream);
+                    _logger.LogInformation("Chunk {ChunkIndex} assembled successfully for session {SessionId}", i, session.Id);
+                }
+                
+                // Ensure all data is flushed to disk
+                await outputStream.FlushAsync();
+            } 
+    
             var fileInfo = new FileInfo(tempFile);
             _logger.LogInformation("Assembled file size: {FileSize} bytes. Expected size: {TotalSize} bytes for session {SessionId}", fileInfo.Length, session.TotalSize, session.Id);
 
@@ -320,7 +355,8 @@ namespace haworks.Services
             {
                 for (int i = 0; i < session.TotalChunks; i++)
                 {
-                    var chunkKey = $"chunks/{session.Id}/{i}";
+                    // Fix: Use the same path format as in ProcessChunkAsync
+                    var chunkKey = $"{session.Id}/{i}";
                     _logger.LogInformation("Deleting temporary chunk file with key {ChunkKey}", chunkKey);
                     await _storageService.DeleteAsync("temp-chunks", chunkKey);
                 }

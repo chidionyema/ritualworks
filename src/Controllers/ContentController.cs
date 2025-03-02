@@ -281,7 +281,10 @@ namespace haworks.Controllers
 
         [HttpPost("chunked/{sessionId}/{chunkIndex}")]
         [RequestSizeLimit(100_000_000)]
-        public async Task<IActionResult> UploadChunk(Guid sessionId, int chunkIndex, IFormFile chunkFile)
+        public async Task<IActionResult> UploadChunk(
+            Guid sessionId, 
+            int chunkIndex, 
+            IFormFile chunkFile)
         {
             var stopwatch = Stopwatch.StartNew();
             
@@ -292,40 +295,44 @@ namespace haworks.Controllers
                     sessionId, chunkIndex);
 
                 if (chunkFile == null || chunkFile.Length == 0)
+                    return BadRequest("Invalid chunk file");
+
+                // Read entire chunk into memory
+                await using var stream = chunkFile.OpenReadStream();
+                using var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                byte[] chunkData = memoryStream.ToArray();
+                if (stream.CanSeek)
                 {
-                    _logger.LogWarning(
-                        "Invalid chunk file. SessionId: {SessionId}, ChunkIndex: {ChunkIndex}", 
-                        sessionId, chunkIndex);
-                    return BadRequest("Invalid chunk file.");
+                    stream.Seek(0, SeekOrigin.Begin);
                 }
 
-                await _chunkedService.ProcessChunkAsync(sessionId, chunkIndex, chunkFile.OpenReadStream());
-                
+                await _chunkedService.ProcessChunkAsync(
+                    sessionId, 
+                    chunkIndex, 
+                    new MemoryStream(chunkData) // Fresh stream with full data
+                );
+
                 _logger.LogInformation(
-                    "Chunk uploaded successfully. SessionId: {SessionId}, ChunkIndex: {ChunkIndex}, Duration: {Duration}ms", 
-                    sessionId, chunkIndex, stopwatch.ElapsedMilliseconds);
+                    "Chunk uploaded. Size: {Bytes} bytes", 
+                    chunkData.Length);
                 
-                return Ok(new { 
-                    Message = $"Chunk {chunkIndex} uploaded successfully for session {sessionId}" 
-                });
+                return Ok(new { Message = $"Chunk {chunkIndex} uploaded" });
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                _logger.LogWarning(ex, "Invalid chunk index");
+                return BadRequest(ex.Message);
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning(ex, 
-                    "Invalid operation during chunk upload. SessionId: {SessionId}, ChunkIndex: {ChunkIndex}", 
-                    sessionId, chunkIndex);
+                _logger.LogWarning(ex, "Invalid operation during upload");
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, 
-                    "Error processing chunk. SessionId: {SessionId}, ChunkIndex: {ChunkIndex}, Duration: {Duration}ms", 
-                    sessionId, chunkIndex, stopwatch.ElapsedMilliseconds);
-                
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError, 
-                    "Failed to process chunk."
-                );
+                _logger.LogError(ex, "Chunk processing error");
+                return StatusCode(500, "Failed to process chunk");
             }
             finally 
             {

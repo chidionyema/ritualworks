@@ -1,4 +1,3 @@
-// Services/FileValidator.cs
 using System.Collections.Generic;
 using System.IO;
 using System;
@@ -32,9 +31,14 @@ namespace haworks.Services
             
             try
             {
+                // Log the file name at the start of the validation
+                _logger.LogInformation("Starting file validation for file: {FileName}", file.FileName);
+
                 if (file.Length == 0)
                 {
-                    result.AddError("File is empty");
+                    string errorMessage = "File is empty";
+                    _logger.LogWarning("Validation failed for file {FileName}: {ErrorMessage}", file.FileName, errorMessage);
+                    result.AddError(errorMessage);
                     return result;
                 }
 
@@ -43,7 +47,9 @@ namespace haworks.Services
                 
                 if (!signatureResult.IsValid)
                 {
-                    result.AddError("Invalid file signature");
+                    string errorMessage = "Invalid file signature";
+                    _logger.LogWarning("Validation failed for file {FileName}: {ErrorMessage}", file.FileName, errorMessage);
+                    result.AddError(errorMessage);
                     return result;
                 }
 
@@ -52,10 +58,13 @@ namespace haworks.Services
                 
                 if (scanResult.IsMalicious)
                 {
-                    result.AddError("File contains malicious content");
+                    string errorMessage = "File contains malicious content";
+                    _logger.LogWarning("Validation failed for file {FileName}: {ErrorMessage}", file.FileName, errorMessage);
+                    result.AddError(errorMessage);
                     return result;
                 }
 
+                _logger.LogInformation("File validation succeeded for file: {FileName}", file.FileName);
                 return new FileValidationResult(
                     true,
                     signatureResult.FileType.ToString(),
@@ -63,7 +72,7 @@ namespace haworks.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "File validation failed");
+                _logger.LogError(ex, "File validation failed for file {FileName}", file.FileName);
                 result.AddError("Validation failed: " + ex.Message);
                 return result;
             }

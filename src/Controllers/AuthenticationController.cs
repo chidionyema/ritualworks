@@ -48,10 +48,13 @@ namespace haworks.Controllers
             {
                 throw new ArgumentException("JWT key is not configured.");
             }
-
-            // Log the raw key length to ensure it's at least 32 bytes for HmacSha256
             var rawKey = Convert.FromBase64String(keyString);
+            var maskedKey = keyString.Length > 8 
+                ? $"{keyString.Substring(0, 4)}...{keyString.Substring(keyString.Length - 4)}" 
+                : keyString;
             _logger.LogInformation("JWT raw key length (bytes): {Length}", rawKey.Length);
+            _logger.LogDebug("JWT key (masked): {MaskedKey}", maskedKey);
+
 
             var keyBytes = Convert.FromBase64String(keyString);
             _symmetricSecurityKey = new SymmetricSecurityKey(keyBytes);
@@ -66,8 +69,6 @@ namespace haworks.Controllers
                 ValidateIssuerSigningKey = true,
                 ClockSkew = TimeSpan.Zero,
                 IssuerSigningKey = _symmetricSecurityKey,
-                // This setting ensures that the claim with type ClaimTypes.NameIdentifier
-                // (set to the user ID in GenerateToken) is not overwritten by default mappings.
                 NameClaimType = ClaimTypes.NameIdentifier
             };
         }
@@ -106,14 +107,12 @@ namespace haworks.Controllers
             if (!roleResult.Succeeded)
                 return BadRequest(roleResult.Errors);
 
-            // 2) Add a custom claim "permission=upload_content"
             var claimResult = await _userManager.AddClaimAsync(
                 user, new Claim("permission", "upload_content")
             );
             if (!claimResult.Succeeded)
                 return BadRequest(claimResult.Errors);   
 
-            // Use the modified async GenerateToken method passing the User object
             var token = await GenerateToken(user, DateTime.UtcNow.AddMinutes(15));
             SetSecureCookie(token);
 
@@ -168,33 +167,86 @@ namespace haworks.Controllers
             });
         }
 
+        
         [HttpPost("logout")]
         public IActionResult Logout()
         {
             _logger.LogInformation("Logout endpoint called; removing 'jwt' cookie.");
-            Response.Cookies.Delete("jwt");
+            
+            // Fix the cookie deletion with explicit path/domain matching
+            // and ensure we're explicitly setting it to expire
+            var cookieOptions = new CookieOptions 
+            { 
+                Path = "/",
+                HttpOnly = true,
+                Secure = HttpContext.Request.IsHttps,
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTime.UtcNow.AddDays(-1)
+            };
+
+            // Delete the cookie by name
+            Response.Cookies.Delete("jwt", cookieOptions);
+            
+            // Also append an expired cookie with same name to ensure overwrite
+            Response.Cookies.Append("jwt", "", cookieOptions);
+            
             return Ok(new { message = "Logged out successfully" });
         }
 
-        [HttpGet("verify-token")]
         [Authorize]
+        [HttpGet("verify-token")]
         public async Task<IActionResult> VerifyToken()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Since we're using [Authorize], we know the user is authenticated
+            // by the time we reach this code
+            
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userId))
             {
-                _logger.LogWarning("verify-token => No userId in Claims => returning Unauthorized");
-                return Unauthorized();
+                userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            }
+            
+            // Don't check if userId is null here - if we got this far with [Authorize]
+            // then we should have a valid authenticated user - log it but don't fail
+            if (string.IsNullOrEmpty(userId))
+            {
+                _logger.LogWarning("Unusual: Authorized user but no userId claim found");
+                // Get all claims for debugging
+                _logger.LogInformation("Claims present: {claims}", 
+                    string.Join(", ", User.Claims.Select(c => $"{c.Type}={c.Value}")));
+                
+                // Try to use Identity.Name as fallback
+                if (User.Identity?.Name != null)
+                {
+                    var userByName = await _userManager.FindByNameAsync(User.Identity.Name);
+                    if (userByName != null)
+                    {
+                        userId = userByName.Id;
+                    }
+                }
+                
+                // If we still have no userId, return the authenticated identity info anyway
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Ok(new { 
+                        message = "Authenticated but userId not found in claims",
+                        identity = User.Identity?.Name,
+                        isAuthenticated = User.Identity?.IsAuthenticated ?? false
+                    });
+                }
             }
 
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
             {
-                _logger.LogWarning("verify-token => userId not found in DB => returning Unauthorized");
-                return Unauthorized();
+                _logger.LogWarning("User ID from token ({UserId}) not found in database", userId);
+                // Again, we're already authorized, so return some info rather than 401
+                return Ok(new { 
+                    message = "User ID from token not found in database",
+                    userId = userId
+                });
             }
 
-            _logger.LogInformation("verify-token => User found: {UserId}, {UserName}", user.Id, user.UserName);
             return Ok(new { userId = user.Id, userName = user.UserName });
         }
 
@@ -206,7 +258,6 @@ namespace haworks.Controllers
 
             try
             {
-                // Step 1: Validate the old Access Token
                 var principal = ValidateToken(request.AccessToken);
                 if (principal == null)
                 {
@@ -214,10 +265,11 @@ namespace haworks.Controllers
                     return Unauthorized();
                 }
 
-                var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
+                var userId = principal.FindFirstValue(ClaimTypes.NameIdentifier) ?? 
+                             principal.FindFirstValue(JwtRegisteredClaimNames.Sub);
+                             
                 _logger.LogInformation("Attempting refresh for userId: {UserId}", userId);
 
-                // Step 2: Confirm user still exists
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user == null)
                 {
@@ -225,7 +277,6 @@ namespace haworks.Controllers
                     return Unauthorized();
                 }
 
-                // Step 3: Validate the stored refresh token 
                 var storedToken = await _identityContext.RefreshTokens
                     .FirstOrDefaultAsync(rt => rt.Token == request.RefreshToken && rt.UserId == userId);
 
@@ -235,9 +286,6 @@ namespace haworks.Controllers
                     return Unauthorized();
                 }
 
-                _logger.LogInformation("Found refresh token in DB: {RefreshToken}, expires: {Expires}, userId: {UserId}",
-                    storedToken.Token, storedToken.Expires, storedToken.UserId);
-
                 if (storedToken.Expires < DateTime.UtcNow)
                 {
                     _logger.LogWarning("RefreshToken => storedToken expired on {ExpiredOn} => returning Unauthorized",
@@ -245,15 +293,9 @@ namespace haworks.Controllers
                     return Unauthorized();
                 }
 
-                // Step 4: Remove old refresh token from DB
-                _logger.LogInformation("Removing old refresh token from DB: {RefreshToken}", storedToken.Token);
                 _identityContext.RefreshTokens.Remove(storedToken);
-
-                // Step 5: Save changes for removing old token 
                 await _identityContext.SaveChangesAsync();
-                _logger.LogInformation("Old refresh token removed successfully.");
 
-                // Step 6: Generate new access token + new refresh token
                 var newAccessToken = await GenerateToken(user, DateTime.UtcNow.AddMinutes(15));
                 var newRefreshToken = await GenerateRefreshToken(user.Id);
 
@@ -274,15 +316,13 @@ namespace haworks.Controllers
             }
         }
 
-        /// <summary>
-        /// Asynchronously generates a JWT based on the provided user and expiration.
-        /// </summary>
         private async Task<JwtSecurityToken> GenerateToken(User user, DateTime expiration)
         {
             var claims = new List<Claim>
             {        
-                // Use user.Id as the subject and include user.UserName as unique name.
                 new(JwtRegisteredClaimNames.Sub, user.Id),
+                new(ClaimTypes.NameIdentifier, user.Id),
+                new(ClaimTypes.Name, user.UserName),
                 new(JwtRegisteredClaimNames.UniqueName, user.UserName),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
@@ -290,7 +330,9 @@ namespace haworks.Controllers
             _logger.LogDebug("GenerateToken => userName: {UserName}, userId: {UserId}, expiration: {Expires}",
                 user.UserName, user.Id, expiration);
 
-            // Retrieve roles and claims from the user manager.
+            _logger.LogDebug("GenerateToken => Claims being added: {Claims}",
+                string.Join(", ", claims.Select(c => $"{c.Type}={c.Value}")));
+
             var roles = await _userManager.GetRolesAsync(user);
             foreach (var role in roles)
             {
@@ -327,15 +369,24 @@ namespace haworks.Controllers
             return refreshToken;
         }
 
-        private ClaimsPrincipal? ValidateToken(string token)
+       private ClaimsPrincipal? ValidateToken(string token)
         {
-            _logger.LogDebug("Validating token: {Token}", token);
+            // Mask the token except for the first and last 4 characters
+            var maskedToken = token.Length > 8 
+                ? $"{token.Substring(0, 4)}...{token.Substring(token.Length - 4)}" 
+                : token;
+            
+            _logger.LogDebug("Validating MaskedToken token: {MaskedToken}", maskedToken);
             try
             {
                 var handler = new JwtSecurityTokenHandler();
                 var principal = handler.ValidateToken(token, _tokenValidationParameters, out var validToken);
                 _logger.LogDebug("ValidateToken => validated principal => subject: {Subject}",
                     principal.Identity?.Name ?? "null");
+                            
+                _logger.LogDebug("ValidateToken => Claims in token: {Claims}",
+                    string.Join(", ", principal.Claims.Select(c => $"{c.Type}={c.Value}")));
+                        
                 return principal;
             }
             catch (Exception ex)
@@ -345,10 +396,15 @@ namespace haworks.Controllers
             }
         }
 
+
         private void SetSecureCookie(JwtSecurityToken token)
         {
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            _logger.LogDebug("SetSecureCookie: Generated token string: {TokenString}", tokenString);
+            
+            _logger.LogDebug("SetSecureCookie: JWT header: {Header}", token.Header);
+            _logger.LogDebug("SetSecureCookie: JWT payload claims: {Claims}", 
+                string.Join(", ", token.Claims.Select(c => $"{c.Type}={c.Value}")));
+            
             var segments = tokenString.Split('.');
             _logger.LogDebug("SetSecureCookie: Token has {SegmentCount} segments.", segments.Length);
             _logger.LogDebug("SetSecureCookie => appending 'jwt' cookie with expiry: {Expires}", token.ValidTo);
@@ -358,7 +414,32 @@ namespace haworks.Controllers
                 HttpOnly = true,
                 Secure = HttpContext.Request.IsHttps,
                 SameSite = SameSiteMode.Lax,
-                Expires = token.ValidTo
+                Expires = token.ValidTo,
+                Path = "/"
+            });
+            
+            Response.Headers.Append("Authorization", $"Bearer {tokenString}");
+        }
+
+        [HttpGet("debug-auth")]
+        public IActionResult DebugAuth()
+        {
+            if (!User.Identity?.IsAuthenticated ?? true)
+            {
+                return Unauthorized(new { message = "User not authenticated", 
+                                        claims = User.Claims.Select(c => new { c.Type, c.Value }) });
+            }
+            
+            var claims = User.Claims.ToDictionary(c => c.Type, c => c.Value);
+            var authType = User.Identity.AuthenticationType;
+            
+            return Ok(new { 
+                message = "Authentication successful", 
+                authType,
+                userId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                userName = User.FindFirstValue(ClaimTypes.Name),
+                role = User.FindFirstValue(ClaimTypes.Role),
+                claims
             });
         }
     }

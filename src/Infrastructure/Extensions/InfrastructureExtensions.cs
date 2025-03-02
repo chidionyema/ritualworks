@@ -266,13 +266,21 @@ namespace haworks.Extensions
         private static IServiceCollection AddMinioStorage(this IServiceCollection services, IConfiguration config)
         {
             var minioConfig = config.GetSection("MinIO");
+            
+            // Add MinioClient as singleton
             services.AddSingleton<IMinioClient>(_ =>
                 new MinioClient()
                     .WithEndpoint(minioConfig["Endpoint"])
                     .WithCredentials(minioConfig["AccessKey"], minioConfig["SecretKey"])
                     .WithSSL(minioConfig.GetValue<bool>("Secure"))
-                    .Build())
-                .AddSingleton<IContentStorageService, ContentStorageService>();
+                    .Build());
+            
+            // Add ContentStorageService as singleton
+            services.AddSingleton<IContentStorageService, ContentStorageService>(sp =>
+                new ContentStorageService(
+                    sp.GetRequiredService<IMinioClient>(),
+                    sp.GetRequiredService<ILogger<ContentStorageService>>(),
+                    config));
 
             return services;
         }

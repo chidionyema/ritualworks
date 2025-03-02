@@ -1,12 +1,15 @@
 using System;
+using System.ComponentModel.DataAnnotations; // Add this for validation attributes
 
 namespace haworks.Dto
 {
-   public record ChunkSessionRequest(
+    // Add validation using data annotations
+    public record ChunkSessionRequest(
         Guid EntityId,
-        string FileName,
-        int TotalChunks,
-        long TotalSize);
+        [Required] string FileName, // Enforce required field
+        [Range(1, int.MaxValue, ErrorMessage = "TotalChunks must be greater than or equal to 1")] int TotalChunks, // Must be ≥1
+        [Range(1, long.MaxValue, ErrorMessage = "TotalSize must be greater than or equal to 1")] long TotalSize // Must be ≥1
+    );
 
     public record StorageInfo(long FileSize)
     {
@@ -30,9 +33,7 @@ namespace haworks.Dto
         string ContentType,
         long FileSize);
 
-
-
-   public record ContentUploadResult(
+    public record ContentUploadResult(
         string BucketName,
         string ObjectName,
         string ContentType,
@@ -41,7 +42,4 @@ namespace haworks.Dto
         string StorageDetails,
         string Path
     );
-
-
-
 }
