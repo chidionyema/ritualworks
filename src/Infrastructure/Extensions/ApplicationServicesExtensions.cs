@@ -10,6 +10,7 @@ public static class ApplicationServicesExtensions
         services.AddAutoMapper(typeof(MappingProfile))
             .AddMemoryCache()
             .AddScoped<PaymentSessionStrategy>()
+            .AddScoped<AuthService>()
             .AddScoped<SubscriptionSessionStrategy>()
             .AddScoped<IPaymentProcessingService, PaymentProcessingService>()
             .AddScoped<ISubscriptionProcessingService, SubscriptionProcessingService>()
@@ -18,6 +19,9 @@ public static class ApplicationServicesExtensions
             .AddScoped<IContentStorageService, ContentStorageService>()
             .AddScoped<IChunkedUploadService, ChunkedUploadService>()
             .AddScoped<ICurrentUserService, CurrentUserService>();
+
+
+
 
         return services;
     }

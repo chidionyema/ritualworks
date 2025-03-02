@@ -50,10 +50,33 @@ namespace Haworks.Tests
                 _logger.LogDebug("TestAuthMiddleware: Added test claims to request");
             }
 
+            if (context.Request.Path.StartsWithSegments("/api/external-authentication/callback"))
+            {
+                // Get the login info from our store
+                var loginInfo = ExternalLoginInfoStore.GetLoginInfo();
+                
+                if (loginInfo != null)
+                {
+                    _logger.LogInformation("TestAuthMiddleware found external login info for provider: {Provider}", 
+                        loginInfo.LoginProvider);
+                    
+                    // Make the external login info accessible to SignInManager
+                    context.Items["ExternalLoginInfo"] = loginInfo;
+                }
+                else
+                {
+                    _logger.LogWarning("No stored external login info found in TestAuthMiddleware");
+                }
+            }
+
             // Continue with the pipeline
             await _next(context);
         }
+
+        
     }
+
+    
 
     /// <summary>
     /// Extension methods for TestAuthMiddleware

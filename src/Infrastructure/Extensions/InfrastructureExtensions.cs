@@ -126,7 +126,7 @@ namespace haworks.Extensions
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders();
-
+            
             // Register repositories
             services.AddScoped<IProductContextRepository, ProductContextRepository>();
             services.AddScoped<IContentContextRepository, ContentContextRepository>();

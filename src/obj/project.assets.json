@@ -403,6 +403,38 @@
           }
         }
       },
+      "Microsoft.AspNetCore.Authentication.Facebook/9.0.2": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0/Microsoft.AspNetCore.Authentication.Facebook.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.AspNetCore.Authentication.Facebook.dll": {
+            "related": ".xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
+      "Microsoft.AspNetCore.Authentication.Google/9.0.2": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0/Microsoft.AspNetCore.Authentication.Google.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net9.0/Microsoft.AspNetCore.Authentication.Google.dll": {
+            "related": ".xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "Microsoft.AspNetCore.Authentication.JwtBearer/8.0.0": {
         "type": "package",
         "dependencies": {
@@ -5116,6 +5148,36 @@
         "lib/netstandard2.0/Microsoft.AspNetCore.Authentication.Core.xml",
         "microsoft.aspnetcore.authentication.core.2.2.0.nupkg.sha512",
         "microsoft.aspnetcore.authentication.core.nuspec"
+      ]
+    },
+    "Microsoft.AspNetCore.Authentication.Facebook/9.0.2": {
+      "sha512": "sfp62fNDUzpqVDdHGng+lVaxus+IxCzHr/yzOd8oJcnA1DeMK9uYmofdT3dKXGoyN+XdvUJxR2EO4oLKAhXR9w==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.authentication.facebook/9.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net9.0/Microsoft.AspNetCore.Authentication.Facebook.dll",
+        "lib/net9.0/Microsoft.AspNetCore.Authentication.Facebook.xml",
+        "microsoft.aspnetcore.authentication.facebook.9.0.2.nupkg.sha512",
+        "microsoft.aspnetcore.authentication.facebook.nuspec"
+      ]
+    },
+    "Microsoft.AspNetCore.Authentication.Google/9.0.2": {
+      "sha512": "Qxu5/62zOGD2RERGjypDEnlFwYV0rYCBUCR+DVVQ1D6qMMLmqowcJ0bdA42fm0lql3fD0V/vVV6ysC8SjZCGBg==",
+      "type": "package",
+      "path": "microsoft.aspnetcore.authentication.google/9.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net9.0/Microsoft.AspNetCore.Authentication.Google.dll",
+        "lib/net9.0/Microsoft.AspNetCore.Authentication.Google.xml",
+        "microsoft.aspnetcore.authentication.google.9.0.2.nupkg.sha512",
+        "microsoft.aspnetcore.authentication.google.nuspec"
       ]
     },
     "Microsoft.AspNetCore.Authentication.JwtBearer/8.0.0": {
@@ -12607,6 +12669,8 @@
       "IdentityServer4.AspNetIdentity >= 4.1.2",
       "MassTransit >= 8.3.4",
       "MassTransit.RabbitMQ >= 8.3.4",
+      "Microsoft.AspNetCore.Authentication.Facebook >= 9.0.2",
+      "Microsoft.AspNetCore.Authentication.Google >= 9.0.2",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 8.0.0",
       "Microsoft.AspNetCore.Authentication.MicrosoftAccount >= 9.0.1",
       "Microsoft.AspNetCore.DataProtection.StackExchangeRedis >= 9.0.2",
@@ -12727,6 +12791,14 @@
           "MassTransit.RabbitMQ": {
             "target": "Package",
             "version": "[8.3.4, )"
+          },
+          "Microsoft.AspNetCore.Authentication.Facebook": {
+            "target": "Package",
+            "version": "[9.0.2, )"
+          },
+          "Microsoft.AspNetCore.Authentication.Google": {
+            "target": "Package",
+            "version": "[9.0.2, )"
           },
           "Microsoft.AspNetCore.Authentication.JwtBearer": {
             "target": "Package",

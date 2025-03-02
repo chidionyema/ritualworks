@@ -8,11 +8,11 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using haworks.Models;
 using haworks.Dto;
 using haworks.Db;
+using haworks.Services;
 using Haworks.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
@@ -26,51 +26,20 @@ namespace haworks.Controllers
     public class AuthenticationController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        private readonly IConfiguration _configuration;
         private readonly ILogger<AuthenticationController> _logger;
         private readonly IdentityContext _identityContext;
-        private readonly SymmetricSecurityKey _symmetricSecurityKey;
-        private readonly TokenValidationParameters _tokenValidationParameters;
+        private readonly AuthService _authService;
 
         public AuthenticationController(
             UserManager<User> userManager,
-            IConfiguration configuration,
             ILogger<AuthenticationController> logger,
-            IdentityContext identityContext)
+            IdentityContext identityContext,
+            AuthService authService)
         {
             _userManager = userManager;
-            _configuration = configuration;
             _logger = logger;
             _identityContext = identityContext;
-
-            var keyString = configuration["Jwt:Key"];
-            if (string.IsNullOrWhiteSpace(keyString))
-            {
-                throw new ArgumentException("JWT key is not configured.");
-            }
-            var rawKey = Convert.FromBase64String(keyString);
-            var maskedKey = keyString.Length > 8 
-                ? $"{keyString.Substring(0, 4)}...{keyString.Substring(keyString.Length - 4)}" 
-                : keyString;
-            _logger.LogInformation("JWT raw key length (bytes): {Length}", rawKey.Length);
-            _logger.LogDebug("JWT key (masked): {MaskedKey}", maskedKey);
-
-
-            var keyBytes = Convert.FromBase64String(keyString);
-            _symmetricSecurityKey = new SymmetricSecurityKey(keyBytes);
-
-            _tokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidIssuer = configuration["Jwt:Issuer"],
-                ValidateAudience = true,
-                ValidAudience = configuration["Jwt:Audience"],
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ClockSkew = TimeSpan.Zero,
-                IssuerSigningKey = _symmetricSecurityKey,
-                NameClaimType = ClaimTypes.NameIdentifier
-            };
+            _authService = authService;
         }
 
         [HttpPost("register")]
@@ -113,8 +82,8 @@ namespace haworks.Controllers
             if (!claimResult.Succeeded)
                 return BadRequest(claimResult.Errors);   
 
-            var token = await GenerateToken(user, DateTime.UtcNow.AddMinutes(15));
-            SetSecureCookie(token);
+            var token = await _authService.GenerateToken(user, DateTime.UtcNow.AddMinutes(15));
+            _authService.SetSecureCookie(HttpContext, token);
 
             return Ok(new
             {
@@ -151,12 +120,14 @@ namespace haworks.Controllers
 
             _logger.LogInformation("Login successful for user: {Username}, Id: {UserId}", user.UserName, user.Id);
 
-            var token = await GenerateToken(user, DateTime.UtcNow.AddMinutes(15));
-            SetSecureCookie(token);
+            var token = await _authService.GenerateToken(user, DateTime.UtcNow.AddMinutes(15));
+            var refreshTokenEntity = await _authService.GenerateRefreshToken(user.Id);
+            _authService.SetSecureCookie(HttpContext, token);
 
             return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token),
+                refreshToken = refreshTokenEntity.Token,
                 user = new
                 {
                     id = user.Id,
@@ -167,29 +138,11 @@ namespace haworks.Controllers
             });
         }
 
-        
         [HttpPost("logout")]
         public IActionResult Logout()
         {
             _logger.LogInformation("Logout endpoint called; removing 'jwt' cookie.");
-            
-            // Fix the cookie deletion with explicit path/domain matching
-            // and ensure we're explicitly setting it to expire
-            var cookieOptions = new CookieOptions 
-            { 
-                Path = "/",
-                HttpOnly = true,
-                Secure = HttpContext.Request.IsHttps,
-                SameSite = SameSiteMode.Lax,
-                Expires = DateTime.UtcNow.AddDays(-1)
-            };
-
-            // Delete the cookie by name
-            Response.Cookies.Delete("jwt", cookieOptions);
-            
-            // Also append an expired cookie with same name to ensure overwrite
-            Response.Cookies.Append("jwt", "", cookieOptions);
-            
+            _authService.DeleteAuthCookie(HttpContext);
             return Ok(new { message = "Logged out successfully" });
         }
 
@@ -258,7 +211,7 @@ namespace haworks.Controllers
 
             try
             {
-                var principal = ValidateToken(request.AccessToken);
+                var principal = _authService.ValidateToken(request.AccessToken);
                 if (principal == null)
                 {
                     _logger.LogWarning("RefreshToken => principal is null => returning Unauthorized");
@@ -296,8 +249,8 @@ namespace haworks.Controllers
                 _identityContext.RefreshTokens.Remove(storedToken);
                 await _identityContext.SaveChangesAsync();
 
-                var newAccessToken = await GenerateToken(user, DateTime.UtcNow.AddMinutes(15));
-                var newRefreshToken = await GenerateRefreshToken(user.Id);
+                var newAccessToken = await _authService.GenerateToken(user, DateTime.UtcNow.AddMinutes(15));
+                var newRefreshToken = await _authService.GenerateRefreshToken(user.Id);
 
                 _logger.LogInformation("Generated new refresh token: {RefreshToken} => expires {Expires}",
                     newRefreshToken.Token, newAccessToken.ValidTo);
@@ -314,111 +267,6 @@ namespace haworks.Controllers
                 _logger.LogError(ex, "Refresh token failed unexpectedly.");
                 return StatusCode(500, "Internal server error");
             }
-        }
-
-        private async Task<JwtSecurityToken> GenerateToken(User user, DateTime expiration)
-        {
-            var claims = new List<Claim>
-            {        
-                new(JwtRegisteredClaimNames.Sub, user.Id),
-                new(ClaimTypes.NameIdentifier, user.Id),
-                new(ClaimTypes.Name, user.UserName),
-                new(JwtRegisteredClaimNames.UniqueName, user.UserName),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            _logger.LogDebug("GenerateToken => userName: {UserName}, userId: {UserId}, expiration: {Expires}",
-                user.UserName, user.Id, expiration);
-
-            _logger.LogDebug("GenerateToken => Claims being added: {Claims}",
-                string.Join(", ", claims.Select(c => $"{c.Type}={c.Value}")));
-
-            var roles = await _userManager.GetRolesAsync(user);
-            foreach (var role in roles)
-            {
-                claims.Add(new Claim(ClaimTypes.Role, role));
-            }
-            var dbClaims = await _userManager.GetClaimsAsync(user);
-            claims.AddRange(dbClaims);
-            _logger.LogInformation("Generating token with Issuer: {Issuer}, Audience: {Audience}", 
-            _configuration["Jwt:Issuer"], _configuration["Jwt:Audience"]);
-
-            return new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: expiration,
-                signingCredentials: new SigningCredentials(_symmetricSecurityKey, SecurityAlgorithms.HmacSha256)
-            );
-        }
-
-        private async Task<RefreshToken> GenerateRefreshToken(string userId)
-        {
-            var newToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
-            _logger.LogDebug("Generating new refresh token for userId: {UserId}, token: {Token}", userId, newToken);
-
-            var refreshToken = new RefreshToken
-            {
-                UserId = userId,
-                Token = newToken,
-                Expires = DateTime.UtcNow.AddDays(7),
-                CreatedAt = DateTime.UtcNow
-            };
-            _identityContext.RefreshTokens.Add(refreshToken);
-            await _identityContext.SaveChangesAsync();
-            return refreshToken;
-        }
-
-       private ClaimsPrincipal? ValidateToken(string token)
-        {
-            // Mask the token except for the first and last 4 characters
-            var maskedToken = token.Length > 8 
-                ? $"{token.Substring(0, 4)}...{token.Substring(token.Length - 4)}" 
-                : token;
-            
-            _logger.LogDebug("Validating MaskedToken token: {MaskedToken}", maskedToken);
-            try
-            {
-                var handler = new JwtSecurityTokenHandler();
-                var principal = handler.ValidateToken(token, _tokenValidationParameters, out var validToken);
-                _logger.LogDebug("ValidateToken => validated principal => subject: {Subject}",
-                    principal.Identity?.Name ?? "null");
-                            
-                _logger.LogDebug("ValidateToken => Claims in token: {Claims}",
-                    string.Join(", ", principal.Claims.Select(c => $"{c.Type}={c.Value}")));
-                        
-                return principal;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "ValidateToken => token validation failed => returning null principal");
-                return null;
-            }
-        }
-
-
-        private void SetSecureCookie(JwtSecurityToken token)
-        {
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            
-            _logger.LogDebug("SetSecureCookie: JWT header: {Header}", token.Header);
-            _logger.LogDebug("SetSecureCookie: JWT payload claims: {Claims}", 
-                string.Join(", ", token.Claims.Select(c => $"{c.Type}={c.Value}")));
-            
-            var segments = tokenString.Split('.');
-            _logger.LogDebug("SetSecureCookie: Token has {SegmentCount} segments.", segments.Length);
-            _logger.LogDebug("SetSecureCookie => appending 'jwt' cookie with expiry: {Expires}", token.ValidTo);
-
-            Response.Cookies.Append("jwt", tokenString, new CookieOptions
-            {
-                HttpOnly = true,
-                Secure = HttpContext.Request.IsHttps,
-                SameSite = SameSiteMode.Lax,
-                Expires = token.ValidTo,
-                Path = "/"
-            });
-            
-            Response.Headers.Append("Authorization", $"Bearer {tokenString}");
         }
 
         [HttpGet("debug-auth")]

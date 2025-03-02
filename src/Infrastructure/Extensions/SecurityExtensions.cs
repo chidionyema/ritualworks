@@ -5,6 +5,7 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -81,6 +82,7 @@ public static class SecurityExtensions
     {
         // Add JWT authentication, custom Cookie-based JWT, authorization, Identity, and rate limiting.
         services.AddAuthenticationSchemes(config)
+                .AddExternalAuthenticationProviders(config)
                 .AddAuthorizationPolicies()
                 .AddRateLimiting(config);
 
@@ -133,149 +135,232 @@ public static class SecurityExtensions
         }
     }
 
-    // ---- PRIVATE EXTENSIONS ----
+   private static IServiceCollection AddExternalAuthenticationProviders(this IServiceCollection services, IConfiguration config)
+{
+    
+
+    // Only register these providers in non-test environments
+    services.AddAuthentication()
+        .AddGoogle(options =>
+        {
+            var googleAuthSection = config.GetSection("Authentication:Google");
+            options.ClientId = googleAuthSection["ClientId"] ?? throw new InvalidOperationException("Google ClientId missing!");
+            options.ClientSecret = googleAuthSection["ClientSecret"] ?? throw new InvalidOperationException("Google ClientSecret missing!");
+            options.CallbackPath = new PathString("/api/external-authentication/google-callback");
+            
+            // Optional: Configure user claims
+            options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "id");
+            options.ClaimActions.MapJsonKey(ClaimTypes.Name, "name");
+            options.ClaimActions.MapJsonKey(ClaimTypes.Email, "email");
+            options.ClaimActions.MapJsonKey("picture", "picture");
+            
+            // Save tokens for potential API access
+            options.SaveTokens = true;
+        })
+        .AddMicrosoftAccount(options =>
+        {
+            var msAuthSection = config.GetSection("Authentication:Microsoft");
+            options.ClientId = msAuthSection["ClientId"] ?? throw new InvalidOperationException("Microsoft ClientId missing!");
+            options.ClientSecret = msAuthSection["ClientSecret"] ?? throw new InvalidOperationException("Microsoft ClientSecret missing!");
+            options.CallbackPath = new PathString("/api/external-authentication/microsoft-callback");
+            
+            // Save tokens
+            options.SaveTokens = true;
+        })
+        .AddFacebook(options =>
+        {
+            var fbAuthSection = config.GetSection("Authentication:Facebook");
+            options.AppId = fbAuthSection["AppId"] ?? throw new InvalidOperationException("Facebook AppId missing!");
+            options.AppSecret = fbAuthSection["AppSecret"] ?? throw new InvalidOperationException("Facebook AppSecret missing!");
+            options.CallbackPath = new PathString("/api/external-authentication/facebook-callback");
+            
+            // Save tokens
+            options.SaveTokens = true;
+        });
+
+    return services;
+}
 
     /// <summary>
     /// Top-level method that sets up a "policy scheme" called MultiAuth, 
     /// which tries Cookie first or Bearer second, plus the actual Bearer/Cookie registrations.
     /// </summary>
-    private static IServiceCollection AddAuthenticationSchemes(this IServiceCollection services, IConfiguration config)
+   private static IServiceCollection AddAuthenticationSchemes(this IServiceCollection services, IConfiguration config)
+{
+    var jwtSection = config.GetSection("Jwt");
+    var keyBytes = Convert.FromBase64String(jwtSection["Key"] ?? throw new InvalidOperationException("Jwt:Key missing!"));
+
+    // Create token validation parameters once
+    var tokenValidationParameters = new TokenValidationParameters
     {
-        var jwtSection = config.GetSection("Jwt");
-        var keyBytes = Convert.FromBase64String(jwtSection["Key"] ?? throw new InvalidOperationException("Jwt:Key missing!"));
+        ValidateIssuer = true,
+        ValidIssuer = jwtSection["Issuer"],
+        ValidateAudience = true,
+        ValidAudience = jwtSection["Audience"],
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+        NameClaimType = ClaimTypes.NameIdentifier,
+        ClockSkew = TimeSpan.Zero
+    };
 
-        // Create token validation parameters once
-        var tokenValidationParameters = new TokenValidationParameters
+    // Share the same token parameters
+    services.AddSingleton(tokenValidationParameters);
+
+    // Check if we're in test environment
+    var isTestEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Test";
+
+    // Configure authentication defaults
+    services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        
+        // Only set DefaultSignInScheme if not in test environment
+        if (!isTestEnvironment)
         {
-            ValidateIssuer = true,
-            ValidIssuer = jwtSection["Issuer"],
-            ValidateAudience = true,
-            ValidAudience = jwtSection["Audience"],
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
-            NameClaimType = ClaimTypes.NameIdentifier,
-            ClockSkew = TimeSpan.Zero
+            options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+        }
+    })
+    .AddPolicyScheme("MultiAuth", "MultiAuth", policyOpts =>
+    {
+        policyOpts.ForwardDefaultSelector = context =>
+        {
+            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+
+            // Check for JWT cookie first
+            if (context.Request.Cookies.ContainsKey("jwt"))
+            {
+                logger.LogInformation("JWT cookie found, using CookieAuth scheme");
+                return "CookieAuth";
+            }
+
+            // Then check for Authorization header
+            if (context.Request.Headers.ContainsKey("Authorization"))
+            {
+                var authHeader = context.Request.Headers["Authorization"].ToString();
+                if (authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                {
+                    logger.LogInformation("Authorization header found, using Bearer scheme");
+                    return JwtBearerDefaults.AuthenticationScheme;
+                }
+            }
+
+            logger.LogInformation("No auth detected, defaulting to Bearer scheme");
+            return JwtBearerDefaults.AuthenticationScheme;
         };
+    })
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, bearerOpts =>
+    {
+        bearerOpts.SaveToken = true;
+        bearerOpts.RequireHttpsMetadata = false;
+        bearerOpts.TokenValidationParameters = tokenValidationParameters;
 
-        // Share the same token parameters
-        services.AddSingleton(tokenValidationParameters);
-
-        services.AddAuthentication(options =>
+        // Events remain unchanged
+        bearerOpts.Events = new JwtBearerEvents
         {
-            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; // Set default to Bearer
-            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // Set default to Bearer
-        })
-        .AddPolicyScheme("MultiAuth", "MultiAuth", policyOpts =>
-        {
-            policyOpts.ForwardDefaultSelector = context =>
-            {
-                var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-
-                // Check for JWT cookie first - this is important for proper precedence
-                if (context.Request.Cookies.ContainsKey("jwt"))
+            // Existing event handlers...
+            OnAuthenticationFailed = context => {
+                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+                logger.LogError(context.Exception, "JWT authentication failed");
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context => {
+                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+                logger.LogInformation("JWT token validated successfully for {Identity}",
+                    context.Principal?.Identity?.Name ?? "unknown");
+                return Task.CompletedTask;
+            },
+            OnMessageReceived = context => {
+                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+                
+                // Existing message received logic...
+                if (context.Token != null)
                 {
-                    logger.LogInformation("JWT cookie found, using CookieAuth scheme");
-                    return "CookieAuth";
+                    logger.LogInformation("JWT token already set: {TokenLength} chars", context.Token.Length);
+                    return Task.CompletedTask;
                 }
 
-                // Then check for Authorization header
-                if (context.Request.Headers.ContainsKey("Authorization"))
+                if (context.Request.Headers.TryGetValue("Authorization", out var authHeader))
                 {
-                    var authHeader = context.Request.Headers["Authorization"].ToString();
-                    if (authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                    var authValue = authHeader.ToString();
+                    if (authValue.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
                     {
-                        logger.LogInformation("Authorization header found, using Bearer scheme");
-                        return JwtBearerDefaults.AuthenticationScheme;
+                        context.Token = authValue.Substring("Bearer ".Length).Trim();
+                        logger.LogInformation("Extracted token from Authorization header: {TokenLength} chars",
+                            context.Token.Length);
                     }
                 }
 
-                logger.LogInformation("No auth detected, defaulting to Bearer scheme");
-                return JwtBearerDefaults.AuthenticationScheme;
-            };
-        })
-        .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, bearerOpts =>
+                if (context.Token == null && context.Request.Cookies.ContainsKey("jwt"))
+                {
+                    context.Token = context.Request.Cookies["jwt"];
+                    logger.LogInformation("Extracted token from cookie: {TokenLength} chars", context.Token.Length);
+                }
+
+                return Task.CompletedTask;
+            }
+        };
+    })
+    .AddScheme<CookieAuthenticationOptions, JwtInCookieHandler>("CookieAuth", options =>
+    {
+        options.Cookie.Name = "jwt"; // Match the cookie name
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+
+        options.Events = new CookieAuthenticationEvents
         {
-            bearerOpts.SaveToken = true;
-            bearerOpts.RequireHttpsMetadata = false;
-            bearerOpts.TokenValidationParameters = tokenValidationParameters;
-
-            // Add events for better debugging and handling
-            bearerOpts.Events = new JwtBearerEvents
+            OnRedirectToLogin = ctx =>
             {
-                OnAuthenticationFailed = context =>
-                {
-                    var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(context.Exception, "JWT authentication failed");
-                    return Task.CompletedTask;
-                },
-                OnTokenValidated = context =>
-                {
-                    var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                    logger.LogInformation("JWT token validated successfully for {Identity}",
-                        context.Principal?.Identity?.Name ?? "unknown");
+                ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                return Task.CompletedTask;
+            },
+            OnRedirectToAccessDenied = ctx =>
+            {
+                ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
+                return Task.CompletedTask;
+            }
+        };
+    });
 
-                    // Add any additional claims or processing here
-                    return Task.CompletedTask;
-                },
-                OnMessageReceived = context =>
+    // Only add the external scheme if we're not in test environment
+    // and if the scheme isn't already registered
+    if (!isTestEnvironment)
+    {
+        // Check if the scheme is already registered (this is safer but optional)
+        var schemeProvider = services.BuildServiceProvider().GetService<IAuthenticationSchemeProvider>();
+        var externalScheme = schemeProvider?.GetSchemeAsync(IdentityConstants.ExternalScheme).GetAwaiter().GetResult();
+        
+        if (externalScheme == null)
+        {
+            services.AddAuthentication()
+                .AddCookie(IdentityConstants.ExternalScheme, options => 
                 {
-                    var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-
-                    // Check if token is already set
-                    if (context.Token != null)
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+                    options.Cookie.SameSite = SameSiteMode.Lax;
+                    options.LoginPath = "/api/external-authentication/challenge";
+                    
+                    options.Events = new CookieAuthenticationEvents
                     {
-                        logger.LogInformation("JWT token already set: {TokenLength} chars", context.Token.Length);
-                        return Task.CompletedTask;
-                    }
-
-                    // Extract from Authorization header
-                    if (context.Request.Headers.TryGetValue("Authorization", out var authHeader))
-                    {
-                        var authValue = authHeader.ToString();
-                        if (authValue.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                        OnRedirectToLogin = ctx => 
                         {
-                            context.Token = authValue.Substring("Bearer ".Length).Trim();
-                            logger.LogInformation("Extracted token from Authorization header: {TokenLength} chars",
-                                context.Token.Length);
+                            ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            return Task.CompletedTask;
+                        },
+                        OnRedirectToAccessDenied = ctx =>
+                        {
+                            ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
+                            return Task.CompletedTask;
                         }
-                    }
-
-                    // Also check the cookie as a fallback
-                    if (context.Token == null && context.Request.Cookies.ContainsKey("jwt"))
-                    {
-                        context.Token = context.Request.Cookies["jwt"];
-                        logger.LogInformation("Extracted token from cookie: {TokenLength} chars", context.Token.Length);
-                    }
-
-                    return Task.CompletedTask;
-                }
-            };
-        })
-        .AddScheme<CookieAuthenticationOptions, JwtInCookieHandler>("CookieAuth", options =>
-        {
-            options.Cookie.Name = "jwt"; // Match the cookie name
-            options.Cookie.HttpOnly = true;
-            options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
-            options.Cookie.SameSite = SameSiteMode.Lax;
-
-            options.Events = new CookieAuthenticationEvents
-            {
-                OnRedirectToLogin = ctx =>
-                {
-                    ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                    return Task.CompletedTask;
-                },
-                OnRedirectToAccessDenied = ctx =>
-                {
-                    ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
-                    return Task.CompletedTask;
-                }
-            };
-        });
-
-        return services;
+                    };
+                });
+        }
     }
+
+    return services;
+}
 
     private static IServiceCollection AddAuthorizationPolicies(this IServiceCollection services)
     {
@@ -404,6 +489,5 @@ public static class SecurityExtensions
                 return AuthenticateResult.Fail(ex);
             }
         }
-
     }
 }

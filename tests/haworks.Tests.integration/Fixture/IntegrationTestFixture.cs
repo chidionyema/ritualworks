@@ -47,33 +47,53 @@ namespace Haworks.Tests
             _testConfiguration = ConfigurationLoader.LoadTestConfiguration(testConfigPath);
         }
 
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            builder.ConfigureLogging(logging => logging
-                .ClearProviders()
-                .AddConsole()
-                .AddDebug()
-                .SetMinimumLevel(LogLevel.Debug));
+   protected override void ConfigureWebHost(IWebHostBuilder builder)
+{
+    builder.ConfigureLogging(logging => logging
+        .ClearProviders()
+        .AddConsole()
+        .AddDebug()
+        .SetMinimumLevel(LogLevel.Debug));
 
-            ConfigureAuthentication(builder);
-            ConfigureEnvironmentAndConfiguration(builder);
-            ConfigureTestServices(builder);
-            //Apply migrations AFTER test services are configured
-            builder.ConfigureServices(services => 
-            {
-                var serviceProvider = services.BuildServiceProvider();
-                using var scope = serviceProvider.CreateScope();
-                var sp = scope.ServiceProvider;
-                
-                // Apply migrations for IdentityContext
-                var identityContext = sp.GetRequiredService<IdentityContext>();
-                identityContext.Database.Migrate();
-                
-                // Apply migrations for ContentContext
-                var contentContext = sp.GetRequiredService<ContentContext>();
-                contentContext.Database.Migrate();
-            });
+    ConfigureAuthentication(builder);
+    ConfigureEnvironmentAndConfiguration(builder);
+    ConfigureTestServices(builder);
+    
+    builder.ConfigureServices(services => 
+    {
+        var serviceProvider = services.BuildServiceProvider();
+        using var scope = serviceProvider.CreateScope();
+        var sp = scope.ServiceProvider;
+        
+        try
+        {
+            // Clear connections to prevent "in use" errors
+              NpgsqlConnection.ClearAllPools();
+
+        // Get the database contexts
+        var identityContext = sp.GetRequiredService<IdentityContext>();
+        var contentContext = sp.GetRequiredService<ContentContext>();
+        var productContext = sp.GetRequiredService<ProductContext>();
+
+        var logger = sp.GetRequiredService<ILogger<CustomWebApplicationFactory>>();
+        
+        // For tests, recreate the database from scratch
+        identityContext.Database.EnsureDeleted();
+        
+        // Create fresh schemas - no migrations
+        identityContext.Database.EnsureCreated();
+        contentContext.Database.EnsureCreated();
+        productContext.Database.EnsureCreated();
         }
+        catch (Exception ex)
+        {
+            var logger = sp.GetRequiredService<ILogger<CustomWebApplicationFactory>>();
+            logger.LogError(ex, "Database migration failed.");
+            throw;
+        }
+    });
+}
+
 
         private void ConfigureAuthentication(IWebHostBuilder builder)
         {
@@ -142,6 +162,16 @@ namespace Haworks.Tests
        
         public async Task ResetDatabaseAsync()
         {
+            // Clear PostgreSQL connection pools to prevent "in use" errors
+           var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                _logger.LogError("DefaultConnection connection string is null or empty.");
+                throw new InvalidOperationException("DefaultConnection connection string is missing.");
+            }
+            // Clear PostgreSQL connection pools to prevent "in use" errors
+            NpgsqlConnection.ClearAllPools();
+
             // Reset SQL database
             await DatabaseMaintainer.ResetAsync(
                 Configuration.GetConnectionString("DefaultConnection"), 
@@ -207,21 +237,19 @@ namespace Haworks.Tests
         return services;
     }
 
-        public static IServiceCollection ConfigureContentStorage(
-        this IServiceCollection services, IConfiguration config)
-        {
-            return services.ReplaceService<IContentStorageService, ContentStorageService>(sp =>
-                new ContentStorageService(
-                    new MinioClient()
-                        .WithEndpoint(config["MinIO:Endpoint"] ?? "localhost:9000")
-                        .WithSSL(false)
-                        .WithCredentials(
-                            config["MinIO:AccessKey"] ?? "minioadmin",
-                            config["MinIO:SecretKey"] ?? "minioadmin")
-                        .Build(),
-                    sp.GetRequiredService<ILogger<ContentStorageService>>(),
-                    config));
-        }
+      public static IServiceCollection ConfigureContentStorage(
+    this IServiceCollection services, IConfiguration config)
+{
+    // Add the MinioClient as a singleton first
+    services.AddSingleton<IMinioClient>(sp => MinioTestClient.Get(config));
+    
+    // Then use the same client instance for the ContentStorageService
+    return services.AddSingleton<IContentStorageService>(sp => 
+        new ContentStorageService(
+            sp.GetRequiredService<IMinioClient>(),
+            sp.GetRequiredService<ILogger<ContentStorageService>>(),
+            config));
+}
 
         public static IServiceCollection ConfigureDatabases(
             this IServiceCollection services, IConfiguration config)
@@ -461,58 +489,110 @@ namespace Haworks.Tests
         }
     }
 
-    public class MinioService : DockerService
-    {
-        public MinioService(IConfiguration config, ILoggerFactory loggerFactory)
-            : base(config, loggerFactory, "MinioImage", "MinioContainer", "minio/minio:latest") { }
+   public class MinioService : DockerService
+{
+    private readonly string _accessKey;
+    private readonly string _secretKey;
+    private readonly int _hostPort;
+    
+     public MinioService(IConfiguration config, ILoggerFactory loggerFactory)
+    : base(config, loggerFactory, "MinioImage", "MinioContainer", "minio/minio:latest")
+{
+    _accessKey = config["MinIO:AccessKey"] ?? throw new ArgumentNullException("MinIO:AccessKey is required");
+    _secretKey = config["MinIO:SecretKey"] ?? throw new ArgumentNullException("MinIO:SecretKey is required");
+    _hostPort = config.GetValue<int>("Docker:MinioPort");
+}
+    
+    public string AccessKey => _accessKey;
+    public string SecretKey => _secretKey;
+    public int Port => _hostPort;
 
-      public override async Task StartAsync()
-      {
+    public override async Task StartAsync()
+    {
+        _logger.LogInformation("Starting MinIO with credentials: AccessKey={AccessKey}, Port={Port}", 
+            _accessKey, _hostPort);
+            
         await _helper.StartContainer(
-        new ContainerParameters{ 
-        HostPort = _config.GetValue<int>("Docker:MinioPort", 9001),
-        ContainerPort = 9000,
-        Command = new List<string> { "server", "/data" },
-        EnvVars = new List<string>
-        {
-            $"MINIO_ROOT_USER={_config["MinIO:AccessKey"]}",
-            $"MINIO_ROOT_PASSWORD={_config["MinIO:SecretKey"]}"
-        },
-        HealthCheck = HealthCheckConfig.Minio()});
+            new ContainerParameters{
+                HostPort = _hostPort,
+                ContainerPort = 9000,
+                Command = new List<string> { "server", "/data" },
+                EnvVars = new List<string>
+                {
+                    $"MINIO_ROOT_USER={_accessKey}",
+                    $"MINIO_ROOT_PASSWORD={_secretKey}"
+                },
+                HealthCheck = HealthCheckConfig.Minio()
+            });
+    }
 
-     }
-
-         public override async Task WaitForReadyAsync()
+    public override async Task WaitForReadyAsync()
     {
-        var client = new MinioClient()
-            .WithEndpoint($"localhost:{_helper.HostPort}")
-            .WithCredentials(
-                _config["MinIO:AccessKey"] ?? "minioadmin",
-                _config["MinIO:SecretKey"] ?? "minioadmin")
-            .Build();
+        var client = CreateClient();
 
         await client.ListBucketsAsync();
-        await EnsureBucketsExistAsync(client); // This calls the method
+        await EnsureBucketsExistAsync(client);
+        
+        _logger.LogInformation("MinIO is ready with endpoint localhost:{Port}, AccessKey={AccessKey}", 
+            _hostPort, _accessKey);
+    }
+    
+    public IMinioClient CreateClient()
+    {
+        return new MinioClient()
+            .WithEndpoint($"localhost:{_hostPort}")
+            .WithCredentials(_accessKey, _secretKey)
+            .WithSSL(false)
+            .Build();
     }
 
 
     private async Task EnsureBucketsExistAsync(IMinioClient client)
-        {
-            var requiredBuckets = new[] { "temp-chunks", "final-content" };
+{
+    var requiredBuckets = new[] { "temp-chunks", "final-content" };
+    
+    foreach (var bucket in requiredBuckets)
+    {
+        try {
+            var exists = await client.BucketExistsAsync(
+                new BucketExistsArgs().WithBucket(bucket));
             
-            foreach (var bucket in requiredBuckets)
+            if (!exists)
             {
-                var exists = await client.BucketExistsAsync(
-                    new BucketExistsArgs().WithBucket(bucket));
+                _logger.LogInformation("Creating bucket: {BucketName}", bucket);
+                await client.MakeBucketAsync(
+                    new MakeBucketArgs().WithBucket(bucket));
                 
-                if (!exists)
-                {
-                    await client.MakeBucketAsync(
-                        new MakeBucketArgs().WithBucket(bucket));
-                    _logger.LogInformation("Created bucket: {BucketName}", bucket);
-                }
+                // Set a public read policy (for testing only)
+                var policy = $@"{{
+                    ""Version"": ""2012-10-17"",
+                    ""Statement"": [
+                        {{
+                            ""Effect"": ""Allow"",
+                            ""Principal"": {{""AWS"": [""*""]}},
+                            ""Action"": [""s3:GetObject"", ""s3:PutObject"", ""s3:DeleteObject""],
+                            ""Resource"": [""arn:aws:s3:::{bucket}/*""]
+                        }}
+                    ]
+                }}";
+                
+                await client.SetPolicyAsync(
+                    new SetPolicyArgs()
+                        .WithBucket(bucket)
+                        .WithPolicy(policy));
+                
+                _logger.LogInformation("Created bucket with public access: {BucketName}", bucket);
+            }
+            else {
+                _logger.LogInformation("Bucket already exists: {BucketName}", bucket);
             }
         }
+        catch (Exception ex) {
+            _logger.LogError(ex, "Error ensuring bucket exists: {BucketName}", bucket);
+            throw;
+        }
+    }
+ }
 }
     #endregion
 
@@ -575,40 +655,64 @@ namespace Haworks.Tests
             });
         }
 
-        private static async Task<bool> CheckDatabaseExists(NpgsqlConnection connection)
+        private static async Task CreateDatabase(NpgsqlConnection connection, ILogger logger)
+        {
+            var user = new NpgsqlConnectionStringBuilder(connection.ConnectionString).Username;
+            logger.LogInformation("Creating test database owned by {User}", user);
+            await new NpgsqlCommand($"CREATE DATABASE test_db OWNER \"{user}\"", connection)
+                .ExecuteNonQueryAsync();
+        }
+
+          private static async Task<bool> CheckDatabaseExists(NpgsqlConnection connection)
         {
             var cmd = new NpgsqlCommand(
                 "SELECT 1 FROM pg_database WHERE datname = 'test_db'", connection);
             return await cmd.ExecuteScalarAsync() != null;
         }
 
-        private static async Task CreateDatabase(NpgsqlConnection connection, ILogger logger)
-        {
-            logger.LogInformation("Creating test database");
-            await new NpgsqlCommand("CREATE DATABASE test_db", connection)
-                .ExecuteNonQueryAsync();
-        }
 
-        private static async Task GrantPrivileges(NpgsqlConnection connection, ILogger logger)
-        {
-            logger.LogInformation("Configuring database privileges");
-            var user = connection.ConnectionString.Split("Username=")[1].Split(';')[0];
-            var query = $@"
-                GRANT ALL PRIVILEGES ON DATABASE test_db TO ""{user}"";
-                ALTER USER ""{user}"" CREATEDB;";
-            
-            await new NpgsqlCommand(query, connection).ExecuteNonQueryAsync();
-        }
-
-        public static async Task ResetAsync(string connectionString, ILogger logger)
-        {
-            await using var connection = new NpgsqlConnection(connectionString);
-            await connection.OpenAsync();
-            await new NpgsqlCommand(@"TRUNCATE TABLE ""Contents"" CASCADE", connection)
-                .ExecuteNonQueryAsync();
-            logger.LogInformation("Database reset completed");
-        }
+    private static async Task GrantPrivileges(NpgsqlConnection connection, ILogger logger)
+    {
+        logger.LogInformation("Configuring database privileges");
+        var user = new NpgsqlConnectionStringBuilder(connection.ConnectionString).Username;
+        var query = $@"
+            ALTER USER ""{user}"" CREATEDB;
+            ALTER USER ""{user}"" WITH SUPERUSER;"; // Grant superuser for testing ONLY
+        await new NpgsqlCommand(query, connection).ExecuteNonQueryAsync();
     }
+    
+    public static async Task ResetAsync(string connectionString, ILogger logger)
+{
+    await using var connection = new NpgsqlConnection(connectionString);
+    await connection.OpenAsync();
+
+    // Get tables EXCLUDING role-related tables
+    var tables = await GetNonRoleTables(connection);
+    
+    var truncateSql = $"TRUNCATE TABLE {string.Join(", ", tables)} RESTART IDENTITY CASCADE;";
+    await new NpgsqlCommand(truncateSql, connection).ExecuteNonQueryAsync();
+}
+
+private static async Task<List<string>> GetNonRoleTables(NpgsqlConnection connection)
+{
+    var tables = new List<string>();
+    var cmd = new NpgsqlCommand(
+        @"SELECT table_name 
+        FROM information_schema.tables 
+        WHERE table_schema = 'public' 
+        AND table_name NOT IN ('AspNetRoles', 'AspNetRoleClaims')", 
+        connection);
+
+    await using var reader = await cmd.ExecuteReaderAsync();
+    while (await reader.ReadAsync())
+    {
+        tables.Add($"\"{reader.GetString(0)}\"");
+    }
+    return tables;
+}
+  
+  }
+      
 
     public static class PathHelper
     {
@@ -643,7 +747,7 @@ namespace Haworks.Tests
             return Task.CompletedTask;
         }
     }
-
+    
 
     [CollectionDefinition("Integration Tests", DisableParallelization = true)]
     public class IntegrationTestCollection : ICollectionFixture<IntegrationTestFixture> { }

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "PomeaZ7xm4c=",
+  "dgSpecHash": "G+q1yCz+koo=",
   "success": true,
   "projectFilePath": "/Users/chidionyema/Documents/code/HAworks/src/haworks.csproj",
   "expectedPackageFiles": [
@@ -27,6 +27,8 @@
     "/Users/chidionyema/.dotnet/tools/.nuget/packages/microsoft.aspnetcore.antiforgery/2.2.0/microsoft.aspnetcore.antiforgery.2.2.0.nupkg.sha512",
     "/Users/chidionyema/.dotnet/tools/.nuget/packages/microsoft.aspnetcore.authentication.abstractions/2.2.0/microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",
     "/Users/chidionyema/.dotnet/tools/.nuget/packages/microsoft.aspnetcore.authentication.core/2.2.0/microsoft.aspnetcore.authentication.core.2.2.0.nupkg.sha512",
+    "/Users/chidionyema/.dotnet/tools/.nuget/packages/microsoft.aspnetcore.authentication.facebook/9.0.2/microsoft.aspnetcore.authentication.facebook.9.0.2.nupkg.sha512",
+    "/Users/chidionyema/.dotnet/tools/.nuget/packages/microsoft.aspnetcore.authentication.google/9.0.2/microsoft.aspnetcore.authentication.google.9.0.2.nupkg.sha512",
     "/Users/chidionyema/.dotnet/tools/.nuget/packages/microsoft.aspnetcore.authentication.jwtbearer/8.0.0/microsoft.aspnetcore.authentication.jwtbearer.8.0.0.nupkg.sha512",
     "/Users/chidionyema/.dotnet/tools/.nuget/packages/microsoft.aspnetcore.authentication.microsoftaccount/9.0.1/microsoft.aspnetcore.authentication.microsoftaccount.9.0.1.nupkg.sha512",
     "/Users/chidionyema/.dotnet/tools/.nuget/packages/microsoft.aspnetcore.authentication.openidconnect/3.1.0/microsoft.aspnetcore.authentication.openidconnect.3.1.0.nupkg.sha512",

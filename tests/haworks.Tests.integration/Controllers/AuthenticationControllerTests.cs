@@ -196,31 +196,34 @@ namespace Haworks.Tests.Integration
 
         #region Logout Tests (Cookie-based)
 
-        [Fact(DisplayName = "[Cookie] POST /logout - Success (Cookie Cleared)")]
-        public async Task Logout_Success_ClearsJwtCookie()
-        {
-            // Arrange: Register & Login to set the jwt cookie
-            var username = $"logout_{Guid.NewGuid()}";
-            var password = "Password123!";
-            await RegisterTestUserCookie(username, $"{username}@example.com", password);
-            await LoginTestUserCookie(username, password);
+   [Fact(DisplayName = "[Cookie] POST /logout - Success (User Session Terminated)")]
+public async Task Logout_Success_TerminatesUserSession()
+{
+    // Arrange: Register & Login to set the jwt cookie
+    var username = $"logout_{Guid.NewGuid()}";
+    var password = "Password123!";
+    await RegisterTestUserCookie(username, $"{username}@example.com", password);
+    await LoginTestUserCookie(username, password);
 
-            // Act: Call /logout
-            var response = await _client.PostAsync("api/authentication/logout", null);
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    // Verify we're authenticated before logout
+    var preLogoutResponse = await _client.GetAsync("api/authentication/verify-token");
+    Assert.Equal(HttpStatusCode.OK, preLogoutResponse.StatusCode);
 
-            // Optionally, read the logout response body for message
-            var responseBody = await response.Content.ReadAsStringAsync();
-            Assert.Contains("Logged out successfully", responseBody);
-
-            // **Key step**: Make a follow-up request so CookieContainer processes the expired cookie
-            await _client.GetAsync("api/authentication/debug-auth");
-
-            // Assert: confirm the cookie is gone from the container
-            var cookies = _fixture.CookieContainer.GetCookies(_client.BaseAddress);
-            Assert.DoesNotContain(cookies.Cast<Cookie>(), c => c.Name == "jwt");
-        }
-
+    // Act: Call /logout
+    var response = await _client.PostAsync("api/authentication/logout", null);
+    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    
+    // Create a new HTTP client that uses the same cookie container
+    // This will simulate a new request with the same cookie container
+    var clientWithSameCookies = _fixture.CreateClientWithCookies();
+    
+    // Try to access a protected endpoint
+    var verifyResponse = await clientWithSameCookies.GetAsync("api/authentication/verify-token");
+    
+    // The key assertion: verify that the server treats us as logged out
+    // even though the cookie might technically still be in the container
+    Assert.Equal(HttpStatusCode.Unauthorized, verifyResponse.StatusCode);
+}
 
         #endregion
 

@@ -12,6 +12,7 @@
       <PackageReference Include="Docker.DotNet" Version="3.125.15" />
       <PackageReference Include="FluentAssertions" Version="6.12.0" />
       <PackageReference Include="IdentityServer4" Version="4.1.2" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="9.0.2" />
       <PackageReference Include="Microsoft.AspNetCore.DataProtection" Version="9.0.2" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.0" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.0" />
@@ -24,6 +25,7 @@
       <PackageReference Include="Moq" Version="4.20.70" />
       <PackageReference Include="Npgsql" Version="9.0.0" />
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.0" />
+      <PackageReference Include="Scrutor" Version="6.0.1" />
       <PackageReference Include="System.Net.Http.Json" Version="9.0.0" />
       <PackageReference Include="Minio" Version="6.0.4" />
       <PackageReference Include="xunit" Version="2.8.1" />
