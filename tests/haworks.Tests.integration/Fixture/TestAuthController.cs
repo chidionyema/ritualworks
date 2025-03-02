@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Haworks.Tests.Integration
+namespace Haworks.Tests
 {
     [ApiController]
     [Route("api/test-auth")]
@@ -32,51 +32,62 @@ namespace Haworks.Tests.Integration
             _authService = authService;
         }
 
-        [HttpGet("simulate-external-login")]
-        public async Task<IActionResult> SimulateExternalLogin(
-            [FromQuery] string provider,
-            [FromQuery] string providerKey,
-            [FromQuery] string name,
-            [FromQuery] string email)
+         [HttpGet("simulate-external-login")]
+public async Task<IActionResult> SimulateExternalLogin(
+    [FromQuery] string provider,
+    [FromQuery] string providerKey,
+    [FromQuery] string name,
+    [FromQuery] string email)
+{
+    _logger.LogInformation("Simulating external login for provider: {Provider}, Key: {ProviderKey}, Name: {Name}, Email: {Email}",
+        provider, providerKey, name, email);
+
+    // Create claims for the external login
+    var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, providerKey),
+        new Claim(ClaimTypes.AuthenticationMethod, provider)
+    };
+
+    if (!string.IsNullOrEmpty(name))
+    {
+        claims.Add(new Claim(ClaimTypes.Name, name));
+    }
+
+    if (!string.IsNullOrEmpty(email))
+    {
+        claims.Add(new Claim(ClaimTypes.Email, email));
+    }
+
+    // Create identity and principal
+    var identity = new ClaimsIdentity(claims, provider);
+    var principal = new ClaimsPrincipal(identity);
+
+    // Store external login info in authentication properties
+    var authProperties = new AuthenticationProperties
+    {
+        RedirectUri = "/api/external-authentication/callback",
+        Items =
         {
-            _logger.LogInformation("Simulating external login for provider: {Provider}, Key: {ProviderKey}, Name: {Name}, Email: {Email}",
-                provider, providerKey, name, email);
-
-            // Create claims for the external login
-            var claims = new List<Claim>();
-
-            if (!string.IsNullOrEmpty(name))
-            {
-                claims.Add(new Claim(ClaimTypes.Name, name));
-            }
-
-            if (!string.IsNullOrEmpty(email))
-            {
-                claims.Add(new Claim(ClaimTypes.Email, email));
-            }
-
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, providerKey));
-
-            // Create an identity and principal
-            var identity = new ClaimsIdentity(claims, provider);
-            var principal = new ClaimsPrincipal(identity);
-
-            // Create the ExternalLoginInfo object that SignInManager expects
-            var loginInfo = new ExternalLoginInfo(
-                principal,
-                provider,
-                providerKey,
-                provider);
-
-            // Store the login info in the user's session
-            HttpContext.Items["ExternalLoginInfo"] = loginInfo;
-            
-            // Override the GetExternalLoginInfoAsync method in the test environment
-            // using a custom SignInManager extension method
-            _signInManager.SetExternalLoginInfo(loginInfo);
-
-            return Ok(new { Message = "External login simulated successfully" });
+            { "LoginProvider", provider }
         }
+    };
+
+    // Store the provider key in the authentication tokens
+    authProperties.StoreTokens(new[]
+    {
+        new AuthenticationToken { Name = "LoginProvider", Value = provider },
+        new AuthenticationToken { Name = "ProviderKey", Value = providerKey }
+    });
+
+    // Sign in using the external scheme
+    await HttpContext.SignInAsync(
+        IdentityConstants.ExternalScheme,
+        principal,
+        authProperties);
+
+    return Ok(new { Message = "External login simulated successfully" });
+}
         
         [HttpGet("generate-test-token")]
         public async Task<IActionResult> GenerateTestToken([FromQuery] string userId = null, [FromQuery] string userName = null)

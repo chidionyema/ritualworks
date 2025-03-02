@@ -426,7 +426,6 @@ public async Task Logout_Success_TerminatesUserSession()
             Assert.Equal(HttpStatusCode.OK, regResp.StatusCode);
 
             var regBody = await regResp.Content.ReadAsStringAsync();
-            Console.WriteLine($"Registration response body: {regBody}");
 
             var regJson = JObject.Parse(regBody);
             var bearerToken = regJson["token"]?.ToString();
@@ -491,7 +490,6 @@ public async Task Logout_Success_TerminatesUserSession()
             Assert.Equal(HttpStatusCode.OK, loginResp.StatusCode);
 
             var loginBody = await loginResp.Content.ReadAsStringAsync();
-            Console.WriteLine($"Login response body: {loginBody}");
 
             var loginJson = JObject.Parse(loginBody);
             var bearerToken = loginJson["token"]?.ToString();

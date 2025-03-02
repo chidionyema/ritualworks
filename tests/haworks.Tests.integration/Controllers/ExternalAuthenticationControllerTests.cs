@@ -108,7 +108,7 @@ namespace Haworks.Tests.Integration
         {
             // Arrange - Set up a client with external auth simulation
             var email = "newuser@example.com";
-            var name = "New Test User";
+            var name = "New_User";
             var providerKey = "google-new-user-12345";
             
             var client = await SimulateExternalLogin("Google", providerKey, name, email);
@@ -156,7 +156,7 @@ namespace Haworks.Tests.Integration
             var userId = await RegisterTestUser(username, email, password);
             
             // Simulate external login with the same email
-            var client = await SimulateExternalLogin("Google", "google-existing-12345", "External User", email);
+            var client = await SimulateExternalLogin("Google", "google-existing-12345", "External_User", email);
 
             // Act - Call the callback endpoint
             var response = await client.GetAsync("api/external-authentication/callback");
@@ -187,7 +187,7 @@ namespace Haworks.Tests.Integration
         {
             // Arrange - Create a user with external login
             var email = "extuser@example.com";
-            var name = "External User";
+            var name = "External_User";
             var providerKey = "google-existing-login-12345";
             
             // First create the user with external login
@@ -253,7 +253,7 @@ namespace Haworks.Tests.Integration
         {
             // Arrange - Set up external login
             var email = "roleuser@example.com";
-            var name = "Role Test User";
+            var name = "Role_User";
             var providerKey = "google-role-test-12345";
             
             var client = await SimulateExternalLogin("Google", providerKey, name, email);
@@ -280,7 +280,7 @@ namespace Haworks.Tests.Integration
         {
             // Arrange - Set up external login
             var email = "claimuser@example.com";
-            var name = "Claim Test User";
+            var name = "Claim_User";
             var providerKey = "google-claim-test-12345";
             
             var client = await SimulateExternalLogin("Google", providerKey, name, email);
@@ -526,28 +526,44 @@ namespace Haworks.Tests.Integration
         /// <summary>
         /// Registers a test user and returns the user ID
         /// </summary>
-        private async Task<string> RegisterTestUser(string username, string email, string password)
-        {
-            // Create registration request
-            var registrationData = new 
-            {
-                Username = username,
-                Email = email,
-                Password = password
-            };
-            
-            var content = new StringContent(JsonSerializer.Serialize(registrationData), 
-                Encoding.UTF8, "application/json");
-            
-            // Call registration endpoint
-            var response = await _client.PostAsync("api/authentication/register", content);
-            response.EnsureSuccessStatusCode();
-            
-            // Extract user ID from response
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var json = JObject.Parse(responseBody);
-            return json["id"].ToString();
-        }
+      private async Task<string> RegisterTestUser(string username, string email, string password)
+{
+    // Create registration request
+    var registrationData = new
+    {
+        Username = username,
+        Email = email,
+        Password = password
+    };
+
+    var content = new StringContent(JsonSerializer.Serialize(registrationData),
+        Encoding.UTF8, "application/json");
+
+    // Call registration endpoint
+    var response = await _client.PostAsync("api/authentication/register", content);
+
+    // Log response for debugging - Fix the formatting error
+    var responseBody = await response.Content.ReadAsStringAsync();
+
+    response.EnsureSuccessStatusCode();
+
+    // Extract user ID from response - check for both possible property names
+    var json = JObject.Parse(responseBody);
+    string userId = null;
+    
+    // Try different possible property names
+    if (json["userId"] != null)
+        userId = json["userId"].ToString();
+    else if (json["id"] != null)
+        userId = json["id"].ToString();
+    
+    if (string.IsNullOrEmpty(userId))
+    {
+        throw new InvalidOperationException($"Expected user ID in response but got: {responseBody}");
+    }
+    
+    return userId;
+}
 
         /// <summary>
         /// Registers a test user, logs them in, and returns the user ID

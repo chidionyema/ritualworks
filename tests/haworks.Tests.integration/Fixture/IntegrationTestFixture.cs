@@ -67,6 +67,10 @@ namespace Haworks.Tests
         
         try
         {
+            services.AddControllers()
+                .AddApplicationPart(typeof(TestAuthController).Assembly)
+                .AddControllersAsServices();
+                
             // Clear connections to prevent "in use" errors
               NpgsqlConnection.ClearAllPools();
 

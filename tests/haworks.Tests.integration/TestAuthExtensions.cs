@@ -15,11 +15,7 @@ namespace Haworks.Tests
 {
     public static class TestAuthExtensions
     {
-        public static void SetExternalLoginInfo(this SignInManager<User> signInManager, ExternalLoginInfo loginInfo)
-        {
-            // Store the login info in a static ThreadLocal storage for test access
-            ExternalLoginInfoStore.SetLoginInfo(loginInfo);
-        }
+
 
         public static IServiceCollection AddTestAuthentication(this IServiceCollection services)
         {
