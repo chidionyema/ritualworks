@@ -1,7 +1,3 @@
-/****************************
- * VaultService.cs (One File)
- ****************************/
-
 using System;
 using System.Collections.Concurrent;
 using System.IO;
@@ -75,6 +71,16 @@ namespace haworks.Services
         /// If not provided, HMAC validation is skipped.
         /// </summary>
         public string? HmacKeyPath { get; set; }
+
+        /// <summary>
+        /// (Optional) Path to the CA certificate file. Used for certificate chain validation.
+        /// </summary>
+        public string? CaCertPath { get; set; } = "/certs-volume/ca.crt";
+
+        /// <summary>
+        /// (Optional) Whether to allow chain errors in development environment.
+        /// </summary>
+        public bool AllowChainErrorsInDevelopment { get; set; } = true;
     }
 
     /// <summary>
@@ -226,8 +232,8 @@ namespace haworks.Services
         private static readonly ConcurrentDictionary<string, X509Certificate2> _cachedPinnedCert =
             new();
 
-        public DateTime LeaseExpiry { get;  set; }
-        public TimeSpan LeaseDuration { get;  set; }
+        public DateTime LeaseExpiry { get; set; }
+        public TimeSpan LeaseDuration { get; set; }
 
         public VaultService(
             IOptions<VaultOptions> vaultOpts,
@@ -319,7 +325,7 @@ namespace haworks.Services
             var handler = new HttpClientHandler
             {
                 SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
-                CheckCertificateRevocationList = true
+                CheckCertificateRevocationList = false // Disable CRL checks for reliability
             };
 
             handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) =>
@@ -340,7 +346,11 @@ namespace haworks.Services
                 return false;
             }
 
-            // 1) Thumbprint pinning (SHA256)
+            // Log details about the certificate for debugging
+            _logger.LogDebug("Validating certificate: Subject={Subject}, Issuer={Issuer}, Thumbprint={Thumbprint}",
+                cert.Subject, cert.Issuer, cert.GetCertHashString(HashAlgorithmName.SHA256));
+
+            // 1) Thumbprint pinning (SHA256) - if configured
             if (!string.IsNullOrEmpty(opts.CertThumbprint))
             {
                 var actualThumb = cert.GetCertHashString(HashAlgorithmName.SHA256)
@@ -355,6 +365,10 @@ namespace haworks.Services
                         expectedThumb, actualThumb);
                     return false;
                 }
+                
+                // If thumbprint matches, we can accept this certificate regardless of chain validation
+                _logger.LogDebug("Certificate thumbprint matched, accepting connection.");
+                return true;
             }
 
             // 2) Optional pinned cert from file
@@ -367,35 +381,75 @@ namespace haworks.Services
                     return new X509Certificate2(raw);
                 });
 
-                if (!cert.RawData.AsSpan().SequenceEqual(pinned.RawData))
+                if (cert.RawData.AsSpan().SequenceEqual(pinned.RawData))
                 {
-                    _logger.LogError("Pinned certificate mismatch!");
-                    return false;
+                    _logger.LogDebug("Pinned certificate matched, accepting connection.");
+                    return true;
+                }
+                
+                _logger.LogError("Pinned certificate mismatch!");
+                return false;
+            }
+
+            // 3) Try to add the CA certificate to the chain for validation
+            if (chain != null && !string.IsNullOrEmpty(opts.CaCertPath) && File.Exists(opts.CaCertPath))
+            {
+                try
+                {
+                    // Configure chain for proper validation
+                    chain.ChainPolicy.RevocationMode = X509RevocationMode.NoCheck; // Skip CRL checks
+                    chain.ChainPolicy.RevocationFlag = X509RevocationFlag.ExcludeRoot;
+                    chain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllowUnknownCertificateAuthority;
+                    
+                    // Add CA cert to the chain store
+                    var caCert = new X509Certificate2(File.ReadAllBytes(opts.CaCertPath));
+                    chain.ChainPolicy.ExtraStore.Add(caCert);
+                    _logger.LogDebug("Added CA certificate to chain store: {Subject}", caCert.Subject);
+                    
+                    // Build the chain
+                    bool chainBuilt = chain.Build(cert);
+                    if (!chainBuilt)
+                    {
+                        _logger.LogWarning("Certificate chain build failed.");
+                        foreach (var status in chain.ChainStatus)
+                        {
+                            _logger.LogWarning("Chain status: {Status}", status.StatusInformation.Trim());
+                        }
+                    }
+                    else
+                    {
+                        _logger.LogDebug("Certificate chain built successfully.");
+                        return true; // If we can build the chain, the certificate is valid
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error during certificate chain validation");
                 }
             }
 
-            // 3) CRL / chain checks
-            /*
-            bool chainBuilt = chain?.Build(cert) ?? false;
-            if (!chainBuilt)
+            // 4) Check for chain errors specifically
+            if (policyErrors == SslPolicyErrors.RemoteCertificateChainErrors)
             {
-                _logger.LogWarning("Chain build failed or chain is null. PolicyErrors={Errors}", policyErrors);
-                if (chain != null)
+                // In development environments, we might want to be more permissive
+                bool isDevelopment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.Equals("Development", 
+                    StringComparison.OrdinalIgnoreCase) ?? false;
+                
+                if (isDevelopment && opts.AllowChainErrorsInDevelopment)
                 {
-                    foreach (var status in chain.ChainStatus)
-                    {
-                        _logger.LogWarning("Chain status: {Status}", status.StatusInformation.Trim());
-                    }
+                    _logger.LogWarning("Allowing connection despite chain errors in development environment.");
+                    return true;
                 }
-            }*/
-
-            if (policyErrors != SslPolicyErrors.None)
+                
+                _logger.LogError("Certificate chain validation failed. Enable AllowChainErrorsInDevelopment for dev environments.");
+            }
+            else if (policyErrors != SslPolicyErrors.None)
             {
                 _logger.LogError("SSL Policy errors: {Errors}", policyErrors);
             }
 
-            // Allow pinning to override chain checks? Typically you'd require both
-            return  (policyErrors == SslPolicyErrors.None);
+            // Default: only accept if there are no policy errors
+            return (policyErrors == SslPolicyErrors.None);
         }
 
         private HttpClient CreateHttpClient(HttpClientHandler handler)
@@ -421,37 +475,37 @@ namespace haworks.Services
             _logger.LogInformation("VaultService initialized successfully.");
         }
 
-    public virtual async Task<(string Username, SecureString Password)> GetDatabaseCredentialsAsync(CancellationToken ct = default)
-    {
-        ThrowIfDisposed();
-
-        // Calculate the refresh threshold (5 minutes before expiry) using TimeSpan arithmetic.
-        TimeSpan refreshThreshold = TimeSpan.FromMinutes(5);
-
-        // Safely check if we need to refresh.  Use TimeSpan for the comparison.
-        if (DateTime.UtcNow + refreshThreshold < LeaseExpiry)
+        public virtual async Task<(string Username, SecureString Password)> GetDatabaseCredentialsAsync(CancellationToken ct = default)
         {
-            return _credentials;
-        }
+            ThrowIfDisposed();
 
-        // Otherwise, refresh under lock
-        await _lock.WaitAsync(ct);
-        try
-        {
-            // Double-checked locking pattern, check again inside the lock.
+            // Calculate the refresh threshold (5 minutes before expiry) using TimeSpan arithmetic.
+            TimeSpan refreshThreshold = TimeSpan.FromMinutes(5);
+
+            // Safely check if we need to refresh.  Use TimeSpan for the comparison.
             if (DateTime.UtcNow + refreshThreshold < LeaseExpiry)
             {
                 return _credentials;
             }
 
-            await RefreshCredentials(ct);
-            return _credentials;
+            // Otherwise, refresh under lock
+            await _lock.WaitAsync(ct);
+            try
+            {
+                // Double-checked locking pattern, check again inside the lock.
+                if (DateTime.UtcNow + refreshThreshold < LeaseExpiry)
+                {
+                    return _credentials;
+                }
+
+                await RefreshCredentials(ct);
+                return _credentials;
+            }
+            finally
+            {
+                _lock.Release();
+            }
         }
-        finally
-        {
-            _lock.Release();
-        }
-    }
 
         public virtual async Task RefreshCredentials(CancellationToken ct = default)
         {
@@ -494,7 +548,6 @@ namespace haworks.Services
                 Password = nc.Password,
                 SslMode = SslMode.Require,
                 MaxPoolSize = 50
-              
             };
 
             // Don't log the password

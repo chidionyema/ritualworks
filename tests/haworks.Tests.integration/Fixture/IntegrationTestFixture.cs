@@ -75,6 +75,7 @@ namespace Haworks.Tests
             });
             services.AddControllers()
                 .AddApplicationPart(typeof(TestAuthController).Assembly)
+                .AddApplicationPart(typeof(haworks.Controllers.ContentController).Assembly)
                 .AddControllersAsServices();
 
             // Clear connections to prevent "in use" errors
@@ -89,6 +90,8 @@ namespace Haworks.Tests
         
         // For tests, recreate the database from scratch
         identityContext.Database.EnsureDeleted();
+        contentContext.Database.EnsureDeleted();
+        productContext.Database.EnsureDeleted();
         
         // Create fresh schemas - no migrations
         identityContext.Database.EnsureCreated();

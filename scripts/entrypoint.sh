@@ -6,22 +6,38 @@ log() {
   echo "$(date +'%Y-%m-%d %H:%M:%S') - $1"
 }
 
-# Path to the CA certificate within the container (mounted via volume)
+# Path to the CA certificate within the container
 CA_CERT_VOLUME_PATH="/certs-volume/ca.crt"
-# System location where CA certificates are stored (Alpine Linux)
 SYSTEM_CA_CERT_PATH="/usr/local/share/ca-certificates/ca.crt"
 
-# Install the CA certificate *only if it's different* from the existing one.
+# Install the CA certificate and verify it worked
 if [ -f "$CA_CERT_VOLUME_PATH" ]; then
-  if ! cmp -s "$CA_CERT_VOLUME_PATH" "$SYSTEM_CA_CERT_PATH"; then  # Use cmp -s for silent comparison
-    log "Installing CA certificate from $CA_CERT_VOLUME_PATH..."
-    cp "$CA_CERT_VOLUME_PATH" "$SYSTEM_CA_CERT_PATH"
-    update-ca-certificates  # Update the system's CA certificate store
+  log "Installing CA certificate from $CA_CERT_VOLUME_PATH..."
+  
+  # Copy and make sure it's readable
+  cp "$CA_CERT_VOLUME_PATH" "$SYSTEM_CA_CERT_PATH"
+  chmod 644 "$SYSTEM_CA_CERT_PATH"
+  
+  # Update the CA store
+  update-ca-certificates
+  
+  # Verify the installation
+  if [ -f "/etc/ssl/certs/ca.pem" ] || grep -q "MyRootCA" /etc/ssl/certs/ca-certificates.crt; then
+    log "CA certificate successfully installed."
   else
-    log "CA certificate is already up-to-date."
+    log "WARNING: CA certificate installation could not be verified."
   fi
 else
-  log "CA certificate not found in $CA_CERT_VOLUME_PATH.  Connections to TLS services may fail."
+  log "ERROR: CA certificate not found in $CA_CERT_VOLUME_PATH. Connections to TLS services may fail."
+  exit 1
+fi
+
+# Validate that we can connect to Vault (optional test)
+log "Testing connection to Vault..."
+if curl -s --cacert "$CA_CERT_VOLUME_PATH" https://vault:8200/v1/sys/health; then
+  log "Successfully connected to Vault."
+else
+  log "WARNING: Could not connect to Vault. Certificate issues may persist."
 fi
 
 log "Starting application..."

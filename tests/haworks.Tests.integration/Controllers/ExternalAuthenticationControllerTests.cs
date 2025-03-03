@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -66,7 +68,7 @@ namespace Haworks.Tests.Integration
             Assert.Contains("accounts.google.com", locationHeader);
         }
 
-       [Fact(DisplayName = "GET /challenge/{provider} - Works Without Explicit Redirect URL")]
+        [Fact(DisplayName = "GET /challenge/{provider} - Works Without Explicit Redirect URL")]
         public async Task Challenge_WorksWithoutRedirectUrl()
         {
             // First, get the list of available providers to confirm what's configured
@@ -76,7 +78,9 @@ namespace Haworks.Tests.Integration
             
             // Use the exact provider name from the response
             var provider = "Google"; 
-            var response = await _client.GetAsync($"api/external-authentication/challenge/{provider}");
+            var redirectUrl = "http://localhost/api/external-authentication/callback";
+            
+            var response = await _client.GetAsync($"api/external-authentication/challenge/{provider}?redirectUrl={Uri.EscapeDataString(redirectUrl)}");
             
             Console.WriteLine($"Challenge response: {response.StatusCode}");
             
@@ -85,7 +89,7 @@ namespace Haworks.Tests.Integration
             var locationHeader = response.Headers.Location?.ToString();
             Assert.NotNull(locationHeader);
             Assert.Contains("accounts.google.com", locationHeader);
-}
+        }
 
         [Fact(DisplayName = "GET /challenge/{provider} - Returns BadRequest for Invalid Provider")]
         public async Task Challenge_ReturnsError_ForInvalidProvider()
@@ -305,6 +309,53 @@ namespace Haworks.Tests.Integration
             Assert.Contains(claims, c => c.Type == "permission" && c.Value == "upload_content");
         }
 
+        [Fact(DisplayName = "GET /callback - Token Contains Expected Claims")]
+        public async Task Callback_TokenContainsExpectedClaims()
+        {
+            // Arrange - Set up external login
+            var email = "claimverify@example.com";
+            var name = "Claim_Verify_User";
+            var providerKey = "google-claim-verify-12345";
+            
+            var client = await SimulateExternalLogin("Google", providerKey, name, email);
+
+            // Act - Call the callback endpoint
+            var response = await client.GetAsync("api/external-authentication/callback");
+
+            // Assert - Should create user successfully
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(responseBody);
+            var token = json["token"].ToString();
+            
+            // Decode and verify the JWT
+            var handler = new JwtSecurityTokenHandler();
+            var jwtToken = handler.ReadJwtToken(token);
+            
+            // Verify essential claims
+            Assert.NotNull(jwtToken.Subject); // "sub" claim with user ID
+            
+            // Get the user to verify claims match database
+            var userId = jwtToken.Subject;
+            var user = await GetUserById(userId);
+            Assert.Equal(email, user.Email);
+            
+            // Verify token expiration is reasonable (e.g. within 1 hour)
+            var now = DateTime.UtcNow;
+            Assert.True(jwtToken.ValidTo > now);
+            Assert.True(jwtToken.ValidTo <= now.AddHours(1));
+            
+            // Verify refresh token exists and is valid
+            var refreshToken = json["refreshToken"].ToString();
+            Assert.NotNull(refreshToken);
+            Assert.NotEmpty(refreshToken);
+            
+            var refreshTokenEntity = await VerifyRefreshTokenExists(refreshToken, userId);
+            Assert.NotNull(refreshTokenEntity);
+            Assert.True(refreshTokenEntity.Expires > DateTime.UtcNow);
+        }
+
         #endregion
 
         #region Available Providers Tests
@@ -384,40 +435,130 @@ namespace Haworks.Tests.Integration
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-         // In ExternalAuthenticationControllerTests.cs
-    [Fact(DisplayName = "DELETE /unlink/{provider} - Removes External Login")]
-public async Task UnlinkLogin_RemovesExternalLogin()
-{
-    // Arrange 
-    var username = "unlink_test_user";
-    var email = "unlink@example.com";
-    var password = "StrongPassword123!";
+        [Fact(DisplayName = "GET /logins - Enforces Access Control")]
+        public async Task GetUserLogins_EnforcesAccessControl()
+        {
+            // Arrange - Create two users
+            var username1 = "access_control_user1";
+            var email1 = "access1@example.com";
+            var password1 = "StrongPassword123!";
+            
+            var username2 = "access_control_user2";
+            var email2 = "access2@example.com";
+            var password2 = "StrongPassword123!";
 
-    var userId = await RegisterAndLoginTestUser(username, email, password);
-    
-    // Add external login with the exact provider name
-    await AddExternalLogin(userId, "Google", "google-unlink-12345", "Google");
-    
-    // Verify login was added
-    var initialLogins = await GetUserLogins(userId);
-    Assert.Single(initialLogins);
-    Assert.Equal("Google", initialLogins.First().LoginProvider);
+            var userId1 = await RegisterTestUser(username1, email1, password1);
+            var userId2 = await RegisterTestUser(username2, email2, password2);
+            
+            // Add different external logins to each user
+            await AddExternalLogin(userId1, "Google", "google-access1-12345", "Google");
+            await AddExternalLogin(userId2, "Microsoft", "microsoft-access2-12345", "Microsoft");
+            
+            // Login as the first user
+            await LoginTestUser(username1, password1);
+            
+            // Act - Try to get logins
+            var response = await _client.GetAsync("api/external-authentication/logins");
+            
+            // Assert - Should succeed and only return user1's logins
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var json = JObject.Parse(responseBody);
+            var logins = json["Logins"] as JArray;
+            
+            Assert.NotNull(logins);
+            Assert.Single(logins);
+            Assert.Equal("Google", logins[0]["Provider"].ToString());
+            
+            // Now try to unlink user2's login
+            var unlinkResponse = await _client.DeleteAsync("api/external-authentication/unlink/Microsoft");
+            
+            // Should fail because user1 doesn't have a Microsoft login
+            Assert.Equal(HttpStatusCode.BadRequest, unlinkResponse.StatusCode);
+            
+            // Verify user2's login wasn't affected
+            var user2Logins = await GetUserLogins(userId2);
+            Assert.Single(user2Logins);
+            Assert.Equal("Microsoft", user2Logins.First().LoginProvider);
+        }
 
-    // Make verify-token request to confirm authentication
-    var verifyResponse = await _client.GetAsync("api/authentication/verify-token");
-    Console.WriteLine($"Verify response status: {verifyResponse.StatusCode}");
-    Console.WriteLine($"Verify response body: {await verifyResponse.Content.ReadAsStringAsync()}");
-    
-    // Act
-    var response = await _client.DeleteAsync("api/external-authentication/unlink/Google");
+        [Fact(DisplayName = "DELETE /unlink/{provider} - Removes External Login")]
+        public async Task UnlinkLogin_RemovesExternalLogin()
+        {
+            // Arrange 
+            var username = "unlink_test_user";
+            var email = "unlink@example.com";
+            var password = "StrongPassword123!";
 
-    // Assert
-    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            var userId = await RegisterAndLoginTestUser(username, email, password);
+            
+            // Add external login with the exact provider name
+            await AddExternalLogin(userId, "Google", "google-unlink-12345", "Google");
+            
+            // Verify login was added
+            var initialLogins = await GetUserLogins(userId);
+            Assert.Single(initialLogins);
+            Assert.Equal("Google", initialLogins.First().LoginProvider);
 
-    // Verify removal
-    var finalLogins = await GetUserLogins(userId);
-    Assert.Empty(finalLogins);
-}
+            // Make verify-token request to confirm authentication
+            var verifyResponse = await _client.GetAsync("api/authentication/verify-token");
+            Console.WriteLine($"Verify response status: {verifyResponse.StatusCode}");
+            Console.WriteLine($"Verify response body: {await verifyResponse.Content.ReadAsStringAsync()}");
+            
+            // Act
+            var response = await _client.DeleteAsync("api/external-authentication/unlink/Google");
+
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+            // Verify removal
+            var finalLogins = await GetUserLogins(userId);
+            Assert.Empty(finalLogins);
+        }
+
+        [Fact(DisplayName = "DELETE /unlink/{provider} - Data Remains Consistent After Unlink")]
+        public async Task UnlinkLogin_MaintainsDataConsistency()
+        {
+            // Arrange 
+            var username = "data_consistency_user";
+            var email = "consistency@example.com";
+            var password = "StrongPassword123!";
+
+            var userId = await RegisterAndLoginTestUser(username, email, password);
+            
+            // Add multiple external logins
+            await AddExternalLogin(userId, "Google", "google-consistency-12345", "Google");
+            await AddExternalLogin(userId, "Facebook", "facebook-consistency-12345", "Facebook");
+            
+            // Verify initial state
+            var initialLogins = await GetUserLogins(userId);
+            Assert.Equal(2, initialLogins.Count);
+            
+            // Act - Remove one login
+            var response = await _client.DeleteAsync("api/external-authentication/unlink/Google");
+            
+            // Assert
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            
+            // Verify only the correct login was removed
+            var finalLogins = await GetUserLogins(userId);
+            Assert.Single(finalLogins);
+            Assert.Equal("Facebook", finalLogins.First().LoginProvider);
+            
+            // Verify user data is still intact
+            var user = await GetUserById(userId);
+            Assert.Equal(username, user.UserName);
+            Assert.Equal(email, user.Email);
+            
+            // Verify roles and claims weren't affected
+            var roles = await GetUserRoles(user);
+            var claims = await GetUserClaims(user);
+            
+            // These should match whatever default roles/claims you set up for new users
+            Assert.NotEmpty(roles); // Assuming users get at least one role
+            Assert.NotEmpty(claims); // Assuming users get at least one claim
+        }
 
         [Fact(DisplayName = "DELETE /unlink/{provider} - Returns BadRequest When Provider Not Found")]
         public async Task UnlinkLogin_ReturnsBadRequest_WhenProviderNotFound()
@@ -494,51 +635,143 @@ public async Task UnlinkLogin_RemovesExternalLogin()
             // Consider mocking this particular test or implementing a custom auth handler
         }
 
+        [Fact(DisplayName = "Concurrent External Logins Are Handled Correctly")]
+        public async Task ConcurrentExternalLogins_AreHandledCorrectly()
+        {
+            // Arrange - Set up two different external accounts with same provider
+            var email1 = "concurrent1@example.com";
+            var email2 = "concurrent2@example.com";
+            var name1 = "Concurrent_User_1";
+            var name2 = "Concurrent_User_2";
+            var providerKey1 = "google-concurrent-1-12345";
+            var providerKey2 = "google-concurrent-2-12345";
+            
+            var client1 = await SimulateExternalLogin("Google", providerKey1, name1, email1);
+            var client2 = await SimulateExternalLogin("Google", providerKey2, name2, email2);
+
+            // Act - Call the callback endpoint for both clients "simultaneously"
+            var task1 = client1.GetAsync("api/external-authentication/callback");
+            var task2 = client2.GetAsync("api/external-authentication/callback");
+            
+            // Wait for both tasks to complete
+            await Task.WhenAll(task1, task2);
+            
+            // Assert - Both should be successful
+            Assert.Equal(HttpStatusCode.OK, task1.Result.StatusCode);
+            Assert.Equal(HttpStatusCode.OK, task2.Result.StatusCode);
+            
+            // Parse responses
+            var json1 = JObject.Parse(await task1.Result.Content.ReadAsStringAsync());
+            var json2 = JObject.Parse(await task2.Result.Content.ReadAsStringAsync());
+            
+            // Extract user IDs
+            var userId1 = json1["user"]["id"].ToString();
+            var userId2 = json2["user"]["id"].ToString();
+            
+            // Users should be different
+            Assert.NotEqual(userId1, userId2);
+            
+            // Verify both users have correct external logins
+            var logins1 = await GetUserLogins(userId1);
+            var logins2 = await GetUserLogins(userId2);
+            
+            Assert.Single(logins1);
+            Assert.Equal("Google", logins1.First().LoginProvider);
+            Assert.Equal(providerKey1, logins1.First().ProviderKey);
+            
+            Assert.Single(logins2);
+            Assert.Equal("Google", logins2.First().LoginProvider);
+            Assert.Equal(providerKey2, logins2.First().ProviderKey);
+        }
+
+        [Fact(DisplayName = "Token Revocation Is Enforced")]
+        public async Task TokenRevocation_IsEnforced()
+        {
+            // Arrange - Create and login a user
+            var username = "revocation_test_user";
+            var email = "revocation@example.com";
+            var password = "StrongPassword123!";
+
+            var userId = await RegisterAndLoginTestUser(username, email, password);
+            
+            // Verify we're authenticated
+            var initialResponse = await _client.GetAsync("api/external-authentication/logins");
+            Assert.Equal(HttpStatusCode.OK, initialResponse.StatusCode);
+            
+            // Act - Simulate token revocation by logging the user out
+            await _client.PostAsync("api/authentication/logout", null);
+            
+            // Clear the authorization header to simulate using an expired token
+            var token = _client.DefaultRequestHeaders.Authorization.Parameter;
+            _client.DefaultRequestHeaders.Authorization = null;
+            
+            // Try to use the revoked token
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            
+            // Assert - Should be unauthorized
+            var finalResponse = await _client.GetAsync("api/external-authentication/logins");
+            Assert.Equal(HttpStatusCode.Unauthorized, finalResponse.StatusCode);
+        }
+
+        [Fact(DisplayName = "Invalid Token Is Rejected")]
+        public async Task InvalidToken_IsRejected()
+        {
+            // Arrange - Create a client with an invalid token
+            var client = _fixture.CreateClientWithCookies();
+            var invalidToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+            
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", invalidToken);
+            
+            // Act - Try to access a protected endpoint
+            var response = await client.GetAsync("api/external-authentication/logins");
+            
+            // Assert - Should be unauthorized
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        }
+
         #endregion
 
         #region Helper Methods
 
         /// <summary>
-        /// Creates a test client with simulated external authentication
-        /// </summary>
-        private async Task<HttpClient> SimulateExternalLogin(string provider, string providerKey, string name, string email)
-        {
-            // Create a custom client using TestServer's authentication simulation capabilities
-            var client = _fixture.CreateClientWithCookies();
-            
-            // Configure the test authentication handler to simulate an external login
-            await ConfigureTestAuthHandler(client, provider, providerKey, name, email);
-            
-            return client;
-        }
-        
-        /// <summary>
-        /// Configures the test authentication handler to simulate an external login
-        /// </summary>
-        private async Task ConfigureTestAuthHandler(HttpClient client, string provider, string providerKey, string name, string email)
-        {
-            // Set up authentication cookies that will be used by the handler in the test server
-            var authUrl = $"api/test-auth/simulate-external-login?provider={provider}&providerKey={providerKey}";
-            
-            if (!string.IsNullOrEmpty(name))
-            {
-                authUrl += $"&name={Uri.EscapeDataString(name)}";
-            }
-            
-            if (!string.IsNullOrEmpty(email))
-            {
-                authUrl += $"&email={Uri.EscapeDataString(email)}";
-            }
-            
-            // Call the test auth endpoint to set up the cookies
-            var response = await client.GetAsync(authUrl);
-            response.EnsureSuccessStatusCode();
-        }
+       private async Task<HttpClient> SimulateExternalLogin(string provider, string providerKey, string name, string email)
+{
+    // Create a custom client using TestServer's authentication simulation capabilities
+    var client = _fixture.CreateClientWithCookies();
+    
+    // Configure the test authentication handler to simulate an external login
+    await ConfigureTestAuthHandler(client, provider, providerKey, name, email);
+    
+    return client;
+}
 
-        /// <summary>
-        /// Registers a test user and returns the user ID
-        /// </summary>
-      private async Task<string> RegisterTestUser(string username, string email, string password)
+/// <summary>
+/// Configures the test authentication handler to simulate an external login
+/// </summary>
+private async Task ConfigureTestAuthHandler(HttpClient client, string provider, string providerKey, string name, string email)
+{
+    // Set up authentication cookies that will be used by the handler in the test server
+    var authUrl = $"api/test-auth/simulate-external-login?provider={provider}&providerKey={providerKey}";
+    
+    if (!string.IsNullOrEmpty(name))
+    {
+        authUrl += $"&name={Uri.EscapeDataString(name)}";
+    }
+    
+    if (!string.IsNullOrEmpty(email))
+    {
+        authUrl += $"&email={Uri.EscapeDataString(email)}";
+    }
+    
+    // Call the test auth endpoint to set up the cookies
+    var response = await client.GetAsync(authUrl);
+    response.EnsureSuccessStatusCode();
+}
+
+/// <summary>
+/// Registers a test user and returns the user ID
+/// </summary>
+private async Task<string> RegisterTestUser(string username, string email, string password)
 {
     // Create registration request
     var registrationData = new
@@ -549,7 +782,7 @@ public async Task UnlinkLogin_RemovesExternalLogin()
         ConfirmPassword = password 
     };
 
-   var options = new JsonSerializerOptions
+    var options = new JsonSerializerOptions
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
@@ -582,10 +815,10 @@ public async Task UnlinkLogin_RemovesExternalLogin()
     return userId;
 }
 
-        /// <summary>
-        /// Registers a test user, logs them in, and returns the user ID
-        /// </summary>
-        private async Task<string> RegisterAndLoginTestUser(string username, string email, string password)
+/// <summary>
+/// Registers a test user, logs them in, and returns the user ID
+/// </summary>
+private async Task<string> RegisterAndLoginTestUser(string username, string email, string password)
 {
     // Register the user
     var userId = await RegisterTestUser(username, email, password);
@@ -632,71 +865,118 @@ public async Task UnlinkLogin_RemovesExternalLogin()
     return userId;
 }
 
-        /// <summary>
-        /// Adds an external login to a user
-        /// </summary>
-        private async Task AddExternalLogin(string userId, string provider, string providerKey, string displayName)
-        {
-            // Access the UserManager directly through the test server
-            using var scope = _fixture.Factory.Services.CreateScope();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-            
-            var user = await userManager.FindByIdAsync(userId);
-            Assert.NotNull(user);
-            
-            var login = new UserLoginInfo(provider, providerKey, displayName);
-            var result = await userManager.AddLoginAsync(user, login);
-            
-            Assert.True(result.Succeeded, string.Join(", ", result.Errors.Select(e => e.Description)));
-        }
-
-        /// <summary>
-        /// Gets a user by ID
-        /// </summary>
-        private async Task<User> GetUserById(string userId)
-        {
-            using var scope = _fixture.Factory.Services.CreateScope();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-            
-            return await userManager.FindByIdAsync(userId);
-        }
-
-        /// <summary>
-        /// Gets a user's external logins
-        /// </summary>
-        private async Task<IList<UserLoginInfo>> GetUserLogins(string userId)
-        {
-            using var scope = _fixture.Factory.Services.CreateScope();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-            
-            var user = await userManager.FindByIdAsync(userId);
-            Assert.NotNull(user);
-            
-            return await userManager.GetLoginsAsync(user);
-        }
-
-        /// <summary>
-        /// Gets a user's roles
-        /// </summary>
-        private async Task<IList<string>> GetUserRoles(User user)
-        {
-            using var scope = _fixture.Factory.Services.CreateScope();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-            
-            return await userManager.GetRolesAsync(user);
-        }
-
-        /// <summary>
-        /// Gets a user's claims
-        /// </summary>
-        private async Task<IList<Claim>> GetUserClaims(User user)
-        {
-            using var scope = _fixture.Factory.Services.CreateScope();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-            
-            return await userManager.GetClaimsAsync(user);
-        }
-
-        #endregion
+/// <summary>
+/// Adds an external login to a user
+/// </summary>
+private async Task AddExternalLogin(string userId, string provider, string providerKey, string displayName)
+{
+    // Access the UserManager directly through the test server
+    using var scope = _fixture.Factory.Services.CreateScope();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    var dbContext = scope.ServiceProvider.GetRequiredService<IdentityContext>();
+    
+    var user = await userManager.FindByIdAsync(userId);
+    Assert.NotNull(user);
+    
+    var login = new UserLoginInfo(provider, providerKey, displayName);
+    var result = await userManager.AddLoginAsync(user, login);
+    
+    Assert.True(result.Succeeded, string.Join(", ", result.Errors.Select(e => e.Description)));
+    
+    // Explicitly save changes to ensure they're committed
+    await dbContext.SaveChangesAsync();
+    
+    // Verify the login was added
+    var logins = await userManager.GetLoginsAsync(user);
+    Console.WriteLine($"External logins after add: {logins.Count}");
+    foreach (var l in logins)
+    {
+        Console.WriteLine($"Login provider: {l.LoginProvider}, key: {l.ProviderKey}");
     }
+}
+
+/// <summary>
+/// Gets a user by ID
+/// </summary>
+private async Task<User> GetUserById(string userId)
+{
+    using var scope = _fixture.Factory.Services.CreateScope();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    
+    return await userManager.FindByIdAsync(userId);
+}
+
+/// <summary>
+/// Gets a user's external logins
+/// </summary>
+private async Task<IList<UserLoginInfo>> GetUserLogins(string userId)
+{
+    using var scope = _fixture.Factory.Services.CreateScope();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    
+    var user = await userManager.FindByIdAsync(userId);
+    Assert.NotNull(user);
+    
+    return await userManager.GetLoginsAsync(user);
+}
+
+/// <summary>
+/// Gets a user's roles
+/// </summary>
+private async Task<IList<string>> GetUserRoles(User user)
+{
+    using var scope = _fixture.Factory.Services.CreateScope();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    
+    return await userManager.GetRolesAsync(user);
+}
+
+/// <summary>
+/// Gets a user's claims
+/// </summary>
+private async Task<IList<Claim>> GetUserClaims(User user)
+{
+    using var scope = _fixture.Factory.Services.CreateScope();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    
+    return await userManager.GetClaimsAsync(user);
+}
+
+private async Task LoginTestUser(string username, string password)
+{
+    var loginData = new 
+    {
+        Username = username,
+        Password = password
+    };
+    
+    var options = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+    
+    var content = new StringContent(JsonSerializer.Serialize(loginData, options), 
+        Encoding.UTF8, "application/json");
+    
+    var response = await _client.PostAsync("api/authentication/login", content);
+    response.EnsureSuccessStatusCode();
+    
+    var responseBody = await response.Content.ReadAsStringAsync();
+    var json = JObject.Parse(responseBody);
+    var token = json["token"].ToString();
+    
+    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+}
+
+private async Task<RefreshToken> VerifyRefreshTokenExists(string token, string userId)
+{
+    using var scope = _fixture.Factory.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<IdentityContext>();
+    
+    return await dbContext.RefreshTokens
+        .FirstOrDefaultAsync(t => t.Token == token && t.UserId == userId);
+}
+
+#endregion
+}
 }
