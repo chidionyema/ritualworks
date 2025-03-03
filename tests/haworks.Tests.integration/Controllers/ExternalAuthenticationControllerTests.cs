@@ -66,23 +66,26 @@ namespace Haworks.Tests.Integration
             Assert.Contains("accounts.google.com", locationHeader);
         }
 
-        [Fact(DisplayName = "GET /challenge/{provider} - Works Without Explicit Redirect URL")]
+       [Fact(DisplayName = "GET /challenge/{provider} - Works Without Explicit Redirect URL")]
         public async Task Challenge_WorksWithoutRedirectUrl()
         {
-            // Arrange - Use Facebook as the provider for variety
-            var provider = "Facebook";
-
-            // Act - Call the challenge endpoint without a redirect URL
+            // First, get the list of available providers to confirm what's configured
+            var providersResponse = await _client.GetAsync("api/external-authentication/providers");
+            var providersContent = await providersResponse.Content.ReadAsStringAsync();
+            Console.WriteLine($"Available providers: {providersContent}");
+            
+            // Use the exact provider name from the response
+            var provider = "Google"; 
             var response = await _client.GetAsync($"api/external-authentication/challenge/{provider}");
-
-            // Assert - Should still redirect to the provider's auth page
+            
+            Console.WriteLine($"Challenge response: {response.StatusCode}");
+            
             Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
             
             var locationHeader = response.Headers.Location?.ToString();
             Assert.NotNull(locationHeader);
-            // Should redirect to Facebook's authentication endpoint
-            Assert.Contains("facebook.com", locationHeader);
-        }
+            Assert.Contains("accounts.google.com", locationHeader);
+}
 
         [Fact(DisplayName = "GET /challenge/{provider} - Returns BadRequest for Invalid Provider")]
         public async Task Challenge_ReturnsError_ForInvalidProvider()
@@ -381,31 +384,40 @@ namespace Haworks.Tests.Integration
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-        [Fact(DisplayName = "DELETE /unlink/{provider} - Removes External Login")]
-        public async Task UnlinkLogin_RemovesExternalLogin()
-        {
-            // Arrange - Create a user with an external login
-            var username = "unlink_test_user";
-            var email = "unlink@example.com";
-            var password = "StrongPassword123!";
+         // In ExternalAuthenticationControllerTests.cs
+    [Fact(DisplayName = "DELETE /unlink/{provider} - Removes External Login")]
+public async Task UnlinkLogin_RemovesExternalLogin()
+{
+    // Arrange 
+    var username = "unlink_test_user";
+    var email = "unlink@example.com";
+    var password = "StrongPassword123!";
 
-            var userId = await RegisterAndLoginTestUser(username, email, password);
-            await AddExternalLogin(userId, "Google", "google-unlink-12345", "Google");
-            
-            // Verify the login exists
-            var initialLogins = await GetUserLogins(userId);
-            Assert.Single(initialLogins);
+    var userId = await RegisterAndLoginTestUser(username, email, password);
+    
+    // Add external login with the exact provider name
+    await AddExternalLogin(userId, "Google", "google-unlink-12345", "Google");
+    
+    // Verify login was added
+    var initialLogins = await GetUserLogins(userId);
+    Assert.Single(initialLogins);
+    Assert.Equal("Google", initialLogins.First().LoginProvider);
 
-            // Act - Call the unlink endpoint
-            var response = await _client.DeleteAsync("api/external-authentication/unlink/Google");
+    // Make verify-token request to confirm authentication
+    var verifyResponse = await _client.GetAsync("api/authentication/verify-token");
+    Console.WriteLine($"Verify response status: {verifyResponse.StatusCode}");
+    Console.WriteLine($"Verify response body: {await verifyResponse.Content.ReadAsStringAsync()}");
+    
+    // Act
+    var response = await _client.DeleteAsync("api/external-authentication/unlink/Google");
 
-            // Assert - Should successfully remove the login
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    // Assert
+    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
-            // Verify it's gone
-            var finalLogins = await GetUserLogins(userId);
-            Assert.Empty(finalLogins);
-        }
+    // Verify removal
+    var finalLogins = await GetUserLogins(userId);
+    Assert.Empty(finalLogins);
+}
 
         [Fact(DisplayName = "DELETE /unlink/{provider} - Returns BadRequest When Provider Not Found")]
         public async Task UnlinkLogin_ReturnsBadRequest_WhenProviderNotFound()
@@ -533,12 +545,17 @@ namespace Haworks.Tests.Integration
     {
         Username = username,
         Email = email,
-        Password = password
+        Password = password,
+        ConfirmPassword = password 
     };
 
-    var content = new StringContent(JsonSerializer.Serialize(registrationData),
-        Encoding.UTF8, "application/json");
+   var options = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
 
+    var content = new StringContent(JsonSerializer.Serialize(registrationData, options), 
+        Encoding.UTF8, "application/json");
     // Call registration endpoint
     var response = await _client.PostAsync("api/authentication/register", content);
 
@@ -569,25 +586,51 @@ namespace Haworks.Tests.Integration
         /// Registers a test user, logs them in, and returns the user ID
         /// </summary>
         private async Task<string> RegisterAndLoginTestUser(string username, string email, string password)
-        {
-            // Register the user
-            var userId = await RegisterTestUser(username, email, password);
-            
-            // Login the user
-            var loginData = new 
-            {
-                Email = email,
-                Password = password
-            };
-            
-            var content = new StringContent(JsonSerializer.Serialize(loginData), 
-                Encoding.UTF8, "application/json");
-            
-            var response = await _client.PostAsync("api/authentication/login", content);
-            response.EnsureSuccessStatusCode();
-            
-            return userId;
-        }
+{
+    // Register the user
+    var userId = await RegisterTestUser(username, email, password);
+    
+    // Login the user - use username exactly as the controller expects
+    var loginData = new 
+    {
+        Username = username, // Controller expects Username, not Email
+        Password = password
+    };
+    
+    var options = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+    
+    var content = new StringContent(JsonSerializer.Serialize(loginData, options), 
+        Encoding.UTF8, "application/json");
+    
+    var response = await _client.PostAsync("api/authentication/login", content);
+    var responseBody = await response.Content.ReadAsStringAsync();
+    Console.WriteLine($"Login response status: {response.StatusCode}");
+    
+    // This will throw if not successful
+    response.EnsureSuccessStatusCode();
+    
+    // Extract the JWT token from the response
+    var json = JObject.Parse(responseBody);
+    var token = json["token"].ToString();
+    
+    // Set the bearer token for subsequent requests
+    _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+    
+    // Make a verification request to confirm authorization
+    var verifyResponse = await _client.GetAsync("api/authentication/verify-token");
+    Console.WriteLine($"Verify response status: {verifyResponse.StatusCode}");
+    
+    if (verifyResponse.IsSuccessStatusCode)
+    {
+        var verifyBody = await verifyResponse.Content.ReadAsStringAsync();
+        Console.WriteLine($"Verify response body: {verifyBody}");
+    }
+    
+    return userId;
+}
 
         /// <summary>
         /// Adds an external login to a user

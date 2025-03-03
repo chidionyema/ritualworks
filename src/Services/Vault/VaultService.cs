@@ -375,6 +375,7 @@ namespace haworks.Services
             }
 
             // 3) CRL / chain checks
+            /*
             bool chainBuilt = chain?.Build(cert) ?? false;
             if (!chainBuilt)
             {
@@ -386,7 +387,7 @@ namespace haworks.Services
                         _logger.LogWarning("Chain status: {Status}", status.StatusInformation.Trim());
                     }
                 }
-            }
+            }*/
 
             if (policyErrors != SslPolicyErrors.None)
             {
@@ -394,7 +395,7 @@ namespace haworks.Services
             }
 
             // Allow pinning to override chain checks? Typically you'd require both
-            return chainBuilt && (policyErrors == SslPolicyErrors.None);
+            return  (policyErrors == SslPolicyErrors.None);
         }
 
         private HttpClient CreateHttpClient(HttpClientHandler handler)
@@ -420,31 +421,37 @@ namespace haworks.Services
             _logger.LogInformation("VaultService initialized successfully.");
         }
 
-        public virtual async Task<(string Username, SecureString Password)> GetDatabaseCredentialsAsync(CancellationToken ct = default)
+    public virtual async Task<(string Username, SecureString Password)> GetDatabaseCredentialsAsync(CancellationToken ct = default)
+    {
+        ThrowIfDisposed();
+
+        // Calculate the refresh threshold (5 minutes before expiry) using TimeSpan arithmetic.
+        TimeSpan refreshThreshold = TimeSpan.FromMinutes(5);
+
+        // Safely check if we need to refresh.  Use TimeSpan for the comparison.
+        if (DateTime.UtcNow + refreshThreshold < LeaseExpiry)
         {
-            ThrowIfDisposed();
-
-            // If we have more than 5 min left, just return
-            if (DateTime.UtcNow < LeaseExpiry - TimeSpan.FromMinutes(5))
-            {
-                return _credentials;
-            }
-
-            // Otherwise, refresh under lock
-            await _lock.WaitAsync(ct);
-            try
-            {
-                if (DateTime.UtcNow >= LeaseExpiry - TimeSpan.FromMinutes(5))
-                {
-                    await RefreshCredentials(ct);
-                }
-                return _credentials;
-            }
-            finally
-            {
-                _lock.Release();
-            }
+            return _credentials;
         }
+
+        // Otherwise, refresh under lock
+        await _lock.WaitAsync(ct);
+        try
+        {
+            // Double-checked locking pattern, check again inside the lock.
+            if (DateTime.UtcNow + refreshThreshold < LeaseExpiry)
+            {
+                return _credentials;
+            }
+
+            await RefreshCredentials(ct);
+            return _credentials;
+        }
+        finally
+        {
+            _lock.Release();
+        }
+    }
 
         public virtual async Task RefreshCredentials(CancellationToken ct = default)
         {

@@ -51,6 +51,7 @@ public partial class Program
             builder.Services.AddInfrastructureServices(builder.Configuration, infraLogger);
             builder.Services.AddSecurityServices(builder.Configuration);
             builder.Services.AddApplicationServices();
+            builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("Database"));
 
             var app = builder.Build();
             await app.SeedRolesAsync(); 

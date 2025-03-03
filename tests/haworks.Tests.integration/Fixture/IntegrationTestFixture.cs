@@ -32,6 +32,7 @@ using Haworks.Infrastructure.Data;
 using haworks.Contracts;
 using haworks.Db;
 using haworks.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace Haworks.Tests
 {
@@ -66,11 +67,16 @@ namespace Haworks.Tests
         var sp = scope.ServiceProvider;
         
         try
-        {
+        {   services.AddAntiforgery(options => 
+            {
+                options.SuppressXFrameOptionsHeader = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                options.HeaderName = "X-CSRF-TOKEN";
+            });
             services.AddControllers()
                 .AddApplicationPart(typeof(TestAuthController).Assembly)
                 .AddControllersAsServices();
-                
+
             // Clear connections to prevent "in use" errors
               NpgsqlConnection.ClearAllPools();
 

@@ -160,6 +160,7 @@ namespace haworks.Extensions
         
         // Parse the connection string into Redis configuration options.
         var options = ConfigurationOptions.Parse(connectionString);
+        options.AbortOnConnectFail = false; 
         logger.LogDebug("[Redis] Parsed configuration options: {@Options}", options);
 
         if (options.Ssl)
