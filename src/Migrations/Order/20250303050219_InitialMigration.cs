@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace haworks.Migrations
+namespace haworks.Migrations.Order
 {
     /// <inheritdoc />
-    public partial class AddOrderTable : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

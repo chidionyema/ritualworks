@@ -138,10 +138,21 @@ namespace haworks.Controllers
             });
         }
 
+        
+
         [HttpPost("logout")]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
             _logger.LogInformation("Logout endpoint called; removing 'jwt' cookie.");
+            var jti = User.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var expiryClaim = User.FindFirst(JwtRegisteredClaimNames.Exp)?.Value;
+            
+            if (!string.IsNullOrEmpty(jti) && !string.IsNullOrEmpty(userId) && expiryClaim != null)
+            {
+                var expiryDate = DateTimeOffset.FromUnixTimeSeconds(long.Parse(expiryClaim)).UtcDateTime;
+                await _authService.RevokeToken(jti, userId, expiryDate);
+            }
             _authService.DeleteAuthCookie(HttpContext);
             return Ok(new { message = "Logged out successfully" });
         }

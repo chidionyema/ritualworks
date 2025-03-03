@@ -97,6 +97,14 @@ namespace Haworks.Tests
         identityContext.Database.EnsureCreated();
         contentContext.Database.EnsureCreated();
         productContext.Database.EnsureCreated();
+
+         logger.LogInformation("Verifying database schema creation...");
+            var tables = contentContext.Model.GetEntityTypes()
+                .Select(t => t.GetTableName())
+                .Where(t => t != null)
+                .ToList();
+            logger.LogInformation("Created tables: {Tables}", string.Join(", ", tables));
+     
         }
         catch (Exception ex)
         {
@@ -173,38 +181,63 @@ namespace Haworks.Tests
             HttpClientFactory.CreateWithCookies(Factory, CookieContainer);
 
        
-        public async Task ResetDatabaseAsync()
+  public async Task ResetDatabaseAsync()
+{
+    try
+    {
+        // Clear all connection pools
+        NpgsqlConnection.ClearAllPools();
+
+        using var scope = Factory.Services.CreateScope();
+        var contentContext = scope.ServiceProvider.GetRequiredService<ContentContext>();
+        
+        // Make sure we have a fresh connection
+        if (contentContext.Database.GetDbConnection().State == System.Data.ConnectionState.Open)
         {
-            // Clear PostgreSQL connection pools to prevent "in use" errors
-           var connectionString = Configuration.GetConnectionString("DefaultConnection");
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                _logger.LogError("DefaultConnection connection string is null or empty.");
-                throw new InvalidOperationException("DefaultConnection connection string is missing.");
-            }
-            // Clear PostgreSQL connection pools to prevent "in use" errors
-            NpgsqlConnection.ClearAllPools();
+            await contentContext.Database.GetDbConnection().CloseAsync();
+        }
+        
+        // A more direct approach - delete and recreate
+        await contentContext.Database.EnsureDeletedAsync();
+        await contentContext.Database.EnsureCreatedAsync();
+        
+        // Reset Redis as before
+        var redisConfig = ConfigurationOptions.Parse(Configuration.GetConnectionString("Redis"));
+        var config = new ConfigurationOptions
+        {
+            EndPoints = { redisConfig.EndPoints[0] },
+            AllowAdmin = true,
+            AbortOnConnectFail = redisConfig.AbortOnConnectFail
+        };
+        
+        var redis = await ConnectionMultiplexer.ConnectAsync(config);
+        var server = redis.GetServer(redisConfig.EndPoints[0]);
+        await server.FlushAllDatabasesAsync();
+        
+        _logger.LogInformation("Database reset completed successfully");
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Error resetting database: {Message}", ex.Message);
+        throw;
+    }
+}
 
-            // Reset SQL database
-            await DatabaseMaintainer.ResetAsync(
-                Configuration.GetConnectionString("DefaultConnection"), 
-                _logger
-            );
-
-            // Get Redis connection string from configuration
-            var redisConfig = ConfigurationOptions.Parse(Configuration.GetConnectionString("Redis"));
-    
-            // Reset Redis databases
-            var config = new ConfigurationOptions
-            {
-                EndPoints = { redisConfig.EndPoints[0] }, // Use first endpoint without parameters
-                AllowAdmin = true,
-                AbortOnConnectFail = redisConfig.AbortOnConnectFail // Preserve connection behavior
-            };
+        private async Task<bool> CheckTableExists(DbContext context, string tableName)
+        {
+            var conn = context.Database.GetDbConnection();
+            if (conn.State != System.Data.ConnectionState.Open)
+                await conn.OpenAsync();
             
-            var redis = await ConnectionMultiplexer.ConnectAsync(config);
-            var server = redis.GetServer(redisConfig.EndPoints[0]);
-            await server.FlushAllDatabasesAsync();
+            using var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = @tableName)";
+            
+            var param = cmd.CreateParameter();
+            param.ParameterName = "tableName";
+            param.Value = tableName.ToLower(); // PostgreSQL lowercases identifiers by default
+            cmd.Parameters.Add(param);
+            
+            return (bool)await cmd.ExecuteScalarAsync();
         }
 
         public HttpClient CreateAuthorizedClient(string token) => 

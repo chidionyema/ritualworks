@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace haworks.Migrations.Content
+namespace haworks.Migrations
 {
     /// <inheritdoc />
     public partial class InitialMigration : Migration

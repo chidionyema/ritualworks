@@ -316,30 +316,36 @@ namespace haworks.Controllers
             return Ok(new { Message = $"Successfully removed {provider} login from your account" });
         }
 
-        [Authorize]
-        [HttpGet("logins")]
-        public async Task<IActionResult> GetUserLogins()
+       [Authorize]
+    [HttpGet("logins")]
+    public async Task<IActionResult> GetUserLogins()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        _logger.LogInformation("GetUserLogins called for user ID: {UserId}", userId);
+
+        if (string.IsNullOrEmpty(userId))
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Unauthorized("User identifier not found");
-            }
-
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound("User not found");
-            }
-
-            var logins = await _userManager.GetLoginsAsync(user);
-            
-            return Ok(new { 
-                Logins = logins.Select(l => new {
-                    Provider = l.LoginProvider,
-                    ProviderDisplayName = l.ProviderDisplayName
-                })
-            });
+            _logger.LogWarning("User identifier not found in GetUserLogins");
+            return Unauthorized("User identifier not found");
         }
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null)
+        {
+            _logger.LogWarning("User not found in GetUserLogins for ID: {UserId}", userId);
+            return NotFound("User not found");
+        }
+
+        var logins = await _userManager.GetLoginsAsync(user);
+        _logger.LogInformation("Found {Count} logins for user {UserId}", logins.Count, userId);
+
+
+        return Ok(new { 
+        Logins = logins.Select(l => new {
+            Provider = l.LoginProvider,
+            ProviderDisplayName = l.ProviderDisplayName
+        }).ToList() 
+        });
     }
+}
 }

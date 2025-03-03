@@ -2,12 +2,14 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using haworks.Db;
 using haworks.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
@@ -46,7 +48,8 @@ namespace haworks.Services
                 new(JwtRegisteredClaimNames.Sub, user.Id),
                 new(ClaimTypes.NameIdentifier, user.Id),
                 new(ClaimTypes.Name, user.UserName!),
-                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new(JwtRegisteredClaimNames.Email, user.Email!)
             };
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -77,6 +80,23 @@ namespace haworks.Services
             return refreshToken;
         }
 
+        public async Task RevokeToken(string jti, string userId, DateTime expiryDate)
+        {
+            _identityContext.RevokedTokens.Add(new RevokedToken
+            {
+                Jti = jti,
+                UserId = userId,
+                ExpiryDate = expiryDate
+            });
+            await _identityContext.SaveChangesAsync();
+        }
+
+        public async Task<bool> IsTokenRevoked(string jti)
+        {
+            return await _identityContext.RevokedTokens
+                .AnyAsync(rt => rt.Jti == jti && rt.ExpiryDate > DateTime.UtcNow);
+        }
+
         public void SetSecureCookie(HttpContext context, JwtSecurityToken token)
         {
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
@@ -101,22 +121,34 @@ namespace haworks.Services
             });
         }
 
+        public TokenValidationParameters GetTokenValidationParameters()
+        {
+            return new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = _securityKey,
+                ValidateIssuer = true,
+                ValidIssuer = _config["Jwt:Issuer"],
+                ValidateAudience = true,
+                ValidAudience = _config["Jwt:Audience"],
+                ValidateLifetime = true,
+                LifetimeValidator = (notBefore, expires, securityToken, validationParameters) =>
+                {
+                    if (expires < DateTime.UtcNow) return false;
+                    
+                    var jwtToken = (JwtSecurityToken)securityToken;
+                    var jti = jwtToken.Id;
+                    return !IsTokenRevoked(jti).GetAwaiter().GetResult();
+                }
+            };
+        }
+
         public ClaimsPrincipal? ValidateToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             try
             {
-                var validationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = _securityKey,
-                    ValidateIssuer = true,
-                    ValidIssuer = _config["Jwt:Issuer"],
-                    ValidateAudience = true,
-                    ValidAudience = _config["Jwt:Audience"],
-                    ValidateLifetime = true // Check token expiration
-                };
-
+                var validationParameters = GetTokenValidationParameters();
                 return tokenHandler.ValidateToken(token, validationParameters, out _);
             }
             catch (Exception ex)

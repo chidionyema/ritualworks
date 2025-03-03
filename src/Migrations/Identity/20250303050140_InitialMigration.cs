@@ -54,6 +54,27 @@ namespace haworks.Migrations.Identity
                 });
 
             migrationBuilder.CreateTable(
+                name: "RevokedTokens",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Jti = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
+                    ExpiryDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedFromIp = table.Column<string>(type: "text", nullable: true),
+                    ModifiedFromIp = table.Column<string>(type: "text", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "bytea", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    LastModifiedBy = table.Column<string>(type: "text", nullable: true),
+                    LastModifiedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RevokedTokens", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -290,6 +311,9 @@ namespace haworks.Migrations.Identity
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
+
+            migrationBuilder.DropTable(
+                name: "RevokedTokens");
 
             migrationBuilder.DropTable(
                 name: "UserProfiles");

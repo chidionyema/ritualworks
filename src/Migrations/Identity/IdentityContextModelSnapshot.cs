@@ -204,6 +204,50 @@ namespace haworks.Migrations.Identity
                     b.ToTable("RefreshTokens");
                 });
 
+            modelBuilder.Entity("haworks.Db.RevokedToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("text");
+
+                    b.Property<string>("CreatedFromIp")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ExpiryDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Jti")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ModifiedFromIp")
+                        .HasColumnType("text");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsRequired()
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RevokedTokens");
+                });
+
             modelBuilder.Entity("haworks.Db.User", b =>
                 {
                     b.Property<string>("Id")

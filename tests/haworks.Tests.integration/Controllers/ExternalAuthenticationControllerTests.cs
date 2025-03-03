@@ -401,8 +401,8 @@ namespace Haworks.Tests.Integration
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
             var responseBody = await response.Content.ReadAsStringAsync();
-            var json = JObject.Parse(responseBody);
-            var logins = json["Logins"] as JArray;
+            var json = JObject.Parse(responseBody); // Fixed CS0103
+            var logins = json["Logins"] as JArray ?? json["logins"] as JArray;
             Assert.NotNull(logins);
             Assert.Empty(logins);
 
@@ -465,7 +465,7 @@ namespace Haworks.Tests.Integration
             
             var responseBody = await response.Content.ReadAsStringAsync();
             var json = JObject.Parse(responseBody);
-            var logins = json["Logins"] as JArray;
+            var logins = json["Logins"] as JArray ?? json["logins"] as JArray;
             
             Assert.NotNull(logins);
             Assert.Single(logins);
@@ -650,7 +650,7 @@ namespace Haworks.Tests.Integration
             var client2 = await SimulateExternalLogin("Google", providerKey2, name2, email2);
 
             // Act - Call the callback endpoint for both clients "simultaneously"
-            var task1 = client1.GetAsync("api/external-authentication/callback");
+            var task1 =  client1.GetAsync("api/external-authentication/callback");
             var task2 = client2.GetAsync("api/external-authentication/callback");
             
             // Wait for both tasks to complete
@@ -684,7 +684,7 @@ namespace Haworks.Tests.Integration
             Assert.Equal(providerKey2, logins2.First().ProviderKey);
         }
 
-        [Fact(DisplayName = "Token Revocation Is Enforced")]
+       [Fact(DisplayName = "Token Revocation Is Enforced")]
         public async Task TokenRevocation_IsEnforced()
         {
             // Arrange - Create and login a user
@@ -698,18 +698,18 @@ namespace Haworks.Tests.Integration
             var initialResponse = await _client.GetAsync("api/external-authentication/logins");
             Assert.Equal(HttpStatusCode.OK, initialResponse.StatusCode);
             
+            // Save the token before logout
+            var token = _client.DefaultRequestHeaders.Authorization?.Parameter;
+            
             // Act - Simulate token revocation by logging the user out
             await _client.PostAsync("api/authentication/logout", null);
             
-            // Clear the authorization header to simulate using an expired token
-            var token = _client.DefaultRequestHeaders.Authorization.Parameter;
-            _client.DefaultRequestHeaders.Authorization = null;
+            // Create a completely new client with no shared state from the original client
+            var freshClient = _fixture.CreateClientWithCookies();
+            freshClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             
-            // Try to use the revoked token
-            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            
-            // Assert - Should be unauthorized
-            var finalResponse = await _client.GetAsync("api/external-authentication/logins");
+            // Assert - Should be unauthorized with the fresh client
+            var finalResponse = await freshClient.GetAsync("api/external-authentication/logins");
             Assert.Equal(HttpStatusCode.Unauthorized, finalResponse.StatusCode);
         }
 

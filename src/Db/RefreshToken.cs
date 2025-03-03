@@ -18,4 +18,12 @@ namespace haworks.Db
         // Expiration date for the token
         public DateTime Expires { get; set; }
     }
+
+
+     public class RevokedToken : AuditableEntity
+    {
+        public string Jti { get; set; }
+        public string UserId { get; set; }
+        public DateTime ExpiryDate { get; set; }
+    }
 }
