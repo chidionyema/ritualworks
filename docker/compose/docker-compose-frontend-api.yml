@@ -17,7 +17,12 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
       - ConnectionStrings__DefaultConnection=Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
-      - Elasticsearch__Uri=http://elasticsearch:9200
+      - ConnectionStrings_IdentityContext=Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
+      - ConnectionStrings_ProductContext=Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
+      - ConnectionStrings_OrderContext=Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
+      - ConnectionStrings_ContentContext=Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
+      - ConnectionStrings_Redis=redis://redis-master:6379,ssl=true,password=your_redis_password
+      - Elasticsearch__Uri=http://elasticsearch:9200   
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - RabbitMq__Host=rabbitmq
       - ClamAV__Host=clamav  
@@ -64,6 +69,11 @@ services:
       dockerfile: docker/Dockerfile.migrations
     environment:
       - ConnectionStrings__DefaultConnection=Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
+      - ConnectionStrings_IdentityContext=Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
+      - ConnectionStrings_ProductContext=Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
+      - ConnectionStrings_OrderContext=Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
+      - ConnectionStrings_ContentContext=Host=postgres_primary;Port=5432;Database=your_postgres_db;Username=postgres;Password=your_actual_password;SSL Mode=Require
+      - ConnectionStrings_Redis=redis://redis-master:6379,ssl=true,password=your_redis_password
       - VAULT_ROOT_TOKEN=${VAULT_ROOT_TOKEN}
       - POSTGRES_USERNAME=postgres
       - POSTGRES_PASSWORD=your_actual_password

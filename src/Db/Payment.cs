@@ -4,34 +4,41 @@ namespace haworks.Db
 {
     public class Payment : AuditableEntity
     {
-        // The Id property is inherited from AuditableEntity
+        public Payment() : base() { }
 
-        // Date of the order/payment
-        public DateTime OrderDate { get; set; }
+        public Payment(Guid id) : base(id) { }
 
-        // Foreign key to the user (as string, matching Identity)
+        public Guid OrderId { get; set; }
+        public Order? Order { get; set; }
+        
         public string UserId { get; set; } = string.Empty;
 
-        // Foreign key to the associated order
-        public Guid OrderId { get; set; }
-
-        // Navigation property to the order
-        public Order Order { get; set; } = null!;
-
-        // Stripe and PaymentIntent identifiers (internal setters)
-        public string? StripeSessionId { get; internal set; }
-
-        public string TransactionId { get; set; } = string.Empty;
-        public string? PaymentIntentId { get; internal set; }
-
-        // Payment amount and tax
         public decimal Amount { get; set; }
-        public decimal Tax { get; set; }
+        public string Currency { get; set; } = "USD";
+        public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
+        public string PaymentMethod { get; set; } = string.Empty;
+        
+        // Additional payment properties
+        public decimal Tax { get; set; } = 0;
+        public bool IsComplete { get; set; } = false;
+        public DateTime OrderDate { get; set; } = DateTime.UtcNow;
+        
+        // Stripe specific fields
+        public string? StripeSessionId { get; set; }
+        public string? StripePaymentIntentId { get; set; }
+        public string? TransactionId { get; set; }
+        
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? LastUpdatedAtUtc { get; set; }
+    }
 
-        // Flag indicating whether the payment is complete
-        public bool IsComplete { get; set; }
-
-        // Payment status enumeration (ensure PaymentStatus enum is defined)
-        public PaymentStatus Status { get; set; }
+    public enum PaymentStatus
+    {
+        Pending,
+        Processing,
+        Completed,
+        Failed,
+        Refunded,
+        Cancelled
     }
 }

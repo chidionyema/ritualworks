@@ -104,9 +104,11 @@ namespace haworks.Services
             {
                 HttpOnly = true,
                 Secure = context.Request.IsHttps,
-                SameSite = SameSiteMode.Lax,
+                SameSite = SameSiteMode.Strict, // Stronger than Lax
+                //SameSite = SameSiteMode.Lax,
                 Expires = token.ValidTo,
-                Path = "/"
+                Path = "/",
+                IsEssential = true
             });
         }
 

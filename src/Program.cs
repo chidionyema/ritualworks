@@ -8,6 +8,8 @@ using Serilog;
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using haworks.Infrastructure.Middleware;
+using haworks.Extensions;
 
 public partial class Program
 {
@@ -53,6 +55,7 @@ public partial class Program
             builder.Services.AddApplicationServices();
             builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection("Database"));
 
+
             var app = builder.Build();
             await app.SeedRolesAsync(); 
 
@@ -68,6 +71,7 @@ public partial class Program
 
             // Configure middleware pipeline.
             app.ConfigureMiddlewarePipeline();
+            app.UseEnhancedSecurityHeaders(builder.Configuration);
 
             await app.RunAsync();
         }

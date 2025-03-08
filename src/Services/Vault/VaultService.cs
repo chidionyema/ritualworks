@@ -92,6 +92,7 @@ namespace haworks.Services
         /// The hostname or IP for the database server.
         /// </summary>
         public string Host { get; set; } = string.Empty;
+         public string Database { get; set; } = string.Empty;
     }
 
     /****************************************************
@@ -147,7 +148,8 @@ namespace haworks.Services
                 // The main file is read, but no sidecar => not validated
                 return (contentString, false);
             }
-            var expectedHex = (await File.ReadAllTextAsync(expectedHmacPath, ct)).Trim();
+            var expectedHex = await File.ReadAllTextAsync(expectedHmacPath, ct);
+            expectedHex = expectedHex?.Trim() ?? string.Empty;
 
             // 5) Compare hex
             if (!computedHex.Equals(expectedHex, StringComparison.OrdinalIgnoreCase))
@@ -221,7 +223,8 @@ namespace haworks.Services
         private readonly HttpClient _httpClient;
         private readonly SemaphoreSlim _lock = new(1, 1);
 
-        private (string Username, SecureString Password) _credentials;
+        // Initialize with default values to fix CS8618 warning
+        private (string Username, SecureString Password) _credentials = (string.Empty, new SecureString());
         private bool _disposed;
 
         // Policies
@@ -287,9 +290,9 @@ namespace haworks.Services
                 .WaitAndRetryAsync(
                     3,
                     attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt)),
-                    (ex, ts, retryCount, ctx) =>
+                    (exception, ts, retryCount, ctx) =>
                     {
-                        _logger.LogWarning(ex, "Vault retry {RetryCount} after {Seconds}s", retryCount, ts.TotalSeconds);
+                        _logger.LogWarning(exception, "Vault retry {RetryCount} after {Seconds}s", retryCount, ts.TotalSeconds);
                         // TODO: Telemetry (metrics, tracing) if desired
                     });
 
@@ -374,21 +377,30 @@ namespace haworks.Services
             // 2) Optional pinned cert from file
             if (!string.IsNullOrEmpty(opts.PinnedCertPath) && File.Exists(opts.PinnedCertPath))
             {
-                var pinned = _cachedPinnedCert.GetOrAdd(opts.PinnedCertPath, path =>
+                try
                 {
-                    _logger.LogInformation("Loading pinned certificate from {Path}", path);
-                    var raw = File.ReadAllBytes(path);
-                    return new X509Certificate2(raw);
-                });
+                    var pinned = _cachedPinnedCert.GetOrAdd(opts.PinnedCertPath, path =>
+                    {
+                        _logger.LogInformation("Loading pinned certificate from {Path}", path);
+                        var raw = File.ReadAllBytes(path);
+                        // Use X509CertificateLoader instead of direct constructor to fix SYSLIB0057
+                        return System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPemFile(path);
+                    });
 
-                if (cert.RawData.AsSpan().SequenceEqual(pinned.RawData))
-                {
-                    _logger.LogDebug("Pinned certificate matched, accepting connection.");
-                    return true;
+                    if (cert.RawData.AsSpan().SequenceEqual(pinned.RawData))
+                    {
+                        _logger.LogDebug("Pinned certificate matched, accepting connection.");
+                        return true;
+                    }
+                    
+                    _logger.LogError("Pinned certificate mismatch!");
+                    return false;
                 }
-                
-                _logger.LogError("Pinned certificate mismatch!");
-                return false;
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error loading pinned certificate");
+                    return false;
+                }
             }
 
             // 3) Try to add the CA certificate to the chain for validation
@@ -401,8 +413,8 @@ namespace haworks.Services
                     chain.ChainPolicy.RevocationFlag = X509RevocationFlag.ExcludeRoot;
                     chain.ChainPolicy.VerificationFlags = X509VerificationFlags.AllowUnknownCertificateAuthority;
                     
-                    // Add CA cert to the chain store
-                    var caCert = new X509Certificate2(File.ReadAllBytes(opts.CaCertPath));
+                    // Add CA cert to the chain store - Fix SYSLIB0057 warning using X509CertificateLoader
+                    var caCert = System.Security.Cryptography.X509Certificates.X509Certificate2.CreateFromPemFile(opts.CaCertPath);
                     chain.ChainPolicy.ExtraStore.Add(caCert);
                     _logger.LogDebug("Added CA certificate to chain store: {Subject}", caCert.Subject);
                     
@@ -515,7 +527,7 @@ namespace haworks.Services
             var combinedPolicy = Policy.WrapAsync(_circuitBreakerPolicy, _retryPolicy);
             await combinedPolicy.ExecuteAsync(async token =>
             {
-                var resp = await _client.V1.Secrets.Database.GetCredentialsAsync("database", "app-role");
+                var resp = await _client.V1.Secrets.Database.GetCredentialsAsync("vault");
 
                 LeaseDuration = TimeSpan.FromSeconds(resp.LeaseDurationSeconds);
                 LeaseExpiry = DateTime.UtcNow + LeaseDuration;
@@ -543,7 +555,7 @@ namespace haworks.Services
             var builder = new NpgsqlConnectionStringBuilder
             {
                 Host = _dbOptions.Host,
-                Database = "myDB",
+                Database = _dbOptions.Database,
                 Username = user,
                 Password = nc.Password,
                 SslMode = SslMode.Require,

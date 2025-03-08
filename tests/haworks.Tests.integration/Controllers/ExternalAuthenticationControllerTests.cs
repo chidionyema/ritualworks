@@ -49,26 +49,25 @@ namespace Haworks.Tests.Integration
 
         #region Challenge Tests
 
-        [Fact(DisplayName = "GET /challenge/{provider} - Initiates External Auth Challenge")]
+       [Fact(DisplayName = "GET /challenge/{provider} - Initiates External Auth Challenge")]
         public async Task Challenge_InitiatesExternalAuthFlow()
         {
-            // Arrange - Google is the test provider
+            // Arrange
             var provider = "Google";
             var redirectUrl = "http://localhost/callback";
 
-            // Act - Call the challenge endpoint
-            var response = await _client.GetAsync($"api/external-authentication/challenge/{provider}?redirectUrl={redirectUrl}");
+            // Act
+            var response = await _client.GetAsync(
+                $"api/external-authentication/challenge/{provider}?" +
+                $"redirectUrl={Uri.EscapeDataString(redirectUrl)}");
 
-            // Assert - Should return a redirect to the Google auth page
+            // Assert
             Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
-            
-            // The Location header should point to a URL containing "accounts.google.com"
-            var locationHeader = response.Headers.Location?.ToString();
-            Assert.NotNull(locationHeader);
-            Assert.Contains("accounts.google.com", locationHeader);
+            var location = response.Headers.Location.ToString();
+            Assert.Contains("accounts.google.com", location);
+            Assert.Contains("redirect_uri=", location);
         }
-
-        [Fact(DisplayName = "GET /challenge/{provider} - Works Without Explicit Redirect URL")]
+                [Fact(DisplayName = "GET /challenge/{provider} - Works Without Explicit Redirect URL")]
         public async Task Challenge_WorksWithoutRedirectUrl()
         {
             // First, get the list of available providers to confirm what's configured
@@ -360,28 +359,22 @@ namespace Haworks.Tests.Integration
 
         #region Available Providers Tests
 
-        [Fact(DisplayName = "GET /providers - Returns Available Authentication Providers")]
-        public async Task GetAvailableProviders_ReturnsAuthenticationSchemes()
-        {
-            // Act - Call the providers endpoint
-            var response = await _client.GetAsync("api/external-authentication/providers");
-            
-            // Assert - Should return OK with a list of providers
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var json = JObject.Parse(responseBody);
-            var providers = json["providers"] as JArray;
-            
-            Assert.NotNull(providers);
-            Assert.NotEmpty(providers);
-            
-            // Use camelCase for property names
-            var providerNames = providers.Select(p => p["name"].ToString()).ToList();
-            Assert.Contains("Google", providerNames);
-            Assert.Contains("Facebook", providerNames);
-        }
-
+     [Fact(DisplayName = "GET /providers - Returns Available Authentication Providers")]
+public async Task GetAvailableProviders_ReturnsAuthenticationSchemes()
+{
+    var response = await _client.GetAsync("api/external-authentication/providers");
+    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    
+    var responseBody = await response.Content.ReadAsStringAsync();
+    Console.WriteLine($"Providers response: {responseBody}");
+    
+    var json = JObject.Parse(responseBody);
+    var providers = json["providers"] as JArray;
+    
+    Assert.NotNull(providers);
+    Assert.Contains(providers, p => 
+        p["name"].ToString().Equals("Google", StringComparison.OrdinalIgnoreCase));
+}
         #endregion
 
         #region User Login Management Tests

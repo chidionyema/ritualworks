@@ -19,5 +19,6 @@ namespace haworks.Dto
         public string Type { get; init; } = string.Empty;
         public Guid CategoryId { get; init; }
         public List<ProductMetadataDto> Metadata { get; init; } = new();
+         public List<ProductSpecificationCreateDto> Specifications { get; init; } = new();
     }
 }

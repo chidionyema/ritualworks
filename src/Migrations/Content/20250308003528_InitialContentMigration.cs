@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace haworks.Migrations
+namespace haworks.Migrations.Content
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialContentMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

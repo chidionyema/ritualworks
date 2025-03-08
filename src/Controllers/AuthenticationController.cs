@@ -37,7 +37,7 @@ namespace haworks.Controllers
             AuthService authService)
         {
             _userManager = userManager;
-            _logger = logger;
+            _logger = logger; 
             _identityContext = identityContext;
             _authService = authService;
         }

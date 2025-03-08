@@ -2,7 +2,7 @@ using haworks.Services;
 using Microsoft.Extensions.DependencyInjection;
 using haworks.Contracts;
 using haworks.Webhooks;
-
+using haworks.Mappings;
 public static class ApplicationServicesExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services)

@@ -23,23 +23,17 @@ namespace Haworks.Tests
         }
     }
 
-    public class FakeVaultService : VaultService
+    public class FakeVaultService : IVaultService, IDisposable
     {
+        // Required properties from the interface
+        public TimeSpan LeaseDuration { get; private set; } = TimeSpan.FromSeconds(3600);
+        public DateTime LeaseExpiry { get; private set; } = DateTime.UtcNow.AddSeconds(3600);
+        
+        private readonly ILogger<FakeVaultService> _logger;
+
         public FakeVaultService()
-            : base(
-                  Options.Create(new VaultOptions
-                  {
-                      Address = "http://127.0.0.1:8200",
-                      RoleIdPath = CreateTempFile("dummy-role-id"),
-                      SecretIdPath = CreateTempFile("dummy-secret-id")
-                  }),
-                  Options.Create(new DatabaseOptions
-                  {
-                      Host = "localhost"
-                  }),
-                  new LoggerFactory().CreateLogger<VaultService>()
-              )
         {
+            _logger = new LoggerFactory().CreateLogger<FakeVaultService>();
         }
 
         private static string CreateTempFile(string content)
@@ -49,14 +43,18 @@ namespace Haworks.Tests
             return tempFile;
         }
 
-        // For tests we simply return a fixed, safe connection string.
-        public override Task<string> GetDatabaseConnectionStringAsync(CancellationToken ct = default)
+        public Task InitializeAsync(CancellationToken cancellationToken = default)
+        {
+            // No actual initialization needed for the fake service
+            return Task.CompletedTask;
+        }
+
+        public Task<string> GetDatabaseConnectionStringAsync(CancellationToken cancellationToken = default)
         {
             return Task.FromResult("User ID=myuser;Password=mypassword;Host=localhost;Port=5433;Database=test_db;SSL Mode=Disable;");
         }
 
-        // Override GetDatabaseCredentialsAsync to always return a safe lease and credentials.
-        public override Task<(string Username, SecureString Password)> GetDatabaseCredentialsAsync(CancellationToken ct = default)
+        public Task<(string Username, SecureString Password)> GetDatabaseCredentialsAsync(CancellationToken cancellationToken = default)
         {
             // In this fake service, we simulate a valid lease of 3600 seconds.
             LeaseDuration = TimeSpan.FromSeconds(3600);
@@ -72,25 +70,25 @@ namespace Haworks.Tests
             return Task.FromResult(("myuser", securePwd));
         }
 
-        // Optionally, if your production code calls RefreshCredentials, you can override it as well.
-        public override Task RefreshCredentials(CancellationToken ct = default)
+        public Task StartCredentialRenewalAsync(CancellationToken cancellationToken = default)
+        {
+            // No actual renewal needed for the fake service
+            return Task.CompletedTask;
+        }
+
+        // Implement RefreshCredentials as a regular method (not override)
+        public Task RefreshCredentials(CancellationToken cancellationToken = default)
         {
             // Simply update credentials with a safe lease.
             LeaseDuration = TimeSpan.FromSeconds(3600);
             LeaseExpiry = DateTime.UtcNow.Add(LeaseDuration);
-
-            var securePwd = new SecureString();
-            foreach (var c in "mypassword")
-            {
-                securePwd.AppendChar(c);
-            }
-            securePwd.MakeReadOnly();
-
-            // If the base class stores the credentials in a field, ensure that it gets updated.
-            // (Assuming _credentials is accessible via a protected method or property in your real code.)
-            // For this fake, we assume that GetDatabaseCredentialsAsync will be used.
-
             return Task.CompletedTask;
+        }
+
+        public void Dispose()
+        {
+            // Nothing to dispose in this fake implementation
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -43,11 +43,24 @@ namespace haworks.Extensions
             ILogger logger)
         {
             // 1. Register Vault (but do NOT initialize!)
-            services.AddVaultServices(config);
+              bool isTestEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Test";
+               
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<IdentityContext>()
+                .AddDefaultTokenProviders();
+            
+
+            if (!isTestEnvironment)
+                        {
+                            // Only register the real VaultService in non-test environments
+                            services.AddSingleton<IVaultService, VaultService>();
+                      
+          
 
             // 2. Register DB contexts & Identity
             services.AddDatabaseServices(config);
-
+            
+              }
             // 3. Redis caching, data protection, distributed locking
             //    (made synchronous, but we could do an async helper or inline .GetAwaiter().GetResult())
             services.AddRedisAndDataProtection(config, logger).GetAwaiter().GetResult();
@@ -71,7 +84,7 @@ namespace haworks.Extensions
                     .AddSingleton<DynamicCredentialsConnectionInterceptor>();
 
             services.AddOptions<VaultOptions>()
-                    .Bind(config.GetSection("Vault"))
+                    .Bind(config.GetSection("VaultOptions"))
                     .ValidateDataAnnotations();
 
             services.AddHostedService<VaultCredentialRenewalService>();
@@ -123,10 +136,7 @@ namespace haworks.Extensions
                        .AddInterceptors(sp.GetRequiredService<DynamicCredentialsConnectionInterceptor>());
             });
 
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<IdentityContext>()
-                .AddDefaultTokenProviders();
-            
+    
             // Register repositories
             services.AddScoped<IProductContextRepository, ProductContextRepository>();
             services.AddScoped<IContentContextRepository, ContentContextRepository>();

@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace haworks.Migrations
+namespace haworks.Migrations.Content
 {
     [DbContext(typeof(ContentContext))]
     partial class ContentContextModelSnapshot : ModelSnapshot

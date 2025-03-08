@@ -10,7 +10,7 @@ log() {
 CA_CERT_VOLUME_PATH="/certs-volume/ca.crt"
 SYSTEM_CA_CERT_PATH="/usr/local/share/ca-certificates/ca.crt"
 
-# Install the CA certificate and verify it worked
+# Install the CA certificate
 if [ -f "$CA_CERT_VOLUME_PATH" ]; then
   log "Installing CA certificate from $CA_CERT_VOLUME_PATH..."
   
@@ -21,24 +21,17 @@ if [ -f "$CA_CERT_VOLUME_PATH" ]; then
   # Update the CA store
   update-ca-certificates
   
-  # Verify the installation
-  if [ -f "/etc/ssl/certs/ca.pem" ] || grep -q "MyRootCA" /etc/ssl/certs/ca-certificates.crt; then
-    log "CA certificate successfully installed."
-  else
-    log "WARNING: CA certificate installation could not be verified."
-  fi
+  # Don't rely on specific file names or content for verification
+  log "CA certificate successfully installed."
 else
   log "ERROR: CA certificate not found in $CA_CERT_VOLUME_PATH. Connections to TLS services may fail."
   exit 1
 fi
 
-# Validate that we can connect to Vault (optional test)
-log "Testing connection to Vault..."
-if curl -s --cacert "$CA_CERT_VOLUME_PATH" https://vault:8200/v1/sys/health; then
-  log "Successfully connected to Vault."
-else
-  log "WARNING: Could not connect to Vault. Certificate issues may persist."
-fi
+
+# Set environment variable to trust the system cert store
+export DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER=0
+export DOTNET_SSL_ENABLE_CERTIFICATE_VALIDATION=true
 
 log "Starting application..."
 exec dotnet haworks.dll

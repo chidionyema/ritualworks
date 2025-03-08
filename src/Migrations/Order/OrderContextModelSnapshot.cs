@@ -204,6 +204,62 @@ namespace haworks.Migrations.Order
                     b.ToTable("ContentVersion");
                 });
 
+            modelBuilder.Entity("haworks.Db.GuestOrderInfo", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("OrderToken")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("GuestOrderInfos");
+                });
+
             modelBuilder.Entity("haworks.Db.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -217,6 +273,15 @@ namespace haworks.Migrations.Order
                         .HasColumnType("text");
 
                     b.Property<string>("CreatedFromIp")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GuestEmail")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GuestFirstName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GuestLastName")
                         .HasColumnType("text");
 
                     b.Property<string>("IdempotencyKey")
@@ -309,6 +374,10 @@ namespace haworks.Migrations.Order
                     b.Property<string>("CreatedFromIp")
                         .HasColumnType("text");
 
+                    b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsComplete")
                         .HasColumnType("boolean");
 
@@ -316,6 +385,9 @@ namespace haworks.Migrations.Order
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("LastUpdatedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ModifiedFromIp")
@@ -327,7 +399,8 @@ namespace haworks.Migrations.Order
                     b.Property<Guid>("OrderId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("PaymentIntentId")
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<byte[]>("RowVersion")
@@ -337,6 +410,9 @@ namespace haworks.Migrations.Order
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
+                    b.Property<string>("StripePaymentIntentId")
+                        .HasColumnType("text");
+
                     b.Property<string>("StripeSessionId")
                         .HasColumnType("text");
 
@@ -344,7 +420,6 @@ namespace haworks.Migrations.Order
                         .HasColumnType("numeric");
 
                     b.Property<string>("TransactionId")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("UserId")
@@ -394,6 +469,9 @@ namespace haworks.Migrations.Order
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsFeatured")
                         .HasColumnType("boolean");
 
@@ -417,6 +495,9 @@ namespace haworks.Migrations.Order
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasComment("Product display name");
+
+                    b.Property<decimal>("OriginalPrice")
+                        .HasColumnType("numeric");
 
                     b.Property<double>("Rating")
                         .ValueGeneratedOnAdd()
@@ -522,6 +603,15 @@ namespace haworks.Migrations.Order
                     b.Property<string>("CreatedFromIp")
                         .HasColumnType("text");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsVerifiedPurchase")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("text");
 
@@ -541,7 +631,36 @@ namespace haworks.Migrations.Order
                         .IsRequired()
                         .HasColumnType("bytea");
 
-                    b.Property<string>("User")
+                    b.Property<string>("Title")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductReview");
+                });
+
+            modelBuilder.Entity("haworks.Db.ProductSpecification", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -549,7 +668,7 @@ namespace haworks.Migrations.Order
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductReview");
+                    b.ToTable("ProductSpecification");
                 });
 
             modelBuilder.Entity("haworks.Db.Subscription", b =>
@@ -667,10 +786,16 @@ namespace haworks.Migrations.Order
                     b.Property<string>("ConcurrencyStamp")
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Email")
                         .HasColumnType("text");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsActive")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("LockoutEnabled")
@@ -703,6 +828,9 @@ namespace haworks.Migrations.Order
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("UserName")
                         .HasColumnType("text");
 
@@ -717,11 +845,23 @@ namespace haworks.Migrations.Order
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("AvatarUrl")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Bio")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -734,6 +874,10 @@ namespace haworks.Migrations.Order
                     b.Property<string>("CreatedFromIp")
                         .HasColumnType("text");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<DateTime?>("LastLogin")
                         .HasColumnType("timestamp with time zone");
 
@@ -743,12 +887,31 @@ namespace haworks.Migrations.Order
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("ModifiedFromIp")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<byte[]>("RowVersion")
                         .IsRequired()
                         .HasColumnType("bytea");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -760,7 +923,8 @@ namespace haworks.Migrations.Order
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("UserProfile");
                 });
@@ -852,6 +1016,17 @@ namespace haworks.Migrations.Order
                     b.Navigation("Content");
                 });
 
+            modelBuilder.Entity("haworks.Db.GuestOrderInfo", b =>
+                {
+                    b.HasOne("haworks.Db.Order", "Order")
+                        .WithOne("GuestInfo")
+                        .HasForeignKey("haworks.Db.GuestOrderInfo", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("haworks.Db.OrderItem", b =>
                 {
                     b.HasOne("haworks.Db.Order", "Order")
@@ -921,11 +1096,22 @@ namespace haworks.Migrations.Order
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("haworks.Db.ProductSpecification", b =>
+                {
+                    b.HasOne("haworks.Db.Product", "Product")
+                        .WithMany("Specifications")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("haworks.Db.UserProfile", b =>
                 {
                     b.HasOne("haworks.Db.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
+                        .WithOne("Profile")
+                        .HasForeignKey("haworks.Db.UserProfile", "UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -946,6 +1132,8 @@ namespace haworks.Migrations.Order
 
             modelBuilder.Entity("haworks.Db.Order", b =>
                 {
+                    b.Navigation("GuestInfo");
+
                     b.Navigation("OrderItems");
 
                     b.Navigation("Payment");
@@ -958,6 +1146,13 @@ namespace haworks.Migrations.Order
                     b.Navigation("Metadata");
 
                     b.Navigation("ProductReviews");
+
+                    b.Navigation("Specifications");
+                });
+
+            modelBuilder.Entity("haworks.Db.User", b =>
+                {
+                    b.Navigation("Profile");
                 });
 #pragma warning restore 612, 618
         }
