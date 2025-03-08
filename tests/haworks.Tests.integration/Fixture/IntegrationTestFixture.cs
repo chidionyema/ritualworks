@@ -104,7 +104,7 @@ namespace Haworks.Tests
         private async Task SeedRolesAsync(IServiceProvider sp)
         {
             var roleManager = sp.GetRequiredService<RoleManager<IdentityRole>>();
-            string[] roles = { "Admin", "User", "CONTENTUPLOADER" };
+            string[] roles = { "Admin", "User", "ContentUploader" };
 
             foreach (var role in roles)
             {

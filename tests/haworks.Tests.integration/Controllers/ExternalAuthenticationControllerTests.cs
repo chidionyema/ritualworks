@@ -409,10 +409,10 @@ public async Task GetAvailableProviders_ReturnsAuthenticationSchemes()
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
             responseBody = await response.Content.ReadAsStringAsync();
             json = JObject.Parse(responseBody);
-            logins = json["Logins"] as JArray;
+            logins = logins = json["logins"] as JArray;
             Assert.NotNull(logins);
             Assert.Single(logins);
-            Assert.Equal("Google", logins[0]["Provider"]);
+            Assert.Equal("Google", logins[0]["provider"]);
         }
 
         [Fact(DisplayName = "GET /logins - Returns Unauthorized When Not Authenticated")]
@@ -428,53 +428,56 @@ public async Task GetAvailableProviders_ReturnsAuthenticationSchemes()
             Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
-        [Fact(DisplayName = "GET /logins - Enforces Access Control")]
-        public async Task GetUserLogins_EnforcesAccessControl()
-        {
-            // Arrange - Create two users
-            var username1 = "access_control_user1";
-            var email1 = "access1@example.com";
-            var password1 = "StrongPassword123!";
-            
-            var username2 = "access_control_user2";
-            var email2 = "access2@example.com";
-            var password2 = "StrongPassword123!";
+       [Fact(DisplayName = "GET /logins - Enforces Access Control")]
+public async Task GetUserLogins_EnforcesAccessControl()
+{
+    // Arrange - Create two users
+    var username1 = "access_control_user1";
+    var email1 = "access1@example.com";
+    var password1 = "StrongPassword123!";
+    
+    var username2 = "access_control_user2";
+    var email2 = "access2@example.com";
+    var password2 = "StrongPassword123!";
 
-            var userId1 = await RegisterTestUser(username1, email1, password1);
-            var userId2 = await RegisterTestUser(username2, email2, password2);
-            
-            // Add different external logins to each user
-            await AddExternalLogin(userId1, "Google", "google-access1-12345", "Google");
-            await AddExternalLogin(userId2, "Microsoft", "microsoft-access2-12345", "Microsoft");
-            
-            // Login as the first user
-            await LoginTestUser(username1, password1);
-            
-            // Act - Try to get logins
-            var response = await _client.GetAsync("api/external-authentication/logins");
-            
-            // Assert - Should succeed and only return user1's logins
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-            
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var json = JObject.Parse(responseBody);
-            var logins = json["Logins"] as JArray ?? json["logins"] as JArray;
-            
-            Assert.NotNull(logins);
-            Assert.Single(logins);
-            Assert.Equal("Google", logins[0]["Provider"].ToString());
-            
-            // Now try to unlink user2's login
-            var unlinkResponse = await _client.DeleteAsync("api/external-authentication/unlink/Microsoft");
-            
-            // Should fail because user1 doesn't have a Microsoft login
-            Assert.Equal(HttpStatusCode.BadRequest, unlinkResponse.StatusCode);
-            
-            // Verify user2's login wasn't affected
-            var user2Logins = await GetUserLogins(userId2);
-            Assert.Single(user2Logins);
-            Assert.Equal("Microsoft", user2Logins.First().LoginProvider);
-        }
+    var userId1 = await RegisterTestUser(username1, email1, password1);
+    var userId2 = await RegisterTestUser(username2, email2, password2);
+    
+    // Add different external logins to each user
+    await AddExternalLogin(userId1, "Google", "google-access1-12345", "Google");
+    await AddExternalLogin(userId2, "Microsoft", "microsoft-access2-12345", "Microsoft");
+    
+    // Login as the first user
+    await LoginTestUser(username1, password1);
+    
+    // Act - Try to get logins
+    var response = await _client.GetAsync("api/external-authentication/logins");
+    
+    // Assert - Should succeed and only return user1's logins
+    Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    
+    var responseBody = await response.Content.ReadAsStringAsync();
+    var json = JObject.Parse(responseBody);
+    
+    // Check for the property 'logins' with the correct casing
+    var logins = json["logins"] as JArray;
+    
+    // Make sure logins is not null before accessing it
+    Assert.NotNull(logins);
+    Assert.Single(logins);
+    Assert.Equal("Google", logins[0]["Provider"].ToString());
+    
+    // Now try to unlink user2's login
+    var unlinkResponse = await _client.DeleteAsync("api/external-authentication/unlink/Microsoft");
+    
+    // Should fail because user1 doesn't have a Microsoft login
+    Assert.Equal(HttpStatusCode.BadRequest, unlinkResponse.StatusCode);
+    
+    // Verify user2's login wasn't affected
+    var user2Logins = await GetUserLogins(userId2);
+    Assert.Single(user2Logins);
+    Assert.Equal("Microsoft", user2Logins.First().LoginProvider);
+}
 
         [Fact(DisplayName = "DELETE /unlink/{provider} - Removes External Login")]
         public async Task UnlinkLogin_RemovesExternalLogin()
@@ -696,6 +699,9 @@ public async Task GetAvailableProviders_ReturnsAuthenticationSchemes()
             
             // Act - Simulate token revocation by logging the user out
             await _client.PostAsync("api/authentication/logout", null);
+            
+            // Important: Add delay to ensure the revocation is processed
+            await Task.Delay(100);
             
             // Create a completely new client with no shared state from the original client
             var freshClient = _fixture.CreateClientWithCookies();
