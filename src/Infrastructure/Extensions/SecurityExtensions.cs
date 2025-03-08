@@ -286,12 +286,7 @@ namespace haworks.Extensions
         /// </summary>
         private static IServiceCollection AddExternalAuthenticationProviders(this IServiceCollection services, IConfiguration config)
         {
-            // Only register these providers in non-test environments
-            var isTestEnvironment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Test";
-            if (isTestEnvironment)
-            {
-                return services;
-            }
+            
 
             services.AddAuthentication()
                 .AddGoogle(options =>
